@@ -79,7 +79,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <main>
 <header><span class="tag">Build log // Blueprint</span><h1>In the Dark of Space</h1>
 <p class="sub">The systems to build, in order. Tick items as they land in the game. Notes you leave here are saved, and Claude reads them before coding each piece.</p></header>
-<nav class="tabs" role="tablist"><button role="tab" id="t-build" aria-controls="p-build" aria-selected="true">Build log</button><button role="tab" id="t-pu" aria-controls="p-pu" aria-selected="false">Power Ups</button><button role="tab" id="t-up" aria-controls="p-up" aria-selected="false">Upgrades</button></nav>
+<nav class="tabs" role="tablist"><button role="tab" id="t-build" aria-controls="p-build" aria-selected="true">Build log</button><button role="tab" id="t-pu" aria-controls="p-pu" aria-selected="false">Power Ups</button><button role="tab" id="t-up" aria-controls="p-up" aria-selected="false">Upgrades</button><button role="tab" id="t-en" aria-controls="p-en" aria-selected="false">Enemies</button><button role="tab" id="t-bo" aria-controls="p-bo" aria-selected="false">Bosses</button></nav>
 <div class="pane" id="p-build" role="tabpanel" aria-labelledby="t-build">
 
 <details data-id="ideas" class="ideas"><summary><span class="n">//</span><span class="t">Ideas and Options</span><span class="why">parked, not scheduled</span></summary>
@@ -149,6 +149,32 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><label><input type="checkbox"><span>Unlocks screen: goals reached across runs unlock items (first: Bootleg Shields, for blocking 30 hits with Barriers)</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-hangar">Notes for Claude <span class="st"></span></label><textarea id="n-hangar" placeholder="What the shop should sell, prices, which craft comes next…"></textarea></div></div></details>
+
+<details data-id="arc"><summary><span class="n">06</span><span class="t">Campaign Arc &amp; Ending</span><span class="why">a run you can actually win</span></summary>
+<div class="body"><p>Turn Campaign from an endless loop into a journey with a beginning, a middle and an end: zones that change the fight, a boss to cap each one, and a final victory.</p>
+<div class="spec"><div><b>Zones</b><span>4 × 5 sectors</span></div><div><b>Bosses</b><span>One per zone, final at sector 20</span></div><div><b>Victory</b><span>Win screen, then optional Endless</span></div></div>
+<ul>
+<li><label><input type="checkbox"><span>Four named zones of 5 sectors each, each with its own backdrop color and banner</span></label></li>
+<li><label><input type="checkbox"><span>A new enemy type per zone (e.g. a shielded unit, a mine-layer, a unit that splits when destroyed)</span></label></li>
+<li><label><input type="checkbox"><span>A unique boss to end each zone (Bastion stays as zone 1's)</span></label></li>
+<li><label><input type="checkbox"><span>Final boss at sector 20 and a victory screen with the run summary</span></label></li>
+<li><label><input type="checkbox"><span>Difficulty curve tuned per zone so each zone feels like a step up, not just more of the same</span></label></li>
+<li><label><input type="checkbox"><span>After a win: optional Endless mode continues from sector 21; best Endless sector is tracked</span></label></li>
+</ul><div class="bar"><i></i></div>
+<div class="notes"><label for="n-arc">Notes for Claude <span class="st"></span></label><textarea id="n-arc" placeholder="Zone names and themes, enemy and boss ideas, how hard the final boss should be…"></textarea></div></div></details>
+
+<details data-id="paint"><summary><span class="n">07</span><span class="t">Paint Jobs</span><span class="why">make the hangar yours</span></summary>
+<div class="body"><p>Cosmetic color schemes for your crafts, bought with Total Scrap in the Shop's Paint Jobs tab. Looks only: no stat changes.</p>
+<div class="spec"><div><b>Factory</b><span>Default colors · free</span></div><div><b>Shop paints</b><span>Bought with Total Scrap</span></div><div><b>Unlock paints</b><span>Earned from goals</span></div></div>
+<ul>
+<li><label><input type="checkbox"><span>Paint system: swap a craft's colors without changing its shape</span></label></li>
+<li><label><input type="checkbox"><span>Paint Jobs tab previews each paint on a spinning model before you buy</span></label></li>
+<li><label><input type="checkbox"><span>Starter set in the Shop: three paints that fit any craft (e.g. Night Ops, Arctic, Desert)</span></label></li>
+<li><label><input type="checkbox"><span>Signature paint for each craft (Kestrel, Gale, Falcon, Swift)</span></label></li>
+<li><label><input type="checkbox"><span>Equip owned paints per craft from the craft select Stats view and the pause viewer</span></label></li>
+<li><label><input type="checkbox"><span>Unlockable paints from goals on the Unlocks screen (e.g. beat a boss without taking a hit)</span></label></li>
+</ul><div class="bar"><i></i></div>
+<div class="notes"><label for="n-paint">Notes for Claude <span class="st"></span></label><textarea id="n-paint" placeholder="Colors you want, which paints should be shop vs. unlock, prices…"></textarea></div></div></details>
 </div>
 <div class="pane" id="p-pu" role="tabpanel" aria-labelledby="t-pu" hidden>
 <div class="find"><input type="search" id="q" placeholder="Search power-ups…" aria-label="Search power-ups">
@@ -159,6 +185,14 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <section class="list" id="l-campaign"><h2>Campaign <small></small></h2><div class="items"></div></section>
 <section class="list" id="l-timed"><h2>Timed Attack <small></small></h2><div class="items"></div></section>
 <p class="sub">Planned items come from module 03. Proposed items are Claude's suggestions for Campaign-only drops; edit or reject them in the notes.</p>
+</div>
+<div class="pane" id="p-en" role="tabpanel" aria-labelledby="t-en" hidden>
+<p class="sub">Regular units, grouped by how much trouble they cause.</p>
+<section class="list" style="--c:#4fe08a"><h2><span class="dot"></span>Easy <small>3</small></h2><div class="pu" style="--c:#b59a68"><i></i><b>Skirmisher <span class="tg k">Sector 1+</span><span class="tg k">1 scrap</span></b><p>Tan, arm blades. Never shoots; dives at you to ram.</p></div><div class="pu" style="--c:#7f8c96"><i></i><b>Sniper <span class="tg k">Sector 2+</span><span class="tg k">2 scrap</span></b><p>Grey, long rifle. Aimed shots from the formation and while diving.</p></div><div class="pu" style="--c:#8a3b32"><i></i><b>Mine <span class="tg k">Sector 2+</span><span class="tg k">3 scrap</span><span class="tg k">Tough</span></b><p>Spiked sphere. Drifts in and parks just ahead of your row, blocking that lane and soaking up shots. Touching it hurts.</p></div></section><section class="list" style="--c:#ffd23a"><h2><span class="dot"></span>Medium <small>2</small></h2><div class="pu" style="--c:#8a3b32"><i></i><b>Heavy <span class="tg k">Sector 3+</span><span class="tg k">5 scrap</span><span class="tg k">Tough</span></b><p>Rust red, shoulder cannons. Three-shot spread from the back row.</p></div><div class="pu" style="--c:#ff4a6a"><i></i><b>Lancer <span class="tg k">Sector 3+</span><span class="tg k">2 scrap</span><span class="tg k">Fast</span></b><p>Dart-shaped drone. Hovers 1–2 s, slides to a side edge, flashes, then rams where you were.</p></div></section><section class="list" style="--c:#ff3d6e"><h2><span class="dot"></span>Hard <small>0</small></h2><p class="none">None yet. Ideas: a shielded unit, a unit that splits when destroyed (see 06).</p></section>
+</div>
+<div class="pane" id="p-bo" role="tabpanel" aria-labelledby="t-bo" hidden>
+<p class="sub">Capital units that end a zone. Easy bosses guard the early sectors.</p>
+<section class="list" style="--c:#4fe08a"><h2><span class="dot"></span>Easy <small>2</small></h2><div class="pu" style="--c:#4a4f58"><i></i><b>Bastion <span class="tg k">Sectors 5, 15, 25…</span><span class="tg k">+60 scrap</span></b><p>Slab-hulled carrier with three bolted-on turrets. The core is armored until the turrets are shot off; the core fires a five-shot fan.</p></div><div class="pu" style="--c:#55606e"><i></i><b>Warden <span class="tg k">Sectors 10, 20, 30…</span><span class="tg k">+60 scrap</span></b><p>Giant mech with an arm beam cannon. Laser-sight tell, then an aimed beam every few seconds; flashes half the field red, then sweeps a beam from that edge to the centre. Heavily armored; calls in skirmishers.</p></div></section><section class="list" style="--c:#ffd23a"><h2><span class="dot"></span>Medium <small>0</small></h2><p class="none">None yet.</p></section><section class="list" style="--c:#ff3d6e"><h2><span class="dot"></span>Hard <small>0</small></h2><p class="none">None yet. The final boss (see 06) belongs here.</p></section>
 </div>
 <div class="pane" id="p-up" role="tabpanel" aria-labelledby="t-up" hidden>
 <div class="find"><input type="search" id="uq" placeholder="Search upgrades…" aria-label="Search upgrades">
