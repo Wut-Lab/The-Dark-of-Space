@@ -35,6 +35,16 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 #upgL{display:grid;gap:8px;max-height:52vh;overflow-y:auto}.ug{display:grid;grid-template-columns:56px 1fr auto;gap:2px 12px;align-items:center;border:1px solid #ffffff26;padding:6px 12px 6px 6px;background:#ffffff08}
 .ug canvas{grid-row:span 2;width:56px;height:56px;border-radius:3px;background:radial-gradient(color-mix(in srgb,var(--c) 30%,transparent),transparent 70%)}.ug b{font:400 16px var(--display);color:var(--accent)}.ug .rar{color:var(--c)}
 .ug span{grid-column:2;color:var(--dim);font-size:13px}.ug i{grid-row:span 2;grid-column:3;font:400 18px var(--display);font-style:normal}
+.bank{color:var(--dim)}.bank b{color:var(--accent);font:400 18px var(--display)}
+.stabs{display:flex;border-bottom:1px solid #ffffff26}.stabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;border-radius:0;box-shadow:none;padding:10px 4px;
+ font:400 15px var(--display);letter-spacing:.06em;color:var(--dim);text-align:center;display:block}.stabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}
+#shopL{display:grid;gap:8px}.si{display:grid;grid-template-columns:56px 1fr auto;gap:2px 12px;align-items:center;border:1px solid #ffffff26;padding:6px 8px 6px 6px;background:#ffffff08}
+.si canvas,.si .ph{grid-row:span 2;width:56px;height:56px;border-radius:3px;background:radial-gradient(color-mix(in srgb,var(--c,#aab1bd) 28%,transparent),transparent 70%)}
+.si .ph{display:grid;place-items:center;font:400 22px var(--display);color:var(--dim)}
+.si b{font:400 16px var(--display);color:var(--accent)}.si span{grid-column:2;color:var(--dim);font-size:13px}
+.si .act{grid-row:1/3;grid-column:3;min-width:84px;padding:8px 10px;text-align:center;display:block;font:400 14px var(--display);letter-spacing:.04em}
+.si .own{grid-row:1/3;grid-column:3;font:600 11px var(--display);letter-spacing:.14em;text-transform:uppercase;color:#4fe08a}
+.si .soon{grid-row:1/3;grid-column:3;font:600 11px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
@@ -133,7 +143,9 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><p id="tbest"></p></div></div>
 
 <div class="ov scr" id="store" hidden><div class="card"><div class="hd"><h2>Shop</h2><button class="back" data-go="start">Back</button></div>
-<p>Under Construction.</p></div></div>
+<p class="bank">Total Scrap: <b id="shopBank">0</b></p>
+<div class="stabs" role="tablist" aria-label="Shop sections"><button role="tab" data-tab="upgrades" aria-selected="true">Upgrades</button><button role="tab" data-tab="crafts" aria-selected="false">Crafts</button><button role="tab" data-tab="paint" aria-selected="false">Paint Jobs</button></div>
+<p id="shopIntro"></p><div id="shopL" role="tabpanel"></div></div></div>
 
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
 <p>Nothing to unlock yet. New machines and upgrades earned across runs will appear here.</p></div></div>
@@ -568,7 +580,33 @@ for(const [k,b,timed] of [['mech',$('pMech')],['ship',$('pShip')],['falcon',$('p
 $('cdBack').onclick=()=>$('cdet').hidden=true;$('cdGo').onclick=()=>{$('cdet').hidden=true;cdB.click()};
 $('cdv').onpointerdown=e=>{cdDrag=e.clientX;$('cdv').setPointerCapture(e.pointerId)};$('cdv').onpointermove=e=>{if(cdDrag!=null){cdYaw+=(e.clientX-cdDrag)*.01;cdDrag=e.clientX}};
 $('cdv').onpointerup=$('cdv').onpointercancel=()=>cdDrag=null;
-function thumbTick(dt){if(!PHONE.matches)return;thYaw+=dt*.9;
+// Main-menu Shop: three tabs of items bought with Total Scrap. Owned items persist in localStorage ('darkowned').
+// An item is owned if it's a default, bought, or listed in OWNED; 'soon' items are placeholders until they exist in the game.
+let OWNED=[];try{OWNED=JSON.parse(localStorage.getItem('darkowned')||'[]')}catch(e){}
+const SHOP={
+ upgrades:{intro:'Upgrades you own can show up in Campaign: as sector rewards, in Salvage Yards and from signals.',items:[
+  ...UPG.map(u=>({id:'up:'+u[0],n:u[0],d:u[1],icon:u[4],c:RCOL[u[3]],tag:RAR[u[3]],own:1})),
+  {id:'up:more',n:'More upgrades',d:'New upgrades to add to the pool are on the way.',soon:1}]},
+ crafts:{intro:'Crafts you own can fly in Campaign and Timed Attack.',items:[
+  ...['mech','ship','falcon'].map(k=>({id:'craft:'+k,n:BASE[k].name,d:{mech:'Mobile frame. Slow strafe, hits hard.',ship:'Interceptor. Fast and fragile.',falcon:'Strike fighter. Balanced all round.'}[k],icon:k,own:1})),
+  {id:'craft:4',n:'Fourth machine',d:'A new craft is in the hangar. Details soon.',soon:1}]},
+ paint:{intro:'Paint jobs change how your crafts look. More to come.',items:[
+  {id:'paint:factory',n:'Factory finish',d:'The standard colors for every craft.',own:1},
+  {id:'paint:more',n:'More paint jobs',d:'Custom colors are on the way.',soon:1}]}};
+let shopTab='upgrades',shopYaw=0,shopAsk=null;
+function renderShop(){$('shopBank').textContent=bankT;const T=SHOP[shopTab];$('shopIntro').textContent=T.intro;
+ document.querySelectorAll('.stabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===shopTab));
+ $('shopL').innerHTML=T.items.map(it=>{const own=it.own||OWNED.includes(it.id),act=own?'<em class="own">Owned</em>':it.soon?'<em class="soon">Coming soon</em>':
+  shopAsk===it.id?`<button class="act" data-buy="${it.id}">Confirm · ${it.cost}</button>`:`<button class="act" data-ask="${it.id}" ${bankT<it.cost?'disabled':''}>${it.cost} scrap</button>`;
+  return `<div class="si" style="--c:${it.c||'#aab1bd'}">${it.icon?`<canvas width="112" height="112" data-k="${it.icon}"></canvas>`:`<div class="ph">${it.soon?'?':'◆'}</div>`}<b>${it.n}${it.tag?` <em class="rar" style="color:${it.c}">${it.tag}</em>`:''}</b><span>${it.d}</span>${act}</div>`}).join('')}
+document.querySelectorAll('.stabs button').forEach(b=>b.onclick=()=>{shopTab=b.dataset.tab;shopAsk=null;renderShop()});
+$('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest('[data-buy]');
+ if(a){shopAsk=a.dataset.ask;renderShop()}
+ else if(y){const it=Object.values(SHOP).flatMap(t=>t.items).find(i=>i.id===y.dataset.buy);if(it&&bankT>=it.cost){bankT-=it.cost;OWNED.push(it.id);
+  try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}totT()}shopAsk=null;renderShop()}};
+document.querySelector('[data-go=store]').addEventListener('click',()=>{shopAsk=null;renderShop()});
+function shopTick(dt){if($('store').hidden)return;shopYaw+=dt*.9;$('shopL').querySelectorAll('canvas[data-k]').forEach(c=>snap(c.dataset.k,shopYaw,c,c.dataset.k.startsWith('u_')?.75:.72))}
+function thumbTick(dt){shopTick(dt);if(!PHONE.matches)return;thYaw+=dt*.9;
  if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
  for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}
 function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;const el=$('pause');
