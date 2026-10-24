@@ -50,12 +50,35 @@ textarea:focus{outline:none;border-color:var(--pink)}
 .spec b{font:600 .95rem var(--disp);color:var(--cyan)}.spec span{font-size:.8rem;color:var(--mute)}
 details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%,var(--line))}.ideas .n{color:var(--lime)}
 .held li{display:flex;gap:10px;align-items:baseline}.chip{flex:none;font:600 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--lime);padding:1px 6px}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line)}
+.tabs button{font:600 .95rem var(--disp);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);background:none;border:0;border-bottom:3px solid transparent;padding:10px 16px;cursor:pointer;min-height:44px}
+.tabs button[aria-selected=true]{color:var(--fg);border-bottom-color:var(--pink)}.tabs button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.pane{display:grid;gap:16px}
+.find{background:var(--panel);border:1px solid var(--line);padding:12px;display:grid;gap:10px}
+.find input[type=search]{font:15px var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:10px;width:100%;box-sizing:border-box}
+.find input[type=search]:focus{outline:none;border-color:var(--pink)}
+.fl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.fl>span{font:600 .7rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);width:58px}
+.fl button{font:.8rem var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:6px 10px;cursor:pointer;min-height:34px}
+.fl button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:color-mix(in srgb,var(--cyan) 12%,var(--bg))}
+.list{background:var(--panel);border:1px solid var(--line);padding:14px 16px;display:grid;gap:10px}
+.list h2{font:600 1.15rem var(--disp);letter-spacing:.03em;text-transform:uppercase;margin:0;display:flex;gap:10px;align-items:baseline}
+.list h2 small{font:.8rem var(--mono);margin-left:auto}
+.pu{display:grid;grid-template-columns:14px 1fr;gap:4px 12px;border:1px solid var(--line);padding:10px 12px}
+.pu i{grid-row:span 2;width:14px;height:14px;border-radius:50%;margin-top:4px;background:var(--c);box-shadow:0 0 10px var(--c)}
+.pu b{font:600 1rem var(--disp);display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+.pu p{margin:0;font-size:.85rem;color:var(--mute)}
+.tg{font:600 .65rem var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor}
+.tg.built{color:var(--lime)}.tg.planned{color:var(--cyan)}.tg.proposed{color:var(--pink)}.tg.k{color:var(--mute)}
+.none{color:var(--mute);font-size:.85rem;margin:0}
 @media (max-width:480px){.why{display:none}.cnt{margin-left:auto}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 <main>
 <header><span class="tag">Build log // Blueprint</span><h1>In the Dark of Space</h1>
 <p class="sub">The systems to build, in order. Tick items as they land in the game. Notes you leave here are saved, and Claude reads them before coding each piece.</p></header>
+<nav class="tabs" role="tablist"><button role="tab" id="t-build" aria-controls="p-build" aria-selected="true">Build log</button><button role="tab" id="t-pu" aria-controls="p-pu" aria-selected="false">Power Ups</button></nav>
+<div class="pane" id="p-build" role="tabpanel" aria-labelledby="t-build">
 
 <details data-id="ideas" class="ideas"><summary><span class="n">//</span><span class="t">Ideas and Options</span><span class="why">parked, not scheduled</span></summary>
 <div class="body"><p>Features on hold. Nothing here gets built until it moves into a numbered module. Add new ideas in the notes.</p>
@@ -111,8 +134,43 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><label><input type="checkbox"><span>Meta progression: a share of scrap carries over to unlock new crafts and add refits to the pool, but every run starts at sector 1</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-rogue">Notes for Claude <span class="st"></span></label><textarea id="n-rogue" placeholder="Stats to add, refit ideas, map node types, what should carry between runs…"></textarea></div></div></details>
+</div>
+<div class="pane" id="p-pu" role="tabpanel" aria-labelledby="t-pu" hidden>
+<div class="find"><input type="search" id="q" placeholder="Search power-ups…" aria-label="Search power-ups">
+<div class="fl" data-f="list"><span>List</span><button data-v="all">Both</button><button data-v="campaign">Campaign</button><button data-v="timed">Timed Attack</button></div>
+<div class="fl" data-f="status"><span>Status</span><button data-v="all">All</button><button data-v="built">Built</button><button data-v="planned">Planned</button><button data-v="proposed">Proposed</button></div>
+<div class="fl" data-f="kind"><span>Effect</span><button data-v="all">All</button><button data-v="instant">Instant</button><button data-v="timed">Lasts</button><button data-v="charges">Charges</button><button data-v="clock">Clock</button></div></div>
+<section class="list" id="l-campaign"><h2>Campaign <small></small></h2><div class="items"></div></section>
+<section class="list" id="l-timed"><h2>Timed Attack <small></small></h2><div class="items"></div></section>
+<p class="sub">Planned items come from module 03. Proposed items are Claude's suggestions for Campaign-only drops; edit or reject them in the notes.</p>
+</div>
 </main>
 <script>
+// Power-up catalog: mirrors the POOLS lists in the game. modes: c = Campaign, t = Timed Attack
+const PU=[
+ {n:'EMP',c:'#4ad8ff',m:'ct',s:'built',k:'instant',d:'Clears enemy fire and freezes every unit for 2.5 s'},
+ {n:'Barrier',c:'#b47cff',m:'ct',s:'built',k:'charges',d:'Blocks the next 3 hits, then breaks'},
+ {n:'Spread Shot',c:'#ff8a3a',m:'ct',s:'built',k:'timed',d:'Fires a 5-way fan for 5 s'},
+ {n:'Overclock',c:'#ff4fd8',m:'ct',s:'planned',k:'timed',d:'Double fire rate for 8 s'},
+ {n:'Wingman',c:'#c6ff3d',m:'ct',s:'planned',k:'timed',d:'A drone flies beside you and copies your fire for 15 s'},
+ {n:'Time Capsule',c:'#45ff7a',m:'t',s:'built',k:'clock',d:'+5 s on the clock. Common'},
+ {n:'Gold Capsule',c:'#ffd23a',m:'t',s:'built',k:'clock',d:'+5 s and 2.5 s of invulnerability. Rare'},
+ {n:'Repair Kit',c:'#ff5a6e',m:'c',s:'proposed',k:'instant',d:'Repairs 3 armor (Timed Attack has no armor)'},
+ {n:'Scrap Magnet',c:'#ffb040',m:'c',s:'proposed',k:'timed',d:'Double scrap from kills for 8 s'},
+ {n:'Reactor Surge',c:'#22e4ff',m:'c',s:'proposed',k:'timed',d:'Full EN, and dashes cost nothing for 6 s'}];
+const KIND={instant:'Instant',timed:'Lasts',charges:'Charges',clock:'Clock'},F={list:'all',status:'all',kind:'all'},esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
+function renderPU(){const q=document.getElementById('q').value.trim().toLowerCase();
+ for(const [id,flag] of [['campaign','c'],['timed','t']]){const box=document.getElementById('l-'+id);box.hidden=F.list!=='all'&&F.list!==id;
+  const all=PU.filter(p=>p.m.includes(flag)),hit=all.filter(p=>(F.status==='all'||p.s===F.status)&&(F.kind==='all'||p.k===F.kind)&&(!q||(p.n+' '+p.d+' '+p.s+' '+KIND[p.k]).toLowerCase().includes(q)));
+  box.querySelector('small').textContent=hit.length+' of '+all.length;
+  box.querySelector('.items').innerHTML=hit.length?hit.map(p=>`<div class="pu" style="--c:${p.c}"><i></i><b>${esc(p.n)} <span class="tg ${p.s}">${p.s}</span><span class="tg k">${KIND[p.k]}</span>${p.m==='ct'?'<span class="tg k">Both modes</span>':''}</b><p>${esc(p.d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}
+ document.querySelectorAll('.fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
+document.getElementById('q').addEventListener('input',renderPU);
+document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F[g.dataset.f]=b.dataset.v;renderPU()}));
+const tabs=[...document.querySelectorAll('[role=tab]')];
+function tab(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on});try{localStorage.setItem('bpTab',id)}catch(e){}}
+tabs.forEach((t,i)=>{t.onclick=()=>tab(t.id);t.onkeydown=e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){const n=tabs[(i+d+tabs.length)%tabs.length];tab(n.id);n.focus()}}});
+renderPU();try{const v=localStorage.getItem('bpTab');if(v&&document.getElementById(v))tab(v)}catch(e){}
 const secs=[...document.querySelectorAll('details')];
 const bar=d=>{if(!d.querySelector('.bar'))return;const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
  d.querySelector('.bar i').style.width=n/bs.length*100+'%';d.classList.toggle('done',n===bs.length);

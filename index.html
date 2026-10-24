@@ -323,7 +323,9 @@ function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
 // Timed Attack capsules: green = +5 s, gold = +5 s and 2.5 s invulnerable. They drift toward the player.
 const DROP={g:{c:0x45ff7a,css:'#45ff7a',inv:0},y:{c:0xffd23a,css:'#ffd23a',inv:2.5},
- emp:{c:0x4ad8ff,css:'#4ad8ff',pu:'EMP'},bar:{c:0xb47cff,css:'#b47cff',pu:'BARRIER'},spr:{c:0xff8a3a,css:'#ff8a3a',pu:'SPREAD SHOT'}},drops=[];
+ emp:{c:0x4ad8ff,css:'#4ad8ff',pu:'EMP'},bar:{c:0xb47cff,css:'#b47cff',pu:'BARRIER'},spr:{c:0xff8a3a,css:'#ff8a3a',pu:'SPREAD SHOT'}}
+// Drop pools per mode (mirrors the blueprint's Power Ups tab). g/y are time capsules: Timed Attack only, rolled at their own rates
+const POOLS={campaign:['emp','bar','spr'],timed:['emp','bar','spr','g','y']},drops=[];
 const GLOW=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);
  g.addColorStop(0,'#fff');g.addColorStop(.35,'#ffffff88');g.addColorStop(1,'#fff0');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
 const glow=(c,s)=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:c,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));m.scale.setScalar(s);return m};
@@ -412,7 +414,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(s.enemy){if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&hd(s.m.position,e.m.position)<e.r+.3){if(!s.hit.size)st.hits++;e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
-  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){boom(e.m.position,e.type==='brute'?22:12,BODY[e.type],e.type==='brute');if(Math.random()<.08*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1))spawnDrop(e.m.position,['emp','bar','spr'][Math.random()*3|0]);else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){boom(e.m.position,e.type==='brute'?22:12,BODY[e.type],e.type==='brute');if(Math.random()<.08*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu);spawnDrop(e.m.position,pool[Math.random()*pool.length|0])}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5}[e.type]*(e.state==='dive'?2:1)}hud();return false});
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
