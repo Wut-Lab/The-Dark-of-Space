@@ -189,7 +189,10 @@ const UP=[
  ['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor. Always in the shop for 10 scrap, stackable','c','util','pse'],
  ['Salvage claws','+1 scrap per unit destroyed','u','util','pse'],
  ['Rail barrel','Shots fly 50% faster and pass through 1 more unit','r','off','pse'],
- ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1]];
+ ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1],
+ ['Wide Shot','Shots become 5% wider. Unlock in the main-menu Shop for 60 Total Scrap','c','off','pse'],
+ ['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage. Shop unlock: 120','u','off','pse'],
+ ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage. Shop unlock: 200','r','off','pse']];
 const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e'};
 function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCase(),box=document.getElementById('ulists');
  box.innerHTML=Object.entries(RAR).filter(([k])=>F.rar==='all'||F.rar===k).map(([k,[name,col,price]])=>{const all=UP.filter(u=>u[2]===k),

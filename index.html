@@ -206,6 +206,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
 <h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
 <h3>Current upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed, +1 max armor</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li></ul>
+<h3>Shop upgrades</h3><ul><li>Buy these in the main-menu Shop with Total Scrap to add them to the pool</li><li><b>Wide Shot</b> (Common, 60): shots become 5% wider</li><li><b style="color:#4fe08a">Whip Shot</b> (Uncommon, 120): every third volley, one green shot arcs across the screen for +1 damage</li><li><b style="color:#5ab0ff">Tracking Shot</b> (Rare, 200): every fifth volley, one blue shot homes in on the farthest unit for +1 damage</li></ul>
 <h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
 <h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (10 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
 <h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li><li>When a run ends (or you quit), half your scrap is banked as <b>Total Scrap</b>, shown on the main menu. The other half repairs your craft back to 100%</li></ul></div></div>
@@ -327,6 +328,9 @@ const TURRET=[[-4,0,-4,8,4,8,'d',0,'cy'],[-3,4,-3,6,3,6,'o',0,'e'],[1,4,2,1,1,8,
 const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],[-3,14,0,2,4,2,'g'],[1,14,0,2,4,2,'g'],[-2,-2,0,4,2,2,'g'],[-1,-2,0,2,1,2,'k']],
  u_claw:[[-1,10,-1,2,5,2,'g'],[-3,6,-3,6,4,6,'d',0,'e'],[-1,8,2,2,1,1,'n'],[-5,1,-1,2,6,2,'a'],[3,1,-1,2,6,2,'a'],[-1,1,3,2,6,2,'a'],[-4,0,-1,1,1,2,'n'],[3,0,-1,1,1,2,'n'],[-1,0,3,2,1,1,'n']],
  u_rail:[[-12,-1,-2,4,8,4,'d'],[-8,0,-1,18,2,2,'a'],[-8,4,-1,18,2,2,'a'],[-8,2,0,17,2,1,'l'],[-5,-1,-2,2,8,4,'r'],[0,-1,-2,2,8,4,'r'],[5,-1,-2,2,8,4,'r']],
+ u_wide:[[-6,0,-1,12,2,3,'y'],[-5,2,-1,10,1,3,'g'],[-7,0,-1,1,2,3,'g'],[6,0,-1,1,2,3,'g'],[-1,-3,0,2,3,1,'d']],
+ u_whip:[[-7,0,0,2,2,2,'n'],[-5,3,0,2,2,2,'n'],[-3,5,0,2,2,2,'n'],[-1,6,0,2,2,2,'n'],[1,6,0,2,2,2,'n'],[3,5,0,2,2,2,'n'],[5,3,0,2,2,2,'g'],[6,1,0,2,2,2,'f']],
+ u_track:[[-5,-1,0,10,1,1,'r'],[-5,8,0,10,1,1,'r'],[-5,0,0,1,8,1,'r'],[4,0,0,1,8,1,'r'],[-1,3,0,2,2,2,'x'],[-1,-3,0,2,2,1,'d'],[-1,10,0,2,2,1,'d'],[-8,3,0,2,2,1,'d'],[6,3,0,2,2,1,'d']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
 const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e};
 const MODELS={
@@ -362,7 +366,7 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0,sb:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0,sb:0,wide:1,whip:0,track:0,vol:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -427,16 +431,20 @@ function flash(c){const f=$('flash');f.className='';void f.offsetWidth;f.classNa
 let pupK='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/2.5,'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);
  const k=a.map(x=>x[0]+Math.round(Math.min(1,x[1])*40)+x[2]).join();if(k===pupK)return;pupK=k;
  $('pups').innerHTML=a.map(([n,f,l])=>`<i style="--c:${DROP[n].css};--p:${Math.min(1,f)}">${l}</i>`).join('')}
-function fire(from,dir,spd,dmg,enemy,col,pierce){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18,.18,.6);
- m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,hit:new Set()})}
+function fire(from,dir,spd,dmg,enemy,col,pierce,w=1){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18*w,.18,.6);
+ m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,w,hit:new Set()});return shots[shots.length-1]}
 // Upgrades (permanent for the run; power-ups are the temporary drops): [name, effect, apply, rarity, icon model]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
 const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>{s.dmg*=1.05;s.rate/=1.05;s.spd*=1.05;s.max+=1;s.hp+=1},'c','u_tune'],
  ['Salvage claws','+1 scrap per unit destroyed',s=>s.sb++,'u','u_claw'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit',s=>{s.shot*=1.5;s.pierce+=1},'r','u_rail'],
- ['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x','u_trig']];
+ ['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x','u_trig'],
+ // Shop unlocks: in the pool only once bought in the main-menu Shop (6th field = Total Scrap price)
+ ['Wide Shot','Shots become 5% wider',s=>s.wide*=1.05,'c','u_wide',60],['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage',s=>s.whip++,'u','u_whip',120],
+ ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage',s=>s.track++,'r','u_track',200]];
+const inPool=u=>!u[5]||OWNED.includes('up:'+u[0]);
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:12,u:18,r:26,x:22};
 // Weighted draw of n different upgrades; elite and boss rewards use the better odds
-function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
- const pool=UPG.filter(u=>u[3]===r&&!out.includes(u));if(pool.length)out.push(pool[Math.random()*pool.length|0])}return out}
+function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.filter(inPool).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
+ const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&inPool(u));if(pool.length)out.push(pool[Math.random()*pool.length|0])}return out}
 const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
 // Tune-up: weak but helps every build; always in the shop and can be bought any number of times
 const TUNE=UPG[0];
@@ -504,7 +512,10 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);player.rotation.z=-mx*.25;p.y=st.kind==='mech'?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
-  st.cd-=dt;if(st.cd<=0){st.cd=st.rate;muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;for(let i=0;i<n;i++,st.fired++)fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce)}
+  st.cd-=dt;if(st.cd<=0){st.cd=st.rate;muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++)vs.push(fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide));
+   // Whip / Tracking: the volley's middle shot becomes special on every 3rd / 5th volley (extra copies add damage)
+   st.vol++;const c=vs[n>>1];if(st.track&&st.vol%5===0){c.track=1;c.dmg+=st.track;c.life=3;c.m.material.color.setHex(0x5ab0ff)}
+   else if(st.whip&&st.vol%3===0){c.arc=(st.vol/3)%2?1:-1;c.v.x+=c.arc*12;c.dmg+=st.whip;c.life=2;c.m.material.color.setHex(0x4fe08a)}}
   if(st.timed){st.time-=dt;st.el+=dt;st.fast=1+Math.floor(st.el/30)*.12;st.gold=Math.max(0,st.gold-dt);
    aura.visible=st.gold>0&&(st.gold>.6||Math.floor(now/80)%2==0);aura.scale.setScalar(3.2+Math.sin(now/120)*.3);
    const ct=mmss(Math.max(0,Math.ceil(st.time)));if($('clock').textContent!==ct)$('clock').textContent=ct;$('timer').classList.toggle('low',st.time<30);
@@ -535,9 +546,12 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
     if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
     else fire(e.m.position,T.subVectors(p,e.m.position).setY(0).normalize(),11,1,true,0xff5a5a,0)}}}
   st.inv-=dt;player.visible=st.inv>0&&st.bt<=0?Math.floor(now/60)%2==0:true;
-  for(const s of shots){const ox=s.m.position.x,oz=s.m.position.z;s.m.position.addScaledVector(s.v,dt);s.life-=dt;
+  const far=ents.reduce((a,e)=>e.m.visible&&e.hp>0&&!e.escaped&&(!a||e.m.position.z<a.m.position.z)?e:a,null);
+  for(const s of shots){const ox=s.m.position.x,oz=s.m.position.z;
+   if(s.arc){s.v.x-=s.arc*10*dt;s.m.lookAt(T.copy(s.m.position).add(s.v))}
+   if(s.track&&far){const sp=s.v.length();T.subVectors(far.m.position,s.m.position).setY(0).setLength(sp);s.v.lerp(T,Math.min(1,6*dt)).setLength(sp);s.m.lookAt(T.copy(s.m.position).add(s.v))}s.m.position.addScaledVector(s.v,dt);s.life-=dt;
    if(s.enemy){if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
-   else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&segD(ox,oz,s.m.position,e.m.position)<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)){if(e.type==='boss'&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
+   else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&segD(ox,oz,s.m.position,e.m.position)<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if(e.type==='boss'&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){st.kills++;boom(e.m.position,e.type==='boss'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss');if(Math.random()<.08*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu);spawnDrop(e.m.position,pool[Math.random()*pool.length|0])}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
@@ -585,6 +599,7 @@ $('cdv').onpointerup=$('cdv').onpointercancel=()=>cdDrag=null;
 let OWNED=[];try{OWNED=JSON.parse(localStorage.getItem('darkowned')||'[]')}catch(e){}
 const SHOP={
  upgrades:{intro:'Buy upgrades to add them to the Campaign pool: they can then show up as sector rewards, in Salvage Yards and from signals.',items:[
+  ...UPG.filter(u=>u[5]).map(u=>({id:'up:'+u[0],n:u[0],d:u[1],icon:u[4],c:RCOL[u[3]],tag:RAR[u[3]],cost:u[5]})),
   {id:'up:more',n:'More upgrades',d:'New upgrades to add to the pool are on the way.',soon:1}]},
  crafts:{intro:'Buy new crafts to fly in Campaign and Timed Attack.',items:[
   {id:'craft:4',n:'Fourth machine',d:'A new craft is in the hangar. Details soon.',soon:1}]},
