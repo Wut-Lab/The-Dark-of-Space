@@ -309,7 +309,7 @@ let tbest=0;try{tbest=+localStorage.getItem('darktimedbest')||0}catch(e){}
 const tbestT=()=>$('tbest').textContent=tbest?`Best score: ${tbest} scrap.`:'';tbestT();
 const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'},falcon:{hp:9,spd:9.5,dmg:1.5,rate:.22,shot:22,multi:1,pierce:0,name:'Falcon'}};
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,refits:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,refits:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0,sb:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -378,9 +378,9 @@ function fire(from,dir,spd,dmg,enemy,col,pierce){const m=new THREE.Mesh(BOX,new 
 // Refits: [name, effect, apply, rarity]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
 const cut=(s,n)=>{s.max=Math.max(2,s.max-n);s.hp=Math.min(s.hp,s.max)};
 const UPG=[['Thrusters','Strafe 15% faster',s=>s.spd*=1.15,'c'],['Field repair','Repair 5 armor',s=>s.hp=Math.min(s.max,s.hp+5),'c'],['Light plating','+2 max armor',s=>{s.max+=2;s.hp+=2},'c'],['Capacitor bank','EN refills 30% faster',s=>s.enr*=1.3,'c'],
- ['Overcharged rounds','+1 damage per shot',s=>s.dmg+=1,'u'],['Faster cycling','Fire 20% faster',s=>s.rate*=.8,'u'],['Hull plating','+3 max armor, repair fully',s=>{s.max+=3;s.hp=s.max},'u'],['Tungsten tips','Shots pass through 1 more unit',s=>s.pierce+=1,'u'],
- ['Split barrel','+1 projectile per volley',s=>s.multi+=1,'r'],['Twin-linked feed','+1 damage and fire 10% faster',s=>{s.dmg+=1;s.rate*=.9},'r'],['Reactive armor','+5 max armor, repair fully',s=>{s.max+=5;s.hp=s.max},'r'],
- ['Glass reactor','+50% damage, but −3 max armor',s=>{s.dmg*=1.5;cut(s,3)},'x'],['Stripped frame','Strafe 30% and fire 15% faster, but −2 max armor',s=>{s.spd*=1.3;s.rate*=.85;cut(s,2)},'x'],['Overdriven feed','Fire 40% faster, but every hit costs 1 more armor',s=>{s.rate*=.6;s.vuln++},'x']];
+ ['Overcharged rounds','+1 damage per shot',s=>s.dmg+=1,'u'],['Faster cycling','Fire 20% faster',s=>s.rate*=.8,'u'],['Hull plating','+3 max armor, repair fully',s=>{s.max+=3;s.hp=s.max},'u'],['Tungsten tips','Shots pass through 1 more unit',s=>s.pierce+=1,'u'],['Salvage claws','+1 scrap per unit destroyed',s=>s.sb++,'u'],
+ ['Split barrel','+1 projectile per volley',s=>s.multi+=1,'r'],['Twin-linked feed','+1 damage and fire 10% faster',s=>{s.dmg+=1;s.rate*=.9},'r'],['Reactive armor','+5 max armor, repair fully',s=>{s.max+=5;s.hp=s.max},'r'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit',s=>{s.shot*=1.5;s.pierce+=1},'r'],
+ ['Glass reactor','+50% damage, but −3 max armor',s=>{s.dmg*=1.5;cut(s,3)},'x'],['Stripped frame','Strafe 30% and fire 15% faster, but −2 max armor',s=>{s.spd*=1.3;s.rate*=.85;cut(s,2)},'x'],['Overdriven feed','Fire 40% faster, but every hit costs 1 more armor',s=>{s.rate*=.6;s.vuln++},'x'],['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x']];
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:12,u:18,r:26,x:22};
 // Weighted draw of n different refits; elite and boss rewards use the better odds
 function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
@@ -485,7 +485,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&hd(s.m.position,e.m.position)<e.r+.3){if(e.type==='boss'&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){st.kills++;boom(e.m.position,e.type==='boss'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss');if(Math.random()<.08*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu);spawnDrop(e.m.position,pool[Math.random()*pool.length|0])}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
-   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20}[e.type]*(e.state==='dive'?2:1)}hud();return false});
+   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
   muzzleT-=dt;muzzle.visible=muzzleT>0;muzzle.position.set(p.x,1.1,p.z-1.3);muzzle.scale.setScalar(.35+Math.random()*.2);
