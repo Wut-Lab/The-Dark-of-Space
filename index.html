@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}</style>
+</head>
+<body>
+<title>In the Dark of Space</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: full-screen WebGL arena with a thin HUD strip and centered modal cards. Single dark look by choice. */
+:root{--bg:#0b0d14;--panel:#141826ee;--fg:#e6e9f2;--dim:#8a91a8;--accent:#f2c230;--hp:#4fe08a;--danger:#ff5a5a;
+--display:"Saira Condensed","Arial Narrow",sans-serif;--body:"Chakra Petch",system-ui,sans-serif;color-scheme:dark}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--body)}
+canvas{display:block;touch-action:none}
+#hud{position:fixed;top:0;left:0;right:0;margin-right:110px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px;
+padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none;font-variant-numeric:tabular-nums}
+#bar,#bar2{width:110px;height:10px;background:#ffffff1a;overflow:hidden}#bar i,#bar2 i{display:block;height:100%;background:var(--hp)}#bar2 i{background:var(--accent)}
+#boost{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));pointer-events:auto;padding:16px 22px;font-family:var(--display);letter-spacing:.1em;touch-action:none}
+.ov{position:fixed;inset:0;display:grid;place-items:center;background:#05060acc;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{background:var(--panel);border:1px solid #ffffff22;padding:24px;max-width:560px;width:100%;box-sizing:border-box;display:grid;gap:16px}
+h1,h2{font-family:var(--display);margin:0;font-weight:400;text-wrap:balance}h1{font-size:40px;color:var(--accent)}h2{font-size:22px}
+p{margin:0;color:var(--dim);line-height:1.5}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+button{font:inherit;color:var(--fg);background:#ffffff0d;border:1px solid #ffffff33;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px}
+button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
+button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
+kbd{font-family:var(--display);font-size:11px;border:1px solid #ffffff33;padding:1px 5px}
+#pauseBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));padding:8px 14px;font-family:var(--display);letter-spacing:.12em;display:block}
+#pause{position:fixed;inset:0;background:#05060a00;opacity:0;transition:opacity .3s,background .3s,backdrop-filter .3s}
+#pause.on{opacity:1;background:#05060ad9;backdrop-filter:blur(4px)}
+.pz{height:100%;box-sizing:border-box;display:grid;grid-template-columns:1fr minmax(240px,340px);gap:24px;align-items:center;max-width:980px;margin:0 auto;
+padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pl{display:grid;gap:8px;justify-items:center;text-align:center;min-width:0}
+#viewer{width:min(100%,380px);aspect-ratio:1;cursor:grab;touch-action:none}#viewer:active{cursor:grabbing}
+.pl h2{font-size:30px;color:var(--accent)}.pl .hb{display:flex;gap:10px;align-items:center;font-variant-numeric:tabular-nums}
+.pl .hb div{width:200px;height:12px;background:#ffffff1a}.pl .hb i{display:block;height:100%;background:var(--hp)}
+.pr{display:grid;gap:12px;align-content:center}.pr h2{font-size:22px;letter-spacing:.1em}
+.pr button b{font-size:18px}.pr ul{margin:0;padding-left:18px;color:var(--dim);line-height:1.6;display:grid;gap:4px}
+@media (max-width:640px){.pz{grid-template-columns:1fr;align-content:start;overflow-y:auto}#viewer{width:min(70%,260px)}}
+@media (prefers-reduced-motion:reduce){#pause{transition:none}}
+#banner{position:fixed;left:0;right:0;top:24%;text-align:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#banner .bt{font:700 clamp(34px,9vw,84px)/1.05 "Silkscreen",ui-monospace,monospace;color:#f2c230;letter-spacing:0;
+text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,3px 3px #fff,-3px 3px #fff,3px -3px #fff,-3px -3px #fff,0 8px 0 #000a}
+#banner .bs{margin-top:16px;font-size:15px;font-weight:600;color:#fff;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 2px 6px #000}
+#banner.go{animation:bn 2.3s ease-out forwards}
+@keyframes bn{0%{opacity:0;transform:scale(1.25)}10%{opacity:1;transform:scale(1)}19%{transform:scale(1.07)}28%{transform:scale(1)}37%{transform:scale(1.07)}46%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#banner.go{animation:bnr 2.3s forwards}@keyframes bnr{0%,80%{opacity:1}100%{opacity:0}}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600&family=Saira+Condensed:wght@700&family=Silkscreen:wght@700&display=swap">
+<div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
+<div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span>Sector <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
+<div class="ov" id="start"><div class="card">
+<h1>In the Dark of Space</h1>
+<p>You're a mercenary pilot taking contracts in a contested sector. Pick your machine, hold the line against each wave of mass-production units as they swoop in from formation, and refit between sorties. If your machine goes down, the run is over.</p>
+<div class="row">
+<button id="pMech"><b>Kestrel</b><span>Mobile frame. 12 armor, heavy rifle. Slow strafe, hits hard.</span></button>
+<button id="pShip"><b>Gale</b><span>Interceptor. 6 armor, rapid lasers. Fast and fragile.</span></button>
+</div>
+<p><kbd>A</kbd>/<kbd>D</kbd> or arrows to strafe, <kbd>Shift</kbd> to dash (uses EN, brief invulnerability). On touch, drag sideways to strafe and press Dash. Guns fire automatically. Units shot mid-dive drop double scrap. <span id="best"></span></p>
+</div></div>
+<div class="ov" id="pick" hidden><div class="card"><h2 id="pickT">Sector cleared</h2><p>Choose one refit from the salvage.</p><div class="row" id="opts"></div></div></div>
+<button id="pauseBtn" hidden aria-label="Pause game">❚❚ PAUSE</button>
+<div id="pause" hidden><div class="pz">
+<div class="pl"><canvas id="viewer" aria-label="Your craft. Drag to rotate."></canvas><h2 id="pzName"></h2>
+<div class="hb"><span>ARMOR</span><div><i id="pzHp"></i></div><b id="pzHpt"></b></div><p>Drag to rotate</p></div>
+<div class="pr"><div id="pzMenu" style="display:grid;gap:12px"><h2>PAUSED</h2>
+<button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
+<button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
+<button id="pzQuit"><b>Back to Main Menu</b><span>Ends this run.</span></button></div>
+<div id="pzHelp" hidden style="display:grid;gap:12px"><h2>HOW TO PLAY</h2><ul>
+<li><kbd>A</kbd>/<kbd>D</kbd> or arrows strafe. On touch, drag sideways.</li>
+<li>Your guns fire on their own, straight up the field.</li>
+<li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
+<li>Units dive at you. Shoot them mid-dive for double scrap.</li>
+<li>Clear a sector to pick one refit. When armor hits zero, the run ends.</li>
+<li>Each sector is one wave. A banner marks its start: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li>
+<li>At zero, <b>SECTOR CLEAR</b> flashes and you pick a refit before the next sector.</li>
+<li>Every 4th sector is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
+<li><kbd>Esc</kbd> or <kbd>P</kbd> pauses.</li></ul>
+<button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
+</div></div>
+<div class="ov" id="dead" hidden><div class="card"><h2 style="color:var(--danger)">Rig destroyed</h2><p id="deadT"></p><button id="again"><b>New run</b><span>Pick a rig and start over at sector 1.</span></button></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));document.body.prepend(R.domElement);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(50,1,.1,300);
+S.add(new THREE.HemisphereLight(0xbfd4ff,0x221a10,.9));const sun=new THREE.DirectionalLight(0xffffff,.8);sun.position.set(5,10,3);S.add(sun);
+function fit(){R.setSize(innerWidth,innerHeight);C.aspect=innerWidth/innerHeight;C.fov=C.aspect<1?78:50;C.updateProjectionMatrix()}addEventListener('resize',fit);fit();
+const BOX=new THREE.BoxGeometry(1,1,1),mats={};
+const mat=c=>mats[c]||(mats[c]=new THREE.MeshLambertMaterial({color:c}));
+// Voxel model from rows of chars: layers[y][z] = string over x; palette maps chars to colors
+function vox(layers,pal,s){const g=new THREE.Group();layers.forEach((L,y)=>L.forEach((row,z)=>[...row].forEach((ch,x)=>{
+ if(pal[ch]){const m=new THREE.Mesh(BOX,mat(pal[ch]));m.position.set((x-(row.length-1)/2)*s,y*s,(z-(L.length-1)/2)*s);m.scale.setScalar(s);g.add(m)}})));return g}
+const P={g:0x6b7280,d:0x262a31,a:0x56606b,b:0x6b7350,h:0xe8742a,l:0x4fe8ff,y:0xf2c230,k:0x08090c};
+// Voxel builder: parts are [x,y,z,w,h,d,colorKey,mirror,shape] in voxel units; +z faces forward.
+// Shapes: none = box with bevelled edges, 'e' ellipsoid, 'cx'/'cy'/'cz' cylinder along that axis,
+// 'r' rounded-rectangle section (x/z), 'v' same but tapering toward the bottom,
+// 'kite' kite-shield outline in the y/z plane with a black ('k') rim,
+// 'wing' leading/trailing edges sweep back toward the tip, 'fin' leading edge sweeps back with height.
+// k subdivides every part for finer voxels. Hidden interior cells are culled; colors get slight jitter.
+const memo={};
+function build(key,parts,pal,s,k=1){if(!memo[key]){const cells=new Map();
+ for(const part of parts){const [x,y,z,w,h,d]=part.slice(0,6).map(v=>v*k),[,,,,,,c,M,sh]=part;
+  for(const x0 of M?[x,-x-w]:[x])for(let i=0;i<w;i++)for(let j=0;j<h;j++)for(let q=0;q<d;q++){
+   const u=(i+.5)/w*2-1,v=(j+.5)/h*2-1,t=(q+.5)/d*2-1,o=(x0>=0?i:w-1-i)/w;
+   if(sh==='e'&&u*u+v*v+t*t>1||sh==='cz'&&u*u+v*v>1||sh==='cy'&&u*u+t*t>1||sh==='cx'&&v*v+t*t>1)continue;
+   if(sh==='r'&&u**4+t**4>1||sh==='v'&&(u/(.55+.45*(j+.5)/h))**4+t**4>1)continue;
+   if(sh==='wing'&&(d-1-q<o*d*.6||q<o*d*.28)||sh==='fin'&&d-1-q<j/h*d*.7)continue;
+   if(!sh&&w>2&&h>2&&d>2&&(i==0||i==w-1)+(j==0||j==h-1)+(q==0||q==d-1)>=2)continue;
+   let cc=c;if(sh==='kite'){const hw=v>=.3?Math.sqrt(Math.max(0,1-((v-.3)/.7)**2)):(v+1)/1.3;if(Math.abs(t)>hw)continue;
+    if(Math.abs(t)>hw-2.6/d||v>1-2.6/h)cc='k'}
+   cells.set(`${x0+i},${y+j},${z+q}`,pal[cc])}}
+ const has=(x,y,z)=>cells.has(`${x},${y},${z}`),out=[];s/=k;
+ for(const [key,c] of cells){const [x,y,z]=key.split(',').map(Number);
+  if(!(has(x+1,y,z)&&has(x-1,y,z)&&has(x,y+1,z)&&has(x,y-1,z)&&has(x,y,z+1)&&has(x,y,z-1)))out.push([x,y,z,c])}
+ const im=new THREE.InstancedMesh(BOX,new THREE.MeshLambertMaterial(),out.length),o=new THREE.Object3D(),col=new THREE.Color();
+ out.forEach(([x,y,z,c],n)=>{o.position.set((x+.5)*s,(y+.5)*s,(z+.5)*s);o.scale.setScalar(s);o.updateMatrix();im.setMatrixAt(n,o.matrix);
+  im.setColorAt(n,col.setHex(c).multiplyScalar(.93+Math.random()*.1))});memo[key]=im}
+ const g=new THREE.Group();g.add(memo[key].clone());return g}
+// Player frame "Kestrel": reverse-joint legs, V-tapered sculpted hull, low sensor head, left missile pod, right rifle
+const KESTREL=[[4,0,-3,6,3,12,'d',1,'r'],[4,0,6,6,3,4,'a',1,'e'],[5,0,-6,4,2,3,'d',1],[5,3,-4,4,8,5,'a',1,'r'],[6,2,1,2,9,2,'h',1,'cy'],
+ [4,10,-8,6,6,7,'b',1,'e'],[5,15,-5,4,5,5,'a',1,'r'],[5,19,-3,4,5,5,'a',1,'r'],[4,23,-2,6,5,5,'d',1,'cx'],
+ [-4,21,-3,8,4,7,'d',0,'r'],[-4,25,-2,8,1,6,'a',0,'r'],[-5,26,-2,10,1,7,'d',0,'r'],[-5,27,-2,10,1,7,'a',0,'r'],
+ [-9,28,-5,18,9,12,'b',0,'v'],[1,29,3,7,7,5,'a',1,'e'],[-2,30,6,4,5,2,'d',0,'r'],[-1,33,7,2,1,1,'l'],[-7,36,-4,14,3,10,'a',0,'e'],
+ [-3,36,4,6,5,6,'a',0,'r'],[-3,38,9,6,1,1,'d'],[1,38,9,1,1,1,'l',1],[-1,38,9,2,1,1,'l'],[-2,36,9,4,1,1,'d'],[3,40,-1,1,8,1,'d'],
+ [8,30,-5,7,9,11,'a',1,'e'],[9,37,-3,5,1,7,'h',1,'r'],[-12,37,-2,3,3,4,'d'],[-17,39,-4,9,7,10,'b',0,'r'],
+ [-16,40,5,2,2,1,'d'],[-13,40,5,2,2,1,'d'],[-16,43,5,2,2,1,'d'],[-13,43,5,2,2,1,'d'],
+ [9,22,-2,4,8,4,'d',1,'cy'],[8,20,-3,6,4,6,'d',1,'e'],[8,13,-3,6,8,7,'a',1,'r'],[9,11,0,4,3,4,'d',1,'r'],
+ [9,12,2,4,5,10,'d',0,'r'],[10,13,12,2,2,12,'a',0,'cz'],[9,12,23,4,4,2,'d',0,'cz'],[10,9,5,2,4,3,'b'],[10,17,4,2,2,4,'l'],[-16,7,-4,2,19,15,'b',0,'kite'],
+ [-5,28,-10,10,9,6,'a',0,'e'],[-1,30,-11,2,6,1,'d'],[3,26,-13,4,9,5,'d',1,'r'],[3,23,-12,4,3,4,'a',1,'cz'],[4,24,-13,2,1,1,'h',1],[-8,35,-8,16,2,4,'b',0,'e']];
+// Enemy mass-production "Drudge": round hull, three-lens sensor strip, stubby legs; weapons vary by type
+const DRUDGE=[[4,0,-4,6,2,9,'d',1],[4,2,-3,6,7,6,'v',1],[4,8,2,6,3,2,'o',1],[5,9,-2,4,5,4,'d',1],[-8,14,-6,16,14,13,'v',0,'e'],
+ [-5,20,4,10,3,3,'d'],[-4,21,6,2,1,1,'m'],[-1,21,6,2,1,1,'m'],[2,21,6,2,1,1,'m'],[-3,27,-3,6,2,6,'d'],[8,19,-3,5,6,6,'v',1,'e'],[9,12,-2,3,8,4,'d',1]];
+const ARMS={chaser:[[9,11,1,2,2,10,'o',1]],shooter:[[9,12,2,3,3,18,'o'],[10,15,6,1,2,4,'m'],[-14,24,-6,6,6,1,'d'],[-12,22,-5,2,2,2,'d']],
+ brute:[[5,27,-2,3,3,15,'o',1],[-9,15,-7,18,8,2,'d'],[9,11,0,4,4,8,'o',1]]};
+// Interceptor "Gale": swept-back wings and canards, twin swept fins
+const GALE=[[-3,0,-18,6,5,36,'a',0,'e'],[-1,3,-14,2,2,16,'a'],[-2,3,2,4,3,9,'l',0,'e'],[-1,2,10,2,1,4,'h'],[3,0,-6,3,4,10,'d',1],
+ [3,1,-14,16,1,14,'b',1,'wing'],[9,0,-8,1,1,8,'d',1,'cz'],[3,2,8,5,1,4,'a',1,'wing'],[3,4,-17,1,7,6,'b',1,'fin'],
+ [1,0,-21,3,4,4,'d',1,'cz'],[1,1,-22,3,2,1,'h',1]];
+const MODELS={
+ mech:()=>build('mech',KESTREL,P,.065,2),
+ ship:()=>build('ship',GALE,P,.07,2),
+ chaser:()=>build('chaser',[...DRUDGE,...ARMS.chaser],{...P,v:0xb59a68,o:0xd9dde3,m:0xff3030},.08),
+ shooter:()=>build('shooter',[...DRUDGE,...ARMS.shooter],{...P,v:0x7f8c96,o:0x262a31,m:0xff3030},.08),
+ brute:()=>build('brute',[...DRUDGE,...ARMS.brute],{...P,v:0x8a3b32,o:0x262a31,m:0xffd030},.11)};
+// Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
+let world=new THREE.Group();S.add(world);const stars=[];
+function buildWorld(){S.background=new THREE.Color(0x05060c);
+ for(let i=0;i<300;i++){const m=new THREE.Mesh(BOX,mat(Math.random()<.2?0x9fb7ff:0xffffff));m.position.set((Math.random()-.5)*70,-4-Math.random()*16,-60+Math.random()*80);m.scale.setScalar(.1+Math.random()*.12);world.add(m);stars.push(m)}}
+const FX=11;
+let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
+try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
+$('best').textContent=best?`Best run: sector ${best}.`:'';
+const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'}};
+const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
+function start(kind){st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1};
+ ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
+ player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
+ ['start','dead','pick'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;wave();running=true}
+function wave(){st.bonus=st.sec%4===0;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')} · They won't shoot. Destroy as many as you can`);return}
+ const cols=Math.min(4+st.sec,9),rows=Math.min(2+(st.sec>>1),4);let i=0;diveCd=3;
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=r===0&&st.sec>2?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
+  const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
+  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.15),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',t:-(i++)*.12,
+   p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}hud();banner(`SECTOR ${String(st.sec).padStart(2,'0')}`,`Destroy all ${ents.length} units`)}
+// Bonus stage: five groups of eight sweep past in loops; they never shoot or ram
+function bonusWave(){let i=0;st.bTot=40;st.bHit=0;
+ for(let g=0;g<5;g++)for(let k=0;k<8;k++){const type=['chaser','shooter','chaser','shooter','brute'][g],side=g%2?1:-1,m=MODELS[type]();m.visible=false;S.add(m);
+  const p0=V3(side*18,-30+(g>>1)*4);m.position.copy(p0);
+  ents.push({m,type,hp:{chaser:2,shooter:3,brute:6}[type]*(1+st.sec*.1),slot:V3(g+k,0),state:'fly',t:-(g*3+k*.18),p0,p1:V3(-side*4,12),p2:V3(-side*18,-26),r:type==='brute'?.9:.6})}}
+let bnT;function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;
+ el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,2400)}
+const slotPos=e=>e.slot.clone().setX(e.slot.x+Math.sin(sway)*2);
+function fire(from,dir,spd,dmg,enemy,col,pierce){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18,.18,.6);
+ m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,hit:new Set()})}
+const UPG=[['Overcharged rounds','+1 damage per shot',s=>s.dmg+=1],['Faster cycling','Fire 20% faster',s=>s.rate*=.8],['Hull plating','+3 max armor, repair fully',s=>{s.max+=3;s.hp=s.max}],
+ ['Thrusters','Strafe 15% faster',s=>s.spd*=1.15],['Split barrel','+1 projectile per volley',s=>s.multi+=1],['Tungsten tips','Shots pass through 1 more unit',s=>s.pierce+=1],['Field repair','Repair 5 armor',s=>s.hp=Math.min(s.max,s.hp+5)]];
+function offer(){running=false;$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap`;const o=$('opts');o.innerHTML='';
+ [...UPG].sort(()=>Math.random()-.5).slice(0,3).forEach(([t,d,f])=>{const b=document.createElement('button');b.innerHTML=`<b>${t}</b><span>${d}</span>`;
+  b.onclick=()=>{f(st);st.sec++;$('pick').hidden=true;wave();running=true};o.append(b)});$('pick').hidden=false}
+function die(){running=false;if(st.sec>best){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
+ $('deadT').textContent=`${st.name} went down in sector ${st.sec} with ${st.scrap} scrap. Best run: sector ${best}.`;$('dead').hidden=false}
+function hud(){$('bar').firstChild.style.width=Math.max(0,st.hp/st.max*100)+'%';$('hpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;$('sec').textContent=st.sec;$('left').textContent=ents.filter(e=>e.hp>0).length;$('scr').textContent=st.scrap}
+function hurt(n){if(st.inv>0)return;st.hp-=n;st.inv=.8;hud()}
+addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
+R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
+addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
+$('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
+const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);let last=performance.now();
+function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/1000);last=now;
+ {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);return}
+ for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
+ if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+  if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
+  if(mx)st.dir=mx;let sp=st.spd;
+  if((keys.shift||st.tap)&&st.en>=35&&st.bt<=0){st.en-=35;st.bt=.22;st.inv=Math.max(st.inv,.3)}st.tap=0;
+  if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*dt);$('en').style.width=st.en+'%';
+  p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);player.rotation.z=-mx*.25;p.y=st.kind==='ship'?Math.sin(now/300)*.15:.4+Math.sin(now/200)*.1;
+  {const b=player.userData.body,lean=(st.kind==='mech'?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
+  st.cd-=dt;if(st.cd<=0){st.cd=st.rate;for(let i=0;i<st.multi;i++)fire(p,V3((i-(st.multi-1)/2)*.12,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce)}
+  sway+=dt*.6;diveCd-=dt;
+  if(diveCd<=0){const f=ents.filter(e=>e.state==='form');if(f.length){const e=f[Math.random()*f.length|0],side=Math.sign(e.m.position.x)||1;
+   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.2)*(.6+Math.random()*.8)}
+  for(const e of ents){const prev=e.m.position.clone();let face=true;
+   if(e.state==='fly'){e.t+=dt/3.2;if(e.t<0)continue;e.m.visible=true;if(e.t>=1){e.escaped=1;e.hp=0}else e.m.position.copy(bez(e.p0,e.p1,e.p2,e.t))}
+   if(e.state==='enter'){e.t+=dt/1.6;if(e.t<0)continue;e.m.visible=true;
+    if(e.t>=1){e.state='form';e.t=0}else e.m.position.copy(bez(e.p0,e.p1,slotPos(e),e.t))}
+   if(e.state==='form'){e.m.position.copy(slotPos(e));face=false;e.m.rotation.y=0}
+   if(e.state==='dive'){e.t+=dt*(.45+st.sec*.03);e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
+    if(e.t>=1){e.m.position.set(e.m.position.x,0,-40);Object.assign(e,{state:'enter',t:0,p0:e.m.position.clone(),p1:V3(e.slot.x,-36)})}
+    if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){hurt(e.type==='brute'?3:2);e.hp-=3}}
+   if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
+   e.m.position.y=.2+Math.sin(now/250+e.slot.x)*.15;
+   if(e.state!=='enter'&&e.state!=='fly'&&e.type!=='chaser'){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='brute'?3:2.2)+Math.random()*2;
+    if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
+    else fire(e.m.position,T.subVectors(p,e.m.position).setY(0).normalize(),11,1,true,0xff5a5a,0)}}}
+  st.inv-=dt;player.visible=st.inv>0&&st.bt<=0?Math.floor(now/60)%2==0:true;
+  for(const s of shots){s.m.position.addScaledVector(s.v,dt);s.life-=dt;
+   if(s.enemy){if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
+   else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&hd(s.m.position,e.m.position)<e.r+.3){e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
+  shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
+  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5}[e.type]*(e.state==='dive'?2:1)}hud();return false});
+  if(st.hp<=0)die();
+  else if(!ents.length&&!st.clearT){st.clearT=2.2;
+   if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
+   else banner('SECTOR CLEAR','All units destroyed');hud()}
+  if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;offer()}}}
+ {const px=player?player.position.x:0;C.position.set(px*.35,6.5,11);C.lookAt(px*.2,.5,-12)}R.render(S,C)}
+$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('again').onclick=toMenu;
+// Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
+let paused=false,yaw=.6,pitch=.15,drag=null;
+const VR=new THREE.WebGLRenderer({canvas:$('viewer'),antialias:true,alpha:true}),VS=new THREE.Scene(),VC=new THREE.PerspectiveCamera(35,1,.1,100),VG=new THREE.Group();
+VS.add(new THREE.HemisphereLight(0xbfd4ff,0x221a10,1),VG);{const l=new THREE.DirectionalLight(0xffffff,.9);l.position.set(4,6,5);VS.add(l)}
+VC.position.set(0,0,9);
+function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;const el=$('pause');
+ if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
+  for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}const c=b.getCenter(new THREE.Vector3());
+  m.position.sub(c);VG.add(m);VC.position.z=b.getSize(v).length()*1.9;
+  $('pzName').textContent=st.name;$('pzHp').style.width=Math.max(0,st.hp/st.max*100)+'%';$('pzHpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;
+  requestAnimationFrame(()=>{el.classList.add('on');const w=$('viewer').clientWidth;VR.setPixelRatio(Math.min(devicePixelRatio,2));VR.setSize(w,w,false);$('pzGo').focus()})}
+ else{el.classList.remove('on');setTimeout(()=>{if(!paused)el.hidden=true},300)}}
+function toMenu(){paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
+ ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
+ ['dead','pick','hud'].forEach(i=>$(i).hidden=true);$('start').hidden=false}
+$('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;
+$('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
+addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)showPause(true)});
+$('viewer').addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};$('viewer').setPointerCapture(e.pointerId)});
+$('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag.x)*.01;pitch=THREE.MathUtils.clamp(pitch+(e.clientY-drag.y)*.01,-1.2,1.2);drag={x:e.clientX,y:e.clientY}});
+$('viewer').addEventListener('pointerup',()=>drag=null);
+function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
+buildWorld();requestAnimationFrame(tick);
+</script>
+
+</body>
+</html>
