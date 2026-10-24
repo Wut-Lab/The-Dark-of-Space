@@ -204,9 +204,9 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="how-upgrades" hidden><div class="card"><div class="hd"><h2>Upgrades &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
 <p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
-<h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
+<h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Each upgrade has 3 tiers (I, II, III): taking it again stacks the effect. At tier III it leaves the pool for the rest of the run</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
 <h3>Current upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed, +1 max armor</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li></ul>
-<h3>Shop upgrades</h3><ul><li>Buy these in the main-menu Shop with Total Scrap to add them to the pool</li><li><b>Wide Shot</b> (Common, 60): shots become 5% wider</li><li><b style="color:#4fe08a">Whip Shot</b> (Uncommon, 120): every third volley, one green shot arcs across the screen for +1 damage</li><li><b style="color:#5ab0ff">Tracking Shot</b> (Rare, 200): every fifth volley, one blue shot homes in on the farthest unit for +1 damage</li></ul>
+<h3>Shop upgrades</h3><ul><li>Buy these in the main-menu Shop with Total Scrap to add them to the pool</li><li><b>Wide Shot</b> (Common, 60): shots become 15% wider</li><li><b style="color:#4fe08a">Whip Shot</b> (Uncommon, 120): every third volley, one green shot arcs across the screen for +1 damage</li><li><b style="color:#5ab0ff">Tracking Shot</b> (Rare, 200): every fifth volley, one blue shot homes in on the farthest unit for +1 damage</li></ul>
 <h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
 <h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (10 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
 <h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li><li>When a run ends (or you quit), half your scrap is banked as <b>Total Scrap</b>, shown on the main menu. The other half repairs your craft back to 100%</li></ul></div></div>
@@ -438,19 +438,22 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  ['Salvage claws','+1 scrap per unit destroyed',s=>s.sb++,'u','u_claw'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit',s=>{s.shot*=1.5;s.pierce+=1},'r','u_rail'],
  ['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x','u_trig'],
  // Shop unlocks: in the pool only once bought in the main-menu Shop (6th field = Total Scrap price)
- ['Wide Shot','Shots become 5% wider',s=>s.wide*=1.05,'c','u_wide',60],['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage',s=>s.whip++,'u','u_whip',120],
+ ['Wide Shot','Shots become 15% wider',s=>s.wide*=1.15,'c','u_wide',60],['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage',s=>s.whip++,'u','u_whip',120],
  ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage',s=>s.track++,'r','u_track',200]];
 const inPool=u=>!u[5]||OWNED.includes('up:'+u[0]);
+// Tiers: each upgrade can be taken up to 3 times per run, then leaves the pool
+const tierOf=n=>st?st.upgrades.filter(x=>x===n).length:0,TN=['I','II','III'],avail=u=>inPool(u)&&tierOf(u[0])<3;
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:12,u:18,r:26,x:22};
 // Weighted draw of n different upgrades; elite and boss rewards use the better odds
-function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.filter(inPool).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
- const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&inPool(u));if(pool.length)out.push(pool[Math.random()*pool.length|0])}return out}
+function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.filter(avail).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
+ const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&avail(u));if(pool.length)out.push(pool[Math.random()*pool.length|0])}return out}
 const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
 // Tune-up: weak but helps every build; always in the shop and can be bought any number of times
 const TUNE=UPG[0];
 function offer(){running=false;$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap${st.picks>1?` · ${st.picks} picks left`:''}`;const o=$('opts');o.innerHTML='';
- roll(3,st.elite||st.boss).forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t}</b><span>${d}</span>`;
-  b.onclick=()=>{f(st);st.upgrades.push(t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});$('pick').hidden=false}
+ roll(3,st.elite||st.boss).forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>`;
+  b.onclick=()=>{f(st);st.upgrades.push(t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
+ if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +15 scrap instead.</span>';b.onclick=()=>{st.scrap+=15;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss, other 4ths a bonus stage
 const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +15 scrap and 2 upgrades.'],yard:['Salvage Yard','Spend scrap on upgrades and repairs.'],
  dock:['Repair Dock','Restore half your armor.'],signal:['Unknown Signal','Could be salvage. Could be a trap.'],boss:['Capital Unit','Boss: shoot off its turrets. +30 scrap and 2 upgrades.'],bonus:['Bonus Stage','Units loop past without shooting.']};
@@ -465,8 +468,8 @@ function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp;st.hp=
  if(k==='signal')return EVENTS[Math.random()*EVENTS.length|0]();st.elite=k==='elite'?1:0;wave();running=true}
 function shop(){const stock=roll(3).filter(u=>u!==TUNE),cost=u=>PRICE[u[3]]+st.sec;
  const draw=()=>evt('Salvage Yard',`You have ${st.scrap} scrap. Whatever you spend comes off your final count.`,[
-  ...stock.map((u,i)=>u&&[`${u[0]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);st.upgrades.push(u[0]);stock[i]=null;hud();draw()},st.scrap<cost(u),u[3]]).filter(Boolean),
-  [`${TUNE[0]} · 10`,TUNE[1],()=>{st.scrap-=10;TUNE[2](st);st.upgrades.push(TUNE[0]);hud();draw()},st.scrap<10],
+  ...stock.map((u,i)=>u&&avail(u)&&[`${u[0]} ${TN[tierOf(u[0])]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);st.upgrades.push(u[0]);stock[i]=null;hud();draw()},st.scrap<cost(u),u[3]]).filter(Boolean),
+  tierOf(TUNE[0])<3?[`${TUNE[0]} ${TN[tierOf(TUNE[0])]} · 10`,TUNE[1],()=>{st.scrap-=10;TUNE[2](st);st.upgrades.push(TUNE[0]);hud();draw()},st.scrap<10]:[`${TUNE[0]} · Maxed`,'All 3 tiers taken this run.',()=>draw(),1],
   ['Repair 3 armor · 8',`Armor ${Math.ceil(st.hp)}/${st.max}`,()=>{st.scrap-=8;st.hp=Math.min(st.max,st.hp+3);hud();draw()},st.scrap<8||st.hp>=st.max],
   ['Restock · 5','Swap in three new upgrades.',()=>{st.scrap-=5;stock.splice(0,3,...roll(3).filter(u=>u!==TUNE));hud();draw()},st.scrap<5],
   ['Leave','Back to the route.',route]]);draw()}
@@ -582,7 +585,7 @@ function snap(k,yaw,cv,z=1){for(const q in TM)TM[q].g.visible=q===k;const t=thum
 // Pause > Upgrades: one row per upgrade (stacked copies counted), each with its spinning voxel icon
 const RCOL={c:'#aab1bd',u:'#4fe08a',r:'#5ab0ff',x:'#ff3d6e'};let upYaw=0;
 function showUpg(){const n={};st.upgrades.forEach(t=>n[t]=(n[t]||0)+1);const L=$('upgL');
- L.innerHTML=Object.keys(n).length?Object.entries(n).map(([t,c])=>{const u=UPG.find(x=>x[0]===t)||[t,'',0,'c'];return `<div class="ug" style="--c:${RCOL[u[3]]}"><canvas width="112" height="112" data-k="${u[4]||''}"></canvas><b>${t} <em class="rar">${RAR[u[3]]}</em></b><span>${u[1]}</span>${c>1?`<i>×${c}</i>`:''}</div>`}).join(''):'<p>No upgrades yet. Earn them by clearing sectors, shopping at Salvage Yards and answering signals.</p>';
+ L.innerHTML=Object.keys(n).length?Object.entries(n).map(([t,c])=>{const u=UPG.find(x=>x[0]===t)||[t,'',0,'c'];return `<div class="ug" style="--c:${RCOL[u[3]]}"><canvas width="112" height="112" data-k="${u[4]||''}"></canvas><b>${t} <em class="rar">${RAR[u[3]]} · Tier ${c} of 3</em></b><span>${u[1]}</span><i>${TN[c-1]}</i></div>`}).join(''):'<p>No upgrades yet. Earn them by clearing sectors, shopping at Salvage Yards and answering signals.</p>';
  $('pzMenu').hidden=true;$('pzUpg').hidden=false}
 function upgTick(dt){if($('pzUpg').hidden)return;upYaw+=dt*.9;$('upgL').querySelectorAll('canvas[data-k^=u_]').forEach(c=>snap(c.dataset.k,upYaw,c,.75))}
 $('pzUp').onclick=showUpg;$('pzUBack').onclick=()=>{$('pzUpg').hidden=true;$('pzMenu').hidden=false};
