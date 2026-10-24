@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}</style>
+</head>
+<body>
+<title>In the Dark of Space Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one narrow column of terminal-style build modules over a scanlined night-city grid. Single dark look by choice. */
+:root{--bg:#07060d;--panel:#100e1c;--fg:#e4e1f5;--mute:#8d88ab;--pink:#ff2e88;--cyan:#22e4ff;--lime:#c6ff3d;--line:#2c2645;
+--disp:"Oxanium","Arial Narrow",sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--mono);padding-block:32px;
+padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+background-image:linear-gradient(transparent 0 2px,#ffffff05 2px 3px),linear-gradient(90deg,#22e4ff0a 1px,transparent 1px),linear-gradient(#ff2e880a 1px,transparent 1px);
+background-size:100% 3px,40px 40px,40px 40px}
+main{max-width:700px;margin:0 auto;display:grid;gap:16px}
+header{border:1px solid var(--line);border-left:3px solid var(--pink);background:var(--panel);padding:16px;display:grid;gap:6px}
+.tag{font:600 .75rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
+h1{font:800 clamp(1.9rem,6vw,2.6rem)/1 var(--disp);margin:0;letter-spacing:.04em;text-transform:uppercase;text-wrap:balance;
+color:var(--fg);text-shadow:2px 0 var(--pink),-2px 0 var(--cyan)}
+.sub{color:var(--mute);margin:0;max-width:62ch}
+details{background:var(--panel);border:1px solid var(--line);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+details[open]{border-color:color-mix(in srgb,var(--cyan) 45%,var(--line))}
+summary{cursor:pointer;padding:14px 16px;display:flex;gap:12px;align-items:baseline;list-style:none;flex-wrap:wrap}
+summary::-webkit-details-marker{display:none}
+summary:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.n{font:800 1.3rem var(--disp);color:var(--pink)}
+.t{font:600 1.15rem var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.why{color:var(--mute);font-size:.82rem;margin-left:auto}
+.cnt{font:600 .8rem var(--mono);color:var(--lime);white-space:nowrap}
+details.done{opacity:.65}details.done .t::after{content:" // built";color:var(--lime)}
+.body{padding:0 16px 16px;border-top:1px dashed var(--line);display:grid;gap:12px}
+.body>p{margin:12px 0 0;max-width:65ch}
+ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+label{display:flex;gap:10px;cursor:pointer;align-items:flex-start}
+input[type=checkbox]{accent-color:var(--lime);margin-top:5px}
+input:checked+span{text-decoration:line-through;color:var(--mute)}
+small{color:var(--mute)}
+.bar{height:4px;background:var(--line)}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan));transition:width .2s}
+.notes label{font:600 .75rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);justify-content:space-between;cursor:default}
+.st{letter-spacing:0;text-transform:none;font-weight:400}
+textarea{width:100%;box-sizing:border-box;min-height:80px;resize:vertical;font:14px/1.5 var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:8px;margin-top:4px}
+textarea:focus{outline:none;border-color:var(--pink)}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.spec div{border:1px solid var(--line);padding:8px 10px;display:grid;gap:2px}
+.spec b{font:600 .95rem var(--disp);color:var(--cyan)}.spec span{font-size:.8rem;color:var(--mute)}
+@media (max-width:480px){.why{display:none}.cnt{margin-left:auto}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+<main>
+<header><span class="tag">Build log // Blueprint</span><h1>In the Dark of Space</h1>
+<p class="sub">The systems to build, in order. Tick items as they land in the game. Notes you leave here are saved, and Claude reads them before coding each piece.</p></header>
+
+<details data-id="arcade" open><summary><span class="n">01</span><span class="t">Arcade Core</span><span class="why">makes it a real shooter</span></summary>
+<div class="body"><p>Turn the prototype into a proper Galaga-style loop: score to chase, lives to lose, and enemies that arrive with style.</p>
+<ul>
+<li><label><input type="checkbox"><span>Score with a chain multiplier: kills within 1.5 s of each other raise it (×1 to ×8); taking a hit resets it</span></label></li>
+<li><label><input type="checkbox"><span>Keep the armor bar (no lives): a clear hit flash and warning beep under 25%, and a small armor repair every 20,000 points</span></label></li>
+<li><label><input type="checkbox"><span>Scripted entry patterns: loops, figure-eights and side sweeps, with units peeling off two at a time</span></label></li>
+<li><label><input type="checkbox"><span>Stage banner (“SECTOR 03”) and a bonus stage every 4th sector: units fly past without shooting, and destroying all of them pays a big bonus</span></label></li>
+<li><label><input type="checkbox"><span>Explosions: voxel debris bursts, screen shake on big hits, a muzzle flash on every shot</span></label></li>
+</ul><div class="bar"><i></i></div>
+<div class="notes"><label for="n-arcade">Notes for Claude <span class="st"></span></label><textarea id="n-arcade" placeholder="Scoring ideas, entry patterns, how hard it should get…"></textarea></div></div></details>
+
+<details data-id="timed"><summary><span class="n">02</span><span class="t">Time Attack Mode</span><span class="why">a second way to play</span></summary>
+<div class="body"><p>A fast mode built for short sessions: survive and score as much as you can before the clock runs out.</p>
+<div class="spec"><div><b>3:00</b><span>Starting clock</span></div><div><b>+2 s</b><span>Per kill at ×4 chain or higher</span></div><div><b>−5 s</b><span>Per hit taken (no lives in this mode)</span></div></div>
+<ul>
+<li><label><input type="checkbox"><span>Mode select on the title screen: Campaign (sectors and refits) or Time Attack</span></label></li>
+<li><label><input type="checkbox"><span>Countdown timer in the HUD that flashes red under 30 s</span></label></li>
+<li><label><input type="checkbox"><span>Endless waves that speed up every 30 s; no refit screens, so the action never stops</span></label></li>
+<li><label><input type="checkbox"><span>Results screen: score, longest chain, accuracy, and your best Time Attack score saved in the browser</span></label></li>
+</ul><div class="bar"><i></i></div>
+<div class="notes"><label for="n-timed">Notes for Claude <span class="st"></span></label><textarea id="n-timed" placeholder="Clock length, time rules, what the results screen should show…"></textarea></div></div></details>
+
+<details data-id="powerups"><summary><span class="n">03</span><span class="t">Power-ups</span><span class="why">moment-to-moment rewards</span></summary>
+<div class="body"><p>Destroyed units sometimes drop a glowing voxel capsule. Fly over it to collect it. Effects last a set time and show as icons with timers in the HUD.</p>
+<div class="spec"><div><b>Spread</b><span>5-way shot · 10 s</span></div><div><b>Overclock</b><span>Double fire rate · 8 s</span></div><div><b>Barrier</b><span>Blocks 3 shots · until broken</span></div><div><b>Wingman</b><span>A drone flies beside you and copies your fire · 15 s</span></div><div><b>EMP</b><span>Instant: stuns every unit on screen for 3 s</span></div></div>
+<ul>
+<li><label><input type="checkbox"><span>Drop rules: 8% chance per kill, higher from Heavies and from units shot mid-dive</span></label></li>
+<li><label><input type="checkbox"><span>Capsules drift down toward the player and blink before they vanish</span></label></li>
+<li><label><input type="checkbox"><span>The five power-ups above, each with its own color and voxel capsule</span></label></li>
+<li><label><input type="checkbox"><span>HUD icons with countdown rings; collecting a power-up you already have adds to its timer</span></label></li>
+<li><label><input type="checkbox"><span>Works in both Campaign and Time Attack</span></label></li>
+</ul><div class="bar"><i></i></div>
+<div class="notes"><label for="n-powerups">Notes for Claude <span class="st"></span></label><textarea id="n-powerups" placeholder="Power-ups to add or cut, durations, drop rates…"></textarea></div></div></details>
+<details data-id="rogue"><summary><span class="n">04</span><span class="t">Stats &amp; Run Structure</span><span class="why">every run plays differently</span></summary>
+<div class="body"><p>Give each craft real stats, make refits change them in interesting ways, and shape a run into choices you can't undo.</p>
+<div class="spec"><div><b>Armor</b><span>Max health</span></div><div><b>Firepower</b><span>Damage per shot</span></div><div><b>Cycle</b><span>Shots per second</span></div><div><b>Mobility</b><span>Strafe speed</span></div><div><b>Reactor</b><span>Max EN and refill rate</span></div><div><b>Salvage</b><span>Scrap and drop chance</span></div></div>
+<ul>
+<li><label><input type="checkbox"><span>Stat sheet for each craft, shown on the craft select screen and in the pause menu next to the rotating model</span></label></li>
+<li><label><input type="checkbox"><span>Refits with rarity (common, rare, prototype) and trade-offs, e.g. “Glass Reactor: +50% firepower, −3 max armor”</span></label></li>
+<li><label><input type="checkbox"><span>Branching sector map: after each sector, choose the next one: combat, elite (tougher, better loot), salvage yard (shop), repair dock, or unknown signal (random event)</span></label></li>
+<li><label><input type="checkbox"><span>Shop at salvage yards: spend scrap on refits, armor repair or a reroll of refit choices</span></label></li>
+<li><label><input type="checkbox"><span>Boss sector every 5th: a capital-class unit with weak points to shoot off</span></label></li>
+<li><label><input type="checkbox"><span>Run summary on death: sectors cleared, refits taken, final stats, damage dealt</span></label></li>
+<li><label><input type="checkbox"><span>Meta progression: a share of scrap carries over to unlock new crafts and add refits to the pool, but every run starts at sector 1</span></label></li>
+</ul><div class="bar"><i></i></div>
+<div class="notes"><label for="n-rogue">Notes for Claude <span class="st"></span></label><textarea id="n-rogue" placeholder="Stats to add, refit ideas, map node types, what should carry between runs…"></textarea></div></div></details>
+</main>
+<script>
+const secs=[...document.querySelectorAll('details')];
+const bar=d=>{const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
+ d.querySelector('.bar i').style.width=n/bs.length*100+'%';d.classList.toggle('done',n===bs.length);
+ let c=d.querySelector('.cnt');if(!c){c=document.createElement('span');c.className='cnt';d.querySelector('summary').append(c)}c.textContent=n+'/'+bs.length};
+secs.forEach(d=>{bar(d);d.querySelectorAll('input').forEach(x=>x.addEventListener('change',()=>bar(d)))});
+(async()=>{const db=await claude.use('db');
+ secs.forEach(d=>{const ta=d.querySelector('textarea'),st=d.querySelector('.st'),bs=[...d.querySelectorAll('input')];
+  if(!db){st.textContent='Saving unavailable here';ta.disabled=true;return}
+  const ref=db.doc('sections/'+d.dataset.id);let t;
+  const save=async()=>{st.textContent='Saving…';try{await ref.set({notes:ta.value,checks:bs.map(b=>b.checked)});st.textContent='Saved'}catch(e){st.textContent='Not saved: '+(e.message||'no write access')}};
+  ta.addEventListener('input',()=>{clearTimeout(t);st.textContent='Editing…';t=setTimeout(save,800)});
+  bs.forEach(b=>b.addEventListener('change',save));
+  ref.onSnapshot(s=>{const v=s.data();if(!v)return;if(document.activeElement!==ta&&typeof v.notes==='string')ta.value=v.notes;
+   (v.checks||[]).forEach((c,i)=>bs[i]&&(bs[i].checked=!!c));bar(d)})})})();
+</script>
+
+</body>
+</html>
