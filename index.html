@@ -32,6 +32,9 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 .ss{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;width:100%;text-align:left;margin-top:6px}
 .ss .l,.ss .v{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}.ss .v{color:var(--fg);text-align:right;text-transform:none;font-variant-numeric:tabular-nums}
 .ss .b{height:6px;background:#ffffff1a}.ss .b i{display:block;height:100%;background:var(--accent)}
+#upgL{display:grid;gap:8px;max-height:52vh;overflow-y:auto}.ug{display:grid;grid-template-columns:56px 1fr auto;gap:2px 12px;align-items:center;border:1px solid #ffffff26;padding:6px 12px 6px 6px;background:#ffffff08}
+.ug canvas{grid-row:span 2;width:56px;height:56px;border-radius:3px;background:radial-gradient(color-mix(in srgb,var(--c) 30%,transparent),transparent 70%)}.ug b{font:400 16px var(--display);color:var(--accent)}.ug .rar{color:var(--c)}
+.ug span{grid-column:2;color:var(--dim);font-size:13px}.ug i{grid-row:span 2;grid-column:3;font:400 18px var(--display);font-style:normal}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
@@ -111,7 +114,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </nav></div></div>
 
 <div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="start">Back</button></div>
-<p>Choose your machine. Clear sector after sector, refit between them, and see how far you get before your armor gives out.</p>
+<p>Choose your machine. Clear sector after sector, upgrade between them, and see how far you get before your armor gives out.</p>
 <div class="row">
 <button id="pMech"><b>Kestrel</b><span>Mobile frame. 12 armor, heavy rifle. Slow strafe, hits hard.</span></button>
 <button id="pShip"><b>Gale</b><span>Interceptor. 6 armor, rapid lasers. Fast and fragile.</span></button>
@@ -120,7 +123,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="start">Back</button></div>
 <p>Three minutes on the clock and endless waves. Score as much scrap as you can before time runs out.</p>
-<ul><li>Each hit costs <b>5 seconds</b> instead of armor</li><li>Waves speed up every 30 seconds; no refit stops</li><li>Destroyed units can drop time capsules: fly over one to grab it</li></ul>
+<ul><li>Each hit costs <b>5 seconds</b> instead of armor</li><li>Waves speed up every 30 seconds; no upgrade stops</li><li>Destroyed units can drop time capsules: fly over one to grab it</li></ul>
 <div class="row">
 <button data-t="mech"><b>Kestrel</b><span>Slow strafe, hits hard.</span></button>
 <button data-t="ship"><b>Gale</b><span>Fast strafe, rapid lasers.</span></button>
@@ -128,11 +131,11 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><p id="tbest"></p></div></div>
 
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
-<p>Nothing to unlock yet. New machines and refits earned across runs will appear here.</p></div></div>
+<p>Nothing to unlock yet. New machines and upgrades earned across runs will appear here.</p></div></div>
 
 <div class="ov scr" id="how" hidden><div class="card"><div class="hd"><h2>How to Play</h2><button class="back" data-go="start">Back</button></div>
 <h3>The goal</h3>
-<p>Survive as many sectors as you can. Each sector is a wave of enemy units: destroy every one to clear it, choose a refit, and push on to the next. When your armor runs out, the run is over.</p>
+<p>Survive as many sectors as you can. Each sector is a wave of enemy units: destroy every one to clear it, choose an upgrade, and push on to the next. When your armor runs out, the run is over.</p>
 <h3>Topics</h3>
 <div class="topics">
 <button data-go="how-controls"><b>Controls</b><span>Moving, dashing, pausing</span></button>
@@ -142,7 +145,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how-route"><b>The Route</b><span>Choosing where to go next</span></button>
 <button data-go="how-enemies"><b>Enemies</b><span>Who you're fighting</span></button>
 <button data-go="how-bonus"><b>Bonus Stages</b><span>Every 4th sector</span></button>
-<button data-go="how-refits"><b>Refits &amp; Scrap</b><span>Getting stronger</span></button>
+<button data-go="how-upgrades"><b>Upgrades &amp; Scrap</b><span>Getting stronger</span></button>
 <button data-go="how-power"><b>Power-ups</b><span>EMP, Barrier, Spread Shot</span></button>
 <button data-go="how-timed"><b>Timed Attack</b><span>Racing the clock</span></button>
 </div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
@@ -166,12 +169,12 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-sectors" hidden><div class="card"><div class="hd"><h2>Sectors</h2><button class="back" data-go="how">Back</button></div>
 <h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li></ul>
 <h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li></ul>
-<h3>End</h3><ul><li>When Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose a refit and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li></ul></div></div>
+<h3>End</h3><ul><li>When Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose an upgrade and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li></ul></div></div>
 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
-<p>After each refit, choose where to go next. You always get one Combat option, plus two others.</p>
-<h3>Stops</h3><ul><li><b>Combat</b>: a normal sector</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +15 scrap and 2 refits</li><li><b>Salvage Yard</b>: spend scrap on refits, Tune-ups, armor repairs or a restock</li><li><b>Repair Dock</b>: restores half your armor. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event. Could be salvage, a deal, or an ambush</li></ul>
-<h3>Fixed sectors</h3><ul><li>Every 5th sector is a <b>Capital Unit</b> boss: shoot off its 3 turrets to expose the core. Worth +30 scrap and 2 refits</li><li>Every other 4th sector is a <b>Bonus Stage</b></li><li>Every stop counts as a sector, so a yard or dock still moves you one step closer to the next boss</li></ul></div></div>
+<p>After each upgrade, choose where to go next. You always get one Combat option, plus two others.</p>
+<h3>Stops</h3><ul><li><b>Combat</b>: a normal sector</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +15 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: spend scrap on upgrades, Tune-ups, armor repairs or a restock</li><li><b>Repair Dock</b>: restores half your armor. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event. Could be salvage, a deal, or an ambush</li></ul>
+<h3>Fixed sectors</h3><ul><li>Every 5th sector is a <b>Capital Unit</b> boss: shoot off its 3 turrets to expose the core. Worth +30 scrap and 2 upgrades</li><li>Every other 4th sector is a <b>Bonus Stage</b></li><li>Every stop counts as a sector, so a yard or dock still moves you one step closer to the next boss</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
@@ -182,20 +185,22 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>Every 4th sector (4, 8, 12, 16…) is a Bonus Stage, except when a boss sector lands there (20, 40…)</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
 
-<div class="ov scr" id="how-refits" hidden><div class="card"><div class="hd"><h2>Refits &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
-<h3>Refits</h3><ul><li>After each sector, choose one of three refits</li><li>Options include more damage, faster fire, extra armor, speed, extra projectiles, shots that pass through units, and repairs</li><li>Refits last for the rest of the run</li></ul>
-<h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband refits are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer refits more often</li></ul>
-<h3>Salvage Yard</h3><ul><li>Rarer refits cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (10 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
+<div class="ov scr" id="how-upgrades" hidden><div class="card"><div class="hd"><h2>Upgrades &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
+<p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
+<h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
+<h3>Current upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed, +1 max armor</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li></ul>
+<h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
+<h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (10 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
 <h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
 <h3>The clock</h3><ul><li>You start with <b>3:00</b>, shown at the top of the screen</li><li>It flashes red under 30 seconds</li><li>When it reaches zero, the run ends and your scrap is your score</li></ul>
 <h3>Hits</h3><ul><li>You have no armor bar in this mode: each hit costs <b>5 seconds</b></li></ul>
-<h3>Waves</h3><ul><li>Waves keep coming with no refit stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li></ul>
+<h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li></ul>
 <h3>Time capsules</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it to grab it</li><li><b>Green</b> (common): +5 seconds</li><li><b>Gold</b> (rare): +5 seconds and 2.5 seconds of invulnerability</li><li>Capsules drift toward you and vanish if you miss them</li></ul></div></div>
 
 <div class="ov scr" id="how-power" hidden><div class="card"><div class="hd"><h2>Power-ups</h2><button class="back" data-go="how">Back</button></div>
-<p>Destroyed units sometimes drop a glowing capsule with a dark band. Fly over it to grab it. Heavies and units shot mid-dive drop them more often. They work in every mode.</p>
+<p>Power-ups are temporary boosts: destroyed units sometimes drop a glowing capsule with a dark band. Fly over it to grab it. Heavies and units shot mid-dive drop them more often. They work in every mode.</p>
 <h3>The three power-ups</h3><ul><li><b style="color:#4ad8ff">EMP</b> (blue): clears enemy fire and freezes every unit for 2.5 seconds</li><li><b style="color:#b47cff">Barrier</b> (violet): blocks the next 3 hits, then breaks</li><li><b style="color:#ff8a3a">Spread Shot</b> (orange): fires a 5-way fan for 5 seconds</li></ul>
 <h3>Tips</h3><ul><li>Active power-ups show as rings under the top bar. The ring empties as time runs out</li><li>Grabbing one you already have adds time, or refills the Barrier</li><li>Capsules blink just before they slip past you</li></ul></div></div>
 
@@ -209,25 +214,27 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 <div class="ov" id="cdet" hidden><div class="card"><canvas id="cdv" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><h2 id="cdN"></h2><div class="ss" id="cdS"></div><p>Drag to rotate</p><div class="row"><button id="cdGo"><b>Launch</b><span>Start with this craft.</span></button><button id="cdBack"><b>Back</b><span>Choose another.</span></button></div></div></div>
 <div class="ov" id="evt" hidden><div class="card"><h2 id="evH"></h2><p id="evT"></p><div class="row" id="evO"></div></div></div>
-<div class="ov" id="pick" hidden><div class="card"><h2 id="pickT">Sector cleared</h2><p>Choose one refit from the salvage.</p><div class="row" id="opts"></div></div></div>
+<div class="ov" id="pick" hidden><div class="card"><h2 id="pickT">Sector cleared</h2><p>Choose one upgrade from the salvage.</p><div class="row" id="opts"></div></div></div>
 <button id="pauseBtn" hidden aria-label="Pause game">❚❚ PAUSE</button>
 <div id="pause" hidden><div class="pz">
 <div class="pl"><canvas id="viewer" aria-label="Your craft. Drag to rotate."></canvas><h2 id="pzName"></h2>
 <div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p></div>
 <div class="pr"><div id="pzMenu" style="display:grid;gap:12px"><h2>PAUSED</h2>
 <button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
+<button id="pzUp"><b>Upgrades</b><span>Everything you've collected this run.</span></button>
 <button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
 <button id="pzQuit"><b>Back to Main Menu</b><span>Ends this run.</span></button></div>
+<div id="pzUpg" hidden style="display:grid;gap:12px"><h2>UPGRADES</h2><div id="upgL"></div><button id="pzUBack"><b>Back</b><span>Return to the pause menu.</span></button></div>
 <div id="pzHelp" hidden style="display:grid;gap:12px"><h2>HOW TO PLAY</h2><ul>
 <li><kbd>A</kbd>/<kbd>D</kbd> or arrows strafe. On touch, drag sideways.</li>
 <li>Your guns fire on their own, straight up the field.</li>
 <li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
 <li>Units dive at you. Shoot them mid-dive for double scrap.</li>
-<li>Clear a sector to pick one refit (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss. When armor hits zero, the run ends.</li>
+<li>Clear a sector to pick one upgrade (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss. When armor hits zero, the run ends.</li>
 <li>Each sector is one wave. A banner marks its start: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li>
-<li>At zero, <b>SECTOR CLEAR</b> flashes and you pick a refit before the next sector.</li>
+<li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
 <li>Every 4th sector is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
-<li><b>Power-ups</b>: blue EMP freezes units for 2.5 s, violet Barrier blocks 3 hits, orange Spread Shot fires a 5-way fan for 5 s.</li>
+<li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). Blue EMP freezes units for 2.5 s, violet Barrier blocks 3 hits, orange Spread Shot fires a 5-way fan for 5 s.</li>
 <li><b>Timed Attack</b>: each hit costs 5 seconds. Grab green capsules for +5 s, gold for +5 s and brief invulnerability.</li>
 <li><kbd>Esc</kbd> or <kbd>P</kbd> pauses.</li></ul>
 <button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
@@ -299,7 +306,14 @@ const FALCON=[[-3,0,-16,6,5,30,'f',0,'e'],[-2,3,0,4,3,8,'l',0,'e'],[-1,4,-12,2,1
 const BASTION=[[-14,0,-14,28,7,28,'v',0,'r'],[14,0,-11,8,6,20,'v',1,'e'],[-7,1,12,14,5,8,'o',0,'r'],[-5,7,-9,10,8,10,'d',0,'r'],[-3,9,1,6,4,1,'k'],[-2,10,1,4,2,1,'m'],
  [6,1,-17,5,5,4,'d',1,'cz'],[7,2,-18,3,3,1,'l',1],[10,7,-8,2,1,16,'h',1],[-1,15,-7,1,6,1,'d'],[-9,7,4,18,1,2,'d']];
 const TURRET=[[-4,0,-4,8,4,8,'d',0,'cy'],[-3,4,-3,6,3,6,'o',0,'e'],[1,4,2,1,1,8,'a',1,'cz'],[-1,6,0,2,1,1,'m']];
+// Upgrade icons, built upright in the x/y plane so they read while spinning
+const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],[-3,14,0,2,4,2,'g'],[1,14,0,2,4,2,'g'],[-2,-2,0,4,2,2,'g'],[-1,-2,0,2,1,2,'k']],
+ u_claw:[[-1,10,-1,2,5,2,'g'],[-3,6,-3,6,4,6,'d',0,'e'],[-1,8,2,2,1,1,'n'],[-5,1,-1,2,6,2,'a'],[3,1,-1,2,6,2,'a'],[-1,1,3,2,6,2,'a'],[-4,0,-1,1,1,2,'n'],[3,0,-1,1,1,2,'n'],[-1,0,3,2,1,1,'n']],
+ u_rail:[[-12,-1,-2,4,8,4,'d'],[-8,0,-1,18,2,2,'a'],[-8,4,-1,18,2,2,'a'],[-8,2,0,17,2,1,'l'],[-5,-1,-2,2,8,4,'r'],[0,-1,-2,2,8,4,'r'],[5,-1,-2,2,8,4,'r']],
+ u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
+const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e};
 const MODELS={
+ ...Object.fromEntries(Object.entries(ICONS).map(([k,v])=>[k,()=>build(k,v,IPAL,.1)])),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
  mech:()=>build('mech',KESTREL,P,.065,2),
@@ -319,14 +333,14 @@ $('best').textContent=best?`Best run: sector ${best}.`:'';
 let tbest=0;try{tbest=+localStorage.getItem('darktimedbest')||0}catch(e){}
 const tbestT=()=>$('tbest').textContent=tbest?`Best score: ${tbest} scrap.`:'';tbestT();
 const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'},falcon:{hp:9,spd:9.5,dmg:1.5,rate:.22,shot:22,multi:1,pierce:0,name:'Falcon'}};
-// Stat sheet: six bars on fixed scales so crafts and refits compare directly; Timed Attack hides Armor
+// Stat sheet: six bars on fixed scales so crafts and upgrades compare directly; Timed Attack hides Armor
 const STATS=[['Armor',s=>s.max,20,v=>v],['Firepower',s=>s.dmg*s.multi,6,v=>+v.toFixed(1)],['Cycle',s=>1/s.rate,10,v=>v.toFixed(1)+'/s'],
  ['Mobility',s=>s.spd,16,v=>+v.toFixed(1)],['Reactor',s=>30*(s.enr||1),60,v=>Math.round(v)+'/s'],['Salvage',s=>s.sb||0,5,v=>'+'+v]];
 const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,fmt])=>{const v=f({max:s.hp,...s});return `<span class="l">${n}</span><span class="b"><i style="width:${Math.min(100,v/cap*100)}%"></i></span><span class="v">${fmt(v)}</span>`}).join('');
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,refits:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0,sb:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0,sb:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -392,25 +406,23 @@ let pupK='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/2.5,'EMP
  $('pups').innerHTML=a.map(([n,f,l])=>`<i style="--c:${DROP[n].css};--p:${Math.min(1,f)}">${l}</i>`).join('')}
 function fire(from,dir,spd,dmg,enemy,col,pierce){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18,.18,.6);
  m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,hit:new Set()})}
-// Refits: [name, effect, apply, rarity]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
-const cut=(s,n)=>{s.max=Math.max(2,s.max-n);s.hp=Math.min(s.hp,s.max)};
-const UPG=[['Thrusters','Strafe 15% faster',s=>s.spd*=1.15,'c'],['Field repair','Repair 5 armor',s=>s.hp=Math.min(s.max,s.hp+5),'c'],['Light plating','+2 max armor',s=>{s.max+=2;s.hp+=2},'c'],['Capacitor bank','EN refills 30% faster',s=>s.enr*=1.3,'c'],
- ['Overcharged rounds','+1 damage per shot',s=>s.dmg+=1,'u'],['Faster cycling','Fire 20% faster',s=>s.rate*=.8,'u'],['Hull plating','+3 max armor, repair fully',s=>{s.max+=3;s.hp=s.max},'u'],['Tungsten tips','Shots pass through 1 more unit',s=>s.pierce+=1,'u'],['Salvage claws','+1 scrap per unit destroyed',s=>s.sb++,'u'],
- ['Split barrel','+1 projectile per volley',s=>s.multi+=1,'r'],['Twin-linked feed','+1 damage and fire 10% faster',s=>{s.dmg+=1;s.rate*=.9},'r'],['Reactive armor','+5 max armor, repair fully',s=>{s.max+=5;s.hp=s.max},'r'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit',s=>{s.shot*=1.5;s.pierce+=1},'r'],
- ['Glass reactor','+50% damage, but −3 max armor',s=>{s.dmg*=1.5;cut(s,3)},'x'],['Stripped frame','Strafe 30% and fire 15% faster, but −2 max armor',s=>{s.spd*=1.3;s.rate*=.85;cut(s,2)},'x'],['Overdriven feed','Fire 40% faster, but every hit costs 1 more armor',s=>{s.rate*=.6;s.vuln++},'x'],['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x']];
+// Upgrades (permanent for the run; power-ups are the temporary drops): [name, effect, apply, rarity, icon model]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
+const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>{s.dmg*=1.05;s.rate/=1.05;s.spd*=1.05;s.max+=1;s.hp+=1},'c','u_tune'],
+ ['Salvage claws','+1 scrap per unit destroyed',s=>s.sb++,'u','u_claw'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit',s=>{s.shot*=1.5;s.pierce+=1},'r','u_rail'],
+ ['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x','u_trig']];
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:12,u:18,r:26,x:22};
-// Weighted draw of n different refits; elite and boss rewards use the better odds
-function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
+// Weighted draw of n different upgrades; elite and boss rewards use the better odds
+function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
  const pool=UPG.filter(u=>u[3]===r&&!out.includes(u));if(pool.length)out.push(pool[Math.random()*pool.length|0])}return out}
 const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
-// Shop-only Tune-up: weak but helps every build; can be bought any number of times
-const TUNE=['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>{s.dmg*=1.05;s.rate/=1.05;s.spd*=1.05;s.max+=1;s.hp+=1},'c'];
+// Tune-up: weak but helps every build; always in the shop and can be bought any number of times
+const TUNE=UPG[0];
 function offer(){running=false;$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap${st.picks>1?` · ${st.picks} picks left`:''}`;const o=$('opts');o.innerHTML='';
  roll(3,st.elite||st.boss).forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t}</b><span>${d}</span>`;
-  b.onclick=()=>{f(st);st.refits.push(t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});$('pick').hidden=false}
-// Campaign route: after each refit, pick the next stop. Every stop is a sector; every 5th is a boss, other 4ths a bonus stage
-const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +15 scrap and 2 refits.'],yard:['Salvage Yard','Spend scrap on refits and repairs.'],
- dock:['Repair Dock','Restore half your armor.'],signal:['Unknown Signal','Could be salvage. Could be a trap.'],boss:['Capital Unit','Boss: shoot off its turrets. +30 scrap and 2 refits.'],bonus:['Bonus Stage','Units loop past without shooting.']};
+  b.onclick=()=>{f(st);st.upgrades.push(t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});$('pick').hidden=false}
+// Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss, other 4ths a bonus stage
+const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +15 scrap and 2 upgrades.'],yard:['Salvage Yard','Spend scrap on upgrades and repairs.'],
+ dock:['Repair Dock','Restore half your armor.'],signal:['Unknown Signal','Could be salvage. Could be a trap.'],boss:['Capital Unit','Boss: shoot off its turrets. +30 scrap and 2 upgrades.'],bonus:['Bonus Stage','Units loop past without shooting.']};
 function evt(h,t,opts){$('evH').textContent=h;$('evT').textContent=t;const o=$('evO');o.innerHTML='';
  for(const [b,d,f,off,r] of opts){const x=document.createElement('button');if(r)x.className='r-'+r;x.innerHTML=`${r?tag(r):''}<b>${b}</b><span>${d}</span>`;x.disabled=!!off;x.onclick=()=>{$('evt').hidden=true;f()};o.append(x)}$('evt').hidden=false}
 const evDone=(h,t)=>{hud();evt(h,t,[['Continue','On to the route.',route]])};
@@ -420,19 +432,19 @@ function route(){running=false;st.elite=st.boss=0;shots.forEach(s=>S.remove(s.m)
  evt(`Sector ${n} · Choose your route`,n===nb?'The capital unit is waiting.':`Boss at sector ${nb}. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,opts.map(k=>[...NODE[k],()=>go(k)]))}
 function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp;st.hp=Math.min(st.max,st.hp+Math.max(3,Math.ceil(st.max/2)));return evDone('Repair Dock',`Dock crews patch your hull: +${Math.ceil(st.hp-was)} armor (${Math.ceil(st.hp)}/${st.max}).`)}
  if(k==='signal')return EVENTS[Math.random()*EVENTS.length|0]();st.elite=k==='elite'?1:0;wave();running=true}
-function shop(){const stock=roll(3),cost=u=>PRICE[u[3]]+st.sec;
+function shop(){const stock=roll(3).filter(u=>u!==TUNE),cost=u=>PRICE[u[3]]+st.sec;
  const draw=()=>evt('Salvage Yard',`You have ${st.scrap} scrap. Whatever you spend comes off your final count.`,[
-  ...stock.map((u,i)=>u&&[`${u[0]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);st.refits.push(u[0]);stock[i]=null;hud();draw()},st.scrap<cost(u),u[3]]).filter(Boolean),
-  [`${TUNE[0]} · 10`,TUNE[1],()=>{st.scrap-=10;TUNE[2](st);st.refits.push(TUNE[0]);hud();draw()},st.scrap<10],
+  ...stock.map((u,i)=>u&&[`${u[0]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);st.upgrades.push(u[0]);stock[i]=null;hud();draw()},st.scrap<cost(u),u[3]]).filter(Boolean),
+  [`${TUNE[0]} · 10`,TUNE[1],()=>{st.scrap-=10;TUNE[2](st);st.upgrades.push(TUNE[0]);hud();draw()},st.scrap<10],
   ['Repair 3 armor · 8',`Armor ${Math.ceil(st.hp)}/${st.max}`,()=>{st.scrap-=8;st.hp=Math.min(st.max,st.hp+3);hud();draw()},st.scrap<8||st.hp>=st.max],
-  ['Restock · 5','Swap in three new refits.',()=>{st.scrap-=5;stock.splice(0,3,...roll(3));hud();draw()},st.scrap<5],
+  ['Restock · 5','Swap in three new upgrades.',()=>{st.scrap-=5;stock.splice(0,3,...roll(3).filter(u=>u!==TUNE));hud();draw()},st.scrap<5],
   ['Leave','Back to the route.',route]]);draw()}
 const EVENTS=[
  ()=>evt('Derelict Freighter','A gutted cargo hauler drifts past, its hold still sealed.',[['Strip the hull','+12 scrap, no risk.',()=>{st.scrap+=12;evDone('Derelict Freighter','You strip what you can: +12 scrap.')}],
-  ['Crack the hold','Half the time: a free refit. Half the time: it\'s rigged.',()=>{if(Math.random()<.5){const u=roll(1)[0];u[2](st);st.refits.push(u[0]);evDone('Derelict Freighter',`Inside: ${u[0]}. ${u[1]}.`)}
+  ['Crack the hold','Half the time: a free upgrade. Half the time: it\'s rigged.',()=>{if(Math.random()<.5){const u=roll(1)[0];u[2](st);st.upgrades.push(u[0]);evDone('Derelict Freighter',`Inside: ${u[0]}. ${u[1]}.`)}
    else{st.hp=Math.max(1,st.hp-3);evDone('Derelict Freighter','Booby-trapped. The blast costs 3 armor.')}}]]),
- ()=>evt('Distress Beacon','A looping SOS from a sector that should be empty.',[['Answer it','It\'s an ambush: an elite sector. +15 scrap and 2 refits if you win.',()=>{st.elite=1;wave();running=true}],['Ignore it','Fly on to the route.',route]]),
- ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Wire it in','Fire 15% faster, but −2 max armor.',()=>{st.rate*=.85;st.max=Math.max(2,st.max-2);st.hp=Math.min(st.hp,st.max);st.refits.push('Loose reactor core');evDone('Loose Reactor Core','Your guns cycle faster. The hull feels thinner.')}],
+ ()=>evt('Distress Beacon','A looping SOS from a sector that should be empty.',[['Answer it','It\'s an ambush: an elite sector. +15 scrap and 2 upgrades if you win.',()=>{st.elite=1;wave();running=true}],['Ignore it','Fly on to the route.',route]]),
+ ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Strip it for parts','A random upgrade, but the heat costs 2 armor.',()=>{const u=roll(1)[0];u[2](st);st.upgrades.push(u[0]);st.hp=Math.max(1,st.hp-2);evDone('Loose Reactor Core',`You salvage ${u[0]}: ${u[1]}. The heat costs 2 armor.`)}],
   ['Sell it','+20 scrap.',()=>{st.scrap+=20;evDone('Loose Reactor Core','A salvage tug pays 20 scrap for it.')}]]),
  ()=>{st.scrap+=8;evDone('Scrap Cloud','Debris from an old battle. Your intakes catch +8 scrap.')}];
 function timeUp(){running=false;st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=st.scrap>tbest;
@@ -441,7 +453,7 @@ function timeUp(){running=false;st.time=0;$('clock').textContent='0:00';const ac
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;$('dead').hidden=false}
 function die(){running=false;$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
- $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Refits',st.refits.length?st.refits.join(', '):'None'],
+ $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?st.upgrades.join(', '):'None'],
   ['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Armor color: green above 75%, yellow above 25%, red at 25% and below (bar pulses)
 const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
@@ -455,7 +467,7 @@ addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.c
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);let last=performance.now();
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/1000);last=now;
- {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);return}
+ {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
  driftTick(dt);thumbTick(dt);
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
@@ -510,7 +522,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   else if(st.timed&&st.time<=0)timeUp();
   else if(!ents.length&&!st.clearT){st.clearT=st.timed?1.4:2.2;
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
-   else{const bn=st.boss?30:st.elite?15:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick 2 refits`:'All units destroyed')}hud()}
+   else{const bn=st.boss?30:st.elite?15:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick 2 upgrades`:'All units destroyed')}hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.timed){st.sec++;wave()}else{st.picks=st.elite||st.boss?2:1;offer()}}}}
  {const px=player?player.position.x:0;C.position.set(px*.35+(Math.random()-.5)*shake,6.5+(Math.random()-.5)*shake,11);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,.5,-12)}R.render(S,C)}
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('again').onclick=toMenu;
@@ -527,6 +539,13 @@ function thumbModel(k){if(!TM[k]){const g=new THREE.Group(),m=MODELS[k](),im=m.c
  for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}m.position.sub(b.getCenter(new THREE.Vector3()));g.add(m);TS.add(g);TM[k]={g,d:b.getSize(v).length()*1.9}}return TM[k]}
 function snap(k,yaw,cv,z=1){for(const q in TM)TM[q].g.visible=q===k;const t=thumbModel(k);t.g.visible=true;t.g.rotation.set(.15,yaw,0);TC.position.set(0,0,t.d*z);TC.lookAt(0,0,0);
  TR.render(TS,TC);const x=cv.getContext('2d');x.clearRect(0,0,cv.width,cv.height);x.drawImage(TR.domElement,0,0,cv.width,cv.height)}
+// Pause > Upgrades: one row per upgrade (stacked copies counted), each with its spinning voxel icon
+const RCOL={c:'#aab1bd',u:'#4fe08a',r:'#5ab0ff',x:'#ff3d6e'};let upYaw=0;
+function showUpg(){const n={};st.upgrades.forEach(t=>n[t]=(n[t]||0)+1);const L=$('upgL');
+ L.innerHTML=Object.keys(n).length?Object.entries(n).map(([t,c])=>{const u=UPG.find(x=>x[0]===t)||[t,'',0,'c'];return `<div class="ug" style="--c:${RCOL[u[3]]}"><canvas width="112" height="112" data-k="${u[4]||''}"></canvas><b>${t} <em class="rar">${RAR[u[3]]}</em></b><span>${u[1]}</span>${c>1?`<i>×${c}</i>`:''}</div>`}).join(''):'<p>No upgrades yet. Earn them by clearing sectors, shopping at Salvage Yards and answering signals.</p>';
+ $('pzMenu').hidden=true;$('pzUpg').hidden=false}
+function upgTick(dt){if($('pzUpg').hidden)return;upYaw+=dt*.9;$('upgL').querySelectorAll('canvas[data-k^=u_]').forEach(c=>snap(c.dataset.k,upYaw,c,.75))}
+$('pzUp').onclick=showUpg;$('pzUBack').onclick=()=>{$('pzUpg').hidden=true;$('pzMenu').hidden=false};
 const PHONE=matchMedia('(max-width:600px)');let thYaw=0,cdK=null,cdB=null,cdYaw=.6,cdDrag=null;
 for(const [k,b,timed] of [['mech',$('pMech')],['ship',$('pShip')],['falcon',$('pFalcon')],...['mech','ship','falcon'].map(k=>[k,document.querySelector(`[data-t=${k}]`),1])]){
  const w=document.createElement('div');w.className='cr';b.before(w);w.append(b);b.insertAdjacentHTML('afterbegin',`<canvas class="th" width="112" height="112" data-k="${k}" aria-hidden="true"></canvas>`);
@@ -539,7 +558,7 @@ function thumbTick(dt){if(!PHONE.matches)return;thYaw+=dt*.9;
  if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
  for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}
 function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;const el=$('pause');
- if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
+ if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;$('pzUpg').hidden=true;$('pzUp').hidden=st.timed;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
   for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}const c=b.getCenter(new THREE.Vector3());
   m.position.sub(c);VG.add(m);VC.position.z=b.getSize(v).length()*1.9;
   $('pzName').textContent=st.name;$('pzSS').innerHTML=sheet(st,st.timed);
