@@ -51,8 +51,11 @@ text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,3px 3px #fff,-3px 3px 
 #banner.go{animation:bn 2.3s ease-out forwards}
 @keyframes bn{0%{opacity:0;transform:scale(1.25)}10%{opacity:1;transform:scale(1)}19%{transform:scale(1.07)}28%{transform:scale(1)}37%{transform:scale(1.07)}46%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#banner.go{animation:bnr 2.3s forwards}@keyframes bnr{0%,80%{opacity:1}100%{opacity:0}}}
+#flash{position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 140px 40px #ff2a2a;opacity:0}
+#flash.go{animation:fl .45s ease-out}@keyframes fl{0%{opacity:1}100%{opacity:0}}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600&family=Saira+Condensed:wght@700&family=Black+Ops+One&display=swap">
+<div id="flash"></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span>Sector <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
 <div class="ov" id="start"><div class="card">
@@ -166,7 +169,7 @@ try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
 const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'},falcon:{hp:9,spd:9.5,dmg:1.5,rate:.22,shot:22,multi:1,pierce:0,name:'Falcon'}};
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind){try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1};
+function start(kind){fx.forEach(f=>S.remove(f.m));fx.length=0;shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  ['start','dead','pick'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;wave();running=true}
@@ -174,7 +177,7 @@ function wave(){st.bonus=st.sec%4===0;if(st.bonus){bonusWave();hud();banner('BON
  const cols=Math.min(4+st.sec,9),rows=Math.min(2+(st.sec>>1),4);let i=0;diveCd=3;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=r===0&&st.sec>2?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
-  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.15),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',t:-(i++)*.12,
+  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.15),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}hud();banner(`SECTOR ${String(st.sec).padStart(2,'0')}`,`Destroy all ${ents.length} units`)}
 // Bonus stage: five groups of eight sweep past in loops; they never shoot or ram
 function bonusWave(){let i=0;st.bTot=40;st.bHit=0;
@@ -184,6 +187,18 @@ function bonusWave(){let i=0;st.bTot=40;st.bHit=0;
 let bnT;function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;
  el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,2400)}
 const slotPos=e=>e.slot.clone().setX(e.slot.x+Math.sin(sway)*2);
+// Scripted entries: pairs fly a sweep, loop or figure-eight, then ease into their slot
+function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
+ if(e.pat===0)q=V3(s*(17-24*u),-4-10*Math.sin(Math.PI*u));
+ else if(e.pat===1){if(u<.35){const a=u/.35;q=V3(s*(14-8*a),-34+20*a)}else{const a=(u-.35)/.65*P2;q=V3(s*(6-4*Math.sin(a)),-10-4*Math.cos(a))}}
+ else{if(u<.2){const a=u/.2;q=V3(s*3,-36+22*a)}else{const a=(u-.2)/.8*P2;q=V3(s*(3+7*Math.sin(a)),-14+4*Math.sin(2*a))}}
+ q.x+=e.mate;return q}
+// Effects: voxel debris, camera shake, muzzle flash
+const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32};let shake=0,muzzleT=0;
+const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
+function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat(i%3?col:0xffb040));m.position.copy(pos);m.position.y+=.8;m.scale.setScalar(.12+Math.random()*.18);S.add(m);
+ fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
+function flash(){const f=$('flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go')}
 function fire(from,dir,spd,dmg,enemy,col,pierce){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18,.18,.6);
  m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,hit:new Set()})}
 const UPG=[['Overcharged rounds','+1 damage per shot',s=>s.dmg+=1],['Faster cycling','Fire 20% faster',s=>s.rate*=.8],['Hull plating','+3 max armor, repair fully',s=>{s.max+=3;s.hp=s.max}],
@@ -198,7 +213,7 @@ const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
 let AC;function beep(){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=880;
  g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+.13)}catch(e){}}
 function hud(){const f=Math.max(0,st.hp/st.max),bi=$('bar').firstChild;bi.style.width=f*100+'%';bi.style.background=hpCol(f);$('bar').classList.toggle('crit',f<=.25&&f>0);$('hpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;$('sec').textContent=st.sec;$('left').textContent=ents.filter(e=>e.hp>0).length;$('scr').textContent=st.scrap}
-function hurt(n){if(st.inv>0)return;st.hp-=n;st.inv=.8;hud()}
+function hurt(n){if(st.inv>0)return;st.hp-=n;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
@@ -215,13 +230,15 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);player.rotation.z=-mx*.25;p.y=st.kind==='mech'?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
-  st.cd-=dt;if(st.cd<=0){st.cd=st.rate;for(let i=0;i<st.multi;i++)fire(p,V3((i-(st.multi-1)/2)*.12,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce)}
+  st.cd-=dt;if(st.cd<=0){st.cd=st.rate;muzzleT=.05;for(let i=0;i<st.multi;i++)fire(p,V3((i-(st.multi-1)/2)*.12,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce)}
   sway+=dt*.6;diveCd-=dt;
   if(diveCd<=0){const f=ents.filter(e=>e.state==='form');if(f.length){const e=f[Math.random()*f.length|0],side=Math.sign(e.m.position.x)||1;
    Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.2)*(.6+Math.random()*.8)}
   for(const e of ents){const prev=e.m.position.clone();let face=true;
    if(e.state==='fly'){e.t+=dt/3.2;if(e.t<0)continue;e.m.visible=true;if(e.t>=1){e.escaped=1;e.hp=0}else e.m.position.copy(bez(e.p0,e.p1,e.p2,e.t))}
-   if(e.state==='enter'){e.t+=dt/1.6;if(e.t<0)continue;e.m.visible=true;
+   if(e.state==='enter'&&e.pat!=null){e.t+=dt/2.6;if(e.t<0)continue;e.m.visible=true;
+    if(e.t>=1){e.state='form';e.t=0;e.pat=null}else{const q=entryPos(e,Math.min(e.t/.75,1));if(e.t>.75){const b=(e.t-.75)/.25;q.lerp(slotPos(e),b*b*(3-2*b))}e.m.position.copy(q)}}
+   else if(e.state==='enter'){e.t+=dt/1.6;if(e.t<0)continue;e.m.visible=true;
     if(e.t>=1){e.state='form';e.t=0}else e.m.position.copy(bez(e.p0,e.p1,slotPos(e),e.t))}
    if(e.state==='form'){e.m.position.copy(slotPos(e));face=false;e.m.rotation.y=0}
    if(e.state==='dive'){e.t+=dt*(.45+st.sec*.03);e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
@@ -237,13 +254,16 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(s.enemy){if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&hd(s.m.position,e.m.position)<e.r+.3){e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
-  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5}[e.type]*(e.state==='dive'?2:1)}hud();return false});
+  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){boom(e.m.position,e.type==='brute'?22:12,BODY[e.type],e.type==='brute');if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5}[e.type]*(e.state==='dive'?2:1)}hud();return false});
+  for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
+  for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
+  muzzleT-=dt;muzzle.visible=muzzleT>0;muzzle.position.set(p.x,1.1,p.z-1.3);muzzle.scale.setScalar(.35+Math.random()*.2);
   if(st.hp<=0)die();
   else if(!ents.length&&!st.clearT){st.clearT=2.2;
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else banner('SECTOR CLEAR','All units destroyed');hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;offer()}}}
- {const px=player?player.position.x:0;C.position.set(px*.35,6.5,11);C.lookAt(px*.2,.5,-12)}R.render(S,C)}
+ {const px=player?player.position.x:0;C.position.set(px*.35+(Math.random()-.5)*shake,6.5+(Math.random()-.5)*shake,11);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,.5,-12)}R.render(S,C)}
 $('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('again').onclick=toMenu;
 // Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
 let paused=false,yaw=.6,pitch=.15,drag=null;

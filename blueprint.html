@@ -48,6 +48,8 @@ textarea:focus{outline:none;border-color:var(--pink)}
 .spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
 .spec div{border:1px solid var(--line);padding:8px 10px;display:grid;gap:2px}
 .spec b{font:600 .95rem var(--disp);color:var(--cyan)}.spec span{font-size:.8rem;color:var(--mute)}
+details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%,var(--line))}.ideas .n{color:var(--lime)}
+.held li{display:flex;gap:10px;align-items:baseline}.chip{flex:none;font:600 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--lime);padding:1px 6px}
 @media (max-width:480px){.why{display:none}.cnt{margin-left:auto}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
@@ -55,11 +57,17 @@ textarea:focus{outline:none;border-color:var(--pink)}
 <header><span class="tag">Build log // Blueprint</span><h1>In the Dark of Space</h1>
 <p class="sub">The systems to build, in order. Tick items as they land in the game. Notes you leave here are saved, and Claude reads them before coding each piece.</p></header>
 
+<details data-id="ideas" class="ideas" open><summary><span class="n">//</span><span class="t">Ideas and Options</span><span class="why">parked, not scheduled</span></summary>
+<div class="body"><p>Features on hold. Nothing here gets built until it moves into a numbered module. Add new ideas in the notes.</p>
+<ul class="held">
+<li><span class="chip">On hold</span><span>Score with a chain multiplier: kills within 1.5 s of each other raise it (×1 to ×8); taking a hit resets it. Time Attack's +2 s per kill at ×4 depends on this; until then, that rule needs a stand-in.</span></li>
+</ul>
+<div class="notes"><label for="n-ideas">Ideas for later <span class="st"></span></label><textarea id="n-ideas" placeholder="Anything you might want someday…"></textarea></div></div></details>
+
 <details data-id="arcade" open><summary><span class="n">01</span><span class="t">Arcade Core</span><span class="why">makes it a real shooter</span></summary>
-<div class="body"><p>Turn the prototype into a proper Galaga-style loop: score to chase, lives to lose, and enemies that arrive with style.</p>
+<div class="body"><p>Turn the prototype into a proper Galaga-style loop: armor to protect, clear sectors, and enemies that arrive with style.</p>
 <ul>
-<li><label><input type="checkbox"><span>Score with a chain multiplier: kills within 1.5 s of each other raise it (×1 to ×8); taking a hit resets it</span></label></li>
-<li><label><input type="checkbox"><span>Keep the armor bar (no lives): it turns green, then yellow, then red as armor drops, and a warning beep repeats at 25% and below. Still to do: a clear hit flash</span></label></li>
+<li><label><input type="checkbox"><span>Keep the armor bar (no lives): it turns green, then yellow, then red as armor drops, a warning beep repeats at 25% and below, and every hit flashes the screen edges red</span></label></li>
 <li><label><input type="checkbox"><span>Scripted entry patterns: loops, figure-eights and side sweeps, with units peeling off two at a time</span></label></li>
 <li><label><input type="checkbox"><span>Stage banner (“SECTOR 03”) and a bonus stage every 4th sector: units fly past without shooting, and destroying all of them pays a big bonus</span></label></li>
 <li><label><input type="checkbox"><span>Explosions: voxel debris bursts, screen shake on big hits, a muzzle flash on every shot</span></label></li>
@@ -104,7 +112,7 @@ textarea:focus{outline:none;border-color:var(--pink)}
 </main>
 <script>
 const secs=[...document.querySelectorAll('details')];
-const bar=d=>{const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
+const bar=d=>{if(!d.querySelector('.bar'))return;const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
  d.querySelector('.bar i').style.width=n/bs.length*100+'%';d.classList.toggle('done',n===bs.length);
  let c=d.querySelector('.cnt');if(!c){c=document.createElement('span');c.className='cnt';d.querySelector('summary').append(c)}c.textContent=n+'/'+bs.length};
 secs.forEach(d=>{bar(d);d.querySelectorAll('input').forEach(x=>x.addEventListener('change',()=>bar(d)))});
