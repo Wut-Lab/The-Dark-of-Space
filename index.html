@@ -29,6 +29,9 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .rar{font:600 11px var(--display);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:#aab1bd}.r-u .rar{color:#4fe08a}.r-r .rar{color:#5ab0ff}.r-x .rar{color:#ff3d6e}
 button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:linear-gradient(#ff3d6e1f,#ff3d6e08)}
 #evt{overflow-y:auto;padding-block:24px}#evO{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}#evO button{padding:10px 12px}
+.ss{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;width:100%;text-align:left;margin-top:6px}
+.ss .l,.ss .v{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}.ss .v{color:var(--fg);text-align:right;text-transform:none;font-variant-numeric:tabular-nums}
+.ss .b{height:6px;background:#ffffff1a}.ss .b i{display:block;height:100%;background:var(--accent)}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
@@ -144,9 +147,9 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Dash</h3><ul><li>A quick sideways burst in the direction you're moving</li><li>You can't be hurt during a dash</li><li>Each dash uses EN (the yellow bar), which refills over time</li></ul></div></div>
 
 <div class="ov scr" id="how-crafts" hidden><div class="card"><div class="hd"><h2>Your Machines</h2><button class="back" data-go="how">Back</button></div>
-<h3>Kestrel</h3><ul><li>Mobile frame: 12 armor</li><li>Heavy rifle: slow fire, big damage</li><li>Slowest strafe</li></ul>
-<h3>Gale</h3><ul><li>Interceptor: 6 armor</li><li>Rapid lasers: fast fire, light damage</li><li>Fastest strafe</li></ul>
-<h3>Falcon</h3><ul><li>Strike fighter: 9 armor</li><li>Twin cannons: medium fire rate and damage</li><li>Medium strafe</li></ul></div></div>
+<h3>Kestrel</h3><ul><li>Mobile frame: 12 armor</li><li>Heavy rifle: slow fire, big damage</li><li>Slowest strafe</li></ul><div class="ss" data-ss="mech"></div>
+<h3>Gale</h3><ul><li>Interceptor: 6 armor</li><li>Rapid lasers: fast fire, light damage</li><li>Fastest strafe</li></ul><div class="ss" data-ss="ship"></div>
+<h3>Falcon</h3><ul><li>Strike fighter: 9 armor</li><li>Twin cannons: medium fire rate and damage</li><li>Medium strafe</li></ul><div class="ss" data-ss="falcon"></div></div></div>
 
 <div class="ov scr" id="how-armor" hidden><div class="card"><div class="hd"><h2>Armor &amp; Damage</h2><button class="back" data-go="how">Back</button></div>
 <h3>The armor bar</h3><ul><li><b>Green</b>: 76–100%</li><li><b>Yellow</b>: 26–75%</li><li><b>Red</b>: 25% and below. The bar pulses and a warning beep sounds</li></ul>
@@ -202,7 +205,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pauseBtn" hidden aria-label="Pause game">❚❚ PAUSE</button>
 <div id="pause" hidden><div class="pz">
 <div class="pl"><canvas id="viewer" aria-label="Your craft. Drag to rotate."></canvas><h2 id="pzName"></h2>
-<div class="hb"><span>ARMOR</span><div><i id="pzHp"></i></div><b id="pzHpt"></b></div><p>Drag to rotate</p></div>
+<div class="hb"><span>ARMOR</span><div><i id="pzHp"></i></div><b id="pzHpt"></b></div><div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p></div>
 <div class="pr"><div id="pzMenu" style="display:grid;gap:12px"><h2>PAUSED</h2>
 <button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
 <button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
@@ -308,6 +311,12 @@ $('best').textContent=best?`Best run: sector ${best}.`:'';
 let tbest=0;try{tbest=+localStorage.getItem('darktimedbest')||0}catch(e){}
 const tbestT=()=>$('tbest').textContent=tbest?`Best score: ${tbest} scrap.`:'';tbestT();
 const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'},falcon:{hp:9,spd:9.5,dmg:1.5,rate:.22,shot:22,multi:1,pierce:0,name:'Falcon'}};
+// Stat sheet: six bars on fixed scales so crafts and refits compare directly; Timed Attack hides Armor
+const STATS=[['Armor',s=>s.max,20,v=>v],['Firepower',s=>s.dmg*s.multi,6,v=>+v.toFixed(1)],['Cycle',s=>1/s.rate,10,v=>v.toFixed(1)+'/s'],
+ ['Mobility',s=>s.spd,16,v=>+v.toFixed(1)],['Reactor',s=>30*(s.enr||1),60,v=>Math.round(v)+'/s'],['Salvage',s=>s.sb||0,5,v=>'+'+v]];
+const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,fmt])=>{const v=f({max:s.hp,...s});return `<span class="l">${n}</span><span class="b"><i style="width:${Math.min(100,v/cap*100)}%"></i></span><span class="v">${fmt(v)}</span>`}).join('');
+{const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
+ document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
 function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,refits:[],dealt:0,kills:0,elite:0,boss:0,enr:1,vuln:0,sb:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
@@ -506,7 +515,7 @@ function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;r
  if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
   for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}const c=b.getCenter(new THREE.Vector3());
   m.position.sub(c);VG.add(m);VC.position.z=b.getSize(v).length()*1.9;
-  $('pzName').textContent=st.name;$('pzHp').parentNode.parentNode.hidden=st.timed;$('pzHp').style.width=Math.max(0,st.hp/st.max*100)+'%';$('pzHp').style.background=hpCol(st.hp/st.max);$('pzHpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;
+  $('pzName').textContent=st.name;$('pzHp').parentNode.parentNode.hidden=st.timed;$('pzHp').style.width=Math.max(0,st.hp/st.max*100)+'%';$('pzHp').style.background=hpCol(st.hp/st.max);$('pzHpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;$('pzSS').innerHTML=sheet(st,st.timed);
   requestAnimationFrame(()=>{el.classList.add('on');const w=$('viewer').clientWidth;VR.setPixelRatio(Math.min(devicePixelRatio,2));VR.setSize(w,w,false);$('pzGo').focus()})}
  else{el.classList.remove('on');setTimeout(()=>{if(!paused)el.hidden=true},300)}}
 function toMenu(){paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
