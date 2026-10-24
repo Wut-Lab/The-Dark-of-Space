@@ -220,7 +220,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Each upgrade has 3 tiers (I, II, III): taking it again stacks the effect. At tier III it leaves the pool for the rest of the run</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
 <h3>Current upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed, +1 max armor</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li><li><b>Enhanced EMPs</b> (Common): EMP power-ups freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)</li><li><b style="color:#4fe08a">Beam Shot</b> (Uncommon): shots become beams with a long tail that also deals damage. +1 damage, but fire 30% slower; the slowdown drops to 20% at tier II and 10% at tier III</li></ul>
 <h3>Unlockable upgrades</h3><ul><li>Some upgrades are earned on the main menu's <b>Unlocks</b> screen by reaching goals across runs</li><li><b style="color:#ff3d6e">Bootleg Shields</b> (Contraband): every 5th hit has a 50% chance to be blocked, and the next shot does +2 damage. Tier II: every 4th hit, 75%, +3. Tier III: every 3rd hit, always, +4. Each block halves your strafe speed for 0.4 s. Unlock: block 30 hits with Barrier power-ups</li></ul>
-<h3>Shop upgrades</h3><ul><li>Buy these in the main-menu Shop with Total Scrap to add them to the pool</li><li><b>Confetti Payload</b> (Common, 80): destroyed units burst into confetti, with a 10% chance per tier to shake loose +2 scrap</li><li><b>Wide Shot</b> (Common, 120): shots become 15% wider</li><li><b style="color:#4fe08a">Whip Shot</b> (Uncommon, 240): every third volley, one green shot arcs across the screen for +1 damage</li><li><b style="color:#5ab0ff">Tracking Shot</b> (Rare, 400): every fifth volley, one blue shot homes in on the farthest unit for +1 damage</li></ul>
+<h3>Shop upgrades</h3><ul><li>Buy these in the main-menu Shop with Total Scrap to add them to the pool</li><li><b>Ram Plating</b> (Common, 100): collisions with units cost 1 less armor (never below 1), and the unit takes +3 damage per tier</li><li><b>Confetti Payload</b> (Common, 80): destroyed units burst into confetti, with a 10% chance per tier to shake loose +2 scrap</li><li><b>Wide Shot</b> (Common, 120): shots become 15% wider</li><li><b style="color:#4fe08a">Whip Shot</b> (Uncommon, 240): every third volley, one green shot arcs across the screen for +1 damage</li><li><b style="color:#5ab0ff">Tracking Shot</b> (Rare, 400): every fifth volley, one blue shot homes in on the farthest unit for +1 damage</li></ul>
 <h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
 <h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (20 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
 <h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li><li>When a run ends (or you quit), half your scrap is banked as <b>Total Scrap</b>, shown on the main menu. The other half repairs your craft back to 100%</li></ul></div></div>
@@ -358,6 +358,7 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_beam:[[-12,1,-1,4,4,3,'d'],[-8,2,0,20,2,1,'l'],[-8,1,0,14,1,1,'n'],[-8,4,0,14,1,1,'n'],[12,1,0,2,4,1,'f']],
  u_conf:[[-1,0,0,2,2,2,'y'],[-2,2,-1,4,3,3,'y'],[-3,5,-2,6,3,4,'h'],[-4,8,-2,8,1,4,'h'],[-4,11,0,1,1,1,'p'],[2,12,0,1,1,1,'n'],[0,13,0,1,1,1,'r'],[4,10,0,1,1,1,'y'],[-2,14,0,1,1,1,'n'],[3,15,0,1,1,1,'p'],[-5,13,0,1,1,1,'r']],
  u_boot:[[-5,0,-1,10,13,3,'d',0,'e'],[-4,2,0,8,9,2,'a',0,'e'],[-1,3,1,2,8,1,'x'],[-4,6,1,8,1,1,'y'],[-3,9,1,2,2,1,'y'],[2,2,1,2,2,1,'y'],[-6,5,0,1,3,1,'x'],[5,8,0,1,2,1,'x']],
+ u_plate:[[-5,0,-1,10,10,2,'a'],[-4,1,1,8,8,1,'g'],[-1,4,2,2,2,3,'d'],[0,5,5,1,1,2,'f'],[-4,1,1,1,1,1,'y'],[3,1,1,1,1,1,'y'],[-4,8,1,1,1,1,'y'],[3,8,1,1,1,1,'y'],[-5,4,-2,10,2,1,'h']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
 const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8};
 // Mine: spiked sphere with a rust band and red lights. Lancer: dart-shaped ramming drone
@@ -412,7 +413,7 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon',swift:'pSwift'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -438,7 +439,7 @@ function bossWave(){st.boss=1;if(st.sec%10===0)return wardenWave();const m=MODEL
 function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
  const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*(1+st.sec*.15),slot:V3(x,0),t:-1-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
 function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
- if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0){hurt(2);e.hp-=2}}
+ if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0)ram(e,2,2)}
 // Lancer: flies in, hovers 1-2 s, slides to a side edge, flashes, then rams the spot where the player was; loops back in if it misses
 function lancerReset(e,t){const x=(Math.random()-.5)*14;Object.assign(e,{ph:0,t,p0:V3(x*.6,-44),p1:V3(x,-30),p2:V3(x,-17-Math.random()*4)})}
 function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*(1+st.sec*.15),slot:V3(i+.5,0),r:.6};lancerReset(e,-1.5-i*.8);m.position.copy(e.p0);ents.push(e)}
@@ -447,7 +448,7 @@ function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
  else if(e.ph===1){e.tm-=dt;if(e.tm<=0){e.ph=2;e.to=V3((Math.random()<.5?-1:1)*(FX-.8),-8)}}
  else if(e.ph===2){T.subVectors(e.to,M).setY(0);const d=T.length(),s=12*dt*f;if(d<=s){M.copy(e.to);e.ph=3;e.tm=.4}else M.addScaledVector(T.normalize(),s)}
  else if(e.ph===3){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*20)%2?1.3:1);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z);if(e.tm<=0){e.ph=4;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}
- else{M.addScaledVector(e.dir,20*dt*f);if(hd(M,p)<e.r+.6&&st.inv<=0){hurt(2);e.hp-=3}if(M.z>6||Math.abs(M.x)>FX+4){lancerReset(e,0);M.copy(e.p0)}}}
+ else{M.addScaledVector(e.dir,20*dt*f);if(hd(M,p)<e.r+.6&&st.inv<=0)ram(e,2,3);if(M.z>6||Math.abs(M.x)>FX+4){lancerReset(e,0);M.copy(e.p0)}}}
 // Warden boss: slow aimed beam (laser-sight tell, then a short blast) and a sweeping beam from one edge to the centre
 // (that half of the field flashes red first); calls in a skirmisher or two now and then
 const BFX=new THREE.Group();S.add(BFX);const MZ=new THREE.Vector3(),TG=new THREE.Vector3();
@@ -537,6 +538,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  // Shop unlocks: in the pool only once bought in the main-menu Shop (6th field = Total Scrap price)
  // Unlock upgrades: 7th field names the Unlocks-screen goal; in the pool once that goal is met
  ['Bootleg Shields','Every 5th hit has a 50% chance to be blocked (II: every 4th, 75%; III: every 3rd, 100%); its energy gives your next shot +2 damage (+3, +4). Each block halves your strafe speed for 0.4 s',s=>s.boot++,'x','u_boot',0,'barrier'],
+ ['Ram Plating','Collisions with units (dives, rams, mines) cost 1 less armor, never below 1, and the unit takes +3 damage per tier',s=>s.plate++,'c','u_plate',100],
  ['Confetti Payload','Destroyed units burst into confetti; each burst has a 10% chance per tier to shake loose +2 scrap',s=>s.confetti++,'c','u_conf',80],
  ['Wide Shot','Shots become 15% wider',s=>s.wide*=1.15,'c','u_wide',120],['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage',s=>s.whip++,'u','u_whip',240],
  ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage',s=>s.track++,'r','u_track',400]];
@@ -597,6 +599,8 @@ const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
 let AC;function beep(){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=880;
  g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+.13)}catch(e){}}
 function hud(){const f=Math.max(0,st.hp/st.max),bi=$('bar').firstChild;bi.style.width=f*100+'%';bi.style.background=hpCol(f);$('bar').classList.toggle('crit',f<=.25&&f>0);$('hpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;$('sec').textContent=st.sec;$('left').textContent=ents.filter(e=>e.hp>0).length;$('scr').textContent=st.scrap}
+// Collisions (dives, rams, mines): Ram Plating trims the damage you take and adds to what the unit takes
+function ram(e,n,k){hurt(st.plate?Math.max(1,n-1):n);e.hp-=k+3*st.plate}
 function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
  const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=.4;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
@@ -648,7 +652,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(e.state==='form'){e.m.position.copy(slotPos(e));face=false;e.m.rotation.y=0}
    if(e.state==='dive'){e.t+=dt*(.45+st.sec*.03)*st.fast;e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
     if(e.t>=1){e.m.position.set(e.m.position.x,0,-40);Object.assign(e,{state:'enter',t:0,p0:e.m.position.clone(),p1:V3(e.slot.x,-36)})}
-    if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){hurt(e.type==='brute'?3:2);e.hp-=3}}
+    if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
    e.m.position.y=.2+Math.sin(now/250+e.slot.x)*.15;if(e.off)e.m.position.y=e.core.m.position.y+e.off.y;
    if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;
