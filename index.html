@@ -38,7 +38,7 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 .bank{color:var(--dim)}.bank b{color:var(--accent);font:400 18px var(--display)}
 .stabs{display:flex;border-bottom:1px solid #ffffff26}.stabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;border-radius:0;box-shadow:none;padding:10px 4px;
  font:400 15px var(--display);letter-spacing:.06em;color:var(--dim);text-align:center;display:block}.stabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}
-#shopL{display:grid;gap:8px}.si{display:grid;grid-template-columns:56px 1fr auto;gap:2px 12px;align-items:center;border:1px solid #ffffff26;padding:6px 8px 6px 6px;background:#ffffff08}
+#shopL,#unlL{display:grid;gap:8px}.goal{display:block;margin-top:6px;color:var(--fg);font-style:normal}.pbar{display:block;height:5px;background:#ffffff1a;margin:4px 0 2px}.pbar i{display:block;height:100%;background:#ff3d6e}.si{display:grid;grid-template-columns:56px 1fr auto;gap:2px 12px;align-items:center;border:1px solid #ffffff26;padding:6px 8px 6px 6px;background:#ffffff08}
 .si canvas,.si .ph{grid-row:span 2;width:56px;height:56px;border-radius:3px;background:radial-gradient(color-mix(in srgb,var(--c,#aab1bd) 28%,transparent),transparent 70%)}
 .si .ph{display:grid;place-items:center;font:400 22px var(--display);color:var(--dim)}
 .si b{font:400 16px var(--display);color:var(--accent)}.si span{grid-column:2;color:var(--dim);font-size:13px}
@@ -153,7 +153,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <p id="shopIntro"></p><div id="shopL" role="tabpanel"></div></div></div>
 
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
-<p>Nothing to unlock yet. New machines and upgrades earned across runs will appear here.</p></div></div>
+<p>Earn these by reaching goals across your runs. Unlocked upgrades join the Campaign pool.</p><div id="unlL"></div></div></div>
 
 <div class="ov scr" id="how" hidden><div class="card"><div class="hd"><h2>How to Play</h2><button class="back" data-go="start">Back</button></div>
 <h3>The goal</h3>
@@ -212,6 +212,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
 <h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Each upgrade has 3 tiers (I, II, III): taking it again stacks the effect. At tier III it leaves the pool for the rest of the run</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
 <h3>Current upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed, +1 max armor</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li><li><b>Enhanced EMPs</b> (Common): EMP power-ups freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)</li><li><b style="color:#4fe08a">Beam Shot</b> (Uncommon): shots become beams with a long tail that also deals damage. +1 damage, but fire 30% slower; the slowdown drops to 20% at tier II and 10% at tier III</li></ul>
+<h3>Unlockable upgrades</h3><ul><li>Some upgrades are earned on the main menu's <b>Unlocks</b> screen by reaching goals across runs</li><li><b style="color:#ff3d6e">Bootleg Shields</b> (Contraband): every 5th hit has a 50% chance to be blocked, and the next shot does +2 damage. Tier II: every 4th hit, 75%, +3. Tier III: every 3rd hit, always, +4. Each block halves your strafe speed for 0.4 s. Unlock: block 30 hits with Barrier power-ups</li></ul>
 <h3>Shop upgrades</h3><ul><li>Buy these in the main-menu Shop with Total Scrap to add them to the pool</li><li><b>Confetti Payload</b> (Common, 40): destroyed units burst into confetti, with a 10% chance per tier to shake loose +2 scrap</li><li><b>Wide Shot</b> (Common, 60): shots become 15% wider</li><li><b style="color:#4fe08a">Whip Shot</b> (Uncommon, 120): every third volley, one green shot arcs across the screen for +1 damage</li><li><b style="color:#5ab0ff">Tracking Shot</b> (Rare, 200): every fifth volley, one blue shot homes in on the farthest unit for +1 damage</li></ul>
 <h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
 <h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (10 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
@@ -349,6 +350,7 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_emp:[[-3,2,-3,6,6,6,'r',0,'e'],[-1,4,2,2,2,1,'f'],[-6,4,0,3,1,1,'y'],[3,4,0,3,1,1,'y'],[-1,8,0,1,3,1,'y'],[0,-1,0,1,3,1,'y'],[-7,5,0,1,1,1,'y'],[6,3,0,1,1,1,'y']],
  u_beam:[[-12,1,-1,4,4,3,'d'],[-8,2,0,20,2,1,'l'],[-8,1,0,14,1,1,'n'],[-8,4,0,14,1,1,'n'],[12,1,0,2,4,1,'f']],
  u_conf:[[-1,0,0,2,2,2,'y'],[-2,2,-1,4,3,3,'y'],[-3,5,-2,6,3,4,'h'],[-4,8,-2,8,1,4,'h'],[-4,11,0,1,1,1,'p'],[2,12,0,1,1,1,'n'],[0,13,0,1,1,1,'r'],[4,10,0,1,1,1,'y'],[-2,14,0,1,1,1,'n'],[3,15,0,1,1,1,'p'],[-5,13,0,1,1,1,'r']],
+ u_boot:[[-5,0,-1,10,13,3,'d',0,'e'],[-4,2,0,8,9,2,'a',0,'e'],[-1,3,1,2,8,1,'x'],[-4,6,1,8,1,1,'y'],[-3,9,1,2,2,1,'y'],[2,2,1,2,2,1,'y'],[-6,5,0,1,3,1,'x'],[5,8,0,1,2,1,'x']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
 const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8};
 const MODELS={
@@ -387,7 +389,7 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon',swift:'pSwift'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -447,6 +449,12 @@ function grab(d){const k=DROP[d.kind];
  st.time+=5;if(k.inv)st.gold=Math.max(st.gold,k.inv);
  const t=$('timer'),pp=$('tpop');t.classList.remove('gain');pp.classList.remove('go');void t.offsetWidth;t.classList.add('gain');
  pp.textContent=k.inv?'+5 S · SHIELD':'+5 S';pp.style.color=k.css;pp.classList.add('go');boom(d.m.position,8,k.c)}
+function popMsg(t,c){const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=t;pp.style.color=c;pp.classList.add('go')}
+// Lifetime stats (localStorage 'darkstats') drive the Unlocks screen; reaching a goal adds its item to OWNED
+let LIFE={};try{LIFE=JSON.parse(localStorage.getItem('darkstats')||'{}')}catch(e){}
+const UNLOCKS=[{id:'up:Bootleg Shields',stat:'barrier',goal:30,how:'Block 30 hits with Barrier power-ups, in any mode, across runs'}];
+function prog(k){LIFE[k]=(LIFE[k]||0)+1;try{localStorage.setItem('darkstats',JSON.stringify(LIFE))}catch(e){}
+ for(const u of UNLOCKS)if(u.stat===k&&LIFE[k]>=u.goal&&!OWNED.includes(u.id)){OWNED.push(u.id);try{localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}popMsg('UNLOCKED: '+u.id.slice(3).toUpperCase(),'#ff3d6e')}}
 function flash(c){const f=$('flash');f.className='';void f.offsetWidth;f.className='go '+(c||'')}
 // Power-up rings under the HUD: fill shows time left (Barrier: hits left)
 let pupK='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/(2.5+st.empB),'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);
@@ -462,10 +470,12 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  // Beam Shot: +1 damage once; the fire-rate cost shrinks each tier (−30% / −20% / −10%)
  ['Beam Shot','Shots become beams with a long, damaging tail. +1 damage, but fire 30% slower (20% at tier II, 10% at III)',s=>{const t=s.beam++;if(!t)s.dmg+=1;s.rate*=[1/.7,.7/.8,.8/.9][t]},'u','u_beam'],
  // Shop unlocks: in the pool only once bought in the main-menu Shop (6th field = Total Scrap price)
+ // Unlock upgrades: 7th field names the Unlocks-screen goal; in the pool once that goal is met
+ ['Bootleg Shields','Every 5th hit has a 50% chance to be blocked (II: every 4th, 75%; III: every 3rd, 100%); its energy gives your next shot +2 damage (+3, +4). Each block halves your strafe speed for 0.4 s',s=>s.boot++,'x','u_boot',0,'barrier'],
  ['Confetti Payload','Destroyed units burst into confetti; each burst has a 10% chance per tier to shake loose +2 scrap',s=>s.confetti++,'c','u_conf',40],
  ['Wide Shot','Shots become 15% wider',s=>s.wide*=1.15,'c','u_wide',60],['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage',s=>s.whip++,'u','u_whip',120],
  ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage',s=>s.track++,'r','u_track',200]];
-const inPool=u=>!u[5]||OWNED.includes('up:'+u[0]);
+const inPool=u=>(!u[5]&&!u[6])||OWNED.includes('up:'+u[0]);
 // Tiers: each upgrade can be taken up to 3 times per run, then leaves the pool
 const tierOf=n=>st?st.upgrades.filter(x=>x===n).length:0,TN=['I','II','III'],avail=u=>inPool(u)&&tierOf(u[0])<3;
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:12,u:18,r:26,x:22};
@@ -522,7 +532,9 @@ const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
 let AC;function beep(){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=880;
  g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+.13)}catch(e){}}
 function hud(){const f=Math.max(0,st.hp/st.max),bi=$('bar').firstChild;bi.style.width=f*100+'%';bi.style.background=hpCol(f);$('bar').classList.toggle('crit',f<=.25&&f>0);$('hpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;$('sec').textContent=st.sec;$('left').textContent=ents.filter(e=>e.hp>0).length;$('scr').textContent=st.scrap}
-function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);return}if(st.timed){st.time-=5;n=0}st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
+function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}
+ // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
+ const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=.4;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
@@ -536,7 +548,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
-  if(mx)st.dir=mx;let sp=st.spd;
+  if(mx)st.dir=mx;let sp=st.spd;if(st.slow>0){st.slow-=dt;sp*=.5}
   if((keys.shift||st.tap)&&st.en>=35&&st.bt<=0){st.en-=35;st.bt=.22;st.inv=Math.max(st.inv,.3)}st.tap=0;
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);$('en').style.width=st.en+'%';
   p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
@@ -545,7 +557,8 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   st.cd-=dt;if(st.cd<=0){st.cd=st.rate;muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++){const s=fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide);if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}
    // Whip / Tracking: the volley's middle shot becomes special on every 3rd / 5th volley (extra copies add damage)
    st.vol++;const c=vs[n>>1];if(st.track&&st.vol%5===0){c.track=1;c.dmg+=st.track;c.life=3;c.m.material.color.setHex(0x5ab0ff)}
-   else if(st.whip&&st.vol%3===0){c.arc=(st.vol/3)%2?1:-1;c.v.x+=c.arc*12;c.dmg+=st.whip;c.life=2;c.m.material.color.setHex(0x4fe08a)}}
+   else if(st.whip&&st.vol%3===0){c.arc=(st.vol/3)%2?1:-1;c.v.x+=c.arc*12;c.dmg+=st.whip;c.life=2;c.m.material.color.setHex(0x4fe08a)}
+   if(st.bchg){c.dmg+=st.bchg;st.bchg=0;c.m.material.color.setHex(0xff3d6e)}}
   if(st.timed){st.time-=dt;st.el+=dt;st.fast=1+Math.floor(st.el/30)*.12;st.gold=Math.max(0,st.gold-dt);
    aura.visible=st.gold>0&&(st.gold>.6||Math.floor(now/80)%2==0);aura.scale.setScalar(3.2+Math.sin(now/120)*.3);
    const ct=mmss(Math.max(0,Math.ceil(st.time)));if($('clock').textContent!==ct)$('clock').textContent=ct;$('timer').classList.toggle('low',st.time<30);
@@ -651,7 +664,10 @@ $('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest
 document.querySelector('[data-go=store]').addEventListener('click',()=>{shopAsk=null;renderShop()});
 function syncCrafts(){document.querySelectorAll('[data-own]').forEach(b=>{const w=b.closest('.cr')||b;w.hidden=!OWNED.includes(b.dataset.own)})}
 syncCrafts();document.querySelectorAll('[data-go=crafts],[data-go=timed]').forEach(b=>b.addEventListener('click',syncCrafts));
-function shopTick(dt){if($('store').hidden)return;shopYaw+=dt*.9;$('shopL').querySelectorAll('canvas[data-k]').forEach(c=>snap(c.dataset.k,shopYaw,c,c.dataset.k.startsWith('u_')?.75:.72))}
+function renderUnlocks(){$('unlL').innerHTML=UNLOCKS.map(x=>{const u=UPG.find(v=>'up:'+v[0]===x.id),have=Math.min(LIFE[x.stat]||0,x.goal),done=OWNED.includes(x.id);
+ return `<div class="si" style="--c:${RCOL[u[3]]}"><canvas width="112" height="112" data-k="${u[4]}"></canvas><b>${u[0]} <em class="rar" style="color:${RCOL[u[3]]}">${RAR[u[3]]}</em></b><span>${u[1]}<br><i class="goal">${x.how}</i><span class="pbar"><i style="width:${have/x.goal*100}%"></i></span>${done?'':`${have} / ${x.goal}`}</span>${done?'<em class="own">Unlocked</em>':'<em class="soon">Locked</em>'}</div>`}).join('')}
+document.querySelector('[data-go=unlocks]').addEventListener('click',renderUnlocks);
+function shopTick(dt){const sh=!$('store').hidden,ul=!$('unlocks').hidden;if(!sh&&!ul)return;shopYaw+=dt*.9;$(sh?'shopL':'unlL').querySelectorAll('canvas[data-k]').forEach(c=>snap(c.dataset.k,shopYaw,c,c.dataset.k.startsWith('u_')?.75:.72))}
 function thumbTick(dt){shopTick(dt);if(!PHONE.matches)return;thYaw+=dt*.9;
  if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
  for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}

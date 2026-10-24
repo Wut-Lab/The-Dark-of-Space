@@ -86,6 +86,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <div class="body"><p>Features on hold. Nothing here gets built until it moves into a numbered module. Add new ideas in the notes.</p>
 <ul class="held">
 <li><span class="chip">On hold</span><span>Score with a chain multiplier: kills within 1.5 s of each other raise it (×1 to ×8); taking a hit resets it. Time Attack's +2 s per kill at ×4 depends on this; until then, that rule needs a stand-in.</span></li>
+<li><span class="chip">Idea</span><span>Hangar perks: small, capped permanent bonuses bought with Total Scrap, such as +1 starting armor or +5% EN refill. Moved here from 05.</span></li>
 <li><span class="chip">Idea</span><span>Scrap as both score and currency: certain events, upgrades and more cost scrap. Spending it lowers your score but gives you a boost for the rest of the run. Ties into the salvage-yard shop in 04.</span></li>
 </ul>
 <div class="notes"><label for="n-ideas">Ideas for later <span class="st"></span></label><textarea id="n-ideas" placeholder="Anything you might want someday…"></textarea></div></div></details>
@@ -145,8 +146,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><label><input type="checkbox"><span>Shop screen: browse items, see prices in Total Scrap, confirm before buying</span></label></li>
 <li><label><input type="checkbox"><span>Unlock new crafts, starting with a fourth machine</span></label></li>
 <li><label><input type="checkbox"><span>Unlock upgrades: buying one adds it to the in-run draws (runs start with only the four current upgrades)</span></label></li>
-<li><label><input type="checkbox"><span>Hangar perks: small, capped permanent bonuses such as +1 starting armor or +5% EN refill</span></label></li>
-<li><label><input type="checkbox"><span>Unlocks screen lists what you own and what's next, with costs</span></label></li>
+<li><label><input type="checkbox"><span>Unlocks screen: goals reached across runs unlock items (first: Bootleg Shields, for blocking 30 hits with Barriers)</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-hangar">Notes for Claude <span class="st"></span></label><textarea id="n-hangar" placeholder="What the shop should sell, prices, which craft comes next…"></textarea></div></div></details>
 </div>
@@ -163,7 +163,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <div class="pane" id="p-up" role="tabpanel" aria-labelledby="t-up" hidden>
 <div class="find"><input type="search" id="uq" placeholder="Search upgrades…" aria-label="Search upgrades">
 <div class="fl" data-f="rar"><span>Rarity</span><button data-v="all">All</button><button data-v="c">Common</button><button data-v="u">Uncommon</button><button data-v="r">Rare</button><button data-v="x">Contraband</button></div>
-<div class="fl" data-f="src"><span>Source</span><button data-v="all">All</button><button data-v="pick">Upgrade pick</button><button data-v="shop">Shop</button><button data-v="event">Event</button></div>
+<div class="fl" data-f="src"><span>Source</span><button data-v="all">All</button><button data-v="pick">Upgrade pick</button><button data-v="shop">Shop</button><button data-v="event">Event</button><button data-v="unlock">Unlock</button></div>
 <div class="fl" data-f="cat"><span>Type</span><button data-v="all">All</button><button data-v="off">Offense</button><button data-v="def">Defense</button><button data-v="mob">Mobility</button><button data-v="util">Utility</button></div>
 <div class="fl" data-f="dw"><span>Catch</span><button data-v="all">Any</button><button data-v="yes">Has a drawback</button><button data-v="no">No drawback</button></div></div>
 <p class="sub"><b>Upgrades</b> are permanent for the run, earned by buying, clearing sectors, objectives or events. <b>Power-ups</b> are temporary drops you fly over.</p>
@@ -192,15 +192,16 @@ const UP=[
  ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1],
  ['Enhanced EMPs','EMP power-ups freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)','c','util','pse'],
  ['Beam Shot','Shots become beams with a long, damaging tail. +1 damage; fire 30% slower at tier I, 20% at II, 10% at III','u','off','pse',1],
+ ['Bootleg Shields','Every 5th hit: 50% chance to block, next shot +2 damage (II: every 4th, 75%, +3; III: every 3rd, always, +4). Each block halves strafe speed for 0.4 s. Unlock: block 30 hits with Barriers','x','def','pseu',1],
  ['Confetti Payload','Destroyed units burst into confetti; 10% chance per tier to shake loose +2 scrap. Shop unlock: 40','c','util','pse'],
  ['Wide Shot','Shots become 15% wider. Unlock in the main-menu Shop for 60 Total Scrap','c','off','pse'],
  ['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage. Shop unlock: 120','u','off','pse'],
  ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage. Shop unlock: 200','r','off','pse']];
-const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e'};
+const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e',unlock:'u'};
 function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCase(),box=document.getElementById('ulists');
  box.innerHTML=Object.entries(RAR).filter(([k])=>F.rar==='all'||F.rar===k).map(([k,[name,col,price]])=>{const all=UP.filter(u=>u[2]===k),
   hit=all.filter(([n,d,,c,src,dw])=>(F.src==='all'||src.includes(SRC[F.src]))&&(F.cat==='all'||c===F.cat)&&(F.dw==='all'||(F.dw==='yes')===!!dw)&&(!q||(n+' '+d+' '+CAT[c]+' '+name).toLowerCase().includes(q)));
-  return `<section class="list" style="--c:${col}"><h2><span class="dot"></span>${name} <small>${hit.length} of ${all.length} · shop ${price}+</small></h2>${hit.length?hit.map(([n,d,,c,src,dw])=>`<div class="pu" style="--c:${col}"><i></i><b>${esc(n)} <span class="tg k">${CAT[c]}</span>${[...src].map(x=>`<span class="tg k">${{p:'Pick',s:'Shop',e:'Event'}[x]}</span>`).join('')}${dw?'<span class="tg proposed">Drawback</span>':''}</b><p>${esc(d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}</section>`}).join('');
+  return `<section class="list" style="--c:${col}"><h2><span class="dot"></span>${name} <small>${hit.length} of ${all.length} · shop ${price}+</small></h2>${hit.length?hit.map(([n,d,,c,src,dw])=>`<div class="pu" style="--c:${col}"><i></i><b>${esc(n)} <span class="tg k">${CAT[c]}</span>${[...src].map(x=>`<span class="tg k">${{p:'Pick',s:'Shop',e:'Event',u:'Unlock'}[x]}</span>`).join('')}${dw?'<span class="tg proposed">Drawback</span>':''}</b><p>${esc(d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}</section>`}).join('');
  document.querySelectorAll('#p-up .fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
 const KIND={instant:'Instant',timed:'Lasts',charges:'Charges',clock:'Clock'},F={list:'all',status:'all',kind:'all',rar:'all',src:'all',cat:'all',dw:'all'},esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
 function renderPU(){const q=document.getElementById('q').value.trim().toLowerCase();
