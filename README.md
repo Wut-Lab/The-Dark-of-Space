@@ -1,6 +1,6 @@
 # In the Dark of Space
 
-A Galaga-style voxel shooter with roguelike runs. You pilot either the **Kestrel**, a mobile frame, or the **Gale**, an interceptor, and hold the line against mass-production units that fly in, form up and dive at you.
+A Galaga-style voxel shooter with roguelike runs. You pilot the **Kestrel** (a tough mobile frame), the **Gale** (a fast interceptor) or the **Falcon** (a balanced strike fighter) and hold the line against mass-production units that fly in, form up and dive at you.
 
 ## Play
 
