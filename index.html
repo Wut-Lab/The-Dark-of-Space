@@ -193,7 +193,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>When armor hits zero</h3><ul><li>Your machine is destroyed and the run ends</li></ul></div></div>
 
 <div class="ov scr" id="how-sectors" hidden><div class="card"><div class="hd"><h2>Sectors</h2><button class="back" data-go="how">Back</button></div>
-<h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li></ul>
+<h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li><li>You get about 3 seconds of open space before each wave flies in</li></ul>
 <h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li></ul>
 <h3>Waves</h3><ul><li>Each sector has 2 waves (3 from sector 10). The banner shows which wave you're on</li><li>Clear a wave and <b>WAVE CLEAR</b> flashes; the next wave arrives a moment later</li><li>Boss and Bonus sectors are a single wave</li></ul>
 <h3>End</h3><ul><li>When the last wave's Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose an upgrade and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li></ul></div></div>
@@ -426,27 +426,27 @@ const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 // Campaign sectors come in several waves (2, or 3 from sector 10); boss and bonus sectors are one wave. In-run prices and rewards are doubled to match the extra scrap; boss and bonus sectors are one wave
 function wave(more){if(!more){st.wv=1;st.wvs=st.timed||st.sec%5===0||(st.sec%4===0&&!st.elite)?1:st.elite||st.sec<10?2:3}
  if(!st.timed&&st.sec%5===0){bossWave();return}st.bonus=!st.timed&&st.sec%4===0&&!st.elite;const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')} · They won't shoot. Destroy as many as you can`);return}
- const cols=Math.min(3+st.sec+st.wv,9),rows=Math.min(2+(st.sec>>1),4);let i=0;diveCd=3;
+ const cols=Math.min(3+(st.sec>>1)+st.wv,9),rows=Math.min(2+(st.sec/3|0),4);let i=0;diveCd=6;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&st.sec>2?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
-  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.15)*(el?1.5:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-((i++)>>1)*.35,
+  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.15-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
  {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
-function bossWave(){st.boss=1;if(st.sec%10===0)return wardenWave();const m=MODELS.boss(),k=1+st.sec*.15;S.add(m);m.position.set(0,0,-50);
+function bossWave(){st.boss=1;if(st.sec%10===0)return wardenWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:0,cd:5,r:4};
  for(const [x,y,z] of [[-3.6,1.17,0],[3.6,1.17,0],[0,1.17,3.2]]){const w=MODELS.wp();S.add(w);w.position.set(x,0,z-50);ents.push({m:w,type:'wp',hp:14*k,slot:V3(x,0),state:'boss',core,off:new THREE.Vector3(x,y,z),cd:4+Math.random()*2,r:1.1})}
  ents.push(core);hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit. Shoot off its 3 turrets to expose the core`)}
 // Mine: drifts in and parks just ahead of the player's row, blocking that lane; touching it hurts
 function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
- const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*(1+st.sec*.15),slot:V3(x,0),t:-1-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
+ const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*(1+st.sec*.08),slot:V3(x,0),t:-2.2-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
 function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;
  // after ~15 s parked it lifts off and leaves the field (no scrap)
  if(e.t>7){e.m.position.z-=14*dt;e.m.rotation.y+=dt*3;if(e.m.position.z<-45){e.escaped=1;e.hp=0}return}const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
  if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0)ram(e,2,2)}
 // Lancer: flies in, hovers 1-2 s, slides to a side edge, flashes, then rams the spot where the player was; loops back in if it misses
 function lancerReset(e,t){const x=(Math.random()-.5)*14;Object.assign(e,{ph:0,t,p0:V3(x*.6,-44),p1:V3(x,-30),p2:V3(x,-17-Math.random()*4)})}
-function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*(1+st.sec*.15),slot:V3(i+.5,0),r:.6};lancerReset(e,-1.5-i*.8);m.position.copy(e.p0);ents.push(e)}
+function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*(1+st.sec*.08),slot:V3(i+.5,0),r:.6};lancerReset(e,-3.4-i*.8);m.position.copy(e.p0);ents.push(e)}
 function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
  if(e.ph===0){e.t+=dt/1.6;if(e.t<0)return;e.m.visible=true;if(e.t>=1){e.ph=1;e.tm=1+Math.random()}else M.copy(bez(e.p0,e.p1,e.p2,e.t))}
  else if(e.ph===1){e.tm-=dt;if(e.tm<=0){e.ph=2;e.to=V3((Math.random()<.5?-1:1)*(FX-.8),-8)}}
@@ -458,12 +458,12 @@ function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
 const BFX=new THREE.Group();S.add(BFX);const MZ=new THREE.Vector3(),TG=new THREE.Vector3();
 const beamMesh=(c,o)=>{const x=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false}));x.visible=false;BFX.add(x);return x};
 function beamTo(m,a,b,w){m.position.copy(a).lerp(b,.5);m.scale.set(w,w,a.distanceTo(b));m.lookAt(b);m.visible=true}
-function wardenWave(){const m=MODELS.warden(),k=1+st.sec*.15;S.add(m);m.position.set(0,0,-55);BFX.clear();const glw=glow(0xff3030,1.2);glw.position.set(2.4,4,4.9);m.add(glw);
+function wardenWave(){const m=MODELS.warden(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-55);BFX.clear();const glw=glow(0xff3030,1.2);glw.position.set(2.4,4,4.9);m.add(glw);
  ents.push({m,type:'warden',state:'warden',hp:90*k,slot:V3(0,0),t:0,r:3.6,cdA:3,cdS:9,cdM:6,fx:{line:beamMesh(0xff3030,.7),aim:beamMesh(0xff7a3a,.9),sweep:beamMesh(0xff4a2a,.9),warn:beamMesh(0xff2020,.2),glw}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Warden". Watch its cannon`)}
 function wardenCalm(e){const F=e.fx;F.line.visible=F.aim.visible=F.sweep.visible=F.warn.visible=false;if(e.atk){e.atk=null;e.cdA=1.5;e.cdS=Math.max(e.cdS,3)}}
 function addMob(i){const m=MODELS.chaser();S.add(m);const side=Math.random()<.5?-1:1,p0=V3(side*16,-30);m.position.copy(p0);
- ents.push({m,type:'chaser',add:1,hp:2*(1+st.sec*.15),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
+ ents.push({m,type:'chaser',add:1,hp:2*(1+st.sec*.08),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
 function wardenUp(e,dt,p){e.t+=dt;const k=Math.min(1,e.t/3.5),M=e.m.position,F=e.fx;M.set(Math.sin(e.t*.3)*3*k,M.y,-55+31*k*(2-k));if(k<1)return;
  MZ.set(M.x+2.4,4,M.z+4.9);e.cdA-=dt;e.cdS-=dt;e.cdM-=dt;F.glw.scale.setScalar(e.atk?1.6+Math.random()*.8:1.2);
  if(e.atk==='aim'){e.at-=dt;
@@ -645,7 +645,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   for(let i=drops.length;i--;)if(drops[i].gone)drops.splice(i,1);
   const emp=st.emp>0;if(!emp){sway+=dt*.6;diveCd-=dt}
   if(diveCd<=0){const f=ents.filter(e=>e.state==='form');if(f.length){const e=f[Math.random()*f.length|0],side=Math.sign(e.m.position.x)||1;
-   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.2)*(.6+Math.random()*.8)/st.fast}
+   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.12)*(.6+Math.random()*.8)/st.fast}
   for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
     else{e.t+=dt;const k=Math.min(1,e.t/3);e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
@@ -656,7 +656,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    else if(e.state==='enter'){e.t+=dt/1.6;if(e.t<0)continue;e.m.visible=true;
     if(e.t>=1){e.state='form';e.t=0}else e.m.position.copy(bez(e.p0,e.p1,slotPos(e),e.t))}
    if(e.state==='form'){e.m.position.copy(slotPos(e));face=false;e.m.rotation.y=0}
-   if(e.state==='dive'){e.t+=dt*(.45+st.sec*.03)*st.fast;e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
+   if(e.state==='dive'){e.t+=dt*(.45+st.sec*.02)*st.fast;e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
     if(e.t>=1){e.m.position.set(e.m.position.x,0,-40);Object.assign(e,{state:'enter',t:0,p0:e.m.position.clone(),p1:V3(e.slot.x,-36)})}
     if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
@@ -788,6 +788,4 @@ function driftTick(dt){if(!$('start').hidden){driftT-=dt;if(driftT<=0){driftT=4+
  for(const d of drift){d.m.position.x+=d.v*dt;d.m.position.y+=Math.sin(performance.now()/400+d.v)*.004;if(Math.abs(d.m.position.x)>26){S.remove(d.m);d.dead=1}}drift=drift.filter(d=>!d.dead)}
 buildWorld();requestAnimationFrame(tick);
 </script>
-
-</body>
-</html>
+</body></html>
