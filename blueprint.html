@@ -71,13 +71,15 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 .tg{font:600 .65rem var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor}
 .tg.built{color:var(--lime)}.tg.planned{color:var(--cyan)}.tg.proposed{color:var(--pink)}.tg.k{color:var(--mute)}
 .none{color:var(--mute);font-size:.85rem;margin:0}
+.tabs{overflow-x:auto}.tabs button{flex:none}
+.list h2 .dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);align-self:center}
 @media (max-width:480px){.why{display:none}.cnt{margin-left:auto}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 <main>
 <header><span class="tag">Build log // Blueprint</span><h1>In the Dark of Space</h1>
 <p class="sub">The systems to build, in order. Tick items as they land in the game. Notes you leave here are saved, and Claude reads them before coding each piece.</p></header>
-<nav class="tabs" role="tablist"><button role="tab" id="t-build" aria-controls="p-build" aria-selected="true">Build log</button><button role="tab" id="t-pu" aria-controls="p-pu" aria-selected="false">Power Ups</button></nav>
+<nav class="tabs" role="tablist"><button role="tab" id="t-build" aria-controls="p-build" aria-selected="true">Build log</button><button role="tab" id="t-pu" aria-controls="p-pu" aria-selected="false">Power Ups</button><button role="tab" id="t-up" aria-controls="p-up" aria-selected="false">Upgrades</button></nav>
 <div class="pane" id="p-build" role="tabpanel" aria-labelledby="t-build">
 
 <details data-id="ideas" class="ideas"><summary><span class="n">//</span><span class="t">Ideas and Options</span><span class="why">parked, not scheduled</span></summary>
@@ -126,7 +128,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <div class="spec"><div><b>Armor</b><span>Max health</span></div><div><b>Firepower</b><span>Damage per shot</span></div><div><b>Cycle</b><span>Shots per second</span></div><div><b>Mobility</b><span>Strafe speed</span></div><div><b>Reactor</b><span>Max EN and refill rate</span></div><div><b>Salvage</b><span>Scrap and drop chance</span></div></div>
 <ul>
 <li><label><input type="checkbox"><span>Stat sheet for each craft, shown on the craft select screen and in the pause menu next to the rotating model</span></label></li>
-<li><label><input type="checkbox"><span>Refits with rarity (common, rare, prototype) and trade-offs, e.g. “Glass Reactor: +50% firepower, −3 max armor”</span></label></li>
+<li><label><input type="checkbox"><span>Refits with rarity (common, uncommon, rare, contraband) and trade-offs, e.g. “Glass Reactor: +50% firepower, −3 max armor”</span></label></li>
 <li><label><input type="checkbox"><span>Branching sector map: after each sector, choose the next one: combat, elite (tougher, better loot), salvage yard (shop), repair dock, or unknown signal (random event)</span></label></li>
 <li><label><input type="checkbox"><span>Shop at salvage yards: spend scrap on refits, armor repair or a reroll of refit choices</span></label></li>
 <li><label><input type="checkbox"><span>Boss sector every 5th: a capital-class unit with weak points to shoot off</span></label></li>
@@ -144,6 +146,15 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <section class="list" id="l-timed"><h2>Timed Attack <small></small></h2><div class="items"></div></section>
 <p class="sub">Planned items come from module 03. Proposed items are Claude's suggestions for Campaign-only drops; edit or reject them in the notes.</p>
 </div>
+<div class="pane" id="p-up" role="tabpanel" aria-labelledby="t-up" hidden>
+<div class="find"><input type="search" id="uq" placeholder="Search upgrades…" aria-label="Search upgrades">
+<div class="fl" data-f="rar"><span>Rarity</span><button data-v="all">All</button><button data-v="c">Common</button><button data-v="u">Uncommon</button><button data-v="r">Rare</button><button data-v="x">Contraband</button></div>
+<div class="fl" data-f="src"><span>Source</span><button data-v="all">All</button><button data-v="pick">Refit pick</button><button data-v="shop">Shop</button><button data-v="event">Event</button></div>
+<div class="fl" data-f="cat"><span>Type</span><button data-v="all">All</button><button data-v="off">Offense</button><button data-v="def">Defense</button><button data-v="mob">Mobility</button><button data-v="util">Utility</button></div>
+<div class="fl" data-f="dw"><span>Catch</span><button data-v="all">Any</button><button data-v="yes">Has a drawback</button><button data-v="no">No drawback</button></div></div>
+<div id="ulists"></div>
+<p class="sub">Odds per refit: Common 60%, Uncommon 27%, Rare 10%, Contraband 3%. Elite and boss rewards use 30 / 36 / 24 / 10. Shop price = base + sector number.</p>
+</div>
 </main>
 <script>
 // Power-up catalog: mirrors the POOLS lists in the game. modes: c = Campaign, t = Timed Attack
@@ -158,19 +169,33 @@ const PU=[
  {n:'Repair Kit',c:'#ff5a6e',m:'c',s:'proposed',k:'instant',d:'Repairs 3 armor (Timed Attack has no armor)'},
  {n:'Scrap Magnet',c:'#ffb040',m:'c',s:'proposed',k:'timed',d:'Double scrap from kills for 8 s'},
  {n:'Reactor Surge',c:'#22e4ff',m:'c',s:'proposed',k:'timed',d:'Full EN, and dashes cost nothing for 6 s'}];
-const KIND={instant:'Instant',timed:'Lasts',charges:'Charges',clock:'Clock'},F={list:'all',status:'all',kind:'all'},esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
+// Upgrade catalog: mirrors UPG and TUNE in the game. src: p refit pick, s shop, e event
+const UP=[
+ ['Thrusters','Strafe 15% faster','c','mob','pse'],['Field repair','Repair 5 armor','c','def','pse'],['Light plating','+2 max armor','c','def','pse'],['Capacitor bank','EN refills 30% faster','c','util','pse'],
+ ['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor. Always in stock, 10 scrap, stackable','c','util','s'],
+ ['Overcharged rounds','+1 damage per shot','u','off','pse'],['Faster cycling','Fire 20% faster','u','off','pse'],['Hull plating','+3 max armor, repair fully','u','def','pse'],['Tungsten tips','Shots pass through 1 more unit','u','off','pse'],
+ ['Split barrel','+1 projectile per volley','r','off','pse'],['Twin-linked feed','+1 damage and fire 10% faster','r','off','pse'],['Reactive armor','+5 max armor, repair fully','r','def','pse'],
+ ['Glass reactor','+50% damage, but −3 max armor','x','off','pse',1],['Stripped frame','Strafe 30% and fire 15% faster, but −2 max armor','x','mob','pse',1],['Overdriven feed','Fire 40% faster, but every hit costs 1 more armor','x','off','pse',1],
+ ['Loose reactor core','Fire 15% faster, but −2 max armor. Unknown Signal event only','x','off','e',1]];
+const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e'};
+function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCase(),box=document.getElementById('ulists');
+ box.innerHTML=Object.entries(RAR).filter(([k])=>F.rar==='all'||F.rar===k).map(([k,[name,col,price]])=>{const all=UP.filter(u=>u[2]===k),
+  hit=all.filter(([n,d,,c,src,dw])=>(F.src==='all'||src.includes(SRC[F.src]))&&(F.cat==='all'||c===F.cat)&&(F.dw==='all'||(F.dw==='yes')===!!dw)&&(!q||(n+' '+d+' '+CAT[c]+' '+name).toLowerCase().includes(q)));
+  return `<section class="list" style="--c:${col}"><h2><span class="dot"></span>${name} <small>${hit.length} of ${all.length} · shop ${price}+</small></h2>${hit.length?hit.map(([n,d,,c,src,dw])=>`<div class="pu" style="--c:${col}"><i></i><b>${esc(n)} <span class="tg k">${CAT[c]}</span>${[...src].map(x=>`<span class="tg k">${{p:'Pick',s:'Shop',e:'Event'}[x]}</span>`).join('')}${dw?'<span class="tg proposed">Drawback</span>':''}</b><p>${esc(d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}</section>`}).join('');
+ document.querySelectorAll('#p-up .fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
+const KIND={instant:'Instant',timed:'Lasts',charges:'Charges',clock:'Clock'},F={list:'all',status:'all',kind:'all',rar:'all',src:'all',cat:'all',dw:'all'},esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
 function renderPU(){const q=document.getElementById('q').value.trim().toLowerCase();
  for(const [id,flag] of [['campaign','c'],['timed','t']]){const box=document.getElementById('l-'+id);box.hidden=F.list!=='all'&&F.list!==id;
   const all=PU.filter(p=>p.m.includes(flag)),hit=all.filter(p=>(F.status==='all'||p.s===F.status)&&(F.kind==='all'||p.k===F.kind)&&(!q||(p.n+' '+p.d+' '+p.s+' '+KIND[p.k]).toLowerCase().includes(q)));
   box.querySelector('small').textContent=hit.length+' of '+all.length;
   box.querySelector('.items').innerHTML=hit.length?hit.map(p=>`<div class="pu" style="--c:${p.c}"><i></i><b>${esc(p.n)} <span class="tg ${p.s}">${p.s}</span><span class="tg k">${KIND[p.k]}</span>${p.m==='ct'?'<span class="tg k">Both modes</span>':''}</b><p>${esc(p.d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}
  document.querySelectorAll('.fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
-document.getElementById('q').addEventListener('input',renderPU);
-document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F[g.dataset.f]=b.dataset.v;renderPU()}));
+document.getElementById('q').addEventListener('input',renderPU);document.getElementById('uq').addEventListener('input',renderUP);
+document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F[g.dataset.f]=b.dataset.v;renderPU();renderUP()}));
 const tabs=[...document.querySelectorAll('[role=tab]')];
 function tab(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on});try{localStorage.setItem('bpTab',id)}catch(e){}}
 tabs.forEach((t,i)=>{t.onclick=()=>tab(t.id);t.onkeydown=e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){const n=tabs[(i+d+tabs.length)%tabs.length];tab(n.id);n.focus()}}});
-renderPU();try{const v=localStorage.getItem('bpTab');if(v&&document.getElementById(v))tab(v)}catch(e){}
+renderPU();renderUP();try{const v=localStorage.getItem('bpTab');if(v&&document.getElementById(v))tab(v)}catch(e){}
 const secs=[...document.querySelectorAll('details')];
 const bar=d=>{if(!d.querySelector('.bar'))return;const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
  d.querySelector('.bar i').style.width=n/bs.length*100+'%';d.classList.toggle('done',n===bs.length);
