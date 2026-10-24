@@ -36,7 +36,7 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 .ug canvas{grid-row:span 2;width:56px;height:56px;border-radius:3px;background:radial-gradient(color-mix(in srgb,var(--c) 30%,transparent),transparent 70%)}.ug b{font:400 16px var(--display);color:var(--accent)}.ug .rar{color:var(--c)}
 .ug span{grid-column:2;color:var(--dim);font-size:13px}.ug i{grid-row:span 2;grid-column:3;font:400 18px var(--display);font-style:normal}
 .bank{color:var(--dim)}.bank b{color:var(--accent);font:400 18px var(--display)}
-.stabs{display:flex;border-bottom:1px solid #ffffff26}.stabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;border-radius:0;box-shadow:none;padding:10px 4px;
+.stabs{display:flex;border-bottom:1px solid #ffffff26}.stabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;border-radius:0;box-shadow:none;padding:10px 2px;font-size:14px!important;
  font:400 15px var(--display);letter-spacing:.06em;color:var(--dim);text-align:center;display:block}.stabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}
 #shopL,#unlL{display:grid;gap:8px}.goal{display:block;margin-top:6px;color:var(--fg);font-style:normal}.pbar{display:block;height:5px;background:#ffffff1a;margin:4px 0 2px}.pbar i{display:block;height:100%;background:#ff3d6e}.si{display:grid;grid-template-columns:56px 1fr auto;gap:2px 12px;align-items:center;border:1px solid #ffffff26;padding:6px 8px 6px 6px;background:#ffffff08}
 .si canvas,.si .ph{grid-row:span 2;width:56px;height:56px;border-radius:3px;background:radial-gradient(color-mix(in srgb,var(--c,#aab1bd) 28%,transparent),transparent 70%)}
@@ -152,7 +152,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="store" hidden><div class="card"><div class="hd"><h2>Shop</h2><button class="back" data-go="start">Back</button></div>
 <p class="bank">Total Scrap: <b id="shopBank">0</b></p>
-<div class="stabs" role="tablist" aria-label="Shop sections"><button role="tab" data-tab="upgrades" aria-selected="true">Upgrades</button><button role="tab" data-tab="crafts" aria-selected="false">Crafts</button><button role="tab" data-tab="paint" aria-selected="false">Paint Jobs</button></div>
+<div class="stabs" role="tablist" aria-label="Shop sections"><button role="tab" data-tab="upgrades" aria-selected="true">Upgrades</button><button role="tab" data-tab="powerups" aria-selected="false">Power-ups</button><button role="tab" data-tab="crafts" aria-selected="false">Crafts</button><button role="tab" data-tab="paint" aria-selected="false">Paint Jobs</button></div>
 <p id="shopIntro"></p><div id="shopL" role="tabpanel"></div></div></div>
 
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
@@ -171,7 +171,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how-enemies"><b>Enemies</b><span>Who you're fighting</span></button>
 <button data-go="how-bonus"><b>Bonus Stages</b><span>Every 4th sector</span></button>
 <button data-go="how-upgrades"><b>Upgrades &amp; Scrap</b><span>Getting stronger</span></button>
-<button data-go="how-power"><b>Power-ups</b><span>EMP, Barrier, Spread Shot</span></button>
+<button data-go="how-power"><b>Power-ups</b><span>EMP, Barrier, Spread Shot, Patch Kit</span></button>
 <button data-go="how-timed"><b>Timed Attack</b><span>Racing the clock</span></button>
 </div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 
@@ -234,6 +234,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-power" hidden><div class="card"><div class="hd"><h2>Power-ups</h2><button class="back" data-go="how">Back</button></div>
 <p>Power-ups are temporary boosts: destroyed units sometimes drop a glowing capsule with a dark band. Fly over it to grab it. Heavies and units shot mid-dive drop them more often. They work in every mode.</p>
 <h3>The three power-ups</h3><ul><li><b style="color:#4ad8ff">EMP</b> (blue): clears enemy fire and freezes every unit for 2.5 seconds</li><li><b style="color:#b47cff">Barrier</b> (violet): blocks the next 3 hits, then breaks</li><li><b style="color:#ff8a3a">Spread Shot</b> (orange): fires a 5-way fan for 5 seconds</li></ul>
+<h3>Shop power-ups</h3><ul><li>Buy these in the main-menu Shop to add them to the drops</li><li><b style="color:#e8ecf2">Patch Kit</b> (silver, Common, 80): repairs 2 armor in Campaign, or adds 3 seconds in Timed Attack. Common power-ups drop twice as often as the others</li></ul>
 <h3>Tips</h3><ul><li>Active power-ups show as rings under the top bar. The ring empties as time runs out</li><li>Grabbing one you already have adds time, or refills the Barrier</li><li>Capsules blink just before they slip past you</li></ul></div></div>
 
 <div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="start">Back</button></div>
@@ -359,6 +360,7 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_conf:[[-1,0,0,2,2,2,'y'],[-2,2,-1,4,3,3,'y'],[-3,5,-2,6,3,4,'h'],[-4,8,-2,8,1,4,'h'],[-4,11,0,1,1,1,'p'],[2,12,0,1,1,1,'n'],[0,13,0,1,1,1,'r'],[4,10,0,1,1,1,'y'],[-2,14,0,1,1,1,'n'],[3,15,0,1,1,1,'p'],[-5,13,0,1,1,1,'r']],
  u_boot:[[-5,0,-1,10,13,3,'d',0,'e'],[-4,2,0,8,9,2,'a',0,'e'],[-1,3,1,2,8,1,'x'],[-4,6,1,8,1,1,'y'],[-3,9,1,2,2,1,'y'],[2,2,1,2,2,1,'y'],[-6,5,0,1,3,1,'x'],[5,8,0,1,2,1,'x']],
  u_plate:[[-5,0,-1,10,10,2,'a'],[-4,1,1,8,8,1,'g'],[-1,4,2,2,2,3,'d'],[0,5,5,1,1,2,'f'],[-4,1,1,1,1,1,'y'],[3,1,1,1,1,1,'y'],[-4,8,1,1,1,1,'y'],[3,8,1,1,1,1,'y'],[-5,4,-2,10,2,1,'h']],
+ pu_patch:[[-3,0,-3,6,3,6,'f',0,'cy'],[-3,3,-3,6,2,6,'k',0,'cy'],[-3,5,-3,6,3,6,'f',0,'cy'],[-1,1,3,2,6,1,'x'],[-3,3,3,6,2,1,'x']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
 const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8};
 // Mine: spiked sphere with a rust band and red lights. Lancer: dart-shaped ramming drone
@@ -497,9 +499,11 @@ function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
 // Timed Attack capsules: green = +5 s, gold = +5 s and 2.5 s invulnerable. They drift toward the player.
 const DROP={g:{c:0x45ff7a,css:'#45ff7a',inv:0},y:{c:0xffd23a,css:'#ffd23a',inv:2.5},
- emp:{c:0x4ad8ff,css:'#4ad8ff',pu:'EMP'},bar:{c:0xb47cff,css:'#b47cff',pu:'BARRIER'},spr:{c:0xff8a3a,css:'#ff8a3a',pu:'SPREAD SHOT'}}
+ emp:{c:0x4ad8ff,css:'#4ad8ff',pu:'EMP'},bar:{c:0xb47cff,css:'#b47cff',pu:'BARRIER'},spr:{c:0xff8a3a,css:'#ff8a3a',pu:'SPREAD SHOT'},
+ // Shop power-ups: in the drop pool once bought (shop = OWNED id); w = drop weight (Common 2, others 1)
+ patch:{c:0xe8ecf2,css:'#e8ecf2',pu:'PATCH KIT',shop:'pu:patch',w:2}}
 // Drop pools per mode (mirrors the blueprint's Power Ups tab). g/y are time capsules: Timed Attack only, rolled at their own rates
-const POOLS={campaign:['emp','bar','spr'],timed:['emp','bar','spr','g','y']},drops=[];
+const POOLS={campaign:['emp','bar','spr','patch'],timed:['emp','bar','spr','patch','g','y']},drops=[];
 const GLOW=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);
  g.addColorStop(0,'#fff');g.addColorStop(.35,'#ffffff88');g.addColorStop(1,'#fff0');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
 const glow=(c,s)=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:c,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));m.scale.setScalar(s);return m};
@@ -510,7 +514,7 @@ function spawnDrop(pos,kind){const c=DROP[kind].c,g=new THREE.Group(),core=new T
  const sp=glow(c,2.2);g.add(core,sp);g.position.set(THREE.MathUtils.clamp(pos.x,-FX+.6,FX-.6),.9,pos.z);S.add(g);drops.push({m:g,core,sp,kind})}
 function clearDrops(){drops.forEach(d=>S.remove(d.m));drops.length=0}
 function grab(d){const k=DROP[d.kind];
- if(k.pu){boom(d.m.position,8,k.c);if(d.kind==='emp'){st.emp+=2.5+st.empB;shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='bar')st.bar=3;else st.spr+=5;
+ if(k.pu){boom(d.m.position,8,k.c);if(d.kind==='emp'){st.emp+=2.5+st.empB;shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='bar')st.bar=3;else if(d.kind==='patch'){if(st.timed)st.time+=3;else st.hp=Math.min(st.max,st.hp+2);hud()}else st.spr+=5;
   const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=k.pu;pp.style.color=k.css;pp.classList.add('go');return}
  st.time+=5;if(k.inv)st.gold=Math.max(st.gold,k.inv);
  const t=$('timer'),pp=$('tpop');t.classList.remove('gain');pp.classList.remove('go');void t.offsetWidth;t.classList.add('gain');
@@ -668,7 +672,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if(e.type==='boss'&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='warden'){BFX.clear();for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
-   st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden');if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu);spawnDrop(e.m.position,pool[Math.random()*pool.length|0])}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+   st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden');if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
@@ -717,6 +721,9 @@ const SHOP={
  upgrades:{intro:'Buy upgrades to add them to the Campaign pool: they can then show up as sector rewards, in Salvage Yards and from signals.',items:[
   ...UPG.filter(u=>u[5]).map(u=>({id:'up:'+u[0],n:u[0],d:u[1],icon:u[4],c:RCOL[u[3]],tag:RAR[u[3]],cost:u[5]})),
   {id:'up:more',n:'More upgrades',d:'New upgrades to add to the pool are on the way.',soon:1}]},
+ powerups:{intro:'Buy power-ups to add them to the drops in Campaign and Timed Attack.',items:[
+  {id:'pu:patch',n:'Patch Kit',d:'A silver capsule: repairs 2 armor in Campaign, adds 3 s in Timed Attack. Common, so it drops twice as often as the others.',icon:'pu_patch',c:'#e8ecf2',tag:'Common',cost:80},
+  {id:'pu:more',n:'More power-ups',d:'Overclock and Wingman are on the way.',soon:1}]},
  crafts:{intro:'Buy new crafts to fly in Campaign and Timed Attack.',items:[
   {id:'craft:swift',n:'Swift',d:'Speed frame. Fastest strafe and EN refill; 8 armor. Flies in Campaign and Timed Attack.',icon:'swift',cost:500},
   {id:'craft:more',n:'More crafts',d:'Other machines are on the way.',soon:1}]},
