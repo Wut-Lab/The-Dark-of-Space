@@ -39,6 +39,7 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
 kbd{font-family:var(--display);font-size:11px;border:1px solid #ffffff33;padding:1px 5px}
+#tot{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));font:400 15px var(--display);letter-spacing:.08em;color:var(--dim)}#tot b{color:var(--accent);font-weight:400}
 #pauseBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));padding:8px 14px;font-family:var(--display);letter-spacing:.12em;display:block}
 #pause{position:fixed;inset:0;background:#05060a00;opacity:0;transition:opacity .3s,background .3s,backdrop-filter .3s}
 #pause.on{opacity:1;background:#05060ad9;backdrop-filter:blur(4px)}
@@ -103,11 +104,12 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="pwrap" hidden><div id="pups"></div><span id="ppop"></span></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
-<div class="ov scr" id="start"><div class="title">
+<div class="ov scr" id="start"><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="crafts"><b>Campaign</b></button>
 <button data-go="timed"><b>Timed Attack</b></button>
+<button data-go="store"><b>Shop</b></button>
 <button data-go="unlocks"><b>Unlocks</b></button>
 <button data-go="how"><b>How to Play</b></button>
 <button data-go="credits"><b>Credits</b></button>
@@ -129,6 +131,9 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-t="ship"><b>Gale</b><span>Fast strafe, rapid lasers.</span></button>
 <button data-t="falcon"><b>Falcon</b><span>Balanced all round.</span></button>
 </div><p id="tbest"></p></div></div>
+
+<div class="ov scr" id="store" hidden><div class="card"><div class="hd"><h2>Shop</h2><button class="back" data-go="start">Back</button></div>
+<p>Under Construction.</p></div></div>
 
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
 <p>Nothing to unlock yet. New machines and upgrades earned across runs will appear here.</p></div></div>
@@ -191,7 +196,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Current upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed, +1 max armor</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li></ul>
 <h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
 <h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li><b>Tune-up</b> (10 scrap) is always in stock: a small boost to damage, fire rate, strafe speed and max armor. Buy it as often as you like</li></ul>
-<h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li></ul></div></div>
+<h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li><li>When a run ends (or you quit), half your scrap is banked as <b>Total Scrap</b>, shown on the main menu. The other half repairs your craft back to 100%</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
 <h3>The clock</h3><ul><li>You start with <b>3:00</b>, shown at the top of the screen</li><li>It flashes red under 30 seconds</li><li>When it reaches zero, the run ends and your scrap is your score</li></ul>
@@ -330,6 +335,11 @@ const FX=11;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
+// Scrap bank: at the end of every run half the scrap carries over; the other half pays to repair the craft back to 100%
+let bankT=0;try{bankT=+localStorage.getItem('darkbank')||0}catch(e){}
+const totT=()=>$('totN').textContent=bankT;totT();
+function bank(){if(!st||st.banked)return 0;st.banked=1;const k=Math.floor(st.scrap/2);bankT+=k;try{localStorage.setItem('darkbank',bankT)}catch(e){}totT();return k}
+const bankRows=k=>[['Banked (50%)',`+${k} · Total Scrap ${bankT}`],['Repairs (50%)',`${st.scrap-k} scrap · craft back to 100%`]];
 let tbest=0;try{tbest=+localStorage.getItem('darktimedbest')||0}catch(e){}
 const tbestT=()=>$('tbest').textContent=tbest?`Best score: ${tbest} scrap.`:'';tbestT();
 const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'},falcon:{hp:9,spd:9.5,dmg:1.5,rate:.22,shot:22,multi:1,pierce:0,name:'Falcon'}};
@@ -450,11 +460,12 @@ const EVENTS=[
 function timeUp(){running=false;st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=st.scrap>tbest;
  if(nb){tbest=st.scrap;try{localStorage.setItem('darktimedbest',tbest)}catch(e){}tbestT()}
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
- $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;$('dead').hidden=false}
+ $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;
+ $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 function die(){running=false;$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?st.upgrades.join(', '):'None'],
-  ['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
+  ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Armor color: green above 75%, yellow above 25%, red at 25% and below (bar pulses)
 const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
 let AC;function beep(){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=880;
@@ -564,9 +575,9 @@ function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;r
   $('pzName').textContent=st.name;$('pzSS').innerHTML=sheet(st,st.timed);
   requestAnimationFrame(()=>{el.classList.add('on');const w=$('viewer').clientWidth;VR.setPixelRatio(Math.min(devicePixelRatio,2));VR.setSize(w,w,false);$('pzGo').focus()})}
  else{el.classList.remove('on');setTimeout(()=>{if(!paused)el.hidden=true},300)}}
-function toMenu(){paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
+function toMenu(){if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
- ['dead','pick','evt','hud','timer','pwrap'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
+ ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;
 $('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
 addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
