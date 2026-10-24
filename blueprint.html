@@ -61,6 +61,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <div class="body"><p>Features on hold. Nothing here gets built until it moves into a numbered module. Add new ideas in the notes.</p>
 <ul class="held">
 <li><span class="chip">On hold</span><span>Score with a chain multiplier: kills within 1.5 s of each other raise it (×1 to ×8); taking a hit resets it. Time Attack's +2 s per kill at ×4 depends on this; until then, that rule needs a stand-in.</span></li>
+<li><span class="chip">Idea</span><span>Scrap as both score and currency: certain events, upgrades and more cost scrap. Spending it lowers your score but gives you a boost for the rest of the run. Ties into the salvage-yard shop in 04.</span></li>
 </ul>
 <div class="notes"><label for="n-ideas">Ideas for later <span class="st"></span></label><textarea id="n-ideas" placeholder="Anything you might want someday…"></textarea></div></div></details>
 
@@ -76,12 +77,13 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 
 <details data-id="timed"><summary><span class="n">02</span><span class="t">Time Attack Mode</span><span class="why">a second way to play</span></summary>
 <div class="body"><p>A fast mode built for short sessions: survive and score as much as you can before the clock runs out.</p>
-<div class="spec"><div><b>3:00</b><span>Starting clock</span></div><div><b>+2 s</b><span>Per kill at ×4 chain or higher</span></div><div><b>−5 s</b><span>Per hit taken (no lives in this mode)</span></div></div>
+<div class="spec"><div><b>3:00</b><span>Starting clock</span></div><div><b>+5 s</b><span>Per time capsule: green (common) or gold (rare, plus 2.5 s invulnerable)</span></div><div><b>−5 s</b><span>Per hit taken (no lives in this mode)</span></div></div>
 <ul>
 <li><label><input type="checkbox"><span>Mode select on the title screen: Campaign (sectors and refits) or Time Attack</span></label></li>
 <li><label><input type="checkbox"><span>Countdown timer in the HUD that flashes red under 30 s</span></label></li>
 <li><label><input type="checkbox"><span>Endless waves that speed up every 30 s; no refit screens, so the action never stops</span></label></li>
-<li><label><input type="checkbox"><span>Results screen: score, longest chain, accuracy, and your best Time Attack score saved in the browser</span></label></li>
+<li><label><input type="checkbox"><span>Results screen: score, wave reached, accuracy, and your best Time Attack score saved in the browser</span></label></li>
+<li><label><input type="checkbox"><span>Time capsules: destroyed units drop green (+5 s) or rarer gold (+5 s and 2.5 s invulnerable) capsules; fly over to collect</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-timed">Notes for Claude <span class="st"></span></label><textarea id="n-timed" placeholder="Clock length, time rules, what the results screen should show…"></textarea></div></div></details>
 
