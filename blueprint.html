@@ -104,9 +104,9 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <div class="body"><p>A fast mode built for short sessions: survive and score as much as you can before the clock runs out.</p>
 <div class="spec"><div><b>3:00</b><span>Starting clock</span></div><div><b>+5 s</b><span>Per time capsule: green (common) or gold (rare, plus 2.5 s invulnerable)</span></div><div><b>−5 s</b><span>Per hit taken (no lives in this mode)</span></div></div>
 <ul>
-<li><label><input type="checkbox"><span>Mode select on the title screen: Campaign (sectors and refits) or Time Attack</span></label></li>
+<li><label><input type="checkbox"><span>Mode select on the title screen: Campaign (sectors and upgrades) or Time Attack</span></label></li>
 <li><label><input type="checkbox"><span>Countdown timer in the HUD that flashes red under 30 s</span></label></li>
-<li><label><input type="checkbox"><span>Endless waves that speed up every 30 s; no refit screens, so the action never stops</span></label></li>
+<li><label><input type="checkbox"><span>Endless waves that speed up every 30 s; no upgrade screens, so the action never stops</span></label></li>
 <li><label><input type="checkbox"><span>Results screen: score, wave reached, accuracy, and your best Time Attack score saved in the browser</span></label></li>
 <li><label><input type="checkbox"><span>Time capsules: destroyed units drop green (+5 s) or rarer gold (+5 s and 2.5 s invulnerable) capsules; fly over to collect</span></label></li>
 </ul><div class="bar"><i></i></div>
@@ -124,24 +124,25 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-powerups">Notes for Claude <span class="st"></span></label><textarea id="n-powerups" placeholder="Power-ups to add or cut, durations, drop rates…"></textarea></div></div></details>
 <details data-id="rogue"><summary><span class="n">04</span><span class="t">Stats &amp; Run Structure</span><span class="why">every run plays differently</span></summary>
-<div class="body"><p>Give each craft real stats, make refits change them in interesting ways, and shape a run into choices you can't undo.</p>
+<div class="body"><p>Give each craft real stats, make upgrades change them in interesting ways, and shape a run into choices you can't undo.</p>
 <div class="spec"><div><b>Armor</b><span>Max health</span></div><div><b>Firepower</b><span>Damage per shot</span></div><div><b>Cycle</b><span>Shots per second</span></div><div><b>Mobility</b><span>Strafe speed</span></div><div><b>Reactor</b><span>Max EN and refill rate</span></div><div><b>Salvage</b><span>Scrap and drop chance</span></div></div>
 <ul>
 <li><label><input type="checkbox"><span>Stat sheet for each craft, shown on the craft select screen and in the pause menu next to the rotating model</span></label></li>
-<li><label><input type="checkbox"><span>Refits with rarity (common, uncommon, rare, contraband) and trade-offs, e.g. “Glass Reactor: +50% firepower, −3 max armor”</span></label></li>
+<li><label><input type="checkbox"><span>Upgrades with rarity (common, uncommon, rare, contraband) and trade-offs, e.g. “Glass Reactor: +50% firepower, −3 max armor”</span></label></li>
 <li><label><input type="checkbox"><span>Branching sector map: after each sector, choose the next one: combat, elite (tougher, better loot), salvage yard (shop), repair dock, or unknown signal (random event)</span></label></li>
-<li><label><input type="checkbox"><span>Shop at salvage yards: spend scrap on refits, armor repair or a reroll of refit choices</span></label></li>
+<li><label><input type="checkbox"><span>Shop at salvage yards: spend scrap on upgrades, armor repair or a reroll of upgrade choices</span></label></li>
 <li><label><input type="checkbox"><span>Boss sector every 5th: a capital-class unit with weak points to shoot off</span></label></li>
-<li><label><input type="checkbox"><span>Run summary on death: sectors cleared, refits taken, final stats, damage dealt</span></label></li>
-<li><label><input type="checkbox"><span>Meta progression: a share of scrap carries over to unlock new crafts and add refits to the pool, but every run starts at sector 1</span></label></li>
+<li><label><input type="checkbox"><span>Run summary on death: sectors cleared, upgrades taken, final stats, damage dealt</span></label></li>
+<li><label><input type="checkbox"><span>Meta progression: a share of scrap carries over to unlock new crafts and add upgrades to the pool, but every run starts at sector 1</span></label></li>
 </ul><div class="bar"><i></i></div>
-<div class="notes"><label for="n-rogue">Notes for Claude <span class="st"></span></label><textarea id="n-rogue" placeholder="Stats to add, refit ideas, map node types, what should carry between runs…"></textarea></div></div></details>
+<div class="notes"><label for="n-rogue">Notes for Claude <span class="st"></span></label><textarea id="n-rogue" placeholder="Stats to add, upgrade ideas, map node types, what should carry between runs…"></textarea></div></div></details>
 </div>
 <div class="pane" id="p-pu" role="tabpanel" aria-labelledby="t-pu" hidden>
 <div class="find"><input type="search" id="q" placeholder="Search power-ups…" aria-label="Search power-ups">
 <div class="fl" data-f="list"><span>List</span><button data-v="all">Both</button><button data-v="campaign">Campaign</button><button data-v="timed">Timed Attack</button></div>
 <div class="fl" data-f="status"><span>Status</span><button data-v="all">All</button><button data-v="built">Built</button><button data-v="planned">Planned</button><button data-v="proposed">Proposed</button></div>
 <div class="fl" data-f="kind"><span>Effect</span><button data-v="all">All</button><button data-v="instant">Instant</button><button data-v="timed">Lasts</button><button data-v="charges">Charges</button><button data-v="clock">Clock</button></div></div>
+<p class="sub"><b>Power-ups</b> are temporary boosts enemies drop; fly over one to use it. Permanent buffs are <b>upgrades</b> (see the Upgrades tab).</p>
 <section class="list" id="l-campaign"><h2>Campaign <small></small></h2><div class="items"></div></section>
 <section class="list" id="l-timed"><h2>Timed Attack <small></small></h2><div class="items"></div></section>
 <p class="sub">Planned items come from module 03. Proposed items are Claude's suggestions for Campaign-only drops; edit or reject them in the notes.</p>
@@ -149,11 +150,12 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <div class="pane" id="p-up" role="tabpanel" aria-labelledby="t-up" hidden>
 <div class="find"><input type="search" id="uq" placeholder="Search upgrades…" aria-label="Search upgrades">
 <div class="fl" data-f="rar"><span>Rarity</span><button data-v="all">All</button><button data-v="c">Common</button><button data-v="u">Uncommon</button><button data-v="r">Rare</button><button data-v="x">Contraband</button></div>
-<div class="fl" data-f="src"><span>Source</span><button data-v="all">All</button><button data-v="pick">Refit pick</button><button data-v="shop">Shop</button><button data-v="event">Event</button></div>
+<div class="fl" data-f="src"><span>Source</span><button data-v="all">All</button><button data-v="pick">Upgrade pick</button><button data-v="shop">Shop</button><button data-v="event">Event</button></div>
 <div class="fl" data-f="cat"><span>Type</span><button data-v="all">All</button><button data-v="off">Offense</button><button data-v="def">Defense</button><button data-v="mob">Mobility</button><button data-v="util">Utility</button></div>
 <div class="fl" data-f="dw"><span>Catch</span><button data-v="all">Any</button><button data-v="yes">Has a drawback</button><button data-v="no">No drawback</button></div></div>
+<p class="sub"><b>Upgrades</b> are permanent for the run, earned by buying, clearing sectors, objectives or events. <b>Power-ups</b> are temporary drops you fly over.</p>
 <div id="ulists"></div>
-<p class="sub">Odds per refit: Common 60%, Uncommon 27%, Rare 10%, Contraband 3%. Elite and boss rewards use 30 / 36 / 24 / 10. Shop price = base + sector number.</p>
+<p class="sub">Odds per upgrade: Common 60%, Uncommon 27%, Rare 10%, Contraband 3%. Elite and boss rewards use 30 / 36 / 24 / 10. Shop price = base + sector number.</p>
 </div>
 </main>
 <script>
@@ -169,14 +171,12 @@ const PU=[
  {n:'Repair Kit',c:'#ff5a6e',m:'c',s:'proposed',k:'instant',d:'Repairs 3 armor (Timed Attack has no armor)'},
  {n:'Scrap Magnet',c:'#ffb040',m:'c',s:'proposed',k:'timed',d:'Double scrap from kills for 8 s'},
  {n:'Reactor Surge',c:'#22e4ff',m:'c',s:'proposed',k:'timed',d:'Full EN, and dashes cost nothing for 6 s'}];
-// Upgrade catalog: mirrors UPG and TUNE in the game. src: p refit pick, s shop, e event
+// Upgrade catalog: mirrors UPG in the game. src: p upgrade pick, s shop, e event
 const UP=[
- ['Thrusters','Strafe 15% faster','c','mob','pse'],['Field repair','Repair 5 armor','c','def','pse'],['Light plating','+2 max armor','c','def','pse'],['Capacitor bank','EN refills 30% faster','c','util','pse'],
- ['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor. Always in stock, 10 scrap, stackable','c','util','s'],
- ['Overcharged rounds','+1 damage per shot','u','off','pse'],['Faster cycling','Fire 20% faster','u','off','pse'],['Hull plating','+3 max armor, repair fully','u','def','pse'],['Tungsten tips','Shots pass through 1 more unit','u','off','pse'],['Salvage claws','+1 scrap per unit destroyed','u','util','pse'],
- ['Split barrel','+1 projectile per volley','r','off','pse'],['Twin-linked feed','+1 damage and fire 10% faster','r','off','pse'],['Reactive armor','+5 max armor, repair fully','r','def','pse'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit','r','off','pse'],
- ['Glass reactor','+50% damage, but −3 max armor','x','off','pse',1],['Stripped frame','Strafe 30% and fire 15% faster, but −2 max armor','x','mob','pse',1],['Overdriven feed','Fire 40% faster, but every hit costs 1 more armor','x','off','pse',1],['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1],
- ['Loose reactor core','Fire 15% faster, but −2 max armor. Unknown Signal event only','x','off','e',1]];
+ ['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor. Always in the shop for 10 scrap, stackable','c','util','pse'],
+ ['Salvage claws','+1 scrap per unit destroyed','u','util','pse'],
+ ['Rail barrel','Shots fly 50% faster and pass through 1 more unit','r','off','pse'],
+ ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1]];
 const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e'};
 function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCase(),box=document.getElementById('ulists');
  box.innerHTML=Object.entries(RAR).filter(([k])=>F.rar==='all'||F.rar===k).map(([k,[name,col,price]])=>{const all=UP.filter(u=>u[2]===k),
