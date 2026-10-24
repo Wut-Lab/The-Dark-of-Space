@@ -207,7 +207,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
 <h3>Sniper</h3><ul><li>Grey, with a long rifle and a radar dish</li><li>Fires aimed shots, from the formation and while diving</li><li>Appears from sector 2</li></ul>
 <h3>Heavy</h3><ul><li>Large and rust red, with shoulder cannons</li><li>Tough; fires a three-shot spread</li><li>Appears from sector 3, in the back row</li></ul>
-<h3>Mine</h3><ul><li>A dark spiked sphere with a rust band</li><li>Drifts in and parks just ahead of your row, blocking that lane and soaking up your shots</li><li>Tough. Touching it hurts; dash through or destroy it</li><li>Appears from sector 2</li></ul>
+<h3>Mine</h3><ul><li>A dark spiked sphere with a rust band</li><li>Drifts in and parks just ahead of your row, blocking that lane and soaking up your shots</li><li>Tough. Touching it hurts; dash through or destroy it</li><li>After about 15 seconds it lifts off and leaves on its own</li><li>Appears from sector 2</li></ul>
 <h3>Lancer</h3><ul><li>A dark red dart-shaped drone</li><li>Hovers for a moment, slides to the left or right edge, flashes, then rams where you were. Fast, but fragile</li><li>Appears from sector 3</li></ul>
 <h3>Capital unit "Bastion"</h3><ul><li>The boss at sectors 5, 15, 25…: a slab-hulled carrier with three bolted-on turrets</li><li>The core is armored until all three turrets are shot off</li><li>Turrets fire aimed shots; the core fires a five-shot fan, faster once exposed</li></ul>
 <h3>Capital unit "Warden"</h3><ul><li>The boss at sectors 10, 20, 30…: a giant mech with a beam cannon on its right arm</li><li>Every few seconds a red laser sight locks onto you, then the cannon fires a beam along that line. Move off it</li><li>Now and then half the field flashes red: a sustained beam then sweeps from that edge to the centre. Get to the other half, or dash through</li><li>Heavily armored, and calls in a skirmisher or two</li></ul></div></div>
@@ -440,7 +440,9 @@ function bossWave(){st.boss=1;if(st.sec%10===0)return wardenWave();const m=MODEL
 // Mine: drifts in and parks just ahead of the player's row, blocking that lane; touching it hurts
 function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
  const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*(1+st.sec*.15),slot:V3(x,0),t:-1-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
-function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
+function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;
+ // after ~15 s parked it lifts off and leaves the field (no scrap)
+ if(e.t>7){e.m.position.z-=14*dt;e.m.rotation.y+=dt*3;if(e.m.position.z<-45){e.escaped=1;e.hp=0}return}const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
  if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0)ram(e,2,2)}
 // Lancer: flies in, hovers 1-2 s, slides to a side edge, flashes, then rams the spot where the player was; loops back in if it misses
 function lancerReset(e,t){const x=(Math.random()-.5)*14;Object.assign(e,{ph:0,t,p0:V3(x*.6,-44),p1:V3(x,-30),p2:V3(x,-17-Math.random()*4)})}
@@ -781,7 +783,7 @@ document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bo
  f.className='ft';f.hidden=true;b.classList.add('bot');f.append(b);c.append(f)});
 // Title backdrop: low-level units occasionally drift across the starfield
 let drift=[],driftT=2;
-function driftTick(dt){if(!running&&!paused){driftT-=dt;if(driftT<=0){driftT=4+Math.random()*5;const s=Math.random()<.5?1:-1,m=MODELS[Math.random()<.6?'chaser':'shooter']();
+function driftTick(dt){if(!$('start').hidden){driftT-=dt;if(driftT<=0){driftT=4+Math.random()*5;const s=Math.random()<.5?1:-1,m=MODELS[Math.random()<.6?'chaser':'shooter']();
  m.position.set(-s*24,-1-Math.random()*3,-14-Math.random()*14);m.rotation.y=s*Math.PI/2;S.add(m);drift.push({m,v:s*(3+Math.random()*2)})}}
  for(const d of drift){d.m.position.x+=d.v*dt;d.m.position.y+=Math.sin(performance.now()/400+d.v)*.004;if(Math.abs(d.m.position.x)>26){S.remove(d.m);d.dead=1}}drift=drift.filter(d=>!d.dead)}
 buildWorld();requestAnimationFrame(tick);
