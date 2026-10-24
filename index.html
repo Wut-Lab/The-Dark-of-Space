@@ -49,6 +49,13 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
 .pr button b{font-size:18px}.pr ul{margin:0;padding-left:18px;color:var(--dim);line-height:1.6;display:grid;gap:4px}
 @media (max-width:640px){.pz{grid-template-columns:1fr;align-content:start;overflow-y:auto}#viewer{width:min(70%,260px)}}
 @media (prefers-reduced-motion:reduce){#pause{transition:none}}
+.cr{display:contents}.th,.stb{display:none}
+@media (max-width:600px){.cr{display:flex;gap:8px}.cr>button:first-child{flex:1;display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px}
+ .cr>button:first-child>span{display:none}.cr>button:first-child b{font-size:18px}.th{display:block;width:56px;height:56px;flex:none}
+ .stb{display:grid;place-items:center;flex:none;width:72px;padding:6px;font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+ #crafts .row,#timed .row{gap:8px;grid-template-columns:1fr}.cr>button:first-child{justify-content:flex-start}}
+#cdet .card{justify-items:center;text-align:center;max-width:380px}#cdv{width:min(100%,240px);aspect-ratio:1;touch-action:none;cursor:grab}#cdet .ss{max-width:300px}
+#cdet .row{width:100%;grid-template-columns:1fr 1fr}#cdN{font-size:28px;color:var(--accent)}
 #banner{position:fixed;left:0;right:0;top:24%;text-align:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #bar.crit i{animation:crit .5s infinite alternate}@keyframes crit{to{opacity:.35}}
 #banner::before{content:"// FLEET COMMAND //";display:block;font:600 12px var(--body);letter-spacing:.35em;color:#fff;margin-bottom:10px;text-shadow:0 2px 6px #000}
@@ -200,12 +207,13 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
 <div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
+<div class="ov" id="cdet" hidden><div class="card"><canvas id="cdv" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><h2 id="cdN"></h2><div class="ss" id="cdS"></div><p>Drag to rotate</p><div class="row"><button id="cdGo"><b>Launch</b><span>Start with this craft.</span></button><button id="cdBack"><b>Back</b><span>Choose another.</span></button></div></div></div>
 <div class="ov" id="evt" hidden><div class="card"><h2 id="evH"></h2><p id="evT"></p><div class="row" id="evO"></div></div></div>
 <div class="ov" id="pick" hidden><div class="card"><h2 id="pickT">Sector cleared</h2><p>Choose one refit from the salvage.</p><div class="row" id="opts"></div></div></div>
 <button id="pauseBtn" hidden aria-label="Pause game">❚❚ PAUSE</button>
 <div id="pause" hidden><div class="pz">
 <div class="pl"><canvas id="viewer" aria-label="Your craft. Drag to rotate."></canvas><h2 id="pzName"></h2>
-<div class="hb"><span>ARMOR</span><div><i id="pzHp"></i></div><b id="pzHpt"></b></div><div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p></div>
+<div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p></div>
 <div class="pr"><div id="pzMenu" style="display:grid;gap:12px"><h2>PAUSED</h2>
 <button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
 <button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
@@ -448,7 +456,7 @@ $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1}
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);let last=performance.now();
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/1000);last=now;
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);return}
- driftTick(dt);
+ driftTick(dt);thumbTick(dt);
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
@@ -511,11 +519,30 @@ let paused=false,yaw=.6,pitch=.15,drag=null;
 const VR=new THREE.WebGLRenderer({canvas:$('viewer'),antialias:true,alpha:true}),VS=new THREE.Scene(),VC=new THREE.PerspectiveCamera(35,1,.1,100),VG=new THREE.Group();
 VS.add(new THREE.HemisphereLight(0xbfd4ff,0x221a10,1),VG);{const l=new THREE.DirectionalLight(0xffffff,.9);l.position.set(4,6,5);VS.add(l)}
 VC.position.set(0,0,9);
+// Phone craft select: one-line rows with a spinning thumbnail; a Stats button opens a larger rotating view with the stat sheet.
+// A single offscreen renderer draws every thumbnail into its own 2D canvas.
+const TR=new THREE.WebGLRenderer({antialias:true,alpha:true}),TS=new THREE.Scene(),TC=new THREE.PerspectiveCamera(35,1,.1,100),TM={};
+TR.setSize(384,384,false);TS.add(new THREE.HemisphereLight(0xbfd4ff,0x221a10,1));{const l=new THREE.DirectionalLight(0xffffff,.9);l.position.set(4,6,5);TS.add(l)}
+function thumbModel(k){if(!TM[k]){const g=new THREE.Group(),m=MODELS[k](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
+ for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}m.position.sub(b.getCenter(new THREE.Vector3()));g.add(m);TS.add(g);TM[k]={g,d:b.getSize(v).length()*1.9}}return TM[k]}
+function snap(k,yaw,cv,z=1){for(const q in TM)TM[q].g.visible=q===k;const t=thumbModel(k);t.g.visible=true;t.g.rotation.set(.15,yaw,0);TC.position.set(0,0,t.d*z);TC.lookAt(0,0,0);
+ TR.render(TS,TC);const x=cv.getContext('2d');x.clearRect(0,0,cv.width,cv.height);x.drawImage(TR.domElement,0,0,cv.width,cv.height)}
+const PHONE=matchMedia('(max-width:600px)');let thYaw=0,cdK=null,cdB=null,cdYaw=.6,cdDrag=null;
+for(const [k,b,timed] of [['mech',$('pMech')],['ship',$('pShip')],['falcon',$('pFalcon')],...['mech','ship','falcon'].map(k=>[k,document.querySelector(`[data-t=${k}]`),1])]){
+ const w=document.createElement('div');w.className='cr';b.before(w);w.append(b);b.insertAdjacentHTML('afterbegin',`<canvas class="th" width="112" height="112" data-k="${k}" aria-hidden="true"></canvas>`);
+ const sb=document.createElement('button');sb.className='stb';sb.textContent='Stats';sb.setAttribute('aria-label',`${BASE[k].name} stats`);
+ sb.onclick=()=>{cdK=k;cdB=b;$('cdN').textContent=BASE[k].name;$('cdS').innerHTML=sheet(BASE[k],timed);$('cdet').hidden=false};w.append(sb)}
+$('cdBack').onclick=()=>$('cdet').hidden=true;$('cdGo').onclick=()=>{$('cdet').hidden=true;cdB.click()};
+$('cdv').onpointerdown=e=>{cdDrag=e.clientX;$('cdv').setPointerCapture(e.pointerId)};$('cdv').onpointermove=e=>{if(cdDrag!=null){cdYaw+=(e.clientX-cdDrag)*.01;cdDrag=e.clientX}};
+$('cdv').onpointerup=$('cdv').onpointercancel=()=>cdDrag=null;
+function thumbTick(dt){if(!PHONE.matches)return;thYaw+=dt*.9;
+ if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
+ for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}
 function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;const el=$('pause');
  if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
   for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}const c=b.getCenter(new THREE.Vector3());
   m.position.sub(c);VG.add(m);VC.position.z=b.getSize(v).length()*1.9;
-  $('pzName').textContent=st.name;$('pzHp').parentNode.parentNode.hidden=st.timed;$('pzHp').style.width=Math.max(0,st.hp/st.max*100)+'%';$('pzHp').style.background=hpCol(st.hp/st.max);$('pzHpt').textContent=`${Math.ceil(st.hp)}/${st.max}`;$('pzSS').innerHTML=sheet(st,st.timed);
+  $('pzName').textContent=st.name;$('pzSS').innerHTML=sheet(st,st.timed);
   requestAnimationFrame(()=>{el.classList.add('on');const w=$('viewer').clientWidth;VR.setPixelRatio(Math.min(devicePixelRatio,2));VR.setSize(w,w,false);$('pzGo').focus()})}
  else{el.classList.remove('on');setTimeout(()=>{if(!paused)el.hidden=true},300)}}
 function toMenu(){paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
