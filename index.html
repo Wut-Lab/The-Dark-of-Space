@@ -201,13 +201,16 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
 <p>After each upgrade, choose how to reach the next sector. Every choice ends in a fight: stops happen on the way, then the sector's wave arrives.</p>
 <h3>Stops</h3><ul><li><b>Combat</b>: straight into a normal sector (offered when there are few other choices)</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +30 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: spend scrap on upgrades, Tune-ups, armor repairs or a restock, then fight</li><li><b>Repair Dock</b>: restores half your armor, then fight. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event, then fight. Could be salvage, a deal, or an ambush (the ambush is the fight)</li></ul>
-<h3>Fixed sectors</h3><ul><li>Every 5th sector is a <b>Capital Unit</b> boss: shoot off its 3 turrets to expose the core. Worth +60 scrap and 2 upgrades</li><li>Every other 4th sector is a <b>Bonus Stage</b></li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
+<h3>Fixed sectors</h3><ul><li>Every 5th sector is a <b>Capital Unit</b> boss, alternating Bastion (shoot off its 3 turrets to expose the core) and Warden (a beam-cannon mech). Worth +60 scrap and 2 upgrades</li><li>Every other 4th sector is a <b>Bonus Stage</b></li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
 <h3>Sniper</h3><ul><li>Grey, with a long rifle and a radar dish</li><li>Fires aimed shots, from the formation and while diving</li><li>Appears from sector 2</li></ul>
 <h3>Heavy</h3><ul><li>Large and rust red, with shoulder cannons</li><li>Tough; fires a three-shot spread</li><li>Appears from sector 3, in the back row</li></ul>
-<h3>Capital unit "Bastion"</h3><ul><li>A boss every 5th sector: a slab-hulled carrier with three bolted-on turrets</li><li>The core is armored until all three turrets are shot off</li><li>Turrets fire aimed shots; the core fires a five-shot fan, faster once exposed</li></ul></div></div>
+<h3>Mine</h3><ul><li>A dark spiked sphere with a rust band</li><li>Drifts in and parks just ahead of your row, blocking that lane and soaking up your shots</li><li>Tough. Touching it hurts; dash through or destroy it</li><li>Appears from sector 2</li></ul>
+<h3>Lancer</h3><ul><li>A dark red dart-shaped drone</li><li>Hovers for a moment, slides to the left or right edge, flashes, then rams where you were. Fast, but fragile</li><li>Appears from sector 3</li></ul>
+<h3>Capital unit "Bastion"</h3><ul><li>The boss at sectors 5, 15, 25…: a slab-hulled carrier with three bolted-on turrets</li><li>The core is armored until all three turrets are shot off</li><li>Turrets fire aimed shots; the core fires a five-shot fan, faster once exposed</li></ul>
+<h3>Capital unit "Warden"</h3><ul><li>The boss at sectors 10, 20, 30…: a giant mech with a beam cannon on its right arm</li><li>Every few seconds a red laser sight locks onto you, then the cannon fires a beam along that line. Move off it</li><li>Now and then half the field flashes red: a sustained beam then sweeps from that edge to the centre. Get to the other half, or dash through</li><li>Heavily armored, and calls in a skirmisher or two</li></ul></div></div>
 
 <div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>Every 4th sector (4, 8, 12, 16…) is a Bonus Stage, except when a boss sector lands there (20, 40…)</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you, and one hit destroys any of them</li><li>Some groups cross the field; others loop back out the side they came in, so move to meet them</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
@@ -357,7 +360,18 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_boot:[[-5,0,-1,10,13,3,'d',0,'e'],[-4,2,0,8,9,2,'a',0,'e'],[-1,3,1,2,8,1,'x'],[-4,6,1,8,1,1,'y'],[-3,9,1,2,2,1,'y'],[2,2,1,2,2,1,'y'],[-6,5,0,1,3,1,'x'],[5,8,0,1,2,1,'x']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
 const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8};
+// Mine: spiked sphere with a rust band and red lights. Lancer: dart-shaped ramming drone
+const MINE=[[-5,0,-5,10,10,10,'v',0,'e'],[-6,4,-6,12,2,12,'o',0,'e'],[-1,10,-1,2,3,2,'d'],[5,4,-1,3,2,2,'d',1],[-1,4,5,2,2,3,'d'],[-1,4,-8,2,2,3,'d'],[-1,7,4,2,1,1,'m'],[-1,7,-5,2,1,1,'m'],[-1,13,-1,2,1,2,'m']];
+const LANCER=[[-2,1,-8,4,3,16,'v',0,'e'],[2,1,-6,7,1,10,'o',1,'delta'],[-1,1,7,2,2,6,'d',0,'cz'],[-2,1,-10,4,3,2,'d'],[-1,2,-11,2,1,1,'m'],[-1,4,-1,2,1,3,'m'],[7,0,-6,1,3,4,'d',1]];
+// Capital unit "Warden": giant bipedal mech, heavy torso and shoulders, beam cannon on the right arm, fist on the left
+const WARDEN=[[4,0,-5,7,3,11,'d',1],[5,3,-3,5,10,6,'v',1,'r'],[5,12,-2,5,4,5,'o',1,'e'],[4,15,-4,7,9,8,'v',1,'r'],[-8,22,-5,16,5,10,'d',0,'r'],
+ [-10,26,-7,20,14,14,'v',0,'r'],[-7,30,6,14,8,2,'o'],[-2,33,8,4,3,1,'m'],[-4,40,-3,8,6,7,'d',0,'r'],[-3,42,4,6,2,1,'m'],[10,34,-6,8,8,12,'v',1,'e'],
+ [-17,22,-3,6,12,6,'v',0,'r'],[-17,17,-3,6,5,7,'d'],[11,24,-3,6,10,6,'v'],[12,22,0,6,6,26,'d',0,'cz'],[11,21,20,8,8,3,'o',0,'cz'],[13,23,26,4,4,2,'m',0,'cz'],
+ [-6,30,-12,12,10,5,'d'],[-5,33,-13,2,4,1,'o'],[3,33,-13,2,4,1,'o']];
 const MODELS={
+ mine:()=>build('mine',MINE,{...P,v:0x3a3f47,o:0x8a3b32,m:0xff3030},.09),
+ lancer:()=>build('lancer',LANCER,{...P,v:0x6b2a3a,o:0x2a2d36,m:0xff3030},.1),
+ warden:()=>build('warden',WARDEN,{...P,v:0x55606e,o:0x7a3a2a,m:0xff3030,d:0x22262d},.16),
  ...Object.fromEntries(Object.entries(ICONS).map(([k,v])=>[k,()=>build(k,v,IPAL,.1)])),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
@@ -393,7 +407,7 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon',swift:'pSwift'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -408,12 +422,52 @@ function wave(more){if(!more){st.wv=1;st.wvs=st.timed||st.sec%5===0||(st.sec%4==
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&st.sec>2?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
   ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.15)*(el?1.5:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-((i++)>>1)*.35,
-   p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
+   p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
+ {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
-function bossWave(){st.boss=1;const m=MODELS.boss(),k=1+st.sec*.15;S.add(m);m.position.set(0,0,-50);
+function bossWave(){st.boss=1;if(st.sec%10===0)return wardenWave();const m=MODELS.boss(),k=1+st.sec*.15;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:0,cd:5,r:4};
  for(const [x,y,z] of [[-3.6,1.17,0],[3.6,1.17,0],[0,1.17,3.2]]){const w=MODELS.wp();S.add(w);w.position.set(x,0,z-50);ents.push({m:w,type:'wp',hp:14*k,slot:V3(x,0),state:'boss',core,off:new THREE.Vector3(x,y,z),cd:4+Math.random()*2,r:1.1})}
  ents.push(core);hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit. Shoot off its 3 turrets to expose the core`)}
+// Mine: drifts in and parks just ahead of the player's row, blocking that lane; touching it hurts
+function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
+ const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*(1+st.sec*.15),slot:V3(x,0),t:-1-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
+function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
+ if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0){hurt(2);e.hp-=2}}
+// Lancer: flies in, hovers 1-2 s, slides to a side edge, flashes, then rams the spot where the player was; loops back in if it misses
+function lancerReset(e,t){const x=(Math.random()-.5)*14;Object.assign(e,{ph:0,t,p0:V3(x*.6,-44),p1:V3(x,-30),p2:V3(x,-17-Math.random()*4)})}
+function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*(1+st.sec*.15),slot:V3(i+.5,0),r:.6};lancerReset(e,-1.5-i*.8);m.position.copy(e.p0);ents.push(e)}
+function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
+ if(e.ph===0){e.t+=dt/1.6;if(e.t<0)return;e.m.visible=true;if(e.t>=1){e.ph=1;e.tm=1+Math.random()}else M.copy(bez(e.p0,e.p1,e.p2,e.t))}
+ else if(e.ph===1){e.tm-=dt;if(e.tm<=0){e.ph=2;e.to=V3((Math.random()<.5?-1:1)*(FX-.8),-8)}}
+ else if(e.ph===2){T.subVectors(e.to,M).setY(0);const d=T.length(),s=12*dt*f;if(d<=s){M.copy(e.to);e.ph=3;e.tm=.4}else M.addScaledVector(T.normalize(),s)}
+ else if(e.ph===3){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*20)%2?1.3:1);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z);if(e.tm<=0){e.ph=4;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}
+ else{M.addScaledVector(e.dir,20*dt*f);if(hd(M,p)<e.r+.6&&st.inv<=0){hurt(2);e.hp-=3}if(M.z>6||Math.abs(M.x)>FX+4){lancerReset(e,0);M.copy(e.p0)}}}
+// Warden boss: slow aimed beam (laser-sight tell, then a short blast) and a sweeping beam from one edge to the centre
+// (that half of the field flashes red first); calls in a skirmisher or two now and then
+const BFX=new THREE.Group();S.add(BFX);const MZ=new THREE.Vector3(),TG=new THREE.Vector3();
+const beamMesh=(c,o)=>{const x=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false}));x.visible=false;BFX.add(x);return x};
+function beamTo(m,a,b,w){m.position.copy(a).lerp(b,.5);m.scale.set(w,w,a.distanceTo(b));m.lookAt(b);m.visible=true}
+function wardenWave(){const m=MODELS.warden(),k=1+st.sec*.15;S.add(m);m.position.set(0,0,-55);BFX.clear();const glw=glow(0xff3030,1.2);glw.position.set(2.4,4,4.6);m.add(glw);
+ ents.push({m,type:'warden',state:'warden',hp:90*k,slot:V3(0,0),t:0,r:3.6,cdA:3,cdS:9,cdM:6,fx:{line:beamMesh(0xff3030,.7),aim:beamMesh(0xff7a3a,.9),sweep:beamMesh(0xff4a2a,.9),warn:beamMesh(0xff2020,.2),glw}});
+ hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Warden". Watch its cannon`)}
+function wardenCalm(e){const F=e.fx;F.line.visible=F.aim.visible=F.sweep.visible=F.warn.visible=false;if(e.atk){e.atk=null;e.cdA=1.5;e.cdS=Math.max(e.cdS,3)}}
+function addMob(i){const m=MODELS.chaser();S.add(m);const side=Math.random()<.5?-1:1,p0=V3(side*16,-30);m.position.copy(p0);
+ ents.push({m,type:'chaser',add:1,hp:2*(1+st.sec*.15),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
+function wardenUp(e,dt,p){e.t+=dt;const k=Math.min(1,e.t/3.5),M=e.m.position,F=e.fx;M.set(Math.sin(e.t*.3)*3*k,M.y,-55+31*k*(2-k));if(k<1)return;
+ MZ.set(M.x+2.4,4,M.z+4.6);e.cdA-=dt;e.cdS-=dt;e.cdM-=dt;F.glw.scale.setScalar(e.atk?1.6+Math.random()*.8:1.2);
+ if(e.atk==='aim'){e.at-=dt;
+  if(e.at>0){beamTo(F.line,MZ,e.tg,.12);F.line.material.opacity=Math.floor(e.at*14)%2?.35:.9}
+  else if(e.at>-.3){F.line.visible=false;beamTo(F.aim,MZ,e.tg,.45);if(!e.hit&&st.inv<=0&&segD(MZ.x,MZ.z,e.tg,p)<.75){hurt(2);e.hit=1}}
+  else{F.aim.visible=false;e.atk=null;e.cdA=3+Math.random()}}
+ else if(e.atk==='sweep'){e.at+=dt;
+  if(e.at<1.4)F.warn.visible=Math.floor(e.at*8)%2==0;
+  else if(e.at<3.2){F.warn.visible=false;const u=(e.at-1.4)/1.8,x=e.side*(FX+1)*(1-u);TG.set(x,.8,4);beamTo(F.sweep,MZ,TG,.8);
+   const xa=MZ.x+(x-MZ.x)*(0-MZ.z)/(4-MZ.z);if(Math.abs(p.x-xa)<.9&&st.inv<=0)hurt(2)}
+  else{F.sweep.visible=false;e.atk=null;e.cdS=10+Math.random()*3;e.cdA=2}}
+ else if(e.cdS<=0){e.atk='sweep';e.at=0;e.side=Math.random()<.5?-1:1;F.warn.position.set(e.side*FX/2,.05,(MZ.z+3)/2);F.warn.scale.set(FX,.02,3-MZ.z);F.warn.rotation.set(0,0,0)}
+ else if(e.cdA<=0){e.atk='aim';e.at=.8;e.hit=0;e.tg=V3(p.x-MZ.x,p.z-MZ.z).setLength(40).add(MZ).setY(.8)}
+ if(e.cdM<=0){e.cdM=8+Math.random()*3;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let i=0;i<1+(Math.random()<.5);i++)addMob(i)}}
 const armored=b=>ents.some(x=>x.core===b&&x.hp>0);
 // Bonus stage: five groups of eight sweep past in loops; they never shoot or ram, and any hit destroys one (as in Galaga).
 // Groups 0, 3 and 4 cross the field; 1 and 2 loop back out on the side they entered, so you have to move to catch them
@@ -431,7 +485,7 @@ function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
  else{if(u<.2){const a=u/.2;q=V3(s*3,-36+22*a)}else{const a=(u-.2)/.8*P2;q=V3(s*(3+7*Math.sin(a)),-14+4*Math.sin(2*a))}}
  q.x+=e.mate;return q}
 // Effects: voxel debris, camera shake, muzzle flash
-const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32};let shake=0,muzzleT=0;
+const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e};let shake=0,muzzleT=0;
 const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
 function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat(i%3?col:0xffb040));m.position.copy(pos);m.position.y+=.8;m.scale.setScalar(.12+Math.random()*.18);S.add(m);
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
@@ -545,6 +599,7 @@ addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('key
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
+const NOFIRE={chaser:1,mine:1,lancer:1,warden:1};
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 // Swept hit test: distance from target c to the segment a shot travelled this frame (o -> p), so low frame rates can't skip past a unit
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
@@ -576,9 +631,10 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   const emp=st.emp>0;if(!emp){sway+=dt*.6;diveCd-=dt}
   if(diveCd<=0){const f=ents.filter(e=>e.state==='form');if(f.length){const e=f[Math.random()*f.length|0],side=Math.sign(e.m.position.x)||1;
    Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.2)*(.6+Math.random()*.8)/st.fast}
-  for(const e of ents){if(emp){if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
+  for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
     else{e.t+=dt;const k=Math.min(1,e.t/3);e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
+   if(e.type==='mine'){face=false;mineUp(e,dt,p)}else if(e.type==='lancer')lancerUp(e,dt,p);else if(e.type==='warden'){face=false;wardenUp(e,dt,p)}
    if(e.state==='fly'){e.t+=dt/4.2;if(e.t<0)continue;e.m.visible=true;if(e.t>=1){e.escaped=1;e.hp=0}else e.m.position.copy(bez(e.p0,e.p1,e.p2,e.t))}
    if(e.state==='enter'&&e.pat!=null){e.t+=dt/2.6;if(e.t<0)continue;e.m.visible=true;
     if(e.t>=1){e.state='form';e.t=0;e.pat=null}else{const q=entryPos(e,Math.min(e.t/.75,1));if(e.t>.75){const b=(e.t-.75)/.25;q.lerp(slotPos(e),b*b*(3-2*b))}e.m.position.copy(q)}}
@@ -590,7 +646,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
     if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){hurt(e.type==='brute'?3:2);e.hp-=3}}
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
    e.m.position.y=.2+Math.sin(now/250+e.slot.x)*.15;if(e.off)e.m.position.y=e.core.m.position.y+e.off.y;
-   if(e.state!=='enter'&&e.state!=='fly'&&e.type!=='chaser'){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;
+   if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;
     if(e.type==='boss')for(let a=-2;a<=2;a++)fire(e.m.position.clone().add(V3(0,4)),V3(a*.22,1).normalize(),8,1,true,0xff5a5a,0);else
     if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
     else fire(e.m.position,T.subVectors(p,e.m.position).setY(0).normalize(),11,1,true,0xff5a5a,0)}}}
@@ -602,9 +658,9 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(s.enemy){if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if(e.type==='boss'&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
-  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
-   st.kills++;boom(e.m.position,e.type==='boss'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss');if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu);spawnDrop(e.m.position,pool[Math.random()*pool.length|0])}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
-   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
+  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='warden'){BFX.clear();for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
+   st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden');if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu);spawnDrop(e.m.position,pool[Math.random()*pool.length|0])}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
   muzzleT-=dt;muzzle.visible=muzzleT>0;muzzle.position.set(p.x,1.1,p.z-1.3);muzzle.scale.setScalar(.35+Math.random()*.2);
@@ -690,7 +746,7 @@ const TOUCH=matchMedia('(pointer:coarse)');
 function landscape(){if(!TOUCH.matches)return;const d=document.documentElement;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
-function toMenu(){$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
+function toMenu(){BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;
