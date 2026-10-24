@@ -25,7 +25,6 @@ font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none
 h1,h2{font-family:var(--display);margin:0;font-weight:400;text-wrap:balance}h1{font-size:40px;color:var(--accent)}h2{font-size:22px}
 p{margin:0;color:var(--dim);line-height:1.5}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-button{font:inherit;color:var(--fg);background:#ffffff0d;border:1px solid #ffffff33;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px}
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
 kbd{font-family:var(--display);font-size:11px;border:1px solid #ffffff33;padding:1px 5px}
@@ -53,21 +52,106 @@ text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,3px 3px #fff,-3px 3px 
 @media (prefers-reduced-motion:reduce){#banner.go{animation:bnr 2.3s forwards}@keyframes bnr{0%,80%{opacity:1}100%{opacity:0}}}
 #flash{position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 140px 40px #ff2a2a;opacity:0}
 #flash.go{animation:fl .45s ease-out}@keyframes fl{0%{opacity:1}100%{opacity:0}}
+button{font:inherit;color:var(--fg);background:linear-gradient(#ffffff17,#ffffff05);border:1px solid #ffffff40;border-radius:3px;
+box-shadow:0 4px 0 #000000b0,inset 0 1px 0 #ffffff2a;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px;transition:transform .06s,box-shadow .06s}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #000000b0,inset 0 1px 0 #ffffff1a}
+.scr{display:block;overflow-y:auto;padding-block:24px}.scr>.card{margin:max(16px,6vh) auto}
+#start{background:#05060a40}
+.title{display:grid;gap:32px;margin:5vh auto 16px;max-width:760px;justify-items:center}
+.logo{font:400 clamp(36px,8vw,72px)/1.05 "Black Ops One","Arial Black",sans-serif;color:var(--accent);text-align:center;letter-spacing:.03em;
+text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
+.menu{display:grid;gap:14px;width:min(300px,100%)}.menu button{justify-items:center;text-align:center;padding:13px;background:linear-gradient(#1d2131,#11131d)}.menu b{font-size:19px;letter-spacing:.06em}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:12px}.ft{display:flex;justify-content:flex-end}
+.back{padding:6px 12px;font:600 12px var(--body);letter-spacing:.14em;text-transform:uppercase;box-shadow:0 3px 0 #000000b0,inset 0 1px 0 #ffffff2a}
+.back:active{transform:translateY(2px)}
+.card h3{margin:4px 0 -8px;font:700 15px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+.card ul{margin:0;padding-left:20px;color:var(--dim);line-height:1.6;display:grid;gap:2px}.card ul b{color:var(--fg)}
+.topics{display:grid;gap:12px}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600&family=Saira+Condensed:wght@700&family=Black+Ops+One&display=swap">
 <div id="flash"></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span>Sector <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
-<div class="ov" id="start"><div class="card">
-<h1>In the Dark of Space</h1>
-<p>You're a mercenary pilot taking contracts in a contested sector. Pick your machine, hold the line against each wave of mass-production units as they swoop in from formation, and refit between sorties. If your machine goes down, the run is over.</p>
+<div class="ov scr" id="start"><div class="title">
+<h1 class="logo">In the Dark of Space</h1>
+<nav class="menu" aria-label="Main menu">
+<button data-go="crafts"><b>Campaign</b></button>
+<button data-go="timed"><b>Timed Attack</b></button>
+<button data-go="unlocks"><b>Unlocks</b></button>
+<button data-go="how"><b>How to Play</b></button>
+<button data-go="credits"><b>Credits</b></button>
+</nav></div></div>
+
+<div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="start">Back</button></div>
+<p>Choose your machine. Clear sector after sector, refit between them, and see how far you get before your armor gives out.</p>
 <div class="row">
 <button id="pMech"><b>Kestrel</b><span>Mobile frame. 12 armor, heavy rifle. Slow strafe, hits hard.</span></button>
 <button id="pShip"><b>Gale</b><span>Interceptor. 6 armor, rapid lasers. Fast and fragile.</span></button>
 <button id="pFalcon"><b>Falcon</b><span>Strike fighter. 9 armor, twin cannons. Balanced all round.</span></button>
-</div>
-<p><kbd>A</kbd>/<kbd>D</kbd> or arrows to strafe, <kbd>Shift</kbd> to dash (uses EN, brief invulnerability). On touch, drag sideways to strafe and press Dash. Guns fire automatically. Units shot mid-dive drop double scrap. <span id="best"></span></p>
-</div></div>
+</div><p id="best"></p></div></div>
+
+<div class="ov scr" id="timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="start">Back</button></div>
+<p>In development. This mode isn't playable yet.</p>
+<h3>Planned</h3><ul><li>A 3:00 clock that flashes red under 30 seconds</li><li>Endless waves that speed up every 30 seconds</li><li>No refit stops; each hit costs 5 seconds</li><li>A results screen with your best score</li></ul></div></div>
+
+<div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
+<p>Nothing to unlock yet. New machines and refits earned across runs will appear here.</p></div></div>
+
+<div class="ov scr" id="how" hidden><div class="card"><div class="hd"><h2>How to Play</h2><button class="back" data-go="start">Back</button></div>
+<h3>The goal</h3>
+<p>Survive as many sectors as you can. Each sector is a wave of enemy units: destroy every one to clear it, choose a refit, and push on to the next. When your armor runs out, the run is over.</p>
+<h3>Topics</h3>
+<div class="topics">
+<button data-go="how-controls"><b>Controls</b><span>Moving, dashing, pausing</span></button>
+<button data-go="how-crafts"><b>Your Machines</b><span>Kestrel, Gale and Falcon</span></button>
+<button data-go="how-armor"><b>Armor &amp; Damage</b><span>Staying alive</span></button>
+<button data-go="how-sectors"><b>Sectors</b><span>How a wave starts and ends</span></button>
+<button data-go="how-enemies"><b>Enemies</b><span>Who you're fighting</span></button>
+<button data-go="how-bonus"><b>Bonus Stages</b><span>Every 4th sector</span></button>
+<button data-go="how-refits"><b>Refits &amp; Scrap</b><span>Getting stronger</span></button>
+</div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
+
+<div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
+<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li></ul>
+<h3>Touch</h3><ul><li>Drag sideways anywhere to strafe</li><li>Tap <b>Dash</b> (bottom right) to dash</li><li>Tap <b>Pause</b> (top right) to pause</li></ul>
+<h3>Firing</h3><ul><li>Your guns fire on their own, straight up the field</li></ul>
+<h3>Dash</h3><ul><li>A quick sideways burst in the direction you're moving</li><li>You can't be hurt during a dash</li><li>Each dash uses EN (the yellow bar), which refills over time</li></ul></div></div>
+
+<div class="ov scr" id="how-crafts" hidden><div class="card"><div class="hd"><h2>Your Machines</h2><button class="back" data-go="how">Back</button></div>
+<h3>Kestrel</h3><ul><li>Mobile frame: 12 armor</li><li>Heavy rifle: slow fire, big damage</li><li>Slowest strafe</li></ul>
+<h3>Gale</h3><ul><li>Interceptor: 6 armor</li><li>Rapid lasers: fast fire, light damage</li><li>Fastest strafe</li></ul>
+<h3>Falcon</h3><ul><li>Strike fighter: 9 armor</li><li>Twin cannons: medium fire rate and damage</li><li>Medium strafe</li></ul></div></div>
+
+<div class="ov scr" id="how-armor" hidden><div class="card"><div class="hd"><h2>Armor &amp; Damage</h2><button class="back" data-go="how">Back</button></div>
+<h3>The armor bar</h3><ul><li><b>Green</b>: 76–100%</li><li><b>Yellow</b>: 26–75%</li><li><b>Red</b>: 25% and below. The bar pulses and a warning beep sounds</li></ul>
+<h3>Taking hits</h3><ul><li>Enemy shots and diving units both cost armor</li><li>The screen edges flash red when you're hit</li><li>You get a brief moment of safety after each hit</li></ul>
+<h3>When armor hits zero</h3><ul><li>Your machine is destroyed and the run ends</li></ul></div></div>
+
+<div class="ov scr" id="how-sectors" hidden><div class="card"><div class="hd"><h2>Sectors</h2><button class="back" data-go="how">Back</button></div>
+<h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li></ul>
+<h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li></ul>
+<h3>End</h3><ul><li>When Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose a refit, and the next sector begins</li><li>Each sector brings more units, and they dive more often</li></ul></div></div>
+
+<div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
+<h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
+<h3>Sniper</h3><ul><li>Grey, with a long rifle and a radar dish</li><li>Fires aimed shots, from the formation and while diving</li><li>Appears from sector 2</li></ul>
+<h3>Heavy</h3><ul><li>Large and rust red, with shoulder cannons</li><li>Tough; fires a three-shot spread</li><li>Appears from sector 3, in the back row</li></ul></div></div>
+
+<div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
+<ul><li>Every 4th sector (4, 8, 12…) is a Bonus Stage</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
+
+<div class="ov scr" id="how-refits" hidden><div class="card"><div class="hd"><h2>Refits &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
+<h3>Refits</h3><ul><li>After each sector, choose one of three refits</li><li>Options include more damage, faster fire, extra armor, speed, extra projectiles, shots that pass through units, and repairs</li><li>Refits last for the rest of the run</li></ul>
+<h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Scrap is your score for the run</li></ul></div></div>
+
+<div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="start">Back</button></div>
+<h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
+<h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
+<h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
+<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li></ul>
+<h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
+<h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
+<div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 <div class="ov" id="pick" hidden><div class="card"><h2 id="pickT">Sector cleared</h2><p>Choose one refit from the salvage.</p><div class="row" id="opts"></div></div></div>
 <button id="pauseBtn" hidden aria-label="Pause game">❚❚ PAUSE</button>
 <div id="pause" hidden><div class="pz">
@@ -172,7 +256,7 @@ const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar
 function start(kind){fx.forEach(f=>S.remove(f.m));fx.length=0;shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
- ['start','dead','pick'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;wave();running=true}
+ show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;wave();running=true}
 function wave(){st.bonus=st.sec%4===0;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')} · They won't shoot. Destroy as many as you can`);return}
  const cols=Math.min(4+st.sec,9),rows=Math.min(2+(st.sec>>1),4);let i=0;diveCd=3;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=r===0&&st.sec>2?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
@@ -221,6 +305,7 @@ $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1}
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);let last=performance.now();
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/1000);last=now;
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);return}
+ driftTick(dt);
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
@@ -279,7 +364,7 @@ function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;r
  else{el.classList.remove('on');setTimeout(()=>{if(!paused)el.hidden=true},300)}}
 function toMenu(){paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
- ['dead','pick','hud'].forEach(i=>$(i).hidden=true);$('start').hidden=false}
+ ['dead','pick','hud'].forEach(i=>$(i).hidden=true);show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;
 $('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
 addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
@@ -288,6 +373,17 @@ $('viewer').addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};$(
 $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag.x)*.01;pitch=THREE.MathUtils.clamp(pitch+(e.clientY-drag.y)*.01,-1.2,1.2);drag={x:e.clientX,y:e.clientY}});
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
+// Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
+function show(id){document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+ const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
+document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
+ f.className='ft';f.hidden=true;b.classList.add('bot');f.append(b);c.append(f)});
+// Title backdrop: low-level units occasionally drift across the starfield
+let drift=[],driftT=2;
+function driftTick(dt){if(!running&&!paused){driftT-=dt;if(driftT<=0){driftT=4+Math.random()*5;const s=Math.random()<.5?1:-1,m=MODELS[Math.random()<.6?'chaser':'shooter']();
+ m.position.set(-s*24,-1-Math.random()*3,-14-Math.random()*14);m.rotation.y=s*Math.PI/2;S.add(m);drift.push({m,v:s*(3+Math.random()*2)})}}
+ for(const d of drift){d.m.position.x+=d.v*dt;d.m.position.y+=Math.sin(performance.now()/400+d.v)*.004;if(Math.abs(d.m.position.x)>26){S.remove(d.m);d.dead=1}}drift=drift.filter(d=>!d.dead)}
 buildWorld();requestAnimationFrame(tick);
 </script>
 
