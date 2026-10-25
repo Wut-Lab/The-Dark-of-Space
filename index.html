@@ -213,7 +213,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Capital unit "Warden"</h3><ul><li>One of three bosses: a giant mech with a beam cannon on its right arm</li><li>Every few seconds a red laser sight locks onto you, then the cannon fires a beam along that line. Move off it</li><li>Now and then half the field flashes red: a sustained beam then sweeps from that edge to the centre. Get to the other half, or dash through</li><li>Heavily armored, and calls in a skirmisher or two</li></ul><h3>Capital unit "Minotaur"</h3><ul><li>One of three bosses: an oversized Heavy with bull horns and a black triangle on its forehead</li><li>Its shoulder cannons fire at you in a steady left, right, left rhythm</li><li>When it stops and shudders and a red lane flashes toward you, it is about to ram down that lane. Move out of it</li></ul></div></div>
 
 <div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Each zone is sectors 1–4 of combat, then a boss at 5 (then 6–9 and 10, and so on)</li><li>Take <b>3 hits or fewer</b> across the four combat sectors and a Bonus Stage opens as sector 4.5, right before the boss</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you, and one hit destroys any of them</li><li>Some groups cross the field; others loop back out the side they came in, so move to meet them</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
+<ul><li>Each zone is sectors 1–4 of combat, then a boss at 5 (then 6–9 and 10, and so on). For now every zone is <b>The Open Zone</b></li><li>Take <b>3 hits or fewer</b> across the four combat sectors and a Bonus Stage opens as sector 4.5, right before the boss</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you, and one hit destroys any of them</li><li>Some groups cross the field; others loop back out the side they came in, so move to meet them</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
 
 <div class="ov scr" id="how-upgrades" hidden><div class="card"><div class="hd"><h2>Upgrades &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
 <p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
@@ -441,7 +441,7 @@ function wave(more){if(!more){st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
   ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
- {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
+ {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${zoneName(st.sec)} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
 function bossWave(){st.boss=1;const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
@@ -510,7 +510,10 @@ function bonusWave(){let i=0;st.bTot=40;st.bHit=0;
  for(let g=0;g<5;g++)for(let k=0;k<8;k++){const type=['chaser','shooter','chaser','shooter','brute'][g],side=[-1,1,-1,1,-1][g],m=MODELS[type]();m.visible=false;S.add(m);
   const p0=V3(side*18,-30+(g>>1)*4);m.position.copy(p0);
   ents.push({m,type,hp:.1,slot:V3(g+k,0),state:'fly',t:-1.2-(g*3+k*.18),p0,p1:V3([6,2,-2,-6,0][g],12),p2:V3([18,18,-18,-18,18][g],-26),r:type==='brute'?.9:.6})}}
-let bnT;function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;
+let bnT;
+// Areas: each zone of 5 sectors has a name. Only The Open Zone so far, so every zone uses it
+const ZONES=['The Open Zone'],zoneName=sec=>ZONES[Math.min(ZONES.length-1,Math.floor((sec-1)/5))];
+function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;
  el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,2400)}
 const slotPos=e=>e.slot.clone().setX(e.slot.x+Math.sin(sway)*2);
 // Scripted entries: pairs fly a sweep, loop or figure-eight, then ease into their slot
