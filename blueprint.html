@@ -103,7 +103,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <ul>
 <li><label><input type="checkbox"><span>Keep the armor bar (no lives): it turns green, then yellow, then red as armor drops, a warning beep repeats at 25% and below, and every hit flashes the screen edges red</span></label></li>
 <li><label><input type="checkbox"><span>Scripted entry patterns: loops, figure-eights and side sweeps, with units peeling off two at a time</span></label></li>
-<li><label><input type="checkbox"><span>Stage banner (“SECTOR 03”) and a bonus stage every 4th sector: units fly past without shooting, and destroying all of them pays a big bonus</span></label></li>
+<li><label><input type="checkbox"><span>Stage banner (“SECTOR 03”) and a bonus stage at sector 4.5 (before each boss) if the zone's four combat sectors cost 3 hits or fewer: units fly past without shooting, and destroying all of them pays a big bonus</span></label></li>
 <li><label><input type="checkbox"><span>Explosions: voxel debris bursts, screen shake on big hits, a muzzle flash on every shot</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-arcade">Notes for Claude <span class="st"></span></label><textarea id="n-arcade" placeholder="Scoring ideas, entry patterns, how hard it should get…"></textarea></div></div></details>
@@ -238,6 +238,9 @@ const UP=[
  ['Rail barrel','Shots fly 50% faster and pass through 1 more unit','r','off','pse'],
  ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1],
  ['Enhanced EMPs','EMP power-ups freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)','c','util','pse'],
+ ['Overcharged Cells','Energy recharges 20% faster per tier, so you can dash more often','c','util','pse',1],
+ ['Ricochet Shield','Dash raises a shield that bounces enemy shots off at an angle set by your motion (2 damage on hit). Dashes cost +15 energy. II: 4 contact damage. III: no extra energy cost','u','def','pse',1],
+ ['Venom Launcher','Every 10th volley fires a green grenade: +2 damage to the target, 2 blast damage nearby. II: +1 center. III: +1 blast','r','off','pse',1],
  ['Beam Shot','Shots become beams with a long, damaging tail. +1 damage; fire 30% slower at tier I, 20% at II, 10% at III','u','off','pse',1],
  ['Bootleg Shields','Every 5th hit: 50% chance to block, next shot +2 damage (II: every 4th, 75%, +3; III: every 3rd, always, +4). Each block halves strafe speed for 0.4 s. Unlock: block 30 hits with Barriers','x','def','pseu',1],
  ['Ram Plating','Collisions with units cost 1 less armor (min 1); the unit takes +3 damage per tier. Shop unlock: 100','c','def','pse'],
