@@ -201,7 +201,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
 <p>After each upgrade, choose how to reach the next sector. Every choice ends in a fight: stops happen on the way, then the sector's wave arrives.</p>
 <h3>Stops</h3><ul><li><b>Combat</b>: straight into a normal sector (offered when there are few other choices)</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +30 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: spend scrap on upgrades, Tune-ups, armor repairs or a restock, then fight</li><li><b>Repair Dock</b>: restores half your armor, then fight. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event, then fight. Could be salvage, a deal, or an ambush (the ambush is the fight)</li></ul>
-<h3>Fixed sectors</h3><ul><li>Sectors come in <b>zones</b> of five: four combat sectors, then a boss (sectors 1–5, 6–10, and so on). Different zones hold different dangers</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 2 upgrades</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
+<h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 2 upgrades</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
@@ -212,7 +212,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Capital units</h3><ul><li>Every zone ends in a boss: a <b>Capital Unit</b>, far bigger and tougher than anything before it</li><li>Each one fights its own way. Watch for its tells (flashes, shudders, red warnings) and learn its patterns</li><li>Bring it down for +60 scrap and 2 upgrades</li></ul></div></div>
 
 <div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Sometimes a Bonus Stage opens as sector 4.5, between a zone's last combat sector and its boss</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you, and one hit destroys any of them</li><li>Some groups cross the field; others loop back out the side they came in, so move to meet them</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
+<ul><li>Sometimes a Bonus Stage opens as sector 4.5, right before a boss</li><li>40 units sweep past in five groups of 8</li><li>They never shoot or ram you, and one hit destroys any of them</li><li>Some groups cross the field; others loop back out the side they came in, so move to meet them</li><li>Each one you destroy pays 3 scrap</li><li>Destroy all 40 for a <b>PERFECT</b> bonus of +20 scrap</li></ul></div></div>
 
 <div class="ov scr" id="how-upgrades" hidden><div class="card"><div class="hd"><h2>Upgrades &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
 <p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
@@ -267,7 +267,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li>Clear a sector to pick one upgrade (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss. When armor hits zero, the run ends.</li>
 <li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li>
 <li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
-<li>Sectors come in zones of five, ending in a boss. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
+<li>Every 5th sector is a boss. Every 10 sectors you choose which zone to fly into next. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
 <li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). Blue EMP freezes units for 2.5 s, violet Barrier blocks 3 hits, orange Spread Shot fires a 5-way fan for 5 s.</li>
 <li><b>Timed Attack</b>: each hit costs 5 seconds. Grab green capsules for +5 s, gold for +5 s and brief invulnerability.</li>
 <li><kbd>Esc</kbd> or <kbd>P</kbd> pauses.</li></ul>
@@ -415,7 +415,31 @@ const MODELS={
 // Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
 let world=new THREE.Group();S.add(world);const stars=[];
 function buildWorld(){S.background=new THREE.Color(0x05060c);
- for(let i=0;i<300;i++){const m=new THREE.Mesh(BOX,mat(Math.random()<.2?0x9fb7ff:0xffffff));m.position.set((Math.random()-.5)*70,-4-Math.random()*16,-60+Math.random()*80);m.scale.setScalar(.1+Math.random()*.12);world.add(m);stars.push(m)}}
+ for(let i=0;i<300;i++){const m=new THREE.Mesh(BOX,mat(Math.random()<.2?0x9fb7ff:0xffffff));m.position.set((Math.random()-.5)*70,-4-Math.random()*16,-60+Math.random()*80);m.scale.setScalar(.1+Math.random()*.12);world.add(m);stars.push(m)}legionBuild()}
+// Legion Space backdrop: floating sandstone ruins with neon trim (colonnades, cyber towers, now and then a Parthenon) drifting past,
+// over sand-coloured dust and haze. Shown only in Legion Space zones
+const LEG=new THREE.Group();LEG.visible=false;S.add(LEG);const legB=[],legD=[];
+const LPAL={s:0xc8a46a,d:0x8a6e44,m:0xe0d4b4,k:0x2a2530,n:0x22e4ff,p:0xff2e88,g:0xf2c230,a:0x6b7280};
+function rock(w,dp){const o=[];for(let k=0;k<6;k++)o.push([-w/2+k*1.5|0,-1-k,-dp/2+k|0,w-k*3|0,1,Math.max(2,dp-k*2),k<2?'s':'d',0,'r']);return o}
+function cols(xs,zs,y,h,c='m'){const o=[];for(const x of xs)for(const z of zs)o.push([x,y,z,2,h,2,c],[x-1,y+h-1,z-1,4,1,4,'s']);return o}
+const LEGM={
+ parth:()=>{const o=[...rock(40,20),[-20,0,-10,40,1,20,'s'],[-19,1,-9,38,1,18,'s'],[-18,2,-8,36,1,16,'m'],[-11,3,-5,22,9,10,'d'],[-2,3,5,4,6,1,'n'],
+  ...cols([-16,-12,-8,-4,2,6,10,14],[-8,6],3,9),...cols([-16,14],[-4,1],3,9),[-18,12,-9,36,2,18,'m'],[-18,12,9,36,1,1,'n'],[-18,14,9,36,1,1,'p']];
+  for(let k=0;k<6;k++)o.push([-17+3*k,14+k,-9,34-6*k,1,18,'m']);o.push([0,20,0,1,7,1,'a'],[0,27,0,1,1,1,'p']);return build('lg_parth',o,LPAL,.6)},
+ colon:()=>build('lg_colon',[...rock(16,10),[-8,0,-5,16,1,10,'s'],...cols([-7,-3,1,5],[-4,2],1,7),[-8,8,-5,16,1,10,'m'],[-8,8,5,16,1,1,'p'],[-8,9,-4,16,1,8,'s'],[-8,7,5,16,1,1,'n']],LPAL,.5),
+ tower:()=>{const o=[...rock(14,14),[-7,0,-7,14,1,14,'s'],...cols([-7,-3,1,5],[5],1,6),...cols([-7,5],[-7],1,6),[-5,1,-5,10,28,10,'k']];
+  for(let y=4;y<27;y+=4)o.push([-5,y,5,10,1,1,y%8?'n':'p'],[5,y,-5,1,1,10,y%8?'p':'n'],[-6,y,-5,1,1,10,y%8?'p':'n']);
+  o.push([-6,29,-6,12,1,12,'s'],[-4,30,-4,8,5,8,'g',0,'e'],[0,35,0,1,6,1,'a'],[0,41,0,1,1,1,'n']);return build('lg_tower',o,LPAL,.45)},
+ arch:()=>build('lg_arch',[...rock(18,6),[-9,0,-3,18,1,6,'s'],[-9,1,-2,4,10,4,'s'],[5,1,-2,4,10,4,'s'],[-9,11,-2,18,3,4,'m'],[-5,9,-2,10,2,4,'m'],[-9,12,2,18,1,1,'n'],[-4,8,2,8,1,1,'p']],LPAL,.5)};
+function legPlace(b,z){const side=Math.random()<.5?-1:1,k=b.big?'parth':['colon','tower','arch'][Math.random()*3|0];
+ if(b.m)b.g.remove(b.m);b.m=LEGM[k]();b.g.add(b.m);b.sp=.55+Math.random()*.35;
+ b.g.position.set(side*(17+Math.random()*18+(b.big?6:0)),-19+Math.random()*(b.big?3:9),z);b.g.rotation.y=(Math.random()-.5)*.8+(b.big?side*.5:0)}
+function legionBuild(){const hz=new THREE.MeshBasicMaterial({color:0xc89a58,transparent:true,opacity:.16,blending:THREE.AdditiveBlending,depthWrite:false});
+ for(let i=0;i<10;i++){const m=new THREE.Mesh(BOX,hz);m.scale.set(30+Math.random()*40,.1,6+Math.random()*10);m.position.set((Math.random()-.5)*80,-24-Math.random()*14,-90+i*11);m.rotation.y=(Math.random()-.5)*.6;LEG.add(m);legD.push(m)}
+ for(let i=0;i<140;i++){const m=new THREE.Mesh(BOX,mat([0xc8a46a,0xa88450,0xe0c088][i%3]));m.position.set((Math.random()-.5)*70,-3-Math.random()*20,-60+Math.random()*80);m.scale.setScalar(.06+Math.random()*.08);LEG.add(m);legD.push(m)}
+ for(let i=0;i<9;i++){const b={g:new THREE.Group(),big:i%4===3};LEG.add(b.g);legPlace(b,-95+i*12);legB.push(b)}}
+function legionTick(dt,v){for(const m of legD){m.position.z+=dt*v*(m.scale.y>.09?.6:.8);if(m.position.z>20)m.position.z-=(m.scale.y>.09?110:80)}
+ for(const b of legB){b.g.position.z+=dt*v*b.sp;if(b.g.position.z>25)legPlace(b,b.g.position.z-110)}}
 const FX=11;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
@@ -437,7 +461,7 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon',swift:'pSwift'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
+function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -453,9 +477,9 @@ function wave(more){if(!more){st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
   ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
- {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${zoneName(st.sec)} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
+ {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
-function bossWave(){st.boss=1;const b=Math.random()*4|0;if(b===1)return wardenWave();if(b===2)return minoWave();if(b===3)return caesarWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
+function bossWave(){st.boss=1;if(st.area==='Legion Space')return caesarWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
  for(const [x,y,z] of [[-3.6,1.17,0],[3.6,1.17,0],[0,1.17,3.2]]){const w=MODELS.wp();S.add(w);w.position.set(x,0,z-50);ents.push({m:w,type:'wp',hp:14*k,slot:V3(x,0),state:'boss',core,off:new THREE.Vector3(x,y,z),cd:9+Math.random()*2,r:1.1})}
  ents.push(core);hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit. Shoot off its 3 turrets to expose the core`)}
@@ -550,8 +574,8 @@ function bonusWave(){let i=0;st.bTot=40;st.bHit=0;
   const p0=V3(side*18,-30+(g>>1)*4);m.position.copy(p0);
   ents.push({m,type,hp:.1,slot:V3(g+k,0),state:'fly',t:-1.2-(g*3+k*.18),p0,p1:V3([6,2,-2,-6,0][g],12),p2:V3([18,18,-18,-18,18][g],-26),r:type==='brute'?.9:.6})}}
 let bnT;
-// Areas: each zone of 5 sectors has a name. Only The Open Zone so far, so every zone uses it
-const ZONES=['The Open Zone'],zoneName=sec=>ZONES[Math.min(ZONES.length-1,Math.floor((sec-1)/5))];
+// Areas (zones): ten sectors each, two bosses. Sectors 1–10 are The Open Zone; after every 10th sector the player picks the next zone from ZONES (only Legion Space so far)
+const ZONES={'Legion Space':'Sandstone ruins in neon light. Its capital units are Caesar-class.'};
 function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;
  el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,2400)}
 const slotPos=e=>e.slot.clone().setX(e.slot.x+Math.sin(sway)*2);
@@ -636,7 +660,7 @@ function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Se
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss; sector 4.5 is a bonus stage if the zone cost 3 hits or fewer
 const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +30 scrap and 2 upgrades.'],yard:['Salvage Yard','Shop for upgrades and repairs, then fight the sector.'],
- dock:['Repair Dock','Restore half your armor, then fight the sector.'],signal:['Unknown Signal','A random event, then the sector. Could be salvage. Could be a trap.'],boss:['Capital Unit','Boss: Bastion, Warden, Minotaur or The Caesar. +60 scrap and 2 upgrades.'],bonus:['Bonus Stage','Units loop past without shooting.']};
+ dock:['Repair Dock','Restore half your armor, then fight the sector.'],signal:['Unknown Signal','A random event, then the sector. Could be salvage. Could be a trap.'],boss:['Capital Unit','A capital unit guards the zone. +60 scrap and 2 upgrades.'],bonus:['Bonus Stage','Units loop past without shooting.']};
 function evt(h,t,opts){$('evH').textContent=h;$('evT').textContent=t;const o=$('evO');o.innerHTML='';
  for(const [b,d,f,off,r] of opts){const x=document.createElement('button');if(r)x.className='r-'+r;x.innerHTML=`${r?tag(r):''}<b>${b}</b><span>${d}</span>`;x.disabled=!!off;x.onclick=()=>{$('evt').hidden=true;f()};o.append(x)}$('evt').hidden=false}
 // Every route choice ends in a fight: stops (yard, dock, signal) happen first, then the sector's wave
@@ -646,6 +670,8 @@ const shuf=a=>a.sort(()=>Math.random()-.5);
 function route(){running=false;st.elite=st.boss=0;shots.forEach(s=>S.remove(s.m));shots=[];clearDrops();
  // Sector 4.5: a Bonus Stage before each boss, only if the zone's four combat sectors cost 3 hits or fewer
  if(st.sec%5===4&&!st.b45){st.b45=st.zh<=3?1:2;if(st.b45===1)return evt(`Sector ${st.sec}.5 · Bonus unlocked`,`You took ${st.zh} hit${st.zh===1?'':'s'} this zone (3 or fewer needed). Boss at sector ${st.sec+1}.`,[[...NODE.bonus,()=>go('bonus')]])}
+ // Every 10th sector: branch to the next zone
+ if(st.sec%10===0&&st.ap!==st.sec){st.ap=st.sec;return evt(`Sector ${st.sec} cleared · Choose your zone`,`Ten more sectors and two more capital units ahead. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,Object.entries(ZONES).map(([k,d])=>[k,d,()=>{st.area=k;route()}]))}
  if(st.b45===1)st.b45=2;st.sec++;if(st.sec%5===1){st.zh=0;st.b45=0}hud();const n=st.sec,nb=Math.ceil(n/5)*5;
  let opts=n%5===0?['boss']:shuf(['elite','yard','signal','dock'].filter(k=>!(k==='elite'&&n<3)&&!(k==='dock'&&st.hp>=st.max))).slice(0,3);if(n%5&&opts.length<2)opts=shuf(['combat',...opts]);
  evt(`Sector ${n} · Choose your route`,n===nb?'The capital unit is waiting.':`Boss at sector ${nb}. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,opts.map(k=>[...NODE[k],()=>go(k)]))}
@@ -756,6 +782,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
  driftTick(dt);thumbTick(dt);
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
+ LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
   if(mx)st.dir=mx;let sp=st.spd;if(st.slow>0){st.slow-=dt;sp*=.5}
