@@ -407,6 +407,18 @@ const MOTE=[[-1,0,-1,2,6,2,'i'],[-3,2,-1,6,2,2,'j'],[-1,2,-3,2,2,6,'j'],[-2,1,-2
  GLAC=[[-8,0,-20,16,6,36,'d',0,'r'],[-6,1,16,12,4,3,'g'],[-4,1,19,8,3,3,'g'],[-2,1,22,4,2,2,'g'],[8,1,-14,5,4,20,'g',1,'r'],[13,2,-10,2,2,12,'n',1],
  [-4,6,-14,8,6,8,'g',0,'r'],[-3,10,-6,6,1,1,'n'],[-2,12,-12,1,5,1,'a'],[3,1,-23,4,4,3,'k',1,'cz'],[4,2,-24,2,2,1,'n',1],[-2,6,8,4,3,4,'g'],[-1,7,12,2,2,9,'a',0,'cz'],[-1,7,21,2,2,1,'n'],[-2,6,0,4,1,4,'n'],[6,6,-4,2,2,6,'a',1]],
  GLICE=[[-9,4,-17,18,5,28,'i',0,'e'],[9,2,-12,5,5,16,'j',1,'e'],[-3,9,-15,6,7,9,'i',0,'e'],[3,8,2,2,6,2,'j',1],[6,6,-8,2,7,2,'i',1],[-1,12,-10,2,8,2,'f'],[10,5,0,2,5,2,'f',1],[-5,3,10,10,4,8,'j',0,'e']];
+// Capital unit "Dry Ice" (The Frost Reach): a frosty interceptor with wings that fan back in steps and a fin of ice; always wrapped in mist
+const DRYI=[[-3,0,-10,6,4,20,'g',0,'r'],[-2,0,10,4,3,4,'i'],[-1,1,14,2,2,3,'f'],[-1,4,0,2,1,6,'n'],[-2,3,-8,4,2,8,'d',0,'r'],
+ [3,1,0,3,2,6,'j',1],[5,1,-2,3,1,6,'i',1],[7,1,-4,3,1,6,'i',1],[9,1,-6,3,1,6,'j',1],[11,1,-8,3,1,5,'i',1],[13,1,-10,2,1,4,'f',1],[3,2,-1,10,1,1,'n',1],
+ [-1,4,-11,2,9,9,'i',0,'fin'],[0,6,-11,1,6,6,'f',0,'fin'],[1,1,-12,2,2,2,'n',1],[4,0,4,2,1,3,'a',1]],
+// Capital unit "Onager" (Legion Space): a literal Roman onager scaled up into a flying siege engine. Heavy timber frame on
+// hover-wheels, a twisted rope torsion skein at the rear, an A-frame with a padded crossbar up front, bronze fittings, neon trim.
+// ONCAT is its throwing arm with the sling (a separate unit that must be destroyed before the frame can be hurt)
+ ONAG=[[6,0,-14,3,3,28,'w',1],[-9,0,-12,18,2,3,'d'],[-9,0,9,18,2,3,'d'],[-9,0,-2,18,2,3,'d'],[-6,0,-12,12,1,24,'d'],
+ [9,-1,-12,2,6,6,'d',1,'cx'],[9,-1,6,2,6,6,'d',1,'cx'],[11,1,-10,1,2,2,'l',1],[11,1,8,1,2,2,'l',1],[6,3,-14,3,1,3,'o',1],[6,3,11,3,1,3,'o',1],
+ [5,3,5,2,9,2,'w',1],[-7,12,5,14,2,2,'w'],[-3,11,4,6,3,2,'c'],[6,10,5,2,1,2,'o',1],
+ [-6,1,-12,12,4,4,'q',0,'cx'],[6,0,-13,1,6,6,'o',1,'cx'],[-2,0,14,4,2,3,'o'],[9,3,-8,1,1,16,'l',1]],
+ ONCAT=[[-1,-1,-1,2,2,2,'o'],[-1,0,-1,2,16,2,'w'],[-1,5,-1,2,1,2,'o'],[-1,11,-1,2,1,2,'o'],[-2,16,-2,4,2,4,'q'],[-1,18,-1,2,2,2,'l']];
 const MODELS={
  mine:()=>build('mine',MINE,{...P,v:0x3a3f47,o:0x8a3b32,m:0xff3030},.09),
  lancer:()=>build('lancer',LANCER,{...P,v:0x6b2a3a,o:0x2a2d36,m:0xff3030},.1),
@@ -418,6 +430,9 @@ const MODELS={
  mote:()=>build('mote',MOTE,FPAL,.17),
  glacier:()=>build('glacier',GLAC,FPAL,.5),
  glice:()=>build('glice',GLICE,FPAL,.5),
+ dryice:()=>build('dryice',DRYI,FPAL,.4),
+ onager:()=>build('onager',ONAG,{...P,w:0x7a5230,d:0x4a3020,o:0xb08a3a,q:0xc8b080,c:0xb0201c,l:0x4fe8ff},.45),
+ oncat:()=>build('oncat',ONCAT,{...P,w:0x7a5230,o:0xb08a3a,q:0xc8b080,l:0x4fe8ff},.45),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
  mech:()=>build('mech',KESTREL,P,.065,2),
@@ -459,7 +474,7 @@ function legionTick(dt,v){for(const m of legD){m.position.z+=dt*v*(m.scale.y>.09
 // The Frost Reach "Ice Shard": same rules, but it cracks loose from a side edge and slides across the field at an angle.
 // Touching it costs 1 armor; shots chip it apart (6 hp) for 2 scrap. Not a unit: it never counts toward clearing a sector
 const COLM=[[-1,0,-1,3,14,3,'m',0,'cy'],[-2,0,-2,5,2,5,'s',0,'cy'],[-2,12,-2,5,2,5,'s',0,'cy'],[-2,7,-2,5,1,5,'n',0,'cy']],cols_=[];let colCd=6;
-function colClear(){cols_.forEach(c=>{S.remove(c.m);S.remove(c.w)});cols_.length=0;colCd=6}
+function colClear(){mist&&mistEl&&mist(0);cols_.forEach(c=>{S.remove(c.m);S.remove(c.w)});cols_.length=0;colCd=6}
 const ICESH=[[-1,0,-1,3,12,3,'i',0,'cy'],[-2,3,-2,5,6,5,'j',0,'e'],[0,10,0,1,3,1,'f']];
 function colTick(dt,p){const ice=st.area==='The Frost Reach';if(!ice&&st.area!=='Legion Space'||st.timed||st.bonus)return;colCd-=dt;
  if(colCd<=0){colCd=6+Math.random()*4;const x=Math.max(-FX,Math.min(FX,p.x+(Math.random()-.5)*10)),sx=ice?(Math.random()<.5?-1:1)*(FX+6):x,d=V3(x-sx,48).normalize(),w=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xff2020,transparent:true,opacity:.25,blending:THREE.AdditiveBlending,depthWrite:false}));
@@ -471,7 +486,7 @@ function colTick(dt,p){const ice=st.area==='The Frost Reach';if(!ice&&st.area!==
   if(c.hp<=0){boom(c.m.position,16,c.ice?0xcfeeff:0xe0d4b4);st.scrap+=2;hud();c.m.position.z=99}}
  for(let i=cols_.length;i--;)if(cols_[i].m.position.z>12||Math.abs(cols_[i].m.position.x)>FX+12){S.remove(cols_[i].m);cols_.splice(i,1)}}
 // The Frost Reach backdrop: ice floes and frozen warship hulks drift past below the field, snow dust, and an aurora rippling far ahead
-const FRO=new THREE.Group();FRO.visible=false;S.add(FRO);const froB=[],froD=[],froA=[];
+const FRO=new THREE.Group();FRO.visible=false;S.add(FRO);const froB=[],froD=[],froA=[],froH=[];
 const FPAL={i:0xcfeeff,j:0x8fd0f0,f:0xffffff,g:0x5a6470,d:0x2e343c,a:0x8a929c,k:0x14171c,n:0x7fe8ff};
 const FROM={floe:()=>build('fr_floe',[[-6,0,-5,12,3,10,'i',0,'e'],[-4,2,-3,8,2,6,'f',0,'e'],[2,3,0,3,3,3,'j',0,'e'],[-4,-2,-3,8,3,6,'j',0,'e']],FPAL,.5),
  berg:()=>build('fr_berg',[[-4,-2,-4,8,5,8,'j',0,'e'],[-3,1,-3,6,6,6,'i',0,'e'],[-1,5,-1,3,8,3,'i'],[1,4,0,2,6,2,'f']],FPAL,.5),
@@ -481,9 +496,15 @@ function froPlace(b,z){const side=Math.random()<.5?-1:1,k=b.big?'hulk':Math.rand
 function frostBuild(){for(let r=0;r<3;r++)for(let i=0;i<52;i++){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:[0x4fffb0,0x5ab0ff,0x9a7cff][r],transparent:true,opacity:.12,blending:THREE.AdditiveBlending,depthWrite:false}));
   m.position.set((i-26)*2.2+r*2,-6+r*3,-110-r*6);m.scale.set(2.1,12,.5);FRO.add(m);froA.push({m,i,r})}
  for(let i=0;i<160;i++){const m=new THREE.Mesh(BOX,mat(i%3?0xe8f6ff:0x9fd8ff));m.position.set((Math.random()-.5)*70,-3-Math.random()*20,-60+Math.random()*80);m.scale.setScalar(.05+Math.random()*.07);FRO.add(m);froD.push(m)}
- for(let i=0;i<9;i++){const b={g:new THREE.Group(),big:i%3===2};FRO.add(b.g);froPlace(b,-95+i*12);froB.push(b)}}
+ for(let i=0;i<9;i++){const b={g:new THREE.Group(),big:i%3===2};FRO.add(b.g);froPlace(b,-95+i*12);froB.push(b)}
+ // Translucent white and pale blue accents: frost veils drifting low, and glassy ice crystals turning slowly
+ for(let i=0;i<14;i++){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:i%2?0xe8f6ff:0xa8dcff,transparent:true,opacity:.09,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.scale.set(20+Math.random()*30,.1,5+Math.random()*8);m.position.set((Math.random()-.5)*80,-14-Math.random()*16,-95+i*8);m.rotation.y=(Math.random()-.5)*.7;FRO.add(m);froH.push(m)}
+ for(let i=0;i<12;i++){const m=new THREE.Mesh(new THREE.OctahedronGeometry(1),new THREE.MeshLambertMaterial({color:i%2?0xffffff:0xbfe6ff,emissive:0x5a86a8,transparent:true,opacity:.4,depthWrite:false}));
+  m.scale.set(.6+Math.random(),1.5+Math.random()*2,.6+Math.random());m.position.set((Math.random()<.5?-1:1)*(13+Math.random()*25),-6-Math.random()*14,-95+i*9);FRO.add(m);froH.push(m)}}
 function frostTick(dt,v,now){for(const m of froD){m.position.z+=dt*v*.8;m.position.x+=dt*.6;if(m.position.z>20)m.position.z-=80;if(m.position.x>35)m.position.x-=70}
  for(const a of froA){const w=Math.sin(now/1400+a.i*.25+a.r*2)*.7+Math.sin(now/900+a.i*.6)*.3;a.m.scale.y=10+6*w;a.m.position.y=-4+a.r*3+w*2;a.m.material.opacity=.08+.06*(w+1)/2}
+ for(const m of froH){m.position.z+=dt*v*.7;if(m.geometry!==BOX)m.rotation.y+=dt*.4;if(m.position.z>22)m.position.z-=115}
  for(const b of froB){b.g.position.z+=dt*v*b.sp;b.g.rotation.y+=dt*.05;if(b.g.position.z>25)froPlace(b,b.g.position.z-110)}}
 const FX=11;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
@@ -530,7 +551,7 @@ function wave(more){if(!more){if(!st.timed)saveRun();st.wv=1;st.wvs=st.timed||st
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
  {const nm=(st.sec>=6?2:st.sec>=2?1:0)+(el&&st.sec>=2?1:0),nl=(st.sec>=7?3:st.sec>=3?2:0)+(el&&st.sec>=3?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j);if(st.area==='The Frost Reach')for(let j=0;j<3;j++)addMote(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
-function bossWave(){st.boss=1;if(st.area==='Legion Space')return caesarWave();if(st.area==='The Frost Reach')return glacierWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
+function bossWave(){st.boss=1;if(st.area==='Legion Space')return Math.random()<.5?caesarWave():onagerWave();if(st.area==='The Frost Reach')return Math.random()<.5?glacierWave():dryWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
  for(const [x,y,z] of [[-3.6,1.17,0],[3.6,1.17,0],[0,1.17,3.2]]){const w=MODELS.wp();S.add(w);w.position.set(x,0,z-50);ents.push({m:w,type:'wp',hp:14*k,slot:V3(x,0),state:'boss',core,off:new THREE.Vector3(x,y,z),cd:9+Math.random()*2,r:1.1})}
  ents.push(core);hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit. Shoot off its 3 turrets to expose the core`)}
@@ -637,6 +658,50 @@ function glacierUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
  for(const z of e.fields){z.t+=dt;if(z.t<.9){z.f.visible=Math.floor(z.t*10)%2==0;continue}z.f.visible=true;z.f.material.opacity=z.t>4.4?.3*(5-z.t)/.6:.3;if(hd(z.f.position,p)<2.4)st.slow=Math.max(st.slow,.15)}
  for(let i=e.fields.length;i--;)if(e.fields[i].t>5){BFX.remove(e.fields[i].f);e.fields.splice(i,1)}
  e.cdM-=dt;if(e.cdM<=0){e.cdM=p2?7:10;if(ents.filter(x=>x.add&&x.hp>0).length<4)for(let j=0;j<2;j++)addMote(j,1)}}
+// Dry Ice boss (medium): strafes back and forth inside a cloud of mist, firing straight rounds that loosely home in. Every 7–9 s
+// the mist rolls over your view; it repositions while you can't see, then a wide beam fires straight ahead (the mist is the tell)
+let mistEl;function mist(o){if(!mistEl){mistEl=document.createElement('div');mistEl.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(circle at 50% 45%,#e8f6ffee,#a8dcffcc 55%,#7fb8e0aa)';document.body.append(mistEl)}mistEl.style.opacity=o}
+function dryWave(){const m=MODELS.dryice(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();
+ const cloud=[];for(let i=0;i<7;i++){const g=glow(i%2?0xffffff:0xbfe6ff,3+Math.random()*2);g.position.set((Math.random()-.5)*6,1+Math.random(),(Math.random()-.5)*7);m.add(g);cloud.push(g)}
+ ents.push({m,cloud,type:'dryice',state:'dryice',hp:100*k,slot:V3(0,0),t:-5,r:3,ph:0,cdF:1.5,cdM:7,fx:{beam:beamMesh(0xbfe6ff,.6),warn:beamMesh(0xff2020,.2)}});
+ hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Dry Ice". When the mist comes, move`)}
+function dryUp(e,dt,p){const M=e.m.position,B=e.fx.beam,W=e.fx.warn;e.cloud.forEach((g,i)=>g.material.opacity=.35+.15*Math.sin(e.t*2+i));
+ if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('frostboss');M.set(0,M.y,-60+36*k*(2-k));if(k<1)return;e.ph=1;e.t=0;e.x0=0}
+ e.t+=dt;
+ if(e.ph===1){M.x=e.x0+Math.sin(e.t*.9)*(FX-3)*(1-Math.abs(e.x0)/FX);M.z=-24;e.m.rotation.z=-Math.cos(e.t*.9)*.3;
+  e.cdF-=dt;if(e.cdF<=0){e.cdF=.55;const o=M.clone().add(V3(0,4));o.y=1;fire(o,V3(0,1),12,1,true,0xbfe6ff,0).home=.7}
+  e.cdM-=dt;if(e.cdM<=0){e.ph=2;e.tm=0}}
+ else if(e.ph===2){e.tm+=dt;mist(Math.min(1,e.tm/.4)*(e.tm<1.2?1:Math.max(0,1-(e.tm-1.2)/.4)));
+  if(e.tm>.5&&!e.moved){e.moved=1;M.x=Math.max(-FX+2,Math.min(FX-2,p.x+(Math.random()-.5)*6));e.m.rotation.z=0}
+  if(e.tm>1.2){W.visible=Math.floor(e.tm*10)%2==0;W.position.set(M.x,.05,M.z+27);W.scale.set(3.6,.02,50);W.rotation.set(0,0,0)}
+  if(e.tm>1.8){mist(0);W.visible=false;e.ph=3;e.tm=0;e.hit=0}}
+ else if(e.ph===3){e.tm+=dt;B.position.set(M.x,1,M.z+27);B.scale.set(3.6,1,50);B.rotation.set(0,0,0);B.visible=true;
+  if(!e.hit&&Math.abs(p.x-M.x)<1.8+.4&&st.inv<=0){e.hit=1;hurt(2);shake=Math.max(shake,.3)}
+  if(e.tm>1.1){B.visible=false;e.ph=1;e.moved=0;e.cdM=7+Math.random()*2;e.x0=M.x*.5;e.t=Math.asin(Math.max(-1,Math.min(1,(M.x-e.x0)/((FX-3)*(1-Math.abs(e.x0)/FX)||1))))/.9}}}
+// Onager boss: a giant flying Roman onager, turned three-quarters to the player in stage 1 so the throwing arm shows. The arm winches back, then snaps up against the crossbar to throw. Stage 1: holds the centre and lobs EMP bombs from the catapult on its back (a blue ring marks
+// where each lands: 1 damage and a stun that halves your speed), while Lancers make their usual runs. The hull is armored until
+// the catapult is destroyed. Stage 2: it rams you like a Lancer (hover, flash a red lane, charge for 3), then returns to the top
+function onagerWave(){const m=MODELS.onager(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();
+ const core={m,type:'onager',state:'onager',hp:80*k,slot:V3(0,0),t:-5,r:4,ph:0,cdB:3,cdL:2,bombs:[],fx:{warn:beamMesh(0xff2020,.25)}};
+ const c=MODELS.oncat();c.rotation.order='YXZ';c.rotation.set(-1.1,.8,0);m.rotation.y=.8;S.add(c);ents.push({m:c,type:'cata',state:'boss',hp:30*k,slot:V3(0,0),core,off:new THREE.Vector3(-4.5*Math.sin(.8),1.4,-4.5*Math.cos(.8)),r:1.6},core);
+ hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Onager". Break the catapult on its back`)}
+function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.core===e&&x.hp>0);
+ for(const b of e.bombs){b.t+=dt;const u=Math.min(1,b.t/1.4);b.m.position.lerpVectors(b.a,b.b,u);b.m.position.y=1+9*u*(1-u)*2;b.ring.visible=Math.floor(b.t*8)%2==0;
+  if(u>=1){b.done=1;boom(b.b,14,0x4fe8ff);if(hd(b.b,p)<2&&st.inv<=0){hurt(1);st.slow=Math.max(st.slow,1.5)}}}
+ for(let i=e.bombs.length;i--;)if(e.bombs[i].done){BFX.remove(e.bombs[i].m);BFX.remove(e.bombs[i].ring);e.bombs.splice(i,1)}
+ if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('boss');M.set(0,M.y,-60+32*k*(2-k));if(k<1)return;e.ph=1}
+ if(e.ph===1){e.m.rotation.y=.8;M.x+=-M.x*Math.min(1,dt*2);M.z+=(-28-M.z)*Math.min(1,dt*2);
+  if(cat){e.cdB-=dt;if(e.cdB<=0){e.cdB=2.4;cat.m.rotation.x=.9;const bm=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x4fe8ff}));bm.scale.setScalar(.7);BFX.add(bm);
+    const ring=new THREE.Mesh(new THREE.CylinderGeometry(2,2,.05,24),new THREE.MeshBasicMaterial({color:0x4fe8ff,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));const tg=V3(p.x,p.z);ring.position.set(tg.x,.06,tg.z);BFX.add(ring);
+    e.bombs.push({m:bm,ring,a:cat.m.position.clone(),b:tg,t:0})}cat.m.rotation.x+=(-1.1-cat.m.rotation.x)*Math.min(1,dt*1.2);
+   e.cdL-=dt;if(e.cdL<=0){e.cdL=6;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++){addLancer(j);ents[ents.length-1].add=1}}}
+  else{e.ph=2;e.tm=1.2;banner('CATAPULT DOWN','The Onager is coming for you');shake=Math.max(shake,.4)}}
+ else if(e.ph===2){e.tm-=dt;if(e.tm>.9){M.x+=(Math.max(-FX+3,Math.min(FX-3,p.x))-M.x)*Math.min(1,dt*3);return}
+  if(!e.dir)e.dir=V3(p.x-M.x,p.z-M.z).normalize();e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.05:1);e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
+  W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
+ else if(e.ph===3){M.addScaledVector(e.dir,24*dt*(st.fast||1));if(!e.hit&&hd(M,p)<e.r+.6&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+  if(M.z>10||Math.abs(M.x)>FX+8){e.ph=4;M.set(0,M.y,-50);e.m.rotation.y=0;e.dir=null}}
+ else{M.z+=(-26-M.z)*Math.min(1,dt*2.5);if(M.z>-27){e.ph=2;e.tm=1.2+Math.random()*1.5}}}
 const armored=b=>ents.some(x=>x.core===b&&x.hp>0);
 // Bonus stage: five groups of eight sweep past in loops; they never shoot or ram, and any hit destroys one (as in Galaga).
 // Groups 0, 3 and 4 cross the field; 1 and 2 loop back out on the side they entered, so you have to move to catch them
@@ -657,7 +722,7 @@ function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
  else{if(u<.2){const a=u/.2;q=V3(s*3,-36+22*a)}else{const a=(u-.2)/.8*P2;q=V3(s*(3+7*Math.sin(a)),-14+4*Math.sin(2*a))}}
  q.x+=e.mate;return q}
 // Effects: voxel debris, camera shake, muzzle flash
-const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e,mino:0x8a3b32,caesar:0xd4a52a,glacier:0x8fd0f0,mote:0xcfeeff};let shake=0,muzzleT=0;
+const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e,mino:0x8a3b32,caesar:0xd4a52a,glacier:0x8fd0f0,mote:0xcfeeff,dryice:0xbfe6ff,onager:0xd4a52a,cata:0x8a6a1e};let shake=0,muzzleT=0;
 const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
 function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat(i%3?col:0xffb040));m.position.copy(pos);m.position.y+=.8;m.scale.setScalar(.12+Math.random()*.18);S.add(m);
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
@@ -841,12 +906,12 @@ function hud(){const f=Math.max(0,st.hp/st.max),bi=$('bar').firstChild;bi.style.
 // Ricochet Shield: a bubble during the dash; reflects enemy shots off its surface, adding the rig's sideways motion
 let RSH;function ricoShield(dt,p){if(!RSH){RSH=new THREE.Mesh(new THREE.SphereGeometry(1.5,16,12),new THREE.MeshBasicMaterial({color:0x7ff0ff,transparent:true,opacity:.3,depthWrite:false}));S.add(RSH)}
  RSH.visible=st.rs>0;if(!(st.rs>0))return;st.rs-=dt;RSH.position.copy(p);RSH.material.opacity=.15+.2*Math.min(1,st.rs/.2);
- if(st.rico>=2)for(const e of ents)if(e.m.visible&&e.hp>0&&!st.rsHit.has(e)&&!(e.type==='boss'&&armored(e))&&hd(e.m.position,p)<e.r+1.5){st.rsHit.add(e);e.hp-=4;st.dealt+=4;e.m.scale.setScalar(1.25);boom(e.m.position,6,0x7ff0ff)}}
+ if(st.rico>=2)for(const e of ents)if(e.m.visible&&e.hp>0&&!st.rsHit.has(e)&&!((e.type==='boss'||e.type==='onager')&&armored(e))&&hd(e.m.position,p)<e.r+1.5){st.rsHit.add(e);e.hp-=4;st.dealt+=4;e.m.scale.setScalar(1.25);boom(e.m.position,6,0x7ff0ff)}}
 function bounce(s,p){const n=T.subVectors(s.m.position,p).setY(0).normalize(),sp=Math.max(16,s.v.length()*1.3);s.v.addScaledVector(n,-2*s.v.dot(n));s.v.x+=st.pvx*.6;s.v.setY(0).setLength(sp);
  Object.assign(s,{enemy:false,dmg:2,pierce:0,hit:new Set(),life:3});s.m.material.color.setHex(0x7ff0ff);s.m.lookAt(T.copy(s.m.position).add(s.v));boom(s.m.position,3,0x7ff0ff)}
 // Venom Launcher grenade: heavy hit on the target, splash on everything within 3.5
 function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;st.dealt+=cd;boom(c.m.position,16,0x7dff3a);shake=Math.max(shake,.12);
- for(const e of ents)if(e!==c&&e.m.visible&&e.hp>0&&!(e.type==='boss'&&armored(e))&&hd(e.m.position,c.m.position)<3.5){e.hp-=bd;st.dealt+=bd;e.m.scale.setScalar(1.25)}}
+ for(const e of ents)if(e!==c&&e.m.visible&&e.hp>0&&!((e.type==='boss'||e.type==='onager')&&armored(e))&&hd(e.m.position,c.m.position)<3.5){e.hp-=bd;st.dealt+=bd;e.m.scale.setScalar(1.25)}}
 function ram(e,n,k){hurt(st.plate?Math.max(1,n-1):n);e.hp-=k+3*st.plate}
 function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
@@ -855,7 +920,7 @@ addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('key
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
-const NOFIRE={chaser:1,mine:1,lancer:1,warden:1,mino:1,caesar:1,glacier:1,mote:1};
+const NOFIRE={chaser:1,mine:1,lancer:1,warden:1,mino:1,caesar:1,glacier:1,mote:1,dryice:1,onager:1,cata:1};
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 // Swept hit test: distance from target c to the segment a shot travelled this frame (o -> p), so low frame rates can't skip past a unit
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
@@ -892,7 +957,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.type==='mino'||e.type==='caesar')e.fx.warn.visible=false;if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
     else{e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('boss');e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
-   if(e.type==='mine'){face=false;mineUp(e,dt,p)}else if(e.type==='lancer')lancerUp(e,dt,p);else if(e.type==='warden'){face=false;wardenUp(e,dt,p)}else if(e.type==='mino'){face=false;minoUp(e,dt,p)}else if(e.type==='caesar'){face=false;caesarUp(e,dt,p)}else if(e.type==='glacier'){face=false;glacierUp(e,dt,p)}else if(e.type==='mote'){face=false;moteUp(e,dt,p)}
+   if(e.type==='mine'){face=false;mineUp(e,dt,p)}else if(e.type==='lancer')lancerUp(e,dt,p);else if(e.type==='warden'){face=false;wardenUp(e,dt,p)}else if(e.type==='mino'){face=false;minoUp(e,dt,p)}else if(e.type==='caesar'){face=false;caesarUp(e,dt,p)}else if(e.type==='glacier'){face=false;glacierUp(e,dt,p)}else if(e.type==='dryice'){face=false;dryUp(e,dt,p)}else if(e.type==='onager'){face=false;onagerUp(e,dt,p)}else if(e.type==='mote'){face=false;moteUp(e,dt,p)}
    if(e.state==='fly'){e.t+=dt/4.2;if(e.t<0)continue;e.m.visible=true;if(e.t>=1){e.escaped=1;e.hp=0}else e.m.position.copy(bez(e.p0,e.p1,e.p2,e.t))}
    if(e.state==='enter'&&e.pat!=null){e.t+=dt/2.6;if(e.t<0)continue;e.m.visible=true;
     if(e.t>=1){e.state='form';e.t=0;e.pat=null}else{const q=entryPos(e,Math.min(e.t/.75,1));if(e.t>.75){const b=(e.t-.75)/.25;q.lerp(slotPos(e),b*b*(3-2*b))}e.m.position.copy(q)}}
@@ -914,11 +979,11 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(s.arc){s.v.x-=s.arc*10*dt;s.m.lookAt(T.copy(s.m.position).add(s.v))}
    if(s.track&&far){const sp=s.v.length();T.subVectors(far.m.position,s.m.position).setY(0).setLength(sp);s.v.lerp(T,Math.min(1,6*dt)).setLength(sp);s.m.lookAt(T.copy(s.m.position).add(s.v))}if(s.home>0){s.home-=dt;const q=s.v.length();T.subVectors(p,s.m.position).setY(0).setLength(q);s.v.lerp(T,Math.min(1,1.5*dt)).setLength(q);s.m.lookAt(T.copy(s.m.position).add(s.v))}s.m.position.addScaledVector(s.v,dt);s.life-=dt;
    if(s.enemy){if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
-   else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if(e.type==='boss'&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.gren){venom(e);s.life=0;break}if(s.pierce--<=0){s.life=0;break}}}
+   else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if((e.type==='boss'||e.type==='onager')&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.gren){venom(e);s.life=0;break}if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
-  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'){BFX.clear();for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
-   st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier');if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
-   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
+  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
+   st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'?60:e.type==='brute'?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager');if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+={chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8}[e.type]*(e.state==='dive'?2:1)+st.sb}hud();return false});
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
   muzzleT-=dt;muzzle.visible=muzzleT>0;muzzle.position.set(p.x,1.1,p.z-1.3);muzzle.scale.setScalar(.35+Math.random()*.2);
