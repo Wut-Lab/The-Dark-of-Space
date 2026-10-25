@@ -201,7 +201,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
 <p>After each upgrade, choose how to reach the next sector. Every choice ends in a fight: stops happen on the way, then the sector's wave arrives.</p>
 <h3>Stops</h3><ul><li><b>Combat</b>: straight into a normal sector (offered when there are few other choices)</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +30 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: spend scrap on upgrades, Tune-ups, armor repairs or a restock, then fight</li><li><b>Repair Dock</b>: restores half your armor, then fight. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event, then fight. Could be salvage, a deal, or an ambush (the ambush is the fight)</li></ul>
-<h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 2 upgrades</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
+<h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers. Watch for a lane glowing red: something is about to come down it</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 2 upgrades</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
@@ -440,6 +440,19 @@ function legionBuild(){const hz=new THREE.MeshBasicMaterial({color:0xc89a58,tran
  for(let i=0;i<9;i++){const b={g:new THREE.Group(),big:i%4===3};LEG.add(b.g);legPlace(b,-95+i*12);legB.push(b)}}
 function legionTick(dt,v){for(const m of legD){m.position.z+=dt*v*(m.scale.y>.09?.6:.8);if(m.position.z>20)m.position.z-=(m.scale.y>.09?110:80)}
  for(const b of legB){b.g.position.z+=dt*v*b.sp;if(b.g.position.z>25)legPlace(b,b.g.position.z-110)}}
+// Legion Space obstacle "Fallen Column": a lane glows red for 1 s, then a broken marble column tumbles down it.
+// Touching it costs 1 armor; shots chip it apart (6 hp) for 2 scrap. Not a unit: it never counts toward clearing a sector
+const COLM=[[-1,0,-1,3,14,3,'m',0,'cy'],[-2,0,-2,5,2,5,'s',0,'cy'],[-2,12,-2,5,2,5,'s',0,'cy'],[-2,7,-2,5,1,5,'n',0,'cy']],cols_=[];let colCd=6;
+function colClear(){cols_.forEach(c=>{S.remove(c.m);S.remove(c.w)});cols_.length=0;colCd=6}
+function colTick(dt,p){if(st.area!=='Legion Space'||st.timed||st.bonus)return;colCd-=dt;
+ if(colCd<=0){colCd=6+Math.random()*4;const x=Math.max(-FX,Math.min(FX,p.x+(Math.random()-.5)*10)),w=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xff2020,transparent:true,opacity:.25,blending:THREE.AdditiveBlending,depthWrite:false}));
+  w.position.set(x,.05,-20);w.scale.set(2.4,.02,50);S.add(w);const m=build('l_col',COLM,LPAL,.32);m.children[0].position.set(-.16,-2.24,-.16);m.visible=false;m.position.set(x,1,-48);S.add(m);cols_.push({m,w,t:1,hp:6,hit:0})}
+ for(const c of cols_){if(c.t>0){c.t-=dt;c.w.visible=Math.floor(c.t*8)%2==0;if(c.t<=0){S.remove(c.w);c.m.visible=true}continue}
+  c.m.position.z+=18*dt*(st.fast||1);c.m.rotation.x+=5*dt;
+  if(!c.hit&&hd(c.m.position,p)<1.3&&st.inv<=0){c.hit=1;hurt(1);shake=Math.max(shake,.25)}
+  for(const s of shots)if(!s.enemy&&s.life>0&&hd(s.m.position,c.m.position)<1){s.life=0;c.hp-=s.dmg;boom(s.m.position,3,0xe0d4b4)}
+  if(c.hp<=0){boom(c.m.position,16,0xe0d4b4);st.scrap+=2;hud();c.m.position.z=99}}
+ for(let i=cols_.length;i--;)if(cols_[i].m.position.z>12){S.remove(cols_[i].m);cols_.splice(i,1)}}
 const FX=11;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
@@ -605,7 +618,7 @@ const shield=glow(0xb47cff,3);shield.position.y=.9;shield.visible=false;
 function spawnDrop(pos,kind){const c=DROP[kind].c,g=new THREE.Group(),core=new THREE.Group();
  for(const [y,h,col] of [[0,.3,c],[.3,.1,DROP[kind].pu?0x141826:0xffffff],[.4,.3,c]]){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.42,h,.42);m.position.y=y+h/2-.35;core.add(m)}
  const sp=glow(c,2.2);g.add(core,sp);g.position.set(THREE.MathUtils.clamp(pos.x,-FX+.6,FX-.6),.9,pos.z);S.add(g);drops.push({m:g,core,sp,kind})}
-function clearDrops(){drops.forEach(d=>S.remove(d.m));drops.length=0}
+function clearDrops(){colClear();drops.forEach(d=>S.remove(d.m));drops.length=0}
 function grab(d){const k=DROP[d.kind];
  if(k.pu){boom(d.m.position,8,k.c);if(d.kind==='emp'){st.emp+=2.5+st.empB;shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='bar')st.bar=3;else if(d.kind==='patch'){if(st.timed)st.time+=3;else st.hp=Math.min(st.max,st.hp+2);hud()}else st.spr+=5;
   const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=k.pu;pp.style.color=k.css;pp.classList.add('go');return}
@@ -782,7 +795,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
  driftTick(dt);thumbTick(dt);
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
- LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
+ LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);if(running&&player)colTick(dt,player.position);
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
   if(mx)st.dir=mx;let sp=st.spd;if(st.slow>0){st.slow-=dt;sp*=.5}
