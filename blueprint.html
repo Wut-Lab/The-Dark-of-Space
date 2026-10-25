@@ -64,6 +64,12 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 .list{background:var(--panel);border:1px solid var(--line);padding:14px 16px;display:grid;gap:10px}
 .list h2{font:600 1.15rem var(--disp);letter-spacing:.03em;text-transform:uppercase;margin:0;display:flex;gap:10px;align-items:baseline}
 .pu .play{grid-column:2;justify-self:start;margin-top:4px;font:600 .8rem var(--mono);background:none;color:var(--c);border:1px solid var(--c);padding:6px 12px;cursor:pointer;}.pu .play[aria-pressed=true]{background:var(--c);color:#000}
+.cl .pu>b,.cl .list>h2{cursor:pointer;user-select:none}
+.cl .pu>b::after,.cl .list>h2::after{content:'▾';margin-left:auto;font:.9rem var(--mono);color:var(--mute);transition:transform .15s}
+.cl .list>h2::after{margin-left:10px}
+.cl .pu:not(.open)>b::after,.cl .list.shut>h2::after{transform:rotate(-90deg)}
+.cl .pu:not(.open)>:not(i):not(b),.cl .list.shut>:not(h2){display:none}
+.cl .pu:not(.open) i{grid-row:auto}
 .list h2 small{font:.8rem var(--mono);margin-left:auto}
 .pu{display:grid;grid-template-columns:14px 1fr;gap:4px 12px;border:1px solid var(--line);padding:10px 12px}
 .pu i{grid-row:span 2;width:14px;height:14px;border-radius:50%;margin-top:4px;background:var(--c);box-shadow:0 0 10px var(--c)}
@@ -308,6 +314,10 @@ function music(k){if(MU.cur===k)return;MU.cur=k;clearInterval(MU.iv);MU.iv=0;if(
 function musicPause(on){if(!MU.out)return;MU.out.gain.setTargetAtTime(on?0:MU.vol,AC.currentTime,.05);if(on){MU.held=MU.iv;clearInterval(MU.iv);MU.iv=0}else if(MU.held&&MU.cur){const k=MU.cur;MU.cur=null;const st0=MU.step;music(k);MU.step=st0;MU.held=0}}
 document.querySelectorAll('[data-snd]').forEach(btn=>btn.onclick=()=>{try{AC=AC||new AudioContext();AC.resume()}catch(e){return}const k=btn.dataset.snd;
  if(k==='beep'){beep();return}const on=MU.cur!==k;music(on?k:null);document.querySelectorAll('[data-snd]').forEach(b=>{const p=on&&b===btn;b.setAttribute('aria-pressed',p);b.textContent=b.dataset.snd==='beep'?'Play':p?'Stop':'Play'})});
+for(const id of ['p-en','p-bo','p-snd']){const p=document.getElementById(id);p.classList.add('cl');
+ p.querySelectorAll('.pu>b,.list>h2').forEach(h=>{const box=h.parentElement,isS=box.matches('.list');h.tabIndex=0;h.setAttribute('role','button');
+  const set=()=>h.setAttribute('aria-expanded',isS?!box.classList.contains('shut'):box.classList.contains('open'));set();
+  const go=()=>{box.classList.toggle(isS?'shut':'open');set()};h.onclick=go;h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}})}
 renderPU();renderUP();try{const v=localStorage.getItem('bpTab');if(v&&document.getElementById(v))tab(v)}catch(e){}
 const secs=[...document.querySelectorAll('details')];
 const bar=d=>{if(!d.querySelector('.bar'))return;const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
