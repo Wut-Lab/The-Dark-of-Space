@@ -64,6 +64,12 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 .list{background:var(--panel);border:1px solid var(--line);padding:14px 16px;display:grid;gap:10px}
 .list h2{font:600 1.15rem var(--disp);letter-spacing:.03em;text-transform:uppercase;margin:0;display:flex;gap:10px;align-items:baseline}
 .pu .play{grid-column:2;justify-self:start;margin-top:4px;font:600 .8rem var(--mono);background:none;color:var(--c);border:1px solid var(--c);padding:6px 12px;cursor:pointer;}.pu .play[aria-pressed=true]{background:var(--c);color:#000}
+.cl .pu>b,.cl .list>h2{cursor:pointer;user-select:none}
+.cl .pu>b::after,.cl .list>h2::after{content:'▾';margin-left:auto;font:.9rem var(--mono);color:var(--mute);transition:transform .15s}
+.cl .list>h2::after{margin-left:10px}
+.cl .pu:not(.open)>b::after,.cl .list.shut>h2::after{transform:rotate(-90deg)}
+.cl .pu:not(.open)>:not(i):not(b),.cl .list.shut>:not(h2){display:none}
+.cl .pu:not(.open) i{grid-row:auto}
 .list h2 small{font:.8rem var(--mono);margin-left:auto}
 .pu{display:grid;grid-template-columns:14px 1fr;gap:4px 12px;border:1px solid var(--line);padding:10px 12px}
 .pu i{grid-row:span 2;width:14px;height:14px;border-radius:50%;margin-top:4px;background:var(--c);box-shadow:0 0 10px var(--c)}
@@ -97,7 +103,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <ul>
 <li><label><input type="checkbox"><span>Keep the armor bar (no lives): it turns green, then yellow, then red as armor drops, a warning beep repeats at 25% and below, and every hit flashes the screen edges red</span></label></li>
 <li><label><input type="checkbox"><span>Scripted entry patterns: loops, figure-eights and side sweeps, with units peeling off two at a time</span></label></li>
-<li><label><input type="checkbox"><span>Stage banner (“SECTOR 03”) and a bonus stage every 4th sector: units fly past without shooting, and destroying all of them pays a big bonus</span></label></li>
+<li><label><input type="checkbox"><span>Stage banner (“SECTOR 03”) and a bonus stage at sector 4.5 (before each boss) if the zone's four combat sectors cost 3 hits or fewer: units fly past without shooting, and destroying all of them pays a big bonus</span></label></li>
 <li><label><input type="checkbox"><span>Explosions: voxel debris bursts, screen shake on big hits, a muzzle flash on every shot</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-arcade">Notes for Claude <span class="st"></span></label><textarea id="n-arcade" placeholder="Scoring ideas, entry patterns, how hard it should get…"></textarea></div></div></details>
@@ -232,6 +238,9 @@ const UP=[
  ['Rail barrel','Shots fly 50% faster and pass through 1 more unit','r','off','pse'],
  ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1],
  ['Enhanced EMPs','EMP power-ups freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)','c','util','pse'],
+ ['Overcharged Cells','Energy recharges 20% faster per tier, so you can dash more often','c','util','pse',1],
+ ['Ricochet Shield','Dash raises a shield that bounces enemy shots off at an angle set by your motion (2 damage on hit). Dashes cost +15 energy. II: 4 contact damage. III: no extra energy cost','u','def','pse',1],
+ ['Venom Launcher','Every 10th volley fires a green grenade: +2 damage to the target, 2 blast damage nearby. II: +1 center. III: +1 blast','r','off','pse',1],
  ['Beam Shot','Shots become beams with a long, damaging tail. +1 damage; fire 30% slower at tier I, 20% at II, 10% at III','u','off','pse',1],
  ['Bootleg Shields','Every 5th hit: 50% chance to block, next shot +2 damage (II: every 4th, 75%, +3; III: every 3rd, always, +4). Each block halves strafe speed for 0.4 s. Unlock: block 30 hits with Barriers','x','def','pseu',1],
  ['Ram Plating','Collisions with units cost 1 less armor (min 1); the unit takes +3 damage per tier. Shop unlock: 100','c','def','pse'],
@@ -308,6 +317,10 @@ function music(k){if(MU.cur===k)return;MU.cur=k;clearInterval(MU.iv);MU.iv=0;if(
 function musicPause(on){if(!MU.out)return;MU.out.gain.setTargetAtTime(on?0:MU.vol,AC.currentTime,.05);if(on){MU.held=MU.iv;clearInterval(MU.iv);MU.iv=0}else if(MU.held&&MU.cur){const k=MU.cur;MU.cur=null;const st0=MU.step;music(k);MU.step=st0;MU.held=0}}
 document.querySelectorAll('[data-snd]').forEach(btn=>btn.onclick=()=>{try{AC=AC||new AudioContext();AC.resume()}catch(e){return}const k=btn.dataset.snd;
  if(k==='beep'){beep();return}const on=MU.cur!==k;music(on?k:null);document.querySelectorAll('[data-snd]').forEach(b=>{const p=on&&b===btn;b.setAttribute('aria-pressed',p);b.textContent=b.dataset.snd==='beep'?'Play':p?'Stop':'Play'})});
+for(const id of ['p-en','p-bo','p-snd']){const p=document.getElementById(id);p.classList.add('cl');
+ p.querySelectorAll('.pu>b,.list>h2').forEach(h=>{const box=h.parentElement,isS=box.matches('.list');h.tabIndex=0;h.setAttribute('role','button');
+  const set=()=>h.setAttribute('aria-expanded',isS?!box.classList.contains('shut'):box.classList.contains('open'));set();
+  const go=()=>{box.classList.toggle(isS?'shut':'open');set()};h.onclick=go;h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}})}
 renderPU();renderUP();try{const v=localStorage.getItem('bpTab');if(v&&document.getElementById(v))tab(v)}catch(e){}
 const secs=[...document.querySelectorAll('details')];
 const bar=d=>{if(!d.querySelector('.bar'))return;const bs=[...d.querySelectorAll('input')],n=bs.filter(x=>x.checked).length;
