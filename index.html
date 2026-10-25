@@ -6,6 +6,7 @@
 <style>[hidden]{display:none!important}body{margin:0}</style>
 </head>
 <body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>In the Dark of Space</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -133,6 +134,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="start">Back</button></div>
 <p>Choose your machine. Clear sector after sector, upgrade between them, and see how far you get before your armor gives out.</p>
+<button id="pResume" hidden><b>Resume saved run</b><span id="resumeS"></span></button>
 <div class="row">
 <button id="pMech"><b>Kestrel</b><span>Mobile frame. 12 armor, heavy rifle. Slow strafe, hits hard.</span></button>
 <button id="pShip"><b>Gale</b><span>Interceptor. 6 armor, rapid lasers. Fast and fragile.</span></button>
@@ -201,7 +203,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
 <p>After each upgrade, choose how to reach the next sector. Every choice ends in a fight: stops happen on the way, then the sector's wave arrives.</p>
 <h3>Stops</h3><ul><li><b>Combat</b>: straight into a normal sector (offered when there are few other choices)</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +30 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: spend scrap on upgrades, Tune-ups, armor repairs or a restock, then fight</li><li><b>Repair Dock</b>: restores half your armor, then fight. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event, then fight. Could be salvage, a deal, or an ambush (the ambush is the fight)</li></ul>
-<h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers. Watch for a lane glowing red: something is about to come down it</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 2 upgrades</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li></ul></div></div>
+<h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers. Watch for a lane glowing red: something is about to come down it</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 2 upgrades</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li><li><b>Save and Quit</b> (pause menu) ends the session; pick <b>Resume saved run</b> under Campaign to restart that sector from its beginning</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
@@ -257,6 +259,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
 <button id="pzUp"><b>Upgrades</b><span>Everything you've collected this run.</span></button>
 <button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
+<button id="pzSave"><b>Save and Quit</b><span>Next time, pick up at the start of this sector.</span></button>
 <button id="pzQuit"><b>Back to Main Menu</b><span>Ends this run.</span></button></div>
 <div id="pzUpg" hidden style="display:grid;gap:12px"><h2>UPGRADES</h2><div id="upgL"></div><button id="pzUBack"><b>Back</b><span>Return to the pause menu.</span></button></div>
 <div id="pzHelp" hidden style="display:grid;gap:12px"><h2>HOW TO PLAY</h2><ul>
@@ -264,7 +267,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li>Your guns fire on their own, straight up the field.</li>
 <li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
 <li>Units dive at you. Shoot them mid-dive for double scrap.</li>
-<li>Clear a sector to pick one upgrade (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss. When armor hits zero, the run ends.</li>
+<li>Clear a sector to pick one upgrade (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss. When armor hits zero, the run ends.</li><li>Save and Quit keeps the run: resume it from Campaign, back at the start of the current sector.</li>
 <li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li>
 <li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
 <li>Every 5th sector is a boss. Every 10 sectors you choose which zone to fly into next. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
@@ -474,7 +477,13 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon',swift:'pSwift'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
  document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),bez=(a,b,c,t)=>a.clone().multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
-function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
+// Save and Quit: a snapshot of the run taken as each campaign sector begins; resuming replays that sector from its start
+let runSave=null;try{runSave=JSON.parse(localStorage.getItem('darksave'))}catch(e){}
+let secSnap=null;function saveRun(){const o={...st};delete o.rsHit;secSnap=JSON.stringify(o)}
+function keepSave(v){try{v?localStorage.setItem('darksave',v):localStorage.removeItem('darksave')}catch(e){}runSave=v?JSON.parse(v):null;resumeBtn()}
+function resumeBtn(){const b=$('pResume');b.hidden=!runSave;if(runSave)$('resumeS').textContent=`${BASE[runSave.kind].name} · Sector ${runSave.sec}${runSave.b45===1?'.5':''} · ${runSave.scrap} scrap`}
+function resume(){const sv=runSave;keepSave(null);start(sv.kind);ents.forEach(e=>S.remove(e.m));ents=[];Object.assign(st,sv);st.banked=0;hud();wave()}
+function start(kind,timed){secSnap=null;if(!timed)keepSave(null);fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -483,7 +492,7 @@ function start(kind,timed){fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();
 function placeTimer(){requestAnimationFrame(()=>{const h=$('hud').getBoundingClientRect().bottom;$('timer').style.top=h-2+'px';$('pwrap').style.top=(st&&st.timed?$('timer').getBoundingClientRect().bottom+2:h+6)+'px'})}addEventListener('resize',placeTimer);
 const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 // Campaign sectors come in several waves (2, or 3 from sector 10); boss and bonus sectors are one wave. In-run prices and rewards are doubled to match the extra scrap; boss and bonus sectors are one wave
-function wave(more){if(!more){st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?1:st.elite||st.sec<10?2:3}
+function wave(more){if(!more){if(!st.timed)saveRun();st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?1:st.elite||st.sec<10?2:3}
  if(!st.timed&&st.sec%5===0){music(null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
  const cols=Math.min(3+(st.sec>>1)+st.wv,9),rows=Math.min(2+(st.sec/3|0),4);let i=0;diveCd=8;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&st.sec>2?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
@@ -926,7 +935,7 @@ function shopTick(dt){const sh=!$('store').hidden,ul=!$('unlocks').hidden;if(!sh
 function thumbTick(dt){shopTick(dt);if(!PHONE.matches)return;thYaw+=dt*.9;
  if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
  for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}
-function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;musicPause(on);const el=$('pause');
+function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;musicPause(on);const el=$('pause');$('pzSave').hidden=st.timed||!secSnap;
  if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;$('pzUpg').hidden=true;$('pzUp').hidden=st.timed;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
   for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}const c=b.getCenter(new THREE.Vector3());
   m.position.sub(c);VG.add(m);VC.position.z=b.getSize(v).length()*1.9;
@@ -941,7 +950,7 @@ addEventListener('resize',orient);addEventListener('orientationchange',orient);
 function toMenu(){music(null);setTimeout(menuMusic,0);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
-$('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;
+$('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;$('pzSave').onclick=()=>{paused=running=false;keepSave(secSnap);toMenu()};$('pResume').onclick=resume;resumeBtn();
 $('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
 addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)showPause(true)});
