@@ -411,11 +411,14 @@ const MOTE=[[-1,0,-1,2,6,2,'i'],[-3,2,-1,6,2,2,'j'],[-1,2,-3,2,2,6,'j'],[-2,1,-2
 const DRYI=[[-3,0,-10,6,4,20,'g',0,'r'],[-2,0,10,4,3,4,'i'],[-1,1,14,2,2,3,'f'],[-1,4,0,2,1,6,'n'],[-2,3,-8,4,2,8,'d',0,'r'],
  [3,1,0,3,2,6,'j',1],[5,1,-2,3,1,6,'i',1],[7,1,-4,3,1,6,'i',1],[9,1,-6,3,1,6,'j',1],[11,1,-8,3,1,5,'i',1],[13,1,-10,2,1,4,'f',1],[3,2,-1,10,1,1,'n',1],
  [-1,4,-11,2,9,9,'i',0,'fin'],[0,6,-11,1,6,6,'f',0,'fin'],[1,1,-12,2,2,2,'n',1],[4,0,4,2,1,3,'a',1]],
-// Capital unit "Onager" (Legion Space): a large bronze-and-gold siege ship with a ram prow. ONCAT is the catapult on its back
-// (a separate unit that must be destroyed before the hull can be hurt)
- ONAG=[[-9,0,-14,18,5,28,'o',0,'r'],[-7,5,-10,14,2,20,'v',0,'r'],[-3,1,14,6,3,4,'a'],[-1,1,18,2,2,3,'a'],[9,1,-12,1,2,24,'c',1],[10,2,-6,3,1,2,'d',1],[10,2,2,3,1,2,'d',1],
- [-6,7,8,12,1,1,'l'],[2,1,-16,4,3,2,'d',1],[3,2,-17,2,1,1,'l',1],[-2,7,-10,4,3,4,'o'],[-1,10,-9,2,4,1,'c']],
- ONCAT=[[-3,0,-3,6,2,6,'d'],[2,2,-1,1,5,2,'o',1],[-3,7,-1,6,1,2,'o'],[-1,2,-8,2,2,12,'a'],[-2,3,-10,4,2,3,'c'],[-1,5,-10,2,2,2,'l']];
+// Capital unit "Onager" (Legion Space): a literal Roman onager scaled up into a flying siege engine. Heavy timber frame on
+// hover-wheels, a twisted rope torsion skein at the rear, an A-frame with a padded crossbar up front, bronze fittings, neon trim.
+// ONCAT is its throwing arm with the sling (a separate unit that must be destroyed before the frame can be hurt)
+ ONAG=[[6,0,-14,3,3,28,'w',1],[-9,0,-12,18,2,3,'d'],[-9,0,9,18,2,3,'d'],[-9,0,-2,18,2,3,'d'],[-6,0,-12,12,1,24,'d'],
+ [9,-1,-12,2,6,6,'d',1,'cx'],[9,-1,6,2,6,6,'d',1,'cx'],[11,1,-10,1,2,2,'l',1],[11,1,8,1,2,2,'l',1],[6,3,-14,3,1,3,'o',1],[6,3,11,3,1,3,'o',1],
+ [5,3,5,2,9,2,'w',1],[-7,12,5,14,2,2,'w'],[-3,11,4,6,3,2,'c'],[6,10,5,2,1,2,'o',1],
+ [-6,1,-12,12,4,4,'q',0,'cx'],[6,0,-13,1,6,6,'o',1,'cx'],[-2,0,14,4,2,3,'o'],[9,3,-8,1,1,16,'l',1]],
+ ONCAT=[[-1,-1,-1,2,2,2,'o'],[-1,0,-1,2,16,2,'w'],[-1,5,-1,2,1,2,'o'],[-1,11,-1,2,1,2,'o'],[-2,16,-2,4,2,4,'q'],[-1,18,-1,2,2,2,'l']];
 const MODELS={
  mine:()=>build('mine',MINE,{...P,v:0x3a3f47,o:0x8a3b32,m:0xff3030},.09),
  lancer:()=>build('lancer',LANCER,{...P,v:0x6b2a3a,o:0x2a2d36,m:0xff3030},.1),
@@ -428,8 +431,8 @@ const MODELS={
  glacier:()=>build('glacier',GLAC,FPAL,.5),
  glice:()=>build('glice',GLICE,FPAL,.5),
  dryice:()=>build('dryice',DRYI,FPAL,.4),
- onager:()=>build('onager',ONAG,{...P,v:0xd4a52a,o:0x8a6a1e,a:0x8a929c,c:0xb0201c,l:0x4fe8ff},.45),
- oncat:()=>build('oncat',ONCAT,{...P,o:0x8a6a1e,a:0x8a929c,c:0xb0201c,l:0x4fe8ff},.45),
+ onager:()=>build('onager',ONAG,{...P,w:0x7a5230,d:0x4a3020,o:0xb08a3a,q:0xc8b080,c:0xb0201c,l:0x4fe8ff},.45),
+ oncat:()=>build('oncat',ONCAT,{...P,w:0x7a5230,o:0xb08a3a,q:0xc8b080,l:0x4fe8ff},.45),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
  mech:()=>build('mech',KESTREL,P,.065,2),
@@ -675,22 +678,22 @@ function dryUp(e,dt,p){const M=e.m.position,B=e.fx.beam,W=e.fx.warn;e.cloud.forE
  else if(e.ph===3){e.tm+=dt;B.position.set(M.x,1,M.z+27);B.scale.set(3.6,1,50);B.rotation.set(0,0,0);B.visible=true;
   if(!e.hit&&Math.abs(p.x-M.x)<1.8+.4&&st.inv<=0){e.hit=1;hurt(2);shake=Math.max(shake,.3)}
   if(e.tm>1.1){B.visible=false;e.ph=1;e.moved=0;e.cdM=7+Math.random()*2;e.x0=M.x*.5;e.t=Math.asin(Math.max(-1,Math.min(1,(M.x-e.x0)/((FX-3)*(1-Math.abs(e.x0)/FX)||1))))/.9}}}
-// Onager boss: a large siege ship. Stage 1: holds the centre and lobs EMP bombs from the catapult on its back (a blue ring marks
+// Onager boss: a giant flying Roman onager, turned three-quarters to the player in stage 1 so the throwing arm shows. The arm winches back, then snaps up against the crossbar to throw. Stage 1: holds the centre and lobs EMP bombs from the catapult on its back (a blue ring marks
 // where each lands: 1 damage and a stun that halves your speed), while Lancers make their usual runs. The hull is armored until
 // the catapult is destroyed. Stage 2: it rams you like a Lancer (hover, flash a red lane, charge for 3), then returns to the top
 function onagerWave(){const m=MODELS.onager(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();
  const core={m,type:'onager',state:'onager',hp:80*k,slot:V3(0,0),t:-5,r:4,ph:0,cdB:3,cdL:2,bombs:[],fx:{warn:beamMesh(0xff2020,.25)}};
- const c=MODELS.oncat();S.add(c);ents.push({m:c,type:'cata',state:'boss',hp:30*k,slot:V3(0,0),core,off:new THREE.Vector3(0,3.15,-1),r:1.6},core);
+ const c=MODELS.oncat();c.rotation.order='YXZ';c.rotation.set(-1.1,.8,0);m.rotation.y=.8;S.add(c);ents.push({m:c,type:'cata',state:'boss',hp:30*k,slot:V3(0,0),core,off:new THREE.Vector3(-4.5*Math.sin(.8),1.4,-4.5*Math.cos(.8)),r:1.6},core);
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Onager". Break the catapult on its back`)}
 function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.core===e&&x.hp>0);
  for(const b of e.bombs){b.t+=dt;const u=Math.min(1,b.t/1.4);b.m.position.lerpVectors(b.a,b.b,u);b.m.position.y=1+9*u*(1-u)*2;b.ring.visible=Math.floor(b.t*8)%2==0;
   if(u>=1){b.done=1;boom(b.b,14,0x4fe8ff);if(hd(b.b,p)<2&&st.inv<=0){hurt(1);st.slow=Math.max(st.slow,1.5)}}}
  for(let i=e.bombs.length;i--;)if(e.bombs[i].done){BFX.remove(e.bombs[i].m);BFX.remove(e.bombs[i].ring);e.bombs.splice(i,1)}
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('boss');M.set(0,M.y,-60+32*k*(2-k));if(k<1)return;e.ph=1}
- if(e.ph===1){M.x+=-M.x*Math.min(1,dt*2);M.z+=(-28-M.z)*Math.min(1,dt*2);
-  if(cat){e.cdB-=dt;if(e.cdB<=0){e.cdB=2.4;cat.m.rotation.x=-.8;const bm=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x4fe8ff}));bm.scale.setScalar(.7);BFX.add(bm);
+ if(e.ph===1){e.m.rotation.y=.8;M.x+=-M.x*Math.min(1,dt*2);M.z+=(-28-M.z)*Math.min(1,dt*2);
+  if(cat){e.cdB-=dt;if(e.cdB<=0){e.cdB=2.4;cat.m.rotation.x=.9;const bm=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x4fe8ff}));bm.scale.setScalar(.7);BFX.add(bm);
     const ring=new THREE.Mesh(new THREE.CylinderGeometry(2,2,.05,24),new THREE.MeshBasicMaterial({color:0x4fe8ff,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));const tg=V3(p.x,p.z);ring.position.set(tg.x,.06,tg.z);BFX.add(ring);
-    e.bombs.push({m:bm,ring,a:cat.m.position.clone(),b:tg,t:0})}cat.m.rotation.x*=Math.max(0,1-dt*4);
+    e.bombs.push({m:bm,ring,a:cat.m.position.clone(),b:tg,t:0})}cat.m.rotation.x+=(-1.1-cat.m.rotation.x)*Math.min(1,dt*1.2);
    e.cdL-=dt;if(e.cdL<=0){e.cdL=6;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++){addLancer(j);ents[ents.length-1].add=1}}}
   else{e.ph=2;e.tm=1.2;banner('CATAPULT DOWN','The Onager is coming for you');shake=Math.max(shake,.4)}}
  else if(e.ph===2){e.tm-=dt;if(e.tm>.9){M.x+=(Math.max(-FX+3,Math.min(FX-3,p.x))-M.x)*Math.min(1,dt*3);return}
