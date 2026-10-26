@@ -241,7 +241,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
-<h3>Music &amp; sound</h3><ul><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss)</li></ul>
+<h3>Music &amp; sound</h3><ul><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss)</li></ul>
 <h3>Built with</h3><ul><li>three.js r128 (MIT License)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
@@ -653,7 +653,7 @@ function placeTimer(){requestAnimationFrame(()=>{const h=$('hud').getBoundingCli
 const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 // Campaign sectors come in several waves (2, or 3 from sector 10); boss and bonus sectors are one wave. In-run prices and rewards are doubled to match the extra scrap; boss and bonus sectors are one wave
 function wave(more){if(!more){if(!st.timed&&!st.dev)saveRun();st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?1:st.elite||st.sec<10?2:3}
- if(!st.timed&&st.sec%5===0){music(null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':st.area==='The Frost Reach'?'frost':st.area==='Red Crystal Asteroid Belt'?'crystal':st.area==='The Alkaline Zone'?'alk':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
+ if(!st.timed&&st.sec%5===0){music(null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':st.area==='The Frost Reach'?'frost':st.area==='Red Crystal Asteroid Belt'?'crystal':st.area==='The Alkaline Zone'?'alk':st.area==='Legion Space'?'legion':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
  const cols=Math.min(3+(st.sec>>1)+st.wv,9),rows=Math.min(2+(st.sec/3|0),4);let i=0;diveCd=8;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&(st.timed?st.sec*3:st.sec)>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
@@ -719,7 +719,7 @@ function wardenWave(){const m=MODELS.warden(),k=1+st.sec*.08;S.add(m);m.position
 function wardenCalm(e){const F=e.fx;F.line.visible=F.aim.visible=F.sweep.visible=F.warn.visible=false;if(e.atk){e.atk=null;e.cdA=1.5;e.cdS=Math.max(e.cdS,3)}}
 function addMob(i){const m=MODELS.chaser();S.add(m);const side=Math.random()<.5?-1:1,p0=V3(side*16,-30);m.position.copy(p0);
  ents.push({m,type:'chaser',add:1,hp:2*(1+st.sec*.08),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
-function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.position,F=e.fx;if(e.t>3)music(st.area==='The Alkaline Zone'?'alkboss':'boss');M.set(Math.sin(e.t*.3)*3*k,M.y,-55+31*k*(2-k));if(k<1)return;
+function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.position,F=e.fx;if(e.t>3)music(bossTrk());M.set(Math.sin(e.t*.3)*3*k,M.y,-55+31*k*(2-k));if(k<1)return;
  MZ.set(M.x+2.4,4,M.z+4.9);e.cdA-=dt;e.cdS-=dt;e.cdM-=dt;F.glw.scale.setScalar(e.atk?1.6+Math.random()*.8:1.2);
  if(e.atk==='aim'){e.at-=dt;
   if(e.at>0){beamTo(F.line,MZ,e.tg,.12);F.line.material.opacity=Math.floor(e.at*14)%2?.35:.9}
@@ -738,7 +738,7 @@ function minoWave(){const m=MODELS.mino(),k=1+st.sec*.08;S.add(m);m.position.set
  ents.push({m,type:'mino',state:'mino',hp:70*k,slot:V3(0,0),t:-5,r:2.6,cdF:2,side:1,cdR:5,ph:0,fx:{warn:beamMesh(0xff2020,.25)}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Minotaur". When it shudders, get out of its lane`)}
 function minoUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1;e.m.scale.setScalar(1);
- if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(st.area==='The Alkaline Zone'?'alkboss':'boss');M.set(0,M.y,-50+30*k*(2-k));if(k<1)return;e.ph=1}
+ if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());M.set(0,M.y,-50+30*k*(2-k));if(k<1)return;e.ph=1}
  if(e.ph===1){M.x+=Math.sign(p.x-M.x)*Math.min(Math.abs(p.x-M.x),4*dt);M.z+=(-20-M.z)*Math.min(1,dt*2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.5;
   e.cdF-=dt;if(e.cdF<=0){e.cdF=.55;e.side=-e.side;const o=M.clone().add(V3(e.side*2.6,4.1));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xff5a5a,0)}
   e.cdR-=dt;if(e.cdR<=0){e.ph=2;e.tm=1.1;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}
@@ -755,7 +755,7 @@ function caesarWave(){const m=MODELS.caesar(),k=1+st.sec*.08;S.add(m);m.position
  ents.push({m,type:'caesar',state:'caesar',hp:95*k,slot:V3(0,0),t:-5,r:2.8,ph:0,cdB:2.5,cdA:5,nb:0,sp,fx:{warn:beamMesh(0xff2020,.25)}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "The Caesar". Read its stance: spear, shield or cannon`)}
 function caesarUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,sp=e.sp;e.m.scale.setScalar(1);
- if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(st.area==='The Alkaline Zone'?'alkboss':'boss');M.set(0,M.y,-50+30*k*(2-k));if(k<1)return;e.ph=1}
+ if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());M.set(0,M.y,-50+30*k*(2-k));if(k<1)return;e.ph=1}
  if(e.ph===1){const tx=p.x*.6;M.x+=Math.sign(tx-M.x)*Math.min(Math.abs(tx-M.x),3*dt);M.z+=(-20-M.z)*Math.min(1,dt*2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.4;
   e.cdB-=dt;if(e.cdB<=0){const o=e.m.localToWorld(new THREE.Vector3(13*CS,38*CS,13*CS));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),11,1,true,0xff5a5a,0).home=1.1;e.nb=(e.nb+1)%3;e.cdB=e.nb?.18:2.2}
   e.cdA-=dt;if(e.cdA<=0){e.nb=0;e.cdB=1.5;e.m.rotation.y=0;if(Math.random()<.5){e.ph=2;e.tm=1.6}else{e.ph=5;e.tm=1;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}}
@@ -826,7 +826,7 @@ function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.co
  for(const b of e.bombs){b.t+=dt;const u=Math.min(1,b.t/1.4);b.m.position.lerpVectors(b.a,b.b,u);b.m.position.y=1+9*u*(1-u)*2;b.ring.visible=Math.floor(b.t*8)%2==0;
   if(u>=1){b.done=1;boom(b.b,14,0x4fe8ff);if(hd(b.b,p)<2&&st.inv<=0){hurt(1);st.slow=Math.max(st.slow,1.5)}}}
  for(let i=e.bombs.length;i--;)if(e.bombs[i].done){BFX.remove(e.bombs[i].m);BFX.remove(e.bombs[i].ring);e.bombs.splice(i,1)}
- if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(st.area==='The Alkaline Zone'?'alkboss':'boss');M.set(0,M.y,-60+32*k*(2-k));if(k<1)return;e.ph=1}
+ if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());M.set(0,M.y,-60+32*k*(2-k));if(k<1)return;e.ph=1}
  if(e.ph===1){e.m.rotation.y=.8;M.x+=-M.x*Math.min(1,dt*2);M.z+=(-28-M.z)*Math.min(1,dt*2);
   if(cat){e.cdB-=dt;if(e.cdB<=0){e.cdB=2.4;cat.m.rotation.x=.9;const bm=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x4fe8ff}));bm.scale.setScalar(.7);BFX.add(bm);
     const ring=new THREE.Mesh(new THREE.CylinderGeometry(2,2,.05,24),new THREE.MeshBasicMaterial({color:0x4fe8ff,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));const tg=V3(p.x,p.z);ring.position.set(tg.x,.06,tg.z);BFX.add(ring);
@@ -1134,7 +1134,15 @@ const SONGS={
  alkboss:{name:'Caustic Engine',bpm:172,root:40,dv:1.6,
   k:'x.xxx.xxx.xxx.xx',s:'....x..x....x.xx',h:'xxxxxxxxxxxxxxxx',c:'x.x.x.x.x.x.x.x.',g:'xxXxxxXxxxXxxX.X',
   A:[0,0,0,0,-2,-2,1,1],B:[0,1,3,1,0,1,6,5],
-  mel:'7-7-a-7-c-a-8-7-7-7-a-7-d-c-a-8-c-c-d-c-f-d-c-a-d---f---h-------h-f-d-c-a-c-d-f-h-f-d-c-d-f-h-j-h---f---d---c---7---------------'}};
+  mel:'7-7-a-7-c-a-8-7-7-7-a-7-d-c-a-8-c-c-d-c-f-d-c-a-d---f---h-------h-f-d-c-a-c-d-f-h-f-d-c-d-f-h-j-h---f---d---c---7---------------'},
+ legion:{name:'Iron Eagles',bpm:124,root:43,
+  k:'x...x...x...x...',s:'x.rrx...x.rrx.x.',h:'x...x...x...x...',g:'X...x.x.X...x.x.',
+  A:[0,0,5,5,3,3,7,7],B:[0,5,3,7,0,5,7,7],
+  mel:'7---7-7-c---7---9---7---5---4---5---5-5-9---5---7-------0-------c---c-c-e---c---e---c---9---7---9---9-c-e---c---c---------------'},
+ legionboss:{name:'Siege of Steel',bpm:140,root:43,dv:1.4,
+  k:'x.x.x.x.x.x.x.x.',s:'rrx.rrx.rrx.rrxx',h:'x.x.x.x.x.x.x.x.',g:'xxX.xxX.xxX.xX.X',
+  A:[0,0,1,1,0,0,-1,-1],B:[0,1,3,1,0,1,6,7],
+  mel:'7-7-8---7---3---5-5-7---5---1---3-3-5---7---8---7-------7-------c-c-a---8---7---8-8-7---5---3---5-7-8-a-c-a-8-7-7---------------'}};
 const MU={cur:null,step:0,next:0,iv:0,out:null,nz:null,dist:null,vol:.22};
 function muInit(){if(MU.out)return;const o=AC.createGain(),c=AC.createDynamicsCompressor();o.gain.value=MU.vol;o.connect(c).connect(AC.destination);MU.out=o;
  const b=AC.createBuffer(1,AC.sampleRate,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;MU.nz=b;
@@ -1145,7 +1153,7 @@ function noise(t,len,type,f,v,q){const s=AC.createBufferSource(),fl=AC.createBiq
  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);s.connect(fl).connect(g).connect(MU.out);s.start(t,Math.random()*.5);s.stop(t+len+.02)}
 const DR={kick(t){const o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(42,t+.12);
   g.gain.setValueAtTime(MU.dv||1,t);g.gain.exponentialRampToValueAtTime(.001,t+.28);o.connect(g).connect(MU.out);o.start(t);o.stop(t+.3)},
- snare(t){noise(t,.18,'bandpass',1900,.7*(MU.dv||1),.8);const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=190;
+ snare(t,v=1){noise(t,.18,'bandpass',1900,.7*(MU.dv||1)*v,.8);const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=190;
   g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);o.connect(g).connect(MU.out);o.start(t);o.stop(t+.12)},
  // Clank: a short metallic hit (tight high noise plus a ringing square ping) for the industrial Alkaline tracks
  clank(t){noise(t,.07,'bandpass',3200,.5*(MU.dv||1),9);const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=1760;g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(MU.out);o.start(t);o.stop(t+.13)},
@@ -1162,12 +1170,14 @@ function brass(t,ms,len,v){const f=AC.createBiquadFilter(),g=AC.createGain();f.t
 // Bell: a frosty chime (sine plus a bright upper partial, long decay) that carries the melody in the Frost Reach tracks
 function bell(t,m,len){const g=AC.createGain();g.connect(MU.out);env(g,t,.004,.16,.02,len+.9);for(const [iv,v] of [[0,1],[12,.35],[19,.12]]){const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.value=mhz(m+iv);og.gain.value=v;o.connect(og).connect(g);o.start(t);o.stop(t+len+1)}}
 function muStep(S,i,t){const sd=60/S.bpm/4,j=i%16,bar=(i>>4)%16,secB=bar>=8,ch=S.root+(secB?S.B:S.A)[bar%8];
- MU.dv=S.dv||1;if(S.k[j]==='x')DR.kick(t);if(S.c&&S.c[j]==='x')DR.clank(t);if(S.s[j]==='x')DR.snare(t);if(S.h[j]==='x'&&!(j===0&&bar%4===0))DR.hat(t);if(j===0&&bar%4===0)DR.crash(t);
+ MU.dv=S.dv||1;if(S.k[j]==='x')DR.kick(t);if(S.c&&S.c[j]==='x')DR.clank(t);if(S.s[j]==='x')DR.snare(t);else if(S.s[j]==='r'){DR.snare(t,.45);DR.snare(t+sd/2,.35)}if(S.h[j]==='x'&&!(j===0&&bar%4===0))DR.hat(t);if(j===0&&bar%4===0)DR.crash(t);
  if(j>=12&&(bar%8===7)&&S===SONGS.boss)DR.snare(t);
  const gc=S.g[j];if(gc!=='.'){let n=1;while(j+n<16&&S.g[j+n]==='.'&&n<4)n++;guitar(t,ch,gc==='X'?n*sd:sd*.7,gc==='X')}
  if(j%2===0)bass(t,ch-12,sd*2);
  if(secB){const c=S.mel[(bar-8)*16+j];if(c&&c!=='.'&&c!=='-'){let n=1;while(S.mel[(bar-8)*16+j+n]==='-')n++;const m=S.root+12+parseInt(c,36);if(S.bell)bell(t,m+12,n*sd);else brass(t,[m,m-12],n*sd*.95)}}
  else if(j===0||j===10)brass(t,[ch+12,ch+19,ch+24],j?sd*1.5:sd*3,S.bell?.05:.1)}
+// Which boss track a zone uses
+const bossTrk=()=>st&&st.area==='The Alkaline Zone'?'alkboss':st&&st.area==='Legion Space'?'legionboss':'boss';
 function music(k){if(MU.cur===k)return;MU.cur=k;clearInterval(MU.iv);MU.iv=0;if(!k||!AC)return;muInit();MU.step=0;MU.next=AC.currentTime+.08;MU.out.gain.value=MU.vol;
  MU.iv=setInterval(()=>{if(AC.state!=='running')return;const S=SONGS[MU.cur],sd=60/S.bpm/4;if(MU.next<AC.currentTime-.2)MU.next=AC.currentTime+.02;
   while(MU.next<AC.currentTime+.12){muStep(S,MU.step++,MU.next);MU.next+=sd}},25)}
@@ -1230,7 +1240,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.12)*(.6+Math.random()*.8)/st.fast}
   for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.type==='mino'||e.type==='caesar')e.fx.warn.visible=false;if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
-    else{e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(st.area==='The Alkaline Zone'?'alkboss':'boss');e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
+    else{e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
    if(e.type==='mine'){face=false;mineUp(e,dt,p)}else if(e.type==='lancer')lancerUp(e,dt,p);else if(e.type==='warden'){face=false;wardenUp(e,dt,p)}else if(e.type==='mino'){face=false;minoUp(e,dt,p)}else if(e.type==='caesar'){face=false;caesarUp(e,dt,p)}else if(e.type==='glacier'){face=false;glacierUp(e,dt,p)}else if(e.type==='dryice'){face=false;dryUp(e,dt,p)}else if(e.type==='onager'){face=false;onagerUp(e,dt,p)}else if(e.type==='splinter'){face=false;splinterUp(e,dt,p)}else if(e.type==='praet'){face=false;praetUp(e,dt,p)}else if(e.type==='golem'){face=false;golemUp(e,dt,p)}else if(e.type==='geode'){face=false;geodeUp(e,dt,p)}else if(e.type==='refract'){face=false;refractUp(e,dt,p)}else if(e.type==='mote'){face=false;moteUp(e,dt,p)}else if(e.type==='moth'){face=false;mothUp(e,dt,p)}else if(e.type==='crucible'){face=false;crucibleUp(e,dt,p)}else if(e.type==='mercury'){face=false;mercuryUp(e,dt,p)}else if(e.type==='mdecoy')face=false;else if(e.type==='slime'){face=e.ph===1;oozeUp(e,dt,p)}
    if(e.state==='fly'){e.t+=dt/4.2;if(e.t<0)continue;e.m.visible=true;if(e.t>=1){e.escaped=1;e.hp=0}else e.m.position.copy(bez(e.p0,e.p1,e.p2,e.t))}
    if(e.state==='enter'&&e.pat!=null){e.t+=dt/2.6;if(e.t<0)continue;e.m.visible=true;
