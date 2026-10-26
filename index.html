@@ -418,11 +418,14 @@ const DRYI=[[-3,0,-10,6,4,20,'g',0,'r'],[-2,0,10,4,3,4,'i'],[-1,1,14,2,2,3,'f'],
  [5,3,5,2,9,2,'w',1],[-7,12,5,14,2,2,'w'],[-3,11,4,6,3,2,'c'],[6,10,5,2,1,2,'o',1],
  [-6,1,-12,12,4,4,'q',0,'cx'],[6,0,-13,1,6,6,'o',1,'cx'],[-2,0,14,4,2,3,'o'],[9,3,-8,1,1,16,'l',1]],
  ONCAT=[[-1,-1,-1,2,2,2,'o'],[-1,0,-1,2,16,2,'w'],[-1,5,-1,2,1,2,'o'],[-1,11,-1,2,1,2,'o'],[-2,16,-2,4,2,4,'q'],[-1,18,-1,2,2,2,'l']];
-// Frost Reach unit "Ice Golem": a bulky crystalline mech. Pale ice torso and limbs on dark legs, blue crystal spikes on the
-// shoulders and back, a small sunken head with a cyan visor and a glowing core in the chest
-const GOLM=[[3,0,-4,6,3,8,'d',1],[3,3,-3,6,8,6,'j',1,'r'],[-7,10,-4,14,3,8,'g',0,'r'],[-10,13,-6,20,12,12,'i',0,'r'],[-2,17,6,4,4,1,'n'],
- [9,20,-5,6,7,10,'j',1,'e'],[11,10,-3,5,10,6,'i',1,'r'],[11,6,-3,5,5,6,'j',1,'e'],[10,25,-2,3,6,3,'j',1],[11,30,-1,2,3,2,'f',1],
- [-4,25,-5,2,6,2,'j'],[2,25,-4,2,5,2,'f'],[-1,26,-6,2,4,2,'n'],[-3,25,-1,6,4,6,'g',0,'r'],[-2,26,5,4,1,1,'n'],[-8,21,3,3,3,4,'f'],[5,15,4,3,3,3,'j']];
+// Frost Reach unit "Ice Golem": a bulky crystalline mech with a broad chest tapering to a narrow waist, muscular limbs (biceps,
+// forearms, thighs, calves), icicles hanging from its chest, blue crystal spikes on the shoulders and back, a cyan visor and chest core
+const GOLM=[[3,0,-4,6,2,9,'d',1],[4,2,-2,4,6,4,'j',1,'r'],[3,3,-5,6,5,5,'i',1,'e'],[4,8,-2,4,2,4,'d',1],[2,10,-4,8,7,8,'i',1,'e'],
+ [-5,16,-3,10,3,6,'g',0,'r'],[-5,18,-3,10,3,7,'d',0,'r'],[-11,20,-6,22,11,12,'i',0,'v'],[-2,25,6,4,3,1,'n'],[1,26,4,7,4,2,'f',1,'e'],
+ [1,21,6,1,5,2,'n',1],[3,22,6,1,4,2,'f',1],[5,20,6,1,6,2,'n',1],[7,23,5,1,3,2,'f',1],
+ [10,27,-5,6,7,10,'j',1,'e'],[11,21,-3,5,7,6,'i',1,'e'],[12,22,0,4,5,4,'f',1,'e'],[12,19,-2,4,2,4,'d',1],[11,13,-3,6,7,7,'i',1,'e'],[11,9,-3,6,5,7,'j',1,'e'],
+ [11,33,-2,3,6,3,'j',1],[12,38,-1,2,3,2,'f',1],[-4,30,-6,2,6,2,'j'],[2,30,-5,2,5,2,'f'],[-1,31,-7,2,4,2,'n'],
+ [-3,31,-1,6,4,6,'g',0,'r'],[-2,32,5,4,1,1,'n']];
 // Legion Space unit "Praetorian": a mech guardsman in steel and gold with a purple cape, a transverse red crest across the helmet,
 // a rectangular shield on the left arm, a short sword in the right hand and a cannon set in the chest
 const PRAE=[[3,0,-3,4,2,6,'d',1],[3,2,-2,4,8,4,'a',1,'r'],[3,10,-2,4,3,4,'d',1],[-6,12,-4,12,4,8,'g',0,'r'],[-7,15,-5,14,11,10,'a',0,'r'],
@@ -781,12 +784,12 @@ function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.co
 // Ice Golem (medium): plods in to the upper-mid field. Every 3.5-4.5 s a snowball forms over its head (the tell), then it lobs it
 // at you; halfway there the snowball bursts into three shards fanning out evenly from the middle
 const snow=[],SNOWG=new THREE.SphereGeometry(.35,10,8),SNOWM=new THREE.MeshLambertMaterial({color:0xf4fbff,emissive:0x8090a0});
-function addGolem(j,n){const m=MODELS.golem();m.visible=false;S.add(m);const b=new THREE.Mesh(SNOWG,SNOWM);b.position.set(0,3.6,0);b.visible=false;m.add(b);
+function addGolem(j,n){const m=MODELS.golem();m.visible=false;S.add(m);const b=new THREE.Mesh(SNOWG,SNOWM);b.position.set(0,4.3,0);b.visible=false;m.add(b);
  const x=(j-(n-1)/2)*9;m.position.set(x,0,-45);ents.push({m,ball:b,type:'golem',state:'golem',hp:8*(1+st.sec*.08),slot:V3(x,-20-(j%2)*2),r:.95,t:-2.5-j*.8,cd:2.5+Math.random()*1.5})}
 function golemUp(e,dt,p){const M=e.m.position;e.t+=dt;if(e.t<0)return;e.m.visible=true;const tx=e.slot.x+Math.sin(e.t*.4+e.slot.x)*2;
  M.x+=(tx-M.x)*Math.min(1,dt);M.z+=(e.slot.z-M.z)*Math.min(1,dt);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.5;
  e.cd-=dt;e.ball.visible=e.cd<.7;if(e.ball.visible)e.ball.scale.setScalar(Math.max(.2,(.7-e.cd)/.7));
- if(e.cd<=0){e.cd=3.5+Math.random();const o=e.m.localToWorld(new THREE.Vector3(0,3.6,0)),m=new THREE.Mesh(SNOWG,SNOWM);m.position.copy(o);S.add(m);
+ if(e.cd<=0){e.cd=3.5+Math.random();const o=e.m.localToWorld(new THREE.Vector3(0,4.3,0)),m=new THREE.Mesh(SNOWG,SNOWM);m.position.copy(o);S.add(m);
   snow.push({m,a:V3(o.x,o.z),b:V3((o.x+p.x)/2,(o.z+p.z)/2),dir:V3(p.x-o.x,p.z-o.z).normalize(),u:0,y0:o.y})}}
 function snowTick(dt){for(const s of snow){s.u+=dt/.9;const u=Math.min(s.u,1);s.m.position.set(s.a.x+(s.b.x-s.a.x)*u,s.y0+(1.1-s.y0)*u+Math.sin(Math.PI*u)*2.5,s.a.z+(s.b.z-s.a.z)*u);s.m.rotation.x+=dt*6;
   if(u>=1){s.done=1;S.remove(s.m);boom(s.m.position,8,0xf4fbff);const a=Math.atan2(s.dir.x,s.dir.z);for(const k of[-.4,0,.4])fire(s.m.position,V3(Math.sin(a+k),Math.cos(a+k)),9,1,true,0xf4fbff,0,1.3)}}
