@@ -211,6 +211,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Heavy</h3><ul><li>Large and rust red, with shoulder cannons</li><li>Tough; fires a three-shot spread</li><li>Appears from sector 4, in the back row</li></ul>
 <h3>Mine</h3><ul><li>A dark spiked sphere with a rust band</li><li>Drifts in and parks just ahead of your row, blocking that lane and soaking up your shots</li><li>Tough. Touching it hurts; dash through or destroy it</li><li>After about 15 seconds it lifts off and leaves on its own</li><li>Appears from sector 7</li></ul>
 <h3>Mote</h3><ul><li>A small flickering ice crystal drone, found in some zones</li><li>Never attacks, and one hit destroys it, but it flits around in front of you and soaks up shots meant for others</li></ul>
+<h3>Praetorian</h3><ul><li>A Roman guard mech in steel and gold: sideways red crest, short sword, shield and a purple cape. Found in Legion Space</li><li>Paces side to side in the upper field behind its shield</li><li>Its chest cannon glows orange, then fires an aimed shot twice as wide as normal, every few seconds</li><li>Tougher than most units</li></ul>
 <h3>Splinter</h3><ul><li>A cluster of red crystal on a chunk of rock, found in some zones</li><li>Hovers near the top, firing single shards at you</li><li>When destroyed it bursts into three shards flung your way, so don't kill it point-blank</li></ul>
 <h3>Lancer</h3><ul><li>A dark red dart-shaped drone</li><li>Hovers for a moment, slides to the left or right edge, flashes, then rams where you were. Fast, but fragile</li><li>Appears from sector 11</li></ul>
 <h3>Ooze</h3><ul><li>A big green slime blob. Never shoots</li><li>Creeps above your row, then squashes flat and flashes before it lunges at you</li><li>Leaves a glowing goo trail, with a big splat where it lands. Goo slows you</li><li>Each kill splits it into two smaller, faster copies: 7 blobs in all</li><li>Appears from sector 21</li></ul>
@@ -423,7 +424,14 @@ const DRYI=[[-3,0,-10,6,4,20,'g',0,'r'],[-2,0,10,4,3,4,'i'],[-1,1,14,2,2,3,'f'],
  [5,3,5,2,9,2,'w',1],[-7,12,5,14,2,2,'w'],[-3,11,4,6,3,2,'c'],[6,10,5,2,1,2,'o',1],
  [-6,1,-12,12,4,4,'q',0,'cx'],[6,0,-13,1,6,6,'o',1,'cx'],[-2,0,14,4,2,3,'o'],[9,3,-8,1,1,16,'l',1]],
  ONCAT=[[-1,-1,-1,2,2,2,'o'],[-1,0,-1,2,16,2,'w'],[-1,5,-1,2,1,2,'o'],[-1,11,-1,2,1,2,'o'],[-2,16,-2,4,2,4,'q'],[-1,18,-1,2,2,2,'l']];
-// Red Crystal unit "Splinter": a cluster of red crystal on a sard rock. Hovers in the upper field firing single aimed shards;
+// Legion Space unit "Praetorian": a mech guardsman in steel and gold with a purple cape, a transverse red crest across the helmet,
+// a rectangular shield on the left arm, a short sword in the right hand and a cannon set in the chest
+const PRAE=[[3,0,-3,4,2,6,'d',1],[3,2,-2,4,8,4,'a',1,'r'],[3,10,-2,4,3,4,'d',1],[-6,12,-4,12,4,8,'g',0,'r'],[-7,15,-5,14,11,10,'a',0,'r'],
+ [-5,17,5,10,7,1,'d'],[-2,19,5,4,4,3,'d',0,'cz'],[-1,20,8,2,2,1,'l'],[7,23,-4,4,4,8,'g',1,'e'],[-6,13,-6,12,12,1,'p'],[8,15,-2,3,8,4,'a',1,'r'],
+ [-13,9,-4,2,16,11,'p',0,'r'],[-14,15,0,1,4,3,'g'],[-14,9,-4,1,1,11,'g'],[-14,24,-4,1,1,11,'g'],
+ [9,14,1,2,2,2,'d'],[8,14,3,4,2,1,'g'],[9,14,4,2,2,7,'f'],[-2,26,-2,4,2,4,'d'],[-4,28,-4,8,7,8,'a',0,'e'],[-3,30,3,6,1,1,'m'],[-4,28,2,1,4,2,'g',1],
+ [-9,31,-1,18,9,2,'c',0,'cz']];
+// Red Crystal unit "Splinter\": a cluster of red crystal on a sard rock. Hovers in the upper field firing single aimed shards;
 // when destroyed it bursts into three shards flung at you. Red Crystal waves bring 3
 const SPLN=[[-2,-1,-2,4,2,4,'s',0,'e'],[-1,0,-1,2,6,2,'r'],[-2,1,-1,1,4,1,'p'],[1,1,0,1,5,1,'p'],[-1,1,1,1,3,1,'p'],[0,6,0,1,1,1,'w']],
 // Capital unit "Geode" (Red Crystal Asteroid Belt): a huge sard-red asteroid bristling with crystal spikes around a glowing core.
@@ -450,6 +458,7 @@ const MODELS={
  onager:()=>build('onager',ONAG,{...P,w:0x7a5230,d:0x4a3020,o:0xb08a3a,q:0xc8b080,c:0xb0201c,l:0x4fe8ff},.45),
  oncat:()=>build('oncat',ONCAT,{...P,w:0x7a5230,o:0xb08a3a,q:0xc8b080,l:0x4fe8ff},.45),
  splinter:()=>build('splinter',SPLN,CPAL,.22),
+ praet:()=>build('praet',PRAE,{d:0x262a31,a:0x8a929c,g:0xd4a52a,p:0x5a2a7a,c:0xb0201c,m:0xff3030,l:0xff8a3a,f:0xd8dde6},.1),
  geode:()=>build('geode',GEOD,CPAL,.55),
  refract:()=>build('refract',REFR,CPAL,.5),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
@@ -589,7 +598,7 @@ function wave(more){if(!more){if(!st.timed)saveRun();st.wv=1;st.wvs=st.timed||st
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
  // Enemy pacing: one new threat at a time. Heavy 4, Mine 7, Lancer 11, Ooze 21; elites preview the next one a little early.
  // Timed Attack counts each wave as 3 sectors (ps), so Heavies join at wave 2, Mines 3, Lancers 4, Ooze 7
- {const ps=st.timed?st.sec*3:st.sec,nm=(ps>=12?2:ps>=7?1:0)+(el&&ps>=6?1:0),nl=(ps>=16?3:ps>=13?2:ps>=11?1:0)+(el&&ps>=9?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j);{const no=(ps>=26?2:ps>=21?1:0)+(el&&ps>=19?1:0);for(let j=0;j<no;j++)addOoze(j,no)}if(st.area==='The Frost Reach')for(let j=0;j<3;j++)addMote(j);if(st.area==='Red Crystal Asteroid Belt')for(let j=0;j<3;j++)addSplinter(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
+ {const ps=st.timed?st.sec*3:st.sec,nm=(ps>=12?2:ps>=7?1:0)+(el&&ps>=6?1:0),nl=(ps>=16?3:ps>=13?2:ps>=11?1:0)+(el&&ps>=9?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j);{const no=(ps>=26?2:ps>=21?1:0)+(el&&ps>=19?1:0);for(let j=0;j<no;j++)addOoze(j,no)}if(st.area==='The Frost Reach')for(let j=0;j<3;j++)addMote(j);if(st.area==='Red Crystal Asteroid Belt')for(let j=0;j<3;j++)addSplinter(j);if(st.area==='Legion Space')for(let j=0;j<2;j++)addPraet(j,2)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
 function bossWave(){st.boss=1;if(st.area==='Legion Space')return Math.random()<.5?caesarWave():onagerWave();if(st.area==='The Frost Reach')return Math.random()<.5?glacierWave():dryWave();if(st.area==='Red Crystal Asteroid Belt')return Math.random()<.5?geodeWave():refractWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
@@ -767,6 +776,14 @@ function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.co
  else if(e.ph===3){M.addScaledVector(e.dir,24*dt*(st.fast||1));if(!e.hit&&hd(M,p)<e.r+.6&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+8){e.ph=4;M.set(0,M.y,-50);e.m.rotation.y=0;e.dir=null}}
  else{M.z+=(-26-M.z)*Math.min(1,dt*2.5);if(M.z>-27){e.ph=2;e.tm=1.2+Math.random()*1.5}}}
+// Praetorian (medium): marches in to the upper-mid field and paces side to side behind its shield. Every 3-4 s its chest cannon
+// glows (the tell) and fires an aimed shot twice as wide as normal
+function addPraet(j,n){const m=MODELS.praet();m.visible=false;S.add(m);const g=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xff8a3a}));g.position.set(0,2.05,.9);g.visible=false;m.add(g);
+ const x=(j-(n-1)/2)*8;m.position.set(x,0,-45);ents.push({m,glow:g,type:'praet',state:'praet',hp:7*(1+st.sec*.08),slot:V3(x,-18-(j%2)*2.5),r:.85,t:-2.5-j*.7,cd:2.5+Math.random()*1.5})}
+function praetUp(e,dt,p){const M=e.m.position;e.t+=dt;if(e.t<0)return;e.m.visible=true;const tx=e.slot.x+Math.sin(e.t*.6+e.slot.x)*2.5;
+ M.x+=(tx-M.x)*Math.min(1,dt*1.5);M.z+=(e.slot.z-M.z)*Math.min(1,dt*1.2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.6;
+ e.cd-=dt;e.glow.visible=e.cd<.6;if(e.glow.visible)e.glow.scale.setScalar(.15+(.6-e.cd)*.5+(Math.floor(e.cd*20)%2)*.05);
+ if(e.cd<=0){e.cd=3+Math.random();const o=e.m.localToWorld(new THREE.Vector3(0,0,.9));fire(o,V3(p.x-o.x,p.z-o.z).normalize(),8,1,true,0xff8a3a,0,2).wide=1}}
 function addSplinter(j,add){const m=MODELS.splinter();S.add(m);m.position.set((j-1)*7,0,-45);
  ents.push({m,type:'splinter',state:'splinter',hp:4*(1+st.sec*.08),slot:V3((j-1)*6,-22+(j%2)*3),r:.7,t:-1-j*.5,cd:2+Math.random()*2,add})}
 function splinterUp(e,dt,p){const M=e.m.position;e.t+=dt;e.m.rotation.y+=dt;if(e.t<0)return;const tx=e.slot.x+Math.sin(e.t*.8+e.slot.x)*3;
@@ -818,7 +835,7 @@ function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
  else{if(u<.2){const a=u/.2;q=V3(s*3,-36+22*a)}else{const a=(u-.2)/.8*P2;q=V3(s*(3+7*Math.sin(a)),-14+4*Math.sin(2*a))}}
  q.x+=e.mate;return q}
 // Effects: voxel debris, camera shake, muzzle flash
-const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e,mino:0x8a3b32,caesar:0xd4a52a,glacier:0x8fd0f0,mote:0xcfeeff,dryice:0xbfe6ff,onager:0xd4a52a,cata:0x8a6a1e,slime:0x5fd36a,geode:0x6a2a20,refract:0xff2a3a,splinter:0xff2a3a};let shake=0,muzzleT=0;
+const fx=[],BODY={chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e,mino:0x8a3b32,caesar:0xd4a52a,glacier:0x8fd0f0,mote:0xcfeeff,dryice:0xbfe6ff,onager:0xd4a52a,cata:0x8a6a1e,slime:0x5fd36a,geode:0x6a2a20,refract:0xff2a3a,splinter:0xff2a3a,praet:0x8a929c};let shake=0,muzzleT=0;
 const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
 function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat(i%3?col:0xffb040));m.position.copy(pos);m.position.y+=.8;m.scale.setScalar(.12+Math.random()*.18);S.add(m);
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
@@ -1025,7 +1042,7 @@ addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('key
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
-const NOFIRE={chaser:1,mine:1,lancer:1,warden:1,mino:1,caesar:1,glacier:1,mote:1,dryice:1,onager:1,cata:1,slime:1,geode:1,refract:1,splinter:1};
+const NOFIRE={chaser:1,mine:1,lancer:1,warden:1,mino:1,caesar:1,glacier:1,mote:1,dryice:1,onager:1,cata:1,slime:1,geode:1,refract:1,splinter:1,praet:1};
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 // Swept hit test: distance from target c to the segment a shot travelled this frame (o -> p), so low frame rates can't skip past a unit
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
@@ -1062,7 +1079,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.type==='mino'||e.type==='caesar')e.fx.warn.visible=false;if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
     else{e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('boss');e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
-   if(e.type==='mine'){face=false;mineUp(e,dt,p)}else if(e.type==='lancer')lancerUp(e,dt,p);else if(e.type==='warden'){face=false;wardenUp(e,dt,p)}else if(e.type==='mino'){face=false;minoUp(e,dt,p)}else if(e.type==='caesar'){face=false;caesarUp(e,dt,p)}else if(e.type==='glacier'){face=false;glacierUp(e,dt,p)}else if(e.type==='dryice'){face=false;dryUp(e,dt,p)}else if(e.type==='onager'){face=false;onagerUp(e,dt,p)}else if(e.type==='splinter'){face=false;splinterUp(e,dt,p)}else if(e.type==='geode'){face=false;geodeUp(e,dt,p)}else if(e.type==='refract'){face=false;refractUp(e,dt,p)}else if(e.type==='mote'){face=false;moteUp(e,dt,p)}else if(e.type==='slime'){face=e.ph===1;oozeUp(e,dt,p)}
+   if(e.type==='mine'){face=false;mineUp(e,dt,p)}else if(e.type==='lancer')lancerUp(e,dt,p);else if(e.type==='warden'){face=false;wardenUp(e,dt,p)}else if(e.type==='mino'){face=false;minoUp(e,dt,p)}else if(e.type==='caesar'){face=false;caesarUp(e,dt,p)}else if(e.type==='glacier'){face=false;glacierUp(e,dt,p)}else if(e.type==='dryice'){face=false;dryUp(e,dt,p)}else if(e.type==='onager'){face=false;onagerUp(e,dt,p)}else if(e.type==='splinter'){face=false;splinterUp(e,dt,p)}else if(e.type==='praet'){face=false;praetUp(e,dt,p)}else if(e.type==='geode'){face=false;geodeUp(e,dt,p)}else if(e.type==='refract'){face=false;refractUp(e,dt,p)}else if(e.type==='mote'){face=false;moteUp(e,dt,p)}else if(e.type==='slime'){face=e.ph===1;oozeUp(e,dt,p)}
    if(e.state==='fly'){e.t+=dt/4.2;if(e.t<0)continue;e.m.visible=true;if(e.t>=1){e.escaped=1;e.hp=0}else e.m.position.copy(bez(e.p0,e.p1,e.p2,e.t))}
    if(e.state==='enter'&&e.pat!=null){e.t+=dt/2.6;if(e.t<0)continue;e.m.visible=true;
     if(e.t>=1){e.state='form';e.t=0;e.pat=null}else{const q=entryPos(e,Math.min(e.t/.75,1));if(e.t>.75){const b=(e.t-.75)/.25;q.lerp(slotPos(e),b*b*(3-2*b))}e.m.position.copy(q)}}
@@ -1083,12 +1100,12 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   for(const s of shots){const ox=s.m.position.x,oz=s.m.position.z;
    if(s.arc){s.v.x-=s.arc*10*dt;s.m.lookAt(T.copy(s.m.position).add(s.v))}
    if(s.track&&far){const sp=s.v.length();T.subVectors(far.m.position,s.m.position).setY(0).setLength(sp);s.v.lerp(T,Math.min(1,6*dt)).setLength(sp);s.m.lookAt(T.copy(s.m.position).add(s.v))}if(s.home>0){s.home-=dt;const q=s.v.length();T.subVectors(p,s.m.position).setY(0).setLength(q);s.v.lerp(T,Math.min(1,1.5*dt)).setLength(q);s.m.lookAt(T.copy(s.m.position).add(s.v))}s.m.position.addScaledVector(s.v,dt);s.life-=dt;
-   if(s.enemy){if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(hd(s.m.position,p)<.7&&st.inv<=0){hurt(s.dmg);s.life=0}}
+   if(s.enemy){if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(hd(s.m.position,p)<.7+(s.wide?.18:0)&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if((e.type==='boss'||e.type==='onager')&&armored(e)){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;st.dealt+=Math.min(s.dmg,e.hp);e.hp-=s.dmg;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.gren){venom(e);s.life=0;break}if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'||e.type==='geode'||e.type==='refract'){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
    st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'||e.type==='geode'||e.type==='refract'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'||e.type==='geode'||e.type==='refract');if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
-   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut({chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,splinter:3}[e.type]*(e.state==='dive'?2:1))+st.sb}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
+   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut({chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,splinter:3,praet:4}[e.type]*(e.state==='dive'?2:1))+st.sb}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
