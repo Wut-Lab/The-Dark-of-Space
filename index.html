@@ -178,7 +178,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
-<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li></ul>
+<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li><li>The game goes fullscreen when a run starts and leaves it when you return to the main menu</li></ul>
 <h3>Touch</h3><ul><li>Phones and tablets play in <b>landscape</b>: turn your device sideways when a run starts. In portrait the game pauses until you do</li><li>Drag sideways anywhere to strafe</li><li>Tap <b>Dash</b> (bottom right) to dash</li><li>Tap <b>Pause</b> (top right) to pause</li></ul>
 <h3>Firing</h3><ul><li>Your guns fire on their own, straight up the field</li></ul>
 <h3>Dash</h3><ul><li>A quick sideways burst in the direction you're moving</li><li>You can't be hurt during a dash</li><li>Each dash uses EN (the yellow bar), which refills over time</li></ul></div></div>
@@ -1070,7 +1070,8 @@ function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;r
  else{el.classList.remove('on');setTimeout(()=>{if(!paused)el.hidden=true},300)}}
 // Touch devices play in landscape: try fullscreen + orientation lock (Android); otherwise pause behind a "turn your device" screen
 const TOUCH=matchMedia('(pointer:coarse)');
-function landscape(){if(!TOUCH.matches)return;const d=document.documentElement;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
+// Every run goes fullscreen when it starts; touch devices also lock to landscape where supported (Android)
+function landscape(){const d=document.documentElement;if(document.fullscreenElement)return;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>TOUCH.matches&&screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
 function toMenu(){music(null);setTimeout(menuMusic,0);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
