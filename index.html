@@ -1034,20 +1034,27 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  ['Ram Plating','Collisions with units (dives, rams, mines) cost 1 less armor, never below 1, and the unit takes +3 damage per tier',s=>s.plate++,'c','u_plate',100],
  ['Confetti Payload','Destroyed units burst into confetti; each burst has a 10% chance per tier to shake loose +2 scrap',s=>s.confetti++,'c','u_conf',80],
  ['Wide Shot','Shots become 15% wider',s=>s.wide*=1.15,'c','u_wide',120],['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage',s=>s.whip++,'u','u_whip',240],
- ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage',s=>s.track++,'r','u_track',400]];
+ ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage',s=>s.track++,'r','u_track',400],
+ ['Apex Matrix','In the center 25% of the lane, shots fly 10% faster (II: 15%; III: also +8% fire rate). The center glows',s=>s.apex=(s.apex||0)+1,'c','u_tune'],
+ ['Apex Pull','Units move 5% slower while in the center 25% of the lane (II: 10%; III: 15%). Not capital units or shots. The center glows',s=>s.pull=(s.pull||0)+1,'c','u_tune']];
+const CAPS=new Set(['boss','caesar','cata','crucible','glacier','golem','mino','onager','praet','warden','mercury','wp']);
+// Apex Matrix / Apex Pull: the center band (|x| under a quarter of the field) lights up once taken
+const apexG=new THREE.Mesh(new THREE.PlaneGeometry(FX*.5,90),new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:.07,blending:THREE.AdditiveBlending,depthWrite:false}));apexG.rotation.x=-Math.PI/2;apexG.position.set(0,-.9,-35);apexG.visible=false;S.add(apexG);
 const inPool=u=>(!u[5]&&!u[6])||OWNED.includes('up:'+u[0]);
 // Tiers: each upgrade can be taken up to 3 times per run, then leaves the pool
 const tierOf=n=>st?st.upgrades.filter(x=>x===n).length:0,TN=['I','II','III'],avail=u=>inPool(u)&&tierOf(u[0])<3;
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:24,u:36,r:52,x:44};
 // Weighted draw of n different upgrades; elite and boss rewards use the better odds
 function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.filter(avail).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
- const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&avail(u));if(pool.length)out.push(pool[Math.random()*pool.length|0])}return out}
+ const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&avail(u));if(!pool.length)continue;const u=pool[Math.random()*pool.length|0];
+ // Skipped last offer: 60% chance to redraw, so the same few upgrades don't keep coming back
+ if(st&&st.skip&&st.skip.includes(u[0])&&Math.random()<.6&&pool.some(x=>!st.skip.includes(x[0])))continue;out.push(u)}return out}
 const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
 // Tune-up: weak but helps every build; always in the shop and can be bought any number of times
 const TUNE=UPG[0];
 function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap${st.picks>1?` · ${st.picks} picks left`:''}`;const o=$('opts');o.innerHTML='';
- roll(3,st.elite||st.boss).forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>`;
-  b.onclick=()=>{f(st);st.upgrades.push(t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
+ const ro=roll(3,st.elite||st.boss);ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>`;
+  b.onclick=()=>{f(st);st.upgrades.push(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss; sector 4.5 is a bonus stage if the zone cost 3 hits or fewer
 const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +30 scrap and 2 upgrades.'],yard:['Salvage Yard','Shop for upgrades and repairs, then fight the sector.'],
@@ -1226,7 +1233,8 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);st.pvx=mx*sp;ricoShield(dt,p);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
-  st.cd-=dt;if(st.cd<=0){st.cd=st.rate;muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++){const s=fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide);if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}
+  const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull);apexG.material.opacity=ap?.12:.06;
+  st.cd-=dt;if(st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1);muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++){const s=fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot*(ap?st.apex>1?1.15:1.1:1),st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide);if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}
    // Whip / Tracking: the volley's middle shot becomes special on every 3rd / 5th volley (extra copies add damage)
    st.vol++;const c=vs[n>>1];if(st.venom&&st.vol%10===0){c.gren=1;c.life=3;c.m.scale.set(.5,.5,.5);c.m.material.color.setHex(0x7dff3a)}else if(st.track&&st.vol%5===0){c.track=1;c.dmg+=st.track;c.life=3;c.m.material.color.setHex(0x5ab0ff)}
    else if(st.whip&&st.vol%3===0){c.arc=(st.vol/3)%2?1:-1;c.v.x+=c.arc*12;c.dmg+=st.whip;c.life=2;c.m.material.color.setHex(0x4fe08a)}
@@ -1255,6 +1263,8 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(e.state==='dive'){e.t+=dt*(.45+st.sec*.02)*st.fast;e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
     if(e.t>=1){e.m.position.set(e.m.position.x,0,-40);Object.assign(e,{state:'enter',t:0,p0:e.m.position.clone(),p1:V3(e.slot.x,-36)})}
     if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
+   // Apex Pull: drag regular units' movement in the center band (capital units are immune)
+   if(st.pull&&!CAPS.has(e.type)&&Math.abs(e.m.position.x)<FX*.25)e.m.position.lerp(prev,st.pull*.05);
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
    e.m.position.y=.2+Math.sin(now/250+e.slot.x)*.15;if(e.off)e.m.position.y=e.core.m.position.y+e.off.y;if(e.hop)e.m.position.y+=e.hop;
    if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;if(early())e.cd*=1.1;
