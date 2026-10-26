@@ -657,26 +657,26 @@ function wave(more){if(!more){if(!st.timed&&!st.dev)saveRun();st.wv=1;st.wvs=st.
  const cols=Math.min(3+(st.sec>>1)+st.wv,9),rows=Math.min(2+(st.sec/3|0),4);let i=0;diveCd=8;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&(st.timed?st.sec*3:st.sec)>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
-  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1)*(st.area==='Red Crystal Asteroid Belt'||st.area==='The Alkaline Zone'?1.25:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
+  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*hpk()*(el?1.5:1)*(st.area==='Red Crystal Asteroid Belt'||st.area==='The Alkaline Zone'?1.25:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
  // Enemy pacing: one new threat at a time. Heavy 4, Mine 7, Lancer 11, Ooze 21; elites preview the next one a little early.
  // Timed Attack counts each wave as 3 sectors (ps), so Heavies join at wave 2, Mines 3, Lancers 4, Ooze 7
  {const ps=st.timed?st.sec*3:st.sec,nm=(ps>=12?2:ps>=7?1:0)+(el&&ps>=6?1:0),nl=(ps>=16?3:ps>=13?2:ps>=11?1:0)+(el&&ps>=9?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j);{const no=(ps>=26?2:ps>=21?1:0)+(el&&ps>=19?1:0);for(let j=0;j<no;j++)addOoze(j,no)}if(st.area==='The Frost Reach')for(let j=0;j<2;j++)addGolem(j,2);if(st.area==='Red Crystal Asteroid Belt')for(let j=0;j<3;j++)addSplinter(j);if(st.area==='The Alkaline Zone')for(let j=0;j<(st.sec>=26?2:1)+(el?1:0);j++)addMothPair(j);if(st.area==='Legion Space')for(let j=0;j<2;j++)addPraet(j,2)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
-function bossWave(){st.boss=1;if(st.area==='Legion Space')return Math.random()<.5?caesarWave():onagerWave();if(st.area==='The Frost Reach')return Math.random()<.5?glacierWave():dryWave();if(st.area==='Red Crystal Asteroid Belt')return Math.random()<.5?geodeWave():refractWave();if(st.area==='The Alkaline Zone')return Math.random()<.5?crucibleWave():mercuryWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
+function bossWave(){st.boss=1;if(st.area==='Legion Space')return Math.random()<.5?caesarWave():onagerWave();if(st.area==='The Frost Reach')return Math.random()<.5?glacierWave():dryWave();if(st.area==='Red Crystal Asteroid Belt')return Math.random()<.5?geodeWave():refractWave();if(st.area==='The Alkaline Zone')return Math.random()<.5?crucibleWave():mercuryWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=hpk();S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
  for(const [x,y,z] of [[-3.6,1.17,0],[3.6,1.17,0],[0,1.17,3.2]]){const w=MODELS.wp();S.add(w);w.position.set(x,0,z-50);ents.push({m:w,type:'wp',hp:14*k,slot:V3(x,0),state:'boss',core,off:new THREE.Vector3(x,y,z),cd:9+Math.random()*2,r:1.1})}
  ents.push(core);hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit. Shoot off its 3 turrets to expose the core`)}
 // Mine: drifts in and parks just ahead of the player's row, blocking that lane; touching it hurts
 function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
- const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*(1+st.sec*.08),slot:V3(x,0),t:-3-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
+ const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*hpk(),slot:V3(x,0),t:-3-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
 function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;
  // after ~15 s parked it lifts off and leaves the field (no scrap)
  if(e.t>7){e.m.position.z-=14*dt;e.m.rotation.y+=dt*3;if(e.m.position.z<-45){e.escaped=1;e.hp=0}return}const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
  if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0)ram(e,2,2)}
 // Lancer: flies in, hovers 1-2 s, slides to a side edge, flashes, then rams the spot where the player was; loops back in if it misses
 function lancerReset(e,t){const x=(Math.random()-.5)*14;Object.assign(e,{ph:0,t,p0:V3(x*.6,-44),p1:V3(x,-30),p2:V3(x,-17-Math.random()*4)})}
-function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*(1+st.sec*.08),slot:V3(i+.5,0),r:.6};lancerReset(e,-4.6-i*.8);m.position.copy(e.p0);ents.push(e)}
+function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*hpk(),slot:V3(i+.5,0),r:.6};lancerReset(e,-4.6-i*.8);m.position.copy(e.p0);ents.push(e)}
 function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
  if(e.ph===0){e.t+=dt/1.6;if(e.t<0)return;e.m.visible=true;if(e.t>=1){e.ph=1;e.tm=1+Math.random()}else M.copy(bez(e.p0,e.p1,e.p2,e.t))}
  else if(e.ph===1){e.tm-=dt;if(e.tm<=0){e.ph=2;e.to=V3((Math.random()<.5?-1:1)*(FX-.8),-8)}}
@@ -688,9 +688,9 @@ function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
 // faster copies (size 3 > 2 > 1): 7 blobs in all. No shots
 const OZ={3:{hp:8,r:1.1,v:2,tell:.7},2:{hp:4,r:.8,v:3,tell:.6},1:{hp:2,r:.55,v:4,tell:.5}},goo=[],gooG=new THREE.CylinderGeometry(1,1,.05,20),oozeQ=[];
 function addOoze(i,n){const m=MODELS.slime3();m.visible=false;S.add(m);const x=(i-(n-1)/2)*7,p0=V3(x*.5,-44);m.position.copy(p0);
- ents.push({m,type:'slime',state:'slime',sz:3,hp:OZ[3].hp*(1+st.sec*.08),slot:V3(x,0),r:OZ[3].r,ph:0,t:-3.5-i*.8,p0,p1:V3(x,-24),p2:V3(x,-12),tm:2+Math.random()})}
+ ents.push({m,type:'slime',state:'slime',sz:3,hp:OZ[3].hp*hpk(),slot:V3(x,0),r:OZ[3].r,ph:0,t:-3.5-i*.8,p0,p1:V3(x,-24),p2:V3(x,-12),tm:2+Math.random()})}
 function oozeSplit(e){const z=e.sz-1,M=e.m.position;for(const s of[-1,1]){const m=MODELS['slime'+z]();m.position.copy(M);S.add(m);
- oozeQ.push({m,type:'slime',state:'slime',sz:z,hp:OZ[z].hp*(1+st.sec*.08),slot:V3(M.x+s,0),r:OZ[z].r,ph:5,tm:.35,vx:s*7,vz:-4,t:0})}}
+ oozeQ.push({m,type:'slime',state:'slime',sz:z,hp:OZ[z].hp*hpk(),slot:V3(M.x+s,0),r:OZ[z].r,ph:5,tm:.35,vx:s*7,vz:-4,t:0})}}
 function gooAt(x,z,r,life){const f=new THREE.Mesh(gooG,new THREE.MeshBasicMaterial({color:0x7dff5a,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));
  f.scale.set(r,1,r);f.position.set(x,.06,z);S.add(f);goo.push({f,r,t:0,life})}
 function gooTick(dt,p){for(const g of goo){g.t+=dt;g.f.material.opacity=.3*Math.min(1,(g.life-g.t)/.8);if(hd(g.f.position,p)<g.r+.3)st.slow=Math.max(st.slow,.15)}
@@ -713,12 +713,12 @@ function oozeUp(e,dt,p){const M=e.m.position,o=OZ[e.sz],f=st.fast||1;e.hop=0;
 const BFX=new THREE.Group();S.add(BFX);const MZ=new THREE.Vector3(),TG=new THREE.Vector3();
 const beamMesh=(c,o)=>{const x=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false}));x.visible=false;BFX.add(x);return x};
 function beamTo(m,a,b,w){m.position.copy(a).lerp(b,.5);m.scale.set(w,w,a.distanceTo(b));m.lookAt(b);m.visible=true}
-function wardenWave(){const m=MODELS.warden(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-55);BFX.clear();const glw=glow(0xff3030,1.2);glw.position.set(2.4,4,4.9);m.add(glw);
+function wardenWave(){const m=MODELS.warden(),k=hpk();S.add(m);m.position.set(0,0,-55);BFX.clear();const glw=glow(0xff3030,1.2);glw.position.set(2.4,4,4.9);m.add(glw);
  ents.push({m,type:'warden',state:'warden',hp:90*k,slot:V3(0,0),t:-5,r:3.6,cdA:3,cdS:9,cdM:6,fx:{line:beamMesh(0xff3030,.7),aim:beamMesh(0xff7a3a,.9),sweep:beamMesh(0xff4a2a,.9),warn:beamMesh(0xff2020,.2),glw}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Warden". Watch its cannon`)}
 function wardenCalm(e){const F=e.fx;F.line.visible=F.aim.visible=F.sweep.visible=F.warn.visible=false;if(e.atk){e.atk=null;e.cdA=1.5;e.cdS=Math.max(e.cdS,3)}}
 function addMob(i){const m=MODELS.chaser();S.add(m);const side=Math.random()<.5?-1:1,p0=V3(side*16,-30);m.position.copy(p0);
- ents.push({m,type:'chaser',add:1,hp:2*(1+st.sec*.08),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
+ ents.push({m,type:'chaser',add:1,hp:2*hpk(),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
 function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.position,F=e.fx;if(e.t>3)music(bossTrk());M.set(Math.sin(e.t*.3)*3*k,M.y,-55+31*k*(2-k));if(k<1)return;
  MZ.set(M.x+2.4,4,M.z+4.9);e.cdA-=dt;e.cdS-=dt;e.cdM-=dt;F.glw.scale.setScalar(e.atk?1.6+Math.random()*.8:1.2);
  if(e.atk==='aim'){e.at-=dt;
@@ -734,7 +734,7 @@ function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.
  else if(e.cdA<=0){e.atk='aim';e.at=.8;e.hit=0;e.tg=V3(p.x-MZ.x,p.z-MZ.z).setLength(40).add(MZ).setY(.8)}
  if(e.cdM<=0){e.cdM=8+Math.random()*3;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let i=0;i<1+(Math.random()<.5);i++)addMob(i)}}
 // Minotaur boss: shoulder cannons fire left, right, left... at you; now and then it stops, shudders and flashes a red lane (the tell), then rams down it
-function minoWave(){const m=MODELS.mino(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);BFX.clear();
+function minoWave(){const m=MODELS.mino(),k=hpk();S.add(m);m.position.set(0,0,-50);BFX.clear();
  ents.push({m,type:'mino',state:'mino',hp:70*k,slot:V3(0,0),t:-5,r:2.6,cdF:2,side:1,cdR:5,ph:0,fx:{warn:beamMesh(0xff2020,.25)}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Minotaur". When it shudders, get out of its lane`)}
 function minoUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1;e.m.scale.setScalar(1);
@@ -750,7 +750,7 @@ function minoUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1;e.m.scale.
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=5+Math.random()*3;e.cdF=.8}}}
 // Caesar boss (medium): 3-shot cannon bursts that mildly track; closes in and sweeps its spear (red zone tell);
 // shudders and shield-rams down a red lane, then resets to the back middle
-function caesarWave(){const m=MODELS.caesar(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);BFX.clear();
+function caesarWave(){const m=MODELS.caesar(),k=hpk();S.add(m);m.position.set(0,0,-50);BFX.clear();
  const sp=new THREE.Group();sp.rotation.order='YXZ';sp.position.set(-13*CS,15*CS,1.5*CS);sp.add(MODELS.cspear());m.add(sp);
  ents.push({m,type:'caesar',state:'caesar',hp:95*k,slot:V3(0,0),t:-5,r:2.8,ph:0,cdB:2.5,cdA:5,nb:0,sp,fx:{warn:beamMesh(0xff2020,.25)}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "The Caesar". Read its stance: spear, shield or cannon`)}
@@ -781,7 +781,7 @@ function moteUp(e,dt,p){const M=e.m.position;e.t+=dt;e.m.rotation.y+=4*dt;M.y=.6
  const d=hd(M,e.tg);if(d<.4)e.tg=V3((Math.random()-.5)*FX*2,-15+Math.random()*9);const v=Math.min(d,7*dt*(st.fast||1));M.x+=(e.tg.x-M.x)/(d||1)*v;M.z+=(e.tg.z-M.z)/(d||1)*v}
 // Glacier boss (medium juggernaut): slow 5-shard frost fans from the prow; drops freeze fields on you (a blue ring flashes, then
 // slows you while you stand in it); calls in Rime Motes. At half health its ice shell shatters: faster fire, more fields
-function glacierWave(){const m=MODELS.glacier(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();const ice=MODELS.glice();m.add(ice);
+function glacierWave(){const m=MODELS.glacier(),k=hpk();S.add(m);m.position.set(0,0,-60);BFX.clear();const ice=MODELS.glice();m.add(ice);
  ents.push({m,ice,type:'glacier',state:'glacier',hp:110*k,hp0:110*k,slot:V3(0,0),t:-5,r:5.5,ph:0,cdF:2.5,cdZ:5,cdM:7,fields:[]});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "The Glacier". Stay out of the frost`)}
 function glacierUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
@@ -798,7 +798,7 @@ function glacierUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
 // Dry Ice boss (medium): strafes back and forth inside a cloud of mist, firing straight rounds that loosely home in. Every 7–9 s
 // the mist rolls over your view; it repositions while you can't see, then a wide beam fires straight ahead (the mist is the tell)
 let mistEl;function mist(o){if(!mistEl){mistEl=document.createElement('div');mistEl.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(circle at 50% 45%,#e8f6ffee,#a8dcffcc 55%,#7fb8e0aa)';document.body.append(mistEl)}mistEl.style.opacity=o}
-function dryWave(){const m=MODELS.dryice(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();
+function dryWave(){const m=MODELS.dryice(),k=hpk();S.add(m);m.position.set(0,0,-60);BFX.clear();
  const cloud=[];for(let i=0;i<7;i++){const g=glow(i%2?0xffffff:0xbfe6ff,3+Math.random()*2);g.position.set((Math.random()-.5)*6,1+Math.random(),(Math.random()-.5)*7);m.add(g);cloud.push(g)}
  ents.push({m,cloud,type:'dryice',state:'dryice',hp:100*k,slot:V3(0,0),t:-5,r:3,ph:0,cdF:1.5,cdM:7,fx:{beam:beamMesh(0xbfe6ff,.6),warn:beamMesh(0xff2020,.2)}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Dry Ice". When the mist comes, move`)}
@@ -818,7 +818,7 @@ function dryUp(e,dt,p){const M=e.m.position,B=e.fx.beam,W=e.fx.warn;e.cloud.forE
 // Onager boss: a giant flying Roman onager, turned three-quarters to the player in stage 1 so the throwing arm shows. The arm winches back, then snaps up against the crossbar to throw. Stage 1: holds the centre and lobs EMP bombs from the catapult on its back (a blue ring marks
 // where each lands: 1 damage and a stun that halves your speed), while Lancers make their usual runs. The hull is armored until
 // the catapult is destroyed. Stage 2: it rams you like a Lancer (hover, flash a red lane, charge for 3), then returns to the top
-function onagerWave(){const m=MODELS.onager(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();
+function onagerWave(){const m=MODELS.onager(),k=hpk();S.add(m);m.position.set(0,0,-60);BFX.clear();
  const core={m,type:'onager',state:'onager',hp:80*k,slot:V3(0,0),t:-5,r:4,ph:0,cdB:3,cdL:2,bombs:[],fx:{warn:beamMesh(0xff2020,.25)}};
  const c=MODELS.oncat();c.rotation.order='YXZ';c.rotation.set(-1.1,.8,0);m.rotation.y=.8;S.add(c);ents.push({m:c,type:'cata',state:'boss',hp:30*k,slot:V3(0,0),core,off:new THREE.Vector3(-4.5*Math.sin(.8),1.4,-4.5*Math.cos(.8)),r:1.6},core);
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Onager". Break the catapult on its back`)}
@@ -845,7 +845,7 @@ function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.co
 // at you; halfway there the snowball bursts into three shards fanning out evenly from the middle
 const snow=[],SNOWG=new THREE.SphereGeometry(.35,10,8),SNOWM=new THREE.MeshLambertMaterial({color:0xf4fbff,emissive:0x8090a0});
 function addGolem(j,n){const m=MODELS.golem();m.visible=false;S.add(m);const b=new THREE.Mesh(SNOWG,SNOWM);b.position.set(0,4.3,0);b.visible=false;m.add(b);
- const x=(j-(n-1)/2)*9;m.position.set(x,0,-45);ents.push({m,ball:b,type:'golem',state:'golem',hp:8*(1+st.sec*.08),slot:V3(x,-20-(j%2)*2),r:.95,t:-2.5-j*.8,cd:2.5+Math.random()*1.5})}
+ const x=(j-(n-1)/2)*9;m.position.set(x,0,-45);ents.push({m,ball:b,type:'golem',state:'golem',hp:8*hpk(),slot:V3(x,-20-(j%2)*2),r:.95,t:-2.5-j*.8,cd:2.5+Math.random()*1.5})}
 function golemUp(e,dt,p){const M=e.m.position;e.t+=dt;if(e.t<0)return;e.m.visible=true;const tx=e.slot.x+Math.sin(e.t*.4+e.slot.x)*2;
  M.x+=(tx-M.x)*Math.min(1,dt);M.z+=(e.slot.z-M.z)*Math.min(1,dt);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.5;
  e.cd-=dt;e.ball.visible=e.cd<.7;if(e.ball.visible)e.ball.scale.setScalar(Math.max(.2,(.7-e.cd)/.7));
@@ -855,19 +855,19 @@ function snowTick(dt){for(const s of snow){s.u+=dt/.9;const u=Math.min(s.u,1);s.
   if(u>=1){s.done=1;S.remove(s.m);boom(s.m.position,8,0xf4fbff);const a=Math.atan2(s.dir.x,s.dir.z);for(const k of[-.4,0,.4])fire(s.m.position,V3(Math.sin(a+k),Math.cos(a+k)),9,1,true,0xf4fbff,0,1.3)}}
  for(let i=snow.length;i--;)if(snow[i].done)snow.splice(i,1)}
 function addPraet(j,n){const m=MODELS.praet();m.visible=false;S.add(m);const g=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xff8a3a}));g.position.set(0,2.05,.9);g.visible=false;m.add(g);
- const x=(j-(n-1)/2)*8;m.position.set(x,0,-45);ents.push({m,glow:g,type:'praet',state:'praet',hp:7*(1+st.sec*.08),slot:V3(x,-18-(j%2)*2.5),r:.85,t:-2.5-j*.7,cd:2.5+Math.random()*1.5})}
+ const x=(j-(n-1)/2)*8;m.position.set(x,0,-45);ents.push({m,glow:g,type:'praet',state:'praet',hp:7*hpk(),slot:V3(x,-18-(j%2)*2.5),r:.85,t:-2.5-j*.7,cd:2.5+Math.random()*1.5})}
 function praetUp(e,dt,p){const M=e.m.position;e.t+=dt;if(e.t<0)return;e.m.visible=true;const tx=e.slot.x+Math.sin(e.t*.6+e.slot.x)*2.5;
  M.x+=(tx-M.x)*Math.min(1,dt*1.5);M.z+=(e.slot.z-M.z)*Math.min(1,dt*1.2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.6;
  e.cd-=dt;e.glow.visible=e.cd<.6;if(e.glow.visible)e.glow.scale.setScalar(.15+(.6-e.cd)*.5+(Math.floor(e.cd*20)%2)*.05);
  if(e.cd<=0){e.cd=3+Math.random();const o=e.m.localToWorld(new THREE.Vector3(0,0,.9));fire(o,V3(p.x-o.x,p.z-o.z).normalize(),8,1,true,0xff8a3a,0,2).wide=1}}
 function addSplinter(j,add){const m=MODELS.splinter();S.add(m);m.position.set((j-1)*7,0,-45);
- ents.push({m,type:'splinter',state:'splinter',hp:4*(1+st.sec*.08),slot:V3((j-1)*6,-22+(j%2)*3),r:.7,t:-1-j*.5,cd:2+Math.random()*2,add})}
+ ents.push({m,type:'splinter',state:'splinter',hp:4*hpk(),slot:V3((j-1)*6,-22+(j%2)*3),r:.7,t:-1-j*.5,cd:2+Math.random()*2,add})}
 function splinterUp(e,dt,p){const M=e.m.position;e.t+=dt;e.m.rotation.y+=dt;if(e.t<0)return;const tx=e.slot.x+Math.sin(e.t*.8+e.slot.x)*3;
  M.x+=(tx-M.x)*Math.min(1,dt*2);M.z+=(e.slot.z-M.z)*Math.min(1,dt*1.5);e.cd-=dt;if(e.cd<=0){e.cd=2.5+Math.random();const o=M.clone();o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xff4a5a,0)}}
 function splinterBurst(e){const o=e.m.position.clone();o.y=1;const a=Math.atan2(player.position.x-o.x,player.position.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.35),Math.cos(a+i*.35)),9,1,true,0xff7a85,0)}
 // Geode boss (hard): spins in place, firing 16-shard rings with a 3-shard gap to slip through; at half health the rings come faster
 // with an aimed 3-shot from the core between them. Calls in Splinters
-function geodeWave(){const m=MODELS.geode(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-65);BFX.clear();
+function geodeWave(){const m=MODELS.geode(),k=hpk();S.add(m);m.position.set(0,0,-65);BFX.clear();
  ents.push({m,type:'geode',state:'geode',hp:150*k,hp0:150*k,slot:V3(0,0),t:-5,r:4.6,ph:0,cdR:2,cdA:1,cdS:8});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Geode". Find the gap`)}
 function geodeUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;e.m.rotation.y+=dt*(p2?.6:.3);
@@ -878,7 +878,7 @@ function geodeUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;e.m.rotation.y+=dt
  e.cdS-=dt;if(e.cdS<=0){e.cdS=12;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++)addSplinter(j*2,1)}}
 // Refraction boss (hard): strafes firing 3-shard spreads; every 5 s it stops, charges its prism and splits the beam: thin red guide
 // lines fan out (3, or 5 at half health) for 1.1 s, then lasers fire along them (2 damage)
-function refractWave(){const m=MODELS.refract(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();
+function refractWave(){const m=MODELS.refract(),k=hpk();S.add(m);m.position.set(0,0,-60);BFX.clear();
  ents.push({m,type:'refract',state:'refract',hp:130*k,hp0:130*k,slot:V3(0,0),t:-5,r:3,ph:0,cdF:1.5,cdL:5,lines:[]});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Refraction". Read the red lines`)}
 function refractUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
@@ -896,7 +896,7 @@ function refractUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
 // survivor keeps flying and still hurts on contact (1 damage). They loop back to the top until destroyed. 5 hp each
 const MPAIRS=[];
 function addMothPair(j){const pr={cx:(Math.random()-.5)*8,z:-45-j*14,t:Math.random()*6,arc:new THREE.Group(),cd:0,ms:[]},am=(c,o)=>new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false});
- for(let i=0;i<9;i++)pr.arc.add(new THREE.Mesh(BOX,am(0xe8f8ff,.95)),new THREE.Mesh(BOX,am(0x7fd8ff,.22)));pr.arc.visible=false;S.add(pr.arc);MPAIRS.push(pr);for(const s of [-1,1]){const m=MODELS.moth();S.add(m);const e={m,type:'moth',state:'moth',hp:5*(1+st.sec*.08),slot:V3(0,0),r:.7,pair:pr,s,hit:0};pr.ms.push(e);ents.push(e)}}
+ for(let i=0;i<9;i++)pr.arc.add(new THREE.Mesh(BOX,am(0xe8f8ff,.95)),new THREE.Mesh(BOX,am(0x7fd8ff,.22)));pr.arc.visible=false;S.add(pr.arc);MPAIRS.push(pr);for(const s of [-1,1]){const m=MODELS.moth();S.add(m);const e={m,type:'moth',state:'moth',hp:5*hpk(),slot:V3(0,0),r:.7,pair:pr,s,hit:0};pr.ms.push(e);ents.push(e)}}
 function mothUp(e,dt,p){const pr=e.pair,M=e.m.position,f=st.fast||1;
  if(pr.ms[0]===e||pr.ms[0].hp<=0&&pr.ms[1]===e){pr.t+=dt;pr.z+=5.5*dt*f;if(pr.z>10){pr.z=-45;pr.cx=(Math.random()-.5)*10}pr.cx+=Math.sin(pr.t*.9)*3*dt;pr.cd-=dt}
  const gap=6+2.5*Math.sin(pr.t*1.3);M.set(Math.max(-FX,Math.min(FX,pr.cx+e.s*gap/2)),.6+Math.sin(pr.t*8+e.s)*.15,pr.z);e.m.rotation.z=Math.sin(pr.t*14)*.25*e.s;
@@ -912,7 +912,7 @@ function mothClear(){MPAIRS.forEach(pr=>S.remove(pr.arc));MPAIRS.length=0}
 // into a lane: an orange strip glows (the tell), molten metal floods it (2 damage), then it cools into a long iron wall down the
 // lane for 5 s, funnelling you (touching a wall costs 1 and shoves you out). At half health the furnace door blows off: two lanes
 // at once, one each side of you (a corridor), plus 5-blob slag fans
-function crucibleWave(){const m=MODELS.crucible(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-70);BFX.clear();const door=MODELS.cdoor();door.position.set(0,7*.45,9*.45);m.add(door);
+function crucibleWave(){const m=MODELS.crucible(),k=hpk();S.add(m);m.position.set(0,0,-70);BFX.clear();const door=MODELS.cdoor();door.position.set(0,7*.45,9*.45);m.add(door);
  // Forge glow: a big bright orange flare at the furnace mouth (brighter once the door is gone) and embers over the chimneys
  const fg=glow(0xff8a2a,6);fg.position.set(0,4.4,4.5);m.add(fg);for(const x of [-1.6,1.6]){const g=glow(0xff7a1a,2.2);g.position.set(x,10.6,-1.2);m.add(g)}
  ents.push({m,door,fg,type:'crucible',state:'crucible',hp:150*k,hp0:150*k,slot:V3(0,0),t:-5,r:5,ph:0,cdS:2,cdP:3,cdF:3,pours:[],walls:[]});
@@ -937,7 +937,7 @@ function crucibleUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2,am=(c,o)=>new T
 // Hit the copy and it bursts violently (8 shards flung outward), then Mercury re-splits 3 s later and the two may swap sides.
 // Both copies fire simple 3-shot spreads. Big attack: one copy flashes a red quarter of the field (the tell), then lashes a
 // liquid-metal whip across that quarter (2 damage)
-function mercuryWave(){const m=MODELS.mercury(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-60);BFX.clear();const gl=glow(0xd8f0ff,5);gl.position.set(0,4,0);m.add(gl);
+function mercuryWave(){const m=MODELS.mercury(),k=hpk();S.add(m);m.position.set(0,0,-60);BFX.clear();const gl=glow(0xd8f0ff,5);gl.position.set(0,4,0);m.add(gl);
  ents.push({m,gl,type:'mercury',state:'mercury',hp:140*k,slot:V3(0,0),t:-5,r:2.6,ph:0,cdF:2,cdW:6,cdS:0,side:1,decoy:null,whip:null,fx:{warn:beamMesh(0xff2020,.25),lash:beamMesh(0xf0f4f8,.9)}});
  hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit "Mercury". Only one of them is real`)}
 function mercSplit(e){const m=MODELS.mercury();S.add(m);const gl=glow(0xd8f0ff,2.5);gl.material.opacity=.35;gl.position.set(0,4,0);m.add(gl);m.position.copy(e.m.position);
@@ -1070,6 +1070,10 @@ function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp;st.hp=
  if(k==='signal')return EVENTS[Math.random()*EVENTS.length|0]();st.elite=k==='elite'?1:0;wave();running=true}
 // Kill scrap pays 90%, randomly rounded so the average holds on small values
 const cut=v=>Math.floor(v*.9)+(Math.random()<v*.9%1?1:0);
+// Enemy health: +5% per sector through sector 10, then +6.5% per sector after that
+const hpk=()=>st.sec<=10?1+st.sec*.05:1.5+(st.sec-10)*.065;
+// Opening zone (Campaign, sectors 1-10): dives come 30% less often, enemy fire 10% less often
+const early=()=>!st.timed&&st.sec<=10;
 function shop(){const stock=roll(3).filter(u=>u!==TUNE),cost=u=>PRICE[u[3]]+2*st.sec;let got=0;
  const draw=()=>evt('Salvage Yard',got?'Purchase made. The yard only trades once per visit.':`You have ${st.scrap} scrap. One purchase per visit; whatever you spend comes off your final count.`,[
   ...stock.map((u,i)=>u&&avail(u)&&[`${u[0]} ${TN[tierOf(u[0])]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);st.upgrades.push(u[0]);stock[i]=null;got=1;hud();draw()},got||st.scrap<cost(u),u[3]]).filter(Boolean),
@@ -1237,7 +1241,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   for(let i=drops.length;i--;)if(drops[i].gone)drops.splice(i,1);
   const emp=st.emp>0;if(!emp){sway+=dt*.6;diveCd-=dt}
   if(diveCd<=0){const f=ents.filter(e=>e.state==='form');if(f.length){const e=f[Math.random()*f.length|0],side=Math.sign(e.m.position.x)||1;
-   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.12)*(.6+Math.random()*.8)/st.fast}
+   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)})}diveCd=Math.max(.6,2.6-st.sec*.12)*(.6+Math.random()*.8)/st.fast*(early()?1.3:1)}
   for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.type==='mino'||e.type==='caesar')e.fx.warn.visible=false;if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
     else{e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
@@ -1253,7 +1257,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
     if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
    e.m.position.y=.2+Math.sin(now/250+e.slot.x)*.15;if(e.off)e.m.position.y=e.core.m.position.y+e.off.y;if(e.hop)e.m.position.y+=e.hop;
-   if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;
+   if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt;if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;if(early())e.cd*=1.1;
     if(e.type==='boss')for(let a=-2;a<=2;a++)fire(e.m.position.clone().add(V3(0,4)),V3(a*.22,1).normalize(),8,1,true,0xff5a5a,0);else
     if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
     else fire(e.m.position,T.subVectors(p,e.m.position).setY(0).normalize(),11,1,true,0xff5a5a,0)}}}
