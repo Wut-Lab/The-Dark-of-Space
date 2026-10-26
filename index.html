@@ -445,8 +445,9 @@ const SPLN=[[-2,-1,-2,4,2,4,'s',0,'e'],[-1,0,-1,2,6,2,'r'],[-2,1,-1,1,4,1,'p'],[
 // Strafes; charges the prism and splits its beam into a fan of lasers along red guide lines
  REFR=[[-4,0,-8,8,4,16,'r',0,'e'],[-2,4,-2,4,6,4,'p',0,'e'],[-1,5,-1,2,2,2,'w'],[4,1,-6,8,1,8,'p',1,'delta'],[4,0,-4,6,1,3,'r',1],[-1,1,8,2,2,5,'p'],[0,2,12,1,1,2,'w'],
  [3,1,-9,2,2,2,'w',1],[-3,3,-6,6,1,4,'d']];
-// Alkaline Zone unit "Flux Moth" (hard): a dark metal drone with shimmering foil wings. Flies in pairs joined by an electric arc
-const MOTH=[[-1,0,-3,2,2,7,'k',0,'r'],[-1,2,-1,2,1,3,'d'],[0,1,4,1,1,1,'n'],[1,1,-2,5,1,5,'l',1,'wing'],[2,1,-3,4,1,3,'w',1,'wing'],[1,0,-4,3,1,2,'g',1]];
+// Alkaline Zone unit "Flux Moth" (hard): a dark metal drone with shimmering foil wings raised upright in a V. Flies in pairs joined
+// by a jagged electric arc with a faint glow
+const MOTH=[[-1,0,-3,2,2,7,'k',0,'r'],[-1,2,-1,2,1,3,'d'],[0,1,4,1,1,1,'n'],[1,1,-1,3,1,1,'l',1],[3,1,-1,1,1,1,'w',1],[1,2,-1,4,1,1,'l',1],[4,2,-1,1,1,1,'w',1],[2,3,-1,4,1,1,'l',1],[5,3,-1,1,1,1,'w',1],[2,4,-1,5,1,1,'l',1],[6,4,-1,1,1,1,'w',1],[3,5,-1,5,1,1,'l',1],[7,5,-1,1,1,1,'w',1],[3,6,-1,5,1,1,'l',1],[7,6,-1,1,1,1,'w',1],[4,7,-1,4,1,1,'l',1],[7,7,-1,1,1,1,'w',1],[5,8,-1,3,1,1,'l',1],[7,8,-1,1,1,1,'w',1],[6,9,-1,2,1,1,'l',1],[7,9,-1,1,1,1,'w',1],[7,10,-1,1,1,1,'n',1],[1,0,-4,2,1,2,'g',1]];
 const MODELS={
  mine:()=>build('mine',MINE,{...P,v:0x3a3f47,o:0x8a3b32,m:0xff3030},.09),
  lancer:()=>build('lancer',LANCER,{...P,v:0x6b2a3a,o:0x2a2d36,m:0xff3030},.1),
@@ -877,15 +878,18 @@ function refractUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
 // them (1 damage if you touch it, once a second). Slip through, or break the pair: when one dies the arc goes out, but the
 // survivor keeps flying and still hurts on contact (1 damage). They loop back to the top until destroyed. 5 hp each
 const MPAIRS=[];
-function addMothPair(j){const pr={cx:(Math.random()-.5)*8,z:-45-j*14,t:Math.random()*6,arc:new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xbfefff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false})),cd:0,ms:[]};
- pr.arc.visible=false;S.add(pr.arc);MPAIRS.push(pr);for(const s of [-1,1]){const m=MODELS.moth();S.add(m);const e={m,type:'moth',state:'moth',hp:5*(1+st.sec*.08),slot:V3(0,0),r:.7,pair:pr,s,hit:0};pr.ms.push(e);ents.push(e)}}
+function addMothPair(j){const pr={cx:(Math.random()-.5)*8,z:-45-j*14,t:Math.random()*6,arc:new THREE.Group(),cd:0,ms:[]},am=(c,o)=>new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false});
+ for(let i=0;i<9;i++)pr.arc.add(new THREE.Mesh(BOX,am(0xe8f8ff,.95)),new THREE.Mesh(BOX,am(0x7fd8ff,.22)));pr.arc.visible=false;S.add(pr.arc);MPAIRS.push(pr);for(const s of [-1,1]){const m=MODELS.moth();S.add(m);const e={m,type:'moth',state:'moth',hp:5*(1+st.sec*.08),slot:V3(0,0),r:.7,pair:pr,s,hit:0};pr.ms.push(e);ents.push(e)}}
 function mothUp(e,dt,p){const pr=e.pair,M=e.m.position,f=st.fast||1;
  if(pr.ms[0]===e||pr.ms[0].hp<=0&&pr.ms[1]===e){pr.t+=dt;pr.z+=5.5*dt*f;if(pr.z>10){pr.z=-45;pr.cx=(Math.random()-.5)*10}pr.cx+=Math.sin(pr.t*.9)*3*dt;pr.cd-=dt}
  const gap=6+2.5*Math.sin(pr.t*1.3);M.set(Math.max(-FX,Math.min(FX,pr.cx+e.s*gap/2)),.6+Math.sin(pr.t*8+e.s)*.15,pr.z);e.m.rotation.z=Math.sin(pr.t*14)*.25*e.s;
  if(e.hit>0)e.hit-=dt;if(hd(M,p)<.9&&st.inv<=0&&e.hit<=0){e.hit=1;hurt(1);shake=Math.max(shake,.2)}
  const [a,b]=pr.ms,both=a.hp>0&&b.hp>0;
- if(pr.ms[0]===e){pr.arc.visible=both&&Math.random()<.9;if(both){const A=a.m.position.clone().setY(.7),B=b.m.position.clone().setY(.7);beamTo(pr.arc,A,B,.12+Math.random()*.1);
+ if(pr.ms[0]===e){pr.arc.visible=both&&Math.random()<.9;if(both){const A=a.m.position.clone().setY(.7),B=b.m.position.clone().setY(.7);jag(pr.arc,A,B);
   if(pr.cd<=0&&segD(A.x,A.z,B,p)<.5&&st.inv<=0){pr.cd=1;hurt(1);shake=Math.max(shake,.2)}}}}
+// Jagged arc: 9 segments between jittered points (new zigzag every frame), each with a thin bright core and a wide faint glow
+function jag(g,A,B){let P=A.clone();const pts=[];for(let i=1;i<=9;i++){const q=A.clone().lerp(B,i/9);if(i<9){q.x+=(Math.random()-.5)*1.1;q.z+=(Math.random()-.5)*1.1;q.y+=(Math.random()-.5)*.8}pts.push(q)}
+ pts.forEach((q,i)=>{const c=g.children[i*2],w=g.children[i*2+1];c.position.copy(P).lerp(q,.5);c.scale.set(.07,.07,P.distanceTo(q)+.05);c.lookAt(q);w.position.copy(c.position);w.scale.set(.6,.6,c.scale.z);w.quaternion.copy(c.quaternion);P=q})}
 function mothClear(){MPAIRS.forEach(pr=>S.remove(pr.arc));MPAIRS.length=0}
 const armored=b=>ents.some(x=>x.core===b&&x.hp>0);
 // Bonus stage: five groups of eight sweep past in loops; they never shoot or ram, and any hit destroys one (as in Galaga).
