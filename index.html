@@ -231,7 +231,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
 <h3>The clock</h3><ul><li>You start with <b>3:00</b>, shown at the top of the screen</li><li>It flashes red under 30 seconds</li><li>When it reaches zero, the run ends and your scrap is your score</li></ul>
 <h3>Hits</h3><ul><li>You have no armor bar in this mode: each hit costs <b>5 seconds</b></li></ul>
-<h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li></ul>
+<h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li><li>New enemy types join quickly: Heavies from wave 2, Mines from 3, Lancers from 4, Ooze from 7</li></ul>
 <h3>Time capsules</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it to grab it</li><li><b>Green</b> (common): +5 seconds</li><li><b>Gold</b> (rare): +5 seconds and 2.5 seconds of invulnerability</li><li>Capsules drift toward you and vanish if you miss them</li></ul></div></div>
 
 <div class="ov scr" id="how-power" hidden><div class="card"><div class="hd"><h2>Power-ups</h2><button class="back" data-go="how">Back</button></div>
@@ -549,12 +549,13 @@ const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 function wave(more){if(!more){if(!st.timed)saveRun();st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?1:st.elite||st.sec<10?2:3}
  if(!st.timed&&st.sec%5===0){music(null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':st.area==='The Frost Reach'?'frost':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
  const cols=Math.min(3+(st.sec>>1)+st.wv,9),rows=Math.min(2+(st.sec/3|0),4);let i=0;diveCd=8;
- for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&st.sec>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&(st.timed?st.sec*3:st.sec)>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
   ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
- // Enemy pacing: one new threat at a time. Heavy 4, Mine 7, Lancer 11, Ooze 21; elites preview the next one a little early
- {const nm=(st.sec>=12?2:st.sec>=7?1:0)+(el&&st.sec>=6?1:0),nl=(st.sec>=16?3:st.sec>=13?2:st.sec>=11?1:0)+(el&&st.sec>=9?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j);{const no=(st.sec>=26?2:st.sec>=21?1:0)+(el&&st.sec>=19?1:0);for(let j=0;j<no;j++)addOoze(j,no)}if(st.area==='The Frost Reach')for(let j=0;j<3;j++)addMote(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
+ // Enemy pacing: one new threat at a time. Heavy 4, Mine 7, Lancer 11, Ooze 21; elites preview the next one a little early.
+ // Timed Attack counts each wave as 3 sectors (ps), so Heavies join at wave 2, Mines 3, Lancers 4, Ooze 7
+ {const ps=st.timed?st.sec*3:st.sec,nm=(ps>=12?2:ps>=7?1:0)+(el&&ps>=6?1:0),nl=(ps>=16?3:ps>=13?2:ps>=11?1:0)+(el&&ps>=9?1:0);for(let j=0;j<nm;j++)addMine(j,nm);for(let j=0;j<nl;j++)addLancer(j);{const no=(ps>=26?2:ps>=21?1:0)+(el&&ps>=19?1:0);for(let j=0;j<no;j++)addOoze(j,no)}if(st.area==='The Frost Reach')for(let j=0;j<3;j++)addMote(j)}hud();banner(`${st.timed?'WAVE':el?'ELITE SECTOR':'SECTOR'} ${String(st.sec).padStart(2,'0')}`,`${st.area} · ${st.wvs>1?`Wave ${st.wv} of ${st.wvs} · `:''}Destroy all ${ents.length} units`)}
 // Boss: the hull is armored until its three turrets (separate ents, listed first so they take hits first) are destroyed
 function bossWave(){st.boss=1;if(st.area==='Legion Space')return Math.random()<.5?caesarWave():onagerWave();if(st.area==='The Frost Reach')return Math.random()<.5?glacierWave():dryWave();const b=Math.random()*3|0;if(b===1)return wardenWave();if(b===2)return minoWave();const m=MODELS.boss(),k=1+st.sec*.08;S.add(m);m.position.set(0,0,-50);
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
