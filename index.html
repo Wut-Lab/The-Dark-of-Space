@@ -130,6 +130,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="unlocks"><b>Unlocks</b></button>
 <button data-go="how"><b>How to Play</b></button>
 <button data-go="credits"><b>Credits</b></button>
+<div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button></div>
 </nav></div></div>
 
 <div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="start">Back</button></div>
@@ -210,6 +211,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Sniper</h3><ul><li>Grey, with a long rifle and a radar dish</li><li>Fires aimed shots, from the formation and while diving</li><li>Appears from sector 2</li></ul>
 <h3>Heavy</h3><ul><li>Large and rust red, with shoulder cannons</li><li>Tough; fires a three-shot spread</li><li>Appears from sector 4, in the back row</li></ul>
 <h3>Mine</h3><ul><li>A dark spiked sphere with a rust band</li><li>Drifts in and parks just ahead of your row, blocking that lane and soaking up your shots</li><li>Tough. Touching it hurts; dash through or destroy it</li><li>After about 15 seconds it lifts off and leaves on its own</li><li>Appears from sector 7</li></ul>
+<h3>Calcium build-up</h3><ul><li>In some zones, long white clumps grow out into the lanes from one side or both. Fly around them; touching one hurts</li><li>Now and then a chunk breaks off and floats down the lane. Dodge it or shoot it apart</li><li>The view may shimmer for a moment. Keep moving</li></ul>
 <h3>Mote</h3><ul><li>A small flickering ice crystal drone, found in some zones</li><li>Never attacks, and one hit destroys it, but it flits around in front of you and soaks up shots meant for others</li></ul>
 <h3>Splinter</h3><ul><li>A cluster of red crystal on a chunk of rock, found in some zones</li><li>Hovers near the top, firing single shards at you</li><li>When destroyed it bursts into three shards flung your way, so don't kill it point-blank</li></ul>
 <h3>Lancer</h3><ul><li>A dark red dart-shaped drone</li><li>Hovers for a moment, slides to the left or right edge, flashes, then rams where you were. Fast, but fragile</li><li>Appears from sector 11</li></ul>
@@ -464,7 +466,7 @@ const MODELS={
 // Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
 let world=new THREE.Group();S.add(world);const stars=[];
 function buildWorld(){S.background=new THREE.Color(0x05060c);
- for(let i=0;i<300;i++){const m=new THREE.Mesh(BOX,mat(Math.random()<.2?0x9fb7ff:0xffffff));m.position.set((Math.random()-.5)*70,-4-Math.random()*16,-60+Math.random()*80);m.scale.setScalar(.1+Math.random()*.12);world.add(m);stars.push(m)}legionBuild();frostBuild();crystalBuild()}
+ for(let i=0;i<300;i++){const m=new THREE.Mesh(BOX,mat(Math.random()<.2?0x9fb7ff:0xffffff));m.position.set((Math.random()-.5)*70,-4-Math.random()*16,-60+Math.random()*80);m.scale.setScalar(.1+Math.random()*.12);world.add(m);stars.push(m)}legionBuild();frostBuild();crystalBuild();alkalineBuild()}
 // Legion Space backdrop: floating sandstone ruins with neon trim (colonnades, cyber towers, now and then a Parthenon) drifting past,
 // over sand-coloured dust and haze. Shown only in Legion Space zones
 const LEG=new THREE.Group();LEG.visible=false;S.add(LEG);const legB=[],legD=[];
@@ -493,16 +495,16 @@ function legionTick(dt,v){for(const m of legD){m.position.z+=dt*v*(m.scale.y>.09
 // The Frost Reach "Ice Shard": same rules, but it cracks loose from a side edge and slides across the field at an angle.
 // Touching it costs 1 armor; shots chip it apart (6 hp) for 2 scrap. Not a unit: it never counts toward clearing a sector
 const COLM=[[-1,0,-1,3,14,3,'m',0,'cy'],[-2,0,-2,5,2,5,'s',0,'cy'],[-2,12,-2,5,2,5,'s',0,'cy'],[-2,7,-2,5,1,5,'n',0,'cy']],cols_=[];let colCd=6;
-function colClear(){mist&&mistEl&&mist(0);cols_.forEach(c=>{S.remove(c.m);S.remove(c.w)});cols_.length=0;colCd=6}
+function colClear(){alkClear();mist&&mistEl&&mist(0);cols_.forEach(c=>{S.remove(c.m);S.remove(c.w)});cols_.length=0;colCd=6}
 const ICESH=[[-1,0,-1,3,12,3,'i',0,'cy'],[-2,3,-2,5,6,5,'j',0,'e'],[0,10,0,1,3,1,'f']];
-function colTick(dt,p){const ice=st.area==='The Frost Reach';if(!ice&&st.area!=='Legion Space'||st.timed||st.bonus)return;colCd-=dt;
- if(colCd<=0){colCd=6+Math.random()*4;const x=Math.max(-FX,Math.min(FX,p.x+(Math.random()-.5)*10)),sx=ice?(Math.random()<.5?-1:1)*(FX+6):x,d=V3(x-sx,48).normalize(),w=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xff2020,transparent:true,opacity:.25,blending:THREE.AdditiveBlending,depthWrite:false}));
+function colTick(dt,p){const ice=st.area==='The Frost Reach';if(st.timed||st.bonus)return;colCd-=dt;
+ if(colCd<=0&&(ice||st.area==='Legion Space')){colCd=6+Math.random()*4;const x=Math.max(-FX,Math.min(FX,p.x+(Math.random()-.5)*10)),sx=ice?(Math.random()<.5?-1:1)*(FX+6):x,d=V3(x-sx,48).normalize(),w=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xff2020,transparent:true,opacity:.25,blending:THREE.AdditiveBlending,depthWrite:false}));
   w.position.set((sx+x)/2+d.x*6,.05,-20);w.scale.set(2.4,.02,60);w.rotation.y=Math.atan2(d.x,d.z);S.add(w);const m=ice?build('f_ice',ICESH,FPAL,.32):build('l_col',COLM,LPAL,.32);m.children[0].position.set(-.16,-2.24,-.16);m.visible=false;m.position.set(sx,1,-48);S.add(m);cols_.push({m,w,d,t:1,hp:ice?4:6,hit:0,ice})}
  for(const c of cols_){if(c.t>0){c.t-=dt;c.w.visible=Math.floor(c.t*8)%2==0;if(c.t<=0){S.remove(c.w);c.m.visible=true}continue}
-  c.m.position.addScaledVector(c.d,18*dt*(st.fast||1));c.m.rotation.x+=5*dt;if(c.ice)c.m.rotation.z+=3*dt;
+  c.m.position.addScaledVector(c.d,(c.sp||18)*dt*(st.fast||1));c.m.rotation.x+=5*dt;if(c.ice)c.m.rotation.z+=3*dt;
   if(!c.hit&&hd(c.m.position,p)<1.3&&st.inv<=0){c.hit=1;hurt(1);shake=Math.max(shake,.25)}
   for(const s of shots)if(!s.enemy&&s.life>0&&hd(s.m.position,c.m.position)<1){s.life=0;c.hp-=s.dmg;boom(s.m.position,3,0xe0d4b4)}
-  if(c.hp<=0){boom(c.m.position,16,c.ice?0xcfeeff:0xe0d4b4);st.scrap+=2;hud();c.m.position.z=99}}
+  if(c.hp<=0){boom(c.m.position,16,c.col||(c.ice?0xcfeeff:0xe0d4b4));st.scrap+=2;hud();c.m.position.z=99}}
  for(let i=cols_.length;i--;)if(cols_[i].m.position.z>12||Math.abs(cols_[i].m.position.x)>FX+12){S.remove(cols_[i].m);cols_.splice(i,1)}}
 // The Frost Reach backdrop: ice floes and frozen warship hulks drift past below the field, snow dust, and an aurora rippling far ahead
 const FRO=new THREE.Group();FRO.visible=false;S.add(FRO);const froB=[],froD=[],froA=[],froH=[];
@@ -544,6 +546,40 @@ function crystalBuild(){for(let i=0;i<10;i++){const m=new THREE.Mesh(BOX,new THR
  for(let i=0;i<18;i++){const b={g:new THREE.Group(),kind:['floor','wall','wall','ceil'][i%4]};CRY.add(b.g);cryPlace(b,-100+i*6.5);cryB.push(b)}}
 function crystalTick(dt,v){for(const m of cryD){m.position.z+=dt*v*.8;if(m.position.z>20)m.position.z-=(m.scale.y>.09?110:80)}
  for(const b of cryB){b.g.position.z+=dt*v*.9;b.g.rotation.y+=dt*.08;if(b.g.position.z>25)cryPlace(b,b.g.position.z-117)}}
+// The Alkaline Zone backdrop (hard zone): metallic space. Floating ingots and slabs of soft grey alkali metal drift past and turn,
+// silver dust, and shimmering sheets of faded grey light over a grey-black sky
+const ALK=new THREE.Group();ALK.visible=false;S.add(ALK);const alkB=[],alkD=[],alkS=[];
+const APAL={g:0x9aa0a8,d:0x6c727a,l:0xc8ccd2,w:0xf2f0ea,c:0xdcd8cc,k:0x3a3e44};
+const ALKM={ingot:()=>build('al_ingot',[[-6,0,-3,12,3,6,'l',0,'r'],[-5,3,-2,10,1,4,'g'],[-6,-1,-3,12,1,6,'d']],APAL,.5),
+ slab:()=>build('al_slab',[[-5,0,-7,10,2,14,'g',0,'r'],[-4,2,-5,8,1,10,'l'],[-1,3,-1,2,4,2,'d'],[3,-2,2,3,2,3,'w',0,'e']],APAL,.5),
+ lump:()=>build('al_lump',[[-5,-4,-5,10,8,10,'d',0,'e'],[-3,2,-3,6,4,6,'g',0,'e'],[2,1,1,4,3,4,'w',0,'e']],APAL,.5)};
+function alkPlace(b,z){const side=Math.random()<.5?-1:1,k=['ingot','slab','lump'][Math.random()*3|0];if(b.m)b.g.remove(b.m);b.m=ALKM[k]();b.g.add(b.m);b.sp=.5+Math.random()*.4;
+ b.g.position.set(side*(16+Math.random()*20),-18+Math.random()*10,z);b.g.rotation.set((Math.random()-.5)*.6,Math.random()*6.3,(Math.random()-.5)*.6)}
+function alkalineBuild(){for(let i=0;i<14;i++){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:i%2?0xd8dce2:0x9aa0a8,transparent:true,opacity:.06,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.scale.set(30+Math.random()*40,.1,4+Math.random()*8);m.position.set((Math.random()-.5)*70,-14-Math.random()*18,-95+i*8);m.rotation.y=(Math.random()-.5)*.5;ALK.add(m);alkS.push({m,ph:Math.random()*6})}
+ for(let i=0;i<140;i++){const m=new THREE.Mesh(BOX,mat(i%2?0xc8ccd2:0x8a9098));m.position.set((Math.random()-.5)*70,-3-Math.random()*20,-60+Math.random()*80);m.scale.setScalar(.05+Math.random()*.07);ALK.add(m);alkD.push(m)}
+ for(let i=0;i<10;i++){const b={g:new THREE.Group()};ALK.add(b.g);alkPlace(b,-95+i*11);alkB.push(b)}}
+function alkalineTick(dt,v,now){for(const m of alkD){m.position.z+=dt*v*.8;if(m.position.z>20)m.position.z-=80}
+ for(const a of alkS){a.m.position.z+=dt*v*.7;if(a.m.position.z>22)a.m.position.z-=115;a.m.material.opacity=.03+.06*(Math.sin(now/600+a.ph)+1)/2}
+ for(const b of alkB){b.g.position.z+=dt*v*b.sp;b.g.rotation.y+=dt*.12;if(b.g.position.z>25)alkPlace(b,b.g.position.z-110)}}
+// Alkaline Zone hazards. "Calcium Build-Up": long white clumps grown out of a metal mass beyond the edge stretch into the lanes
+// from one side or both, and scroll down with the terrain, funnelling you (1 damage on contact). Now and then a chunk breaks off
+// and floats down the lane (1 damage, 4 hp, 2 scrap). "Shimmer": every 10–16 s a metallic heat-shimmer washes over the view
+const SPURS=[],spurM=n=>{const o=[[-4,-6,-6,10,12,12,'k',0,'e'],[-2,-4,-5,8,9,10,'g',0,'e'],[0,4,-3,4,3,6,'l',0,'e']];
+ for(let i=0;i<n;i++)o.push([-(i*3+7),-2+(i%2),-2-(i%2),5,4+(i%2),5-(i%2),'w',0,'e'],[-(i*3+6),1+(i%2),-1,2,3,2,'c'],[-(i*3+8),-3,0,2,2,2,'c']);
+ return build('al_spur'+n,o,APAL,.5)};let spurCd=2,shimCd=12,shimEl,shimT=0;
+function shimmer(o){if(!shimEl){shimEl=document.createElement('div');shimEl.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;backdrop-filter:blur(3px) saturate(.4) brightness(1.15);-webkit-backdrop-filter:blur(3px) saturate(.4) brightness(1.15);background:repeating-linear-gradient(100deg,#d8dce214 0 26px,#9aa0a80a 26px 60px)';document.body.append(shimEl)}shimEl.style.opacity=o}
+function alkClear(){SPURS.forEach(u=>S.remove(u.m));SPURS.length=0;spurCd=2;shimCd=12;shimT=0;if(shimEl)shimmer(0)}
+function alkTick(dt,p){if(st.area!=='The Alkaline Zone'||st.timed||st.bonus)return;const f=st.fast||1;
+ spurCd-=dt;if(spurCd<=0){spurCd=2.4+Math.random()*1.8;const both=Math.random()<.3,sides=both?[-1,1]:[Math.random()<.5?-1:1];let left=both?14:18;
+  for(const side of sides){const n=Math.max(1,Math.min(5,Math.floor(Math.random()*(left*2-5)/3)+1));left-=(n*3+7)*.5;const m=spurM(n);m.position.set(side*(FX+4),0,-55);m.rotation.y=side>0?0:Math.PI;S.add(m);
+   SPURS.push({m,side,len:(n*3+9)*.5,hit:0,brk:Math.random()<.3})}}
+ for(const u of SPURS){u.m.position.z+=8*dt*f;const tip=u.side*(FX+4-u.len);
+  if(!u.hit&&Math.abs(p.z-u.m.position.z)<1.6&&u.side*p.x>u.side*tip-.5&&st.inv<=0){u.hit=1;hurt(1);shake=Math.max(shake,.25)}
+  if(u.brk&&u.m.position.z>-30){u.brk=0;const m=build('al_chunk',[[-2,-2,-2,4,4,4,'w',0,'e'],[-1,1,-1,2,2,2,'c']],APAL,.4);m.position.set(tip,1,u.m.position.z);S.add(m);
+   cols_.push({m,w:new THREE.Object3D(),d:V3(-u.side*.25,1).normalize(),t:0,hp:4,hit:0,sp:11,col:0xf2f0ea})}}
+ for(let i=SPURS.length;i--;)if(SPURS[i].m.position.z>14){S.remove(SPURS[i].m);SPURS.splice(i,1)}
+ shimCd-=dt;if(shimCd<=0&&!shimT){shimT=.001;shimCd=10+Math.random()*6}if(shimT){shimT+=dt;shimmer(shimT<.5?shimT/.5:shimT<2?1:Math.max(0,1-(shimT-2)/.5));if(shimT>2.5){shimT=0;shimmer(0)}}}
 const FX=11;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
@@ -580,12 +616,12 @@ function start(kind,timed){secSnap=null;if(!timed)keepSave(null);fx.forEach(f=>S
 function placeTimer(){requestAnimationFrame(()=>{const h=$('hud').getBoundingClientRect().bottom;$('timer').style.top=h-2+'px';$('pwrap').style.top=(st&&st.timed?$('timer').getBoundingClientRect().bottom+2:h+6)+'px'})}addEventListener('resize',placeTimer);
 const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 // Campaign sectors come in several waves (2, or 3 from sector 10); boss and bonus sectors are one wave. In-run prices and rewards are doubled to match the extra scrap; boss and bonus sectors are one wave
-function wave(more){if(!more){if(!st.timed)saveRun();st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?1:st.elite||st.sec<10?2:3}
+function wave(more){if(!more){if(!st.timed&&!st.dev)saveRun();st.wv=1;st.wvs=st.timed||st.sec%5===0||st.b45===1?1:st.elite||st.sec<10?2:3}
  if(!st.timed&&st.sec%5===0){music(null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':st.area==='The Frost Reach'?'frost':st.area==='Red Crystal Asteroid Belt'?'crystal':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
  const cols=Math.min(3+(st.sec>>1)+st.wv,9),rows=Math.min(2+(st.sec/3|0),4);let i=0;diveCd=8;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(r===0?'brute':r<=2?'shooter':'chaser'):r===0&&(st.timed?st.sec*3:st.sec)>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
-  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1)*(st.area==='Red Crystal Asteroid Belt'?1.25:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
+  ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*(1+st.sec*.08)*(el?1.5:1)*(st.area==='Red Crystal Asteroid Belt'||st.area==='The Alkaline Zone'?1.25:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
    p0,p1:V3(side*4,-20),cd:2+Math.random()*3,r:type==='brute'?.9:.6})}
  // Enemy pacing: one new threat at a time. Heavy 4, Mine 7, Lancer 11, Ooze 21; elites preview the next one a little early.
  // Timed Attack counts each wave as 3 sectors (ps), so Heavies join at wave 2, Mines 3, Lancers 4, Ooze 7
@@ -807,7 +843,7 @@ function bonusWave(){let i=0;st.bTot=40;st.bHit=0;
   ents.push({m,type,hp:.1,slot:V3(g+k,0),state:'fly',t:-1.2-(g*3+k*.18),p0,p1:V3([6,2,-2,-6,0][g],12),p2:V3([18,18,-18,-18,18][g],-26),r:type==='brute'?.9:.6})}}
 let bnT;
 // Areas (zones): ten sectors each, two bosses. Sectors 1–10 are The Open Zone; after every 10th sector the player picks the next zone from ZONES (Legion Space or The Frost Reach; the hard Red Crystal Asteroid Belt from sector 20)
-const ZONES={'Legion Space':'Sandstone ruins in neon light. Its capital units are Caesar-class.','The Frost Reach':'Frozen wreckage under a pale aurora. Its capital units are ice-bound juggernauts.','Red Crystal Asteroid Belt':'A cave of floating red crystal. Hard: tougher units, deadlier capital units.'},ZMIN={'Red Crystal Asteroid Belt':20};
+const ZONES={'Legion Space':'Sandstone ruins in neon light. Its capital units are Caesar-class.','The Frost Reach':'Frozen wreckage under a pale aurora. Its capital units are ice-bound juggernauts.','Red Crystal Asteroid Belt':'A cave of floating red crystal. Hard: tougher units, deadlier capital units.','The Alkaline Zone':'Shimmering grey alkali metal, choked with calcium build-up. Hard: tougher units, narrow lanes.'},ZMIN={'Red Crystal Asteroid Belt':20,'The Alkaline Zone':20};
 function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;
  el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,2400)}
 const slotPos=e=>e.slot.clone().setX(e.slot.x+Math.sin(sway)*2);
@@ -930,7 +966,7 @@ function timeUp(){running=false;music(null);st.time=0;$('clock').textContent='0:
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
-function die(){running=false;music(null);$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
+function die(){running=false;music(null);$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
@@ -1034,7 +1070,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  driftTick(dt);thumbTick(dt);
  for(const s of stars){s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80}
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
- FRO.visible=!!st&&!st.timed&&st.area==='The Frost Reach';if(FRO.visible)frostTick(dt,running?8:2.5,now);CRY.visible=!!st&&!st.timed&&st.area==='Red Crystal Asteroid Belt';if(CRY.visible)crystalTick(dt,running?10:3);S.background.setHex(FRO.visible?0x040a16:CRY.visible?0x140506:0x05060c);if(running&&player)colTick(dt,player.position);
+ FRO.visible=!!st&&!st.timed&&st.area==='The Frost Reach';if(FRO.visible)frostTick(dt,running?8:2.5,now);CRY.visible=!!st&&!st.timed&&st.area==='Red Crystal Asteroid Belt';if(CRY.visible)crystalTick(dt,running?10:3);ALK.visible=!!st&&!st.timed&&st.area==='The Alkaline Zone';if(ALK.visible)alkalineTick(dt,running?9:3,now);S.background.setHex(FRO.visible?0x040a16:CRY.visible?0x140506:ALK.visible?0x1a1c20:0x05060c);if(running&&player)alkTick(dt,player.position);if(running&&player)colTick(dt,player.position);
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
   if(mx)st.dir=mx;let sp=st.spd;if(st.slow>0){st.slow-=dt;sp*=.5}
@@ -1101,7 +1137,12 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick 2 upgrades`:'All units destroyed')}hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else{st.picks=st.elite||st.boss?2:1;offer()}}}}
  {const px=player?player.position.x:0;C.position.set(px*.35+(Math.random()-.5)*shake,6.5+(Math.random()-.5)*shake,11);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,.5,-12)}R.render(S,C)}
-document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('pSwift').onclick=()=>start('swift');$('again').onclick=toMenu;
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('pSwift').onclick=()=>start('swift');
+// Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
+// Playtest runs are never saved, banked or counted as a best
+{const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
+ $('ztGo').onclick=()=>{const z=$('ztZ').value,n=+$('ztS').value;start($('ztC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
+  Object.assign(st,{dev:1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()}}$('again').onclick=toMenu;
 // Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
 let paused=false,yaw=.6,pitch=.15,drag=null;
 const VR=new THREE.WebGLRenderer({canvas:$('viewer'),antialias:true,alpha:true}),VS=new THREE.Scene(),VC=new THREE.PerspectiveCamera(35,1,.1,100),VG=new THREE.Group();
