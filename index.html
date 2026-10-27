@@ -1244,7 +1244,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    const ct=mmss(Math.max(0,Math.ceil(st.time)));if($('clock').textContent!==ct)$('clock').textContent=ct;$('timer').classList.toggle('low',st.time<30);
 }
   st.emp=Math.max(0,st.emp-dt);st.spr=Math.max(0,st.spr-dt);shield.visible=st.bar>0;shield.material.opacity=.3+st.bar*.2;shield.scale.setScalar(3+Math.sin(now/150)*.2);pups();
-  for(const d of drops){d.m.position.z+=7*dt;d.core.rotation.y+=dt*3;d.m.position.y=.9+Math.sin(now/200)*.15;d.sp.scale.setScalar(2+Math.sin(now/150)*.35);d.m.visible=d.m.position.z<1.5||Math.floor(now/90)%2==0;
+  for(const d of drops){d.m.position.z+=7.7*dt;d.core.rotation.y+=dt*3;d.m.position.y=.9+Math.sin(now/200)*.15;d.sp.scale.setScalar(2+Math.sin(now/150)*.35);d.m.visible=d.m.position.z<1.5||Math.floor(now/90)%2==0;
    if(hd(d.m.position,p)<1.3){grab(d);d.gone=1}else if(d.m.position.z>4)d.gone=1;if(d.gone)S.remove(d.m)}
   for(let i=drops.length;i--;)if(drops[i].gone)drops.splice(i,1);
   const emp=st.emp>0;if(!emp){sway+=dt*.6;diveCd-=dt}
