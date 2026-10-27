@@ -1039,6 +1039,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  ['Apex Matrix','In the center 25% of the lane, shots fly 10% faster (II: 15%; III: also +8% fire rate). The center glows',s=>s.apex=(s.apex||0)+1,'c','u_tune'],
  ['Apex Pull','Units move 5% slower while in the center 25% of the lane (II: 10%; III: 15%). Not capital units or shots. The center glows',s=>s.pull=(s.pull||0)+1,'c','u_tune'],
  ['Apex EMP Tech','At 1/3 armor or less while in the center 25% of the lane, kills have +3% chance to drop an EMP (II: 4%; III: 5%). The center glows',s=>s.empT=(s.empT||0)+1,'c','u_tune'],
+ ['Afterimage','Dashing leaves a ghost at your start point for 0.5 s that fires with you at 30% damage (II: 40%; III: 50%). 1 s cooldown',s=>s.aft=(s.aft||0)+1,'c','u_tune'],
  ['Dash Burst','Dashing with over 50% EN (II: 40%; III: 30%) fires one 50% wider shot straight up the lane (1 s cooldown). Dashes cost 5% more EN',s=>s.dburst=(s.dburst||0)+1,'c','u_tune'],
  ['Phantom Armor','Start each zone with a 1-hit Barrier (III: 2 hits)',s=>s.phan=(s.phan||0)+1,'u','u_tune']];
 const CAPS=new Set(['boss','caesar','cata','crucible','glacier','golem','mino','onager','praet','warden','mercury','wp']);
