@@ -1222,7 +1222,7 @@ function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;s
 function ram(e,n,k){hurt(st.plate?Math.max(1,n-1):n);e.hp-=k+3*st.plate}
 function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
- const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=.4;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}if(n)st.kcs=0;st.zh++;st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
+ const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=.4;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}if(n){st.kcs=0;st.zh++}st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
