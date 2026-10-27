@@ -1014,6 +1014,7 @@ function flash(c){const f=$('flash');f.className='';void f.offsetWidth;f.classNa
 let pupK='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/(2.5+st.empB),'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);
  const k=a.map(x=>x[0]+Math.round(Math.min(1,x[1])*40)+x[2]).join();if(k===pupK)return;pupK=k;
  $('pups').innerHTML=a.map(([n,f,l])=>`<i style="--c:${DROP[n].css};--p:${Math.min(1,f)}">${l}</i>`).join('')}
+const ghost=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x9fe8ff,transparent:true,opacity:.35}));ghost.scale.set(1,.4,1);ghost.visible=false;S.add(ghost);
 function fire(from,dir,spd,dmg,enemy,col,pierce,w=1){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18*w,.18,.6);
  m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,w,hit:new Set()});return shots[shots.length-1]}
 // Upgrades (permanent for the run; power-ups are the temporary drops): [name, effect, apply, rarity, icon model]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
@@ -1038,6 +1039,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  ['Apex Matrix','In the center 25% of the lane, shots fly 10% faster (II: 15%; III: also +8% fire rate). The center glows',s=>s.apex=(s.apex||0)+1,'c','u_tune'],
  ['Apex Pull','Units move 5% slower while in the center 25% of the lane (II: 10%; III: 15%). Not capital units or shots. The center glows',s=>s.pull=(s.pull||0)+1,'c','u_tune'],
  ['Apex EMP Tech','At 1/3 armor or less while in the center 25% of the lane, kills have +3% chance to drop an EMP (II: 4%; III: 5%). The center glows',s=>s.empT=(s.empT||0)+1,'c','u_tune'],
+ ['Afterimage','Dashing leaves a ghost at your start point for 0.5 s that fires with you at 30% damage (II: 40%; III: 50%). 1 s cooldown',s=>s.aft=(s.aft||0)+1,'c','u_tune'],
  ['Dash Burst','Dashing with over 50% EN (II: 40%; III: 30%) fires one 50% wider shot straight up the lane (1 s cooldown). Dashes cost 5% more EN',s=>s.dburst=(s.dburst||0)+1,'c','u_tune'],
  ['Phantom Armor','Start each zone with a 1-hit Barrier (III: 2 hits)',s=>s.phan=(s.phan||0)+1,'u','u_tune']];
 const CAPS=new Set(['boss','caesar','cata','crucible','glacier','golem','mino','onager','praet','warden','mercury','wp']);
@@ -1231,9 +1233,11 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
   if(mx)st.dir=mx;let sp=st.spd;if(st.slow>0){st.slow-=dt;sp*=.5}
-  st.dbcd=(st.dbcd||0)-dt;const dc=35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0);if((keys.shift||st.tap)&&st.en>=dc&&st.bt<=0){
+  st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0);if((keys.shift||st.tap)&&st.en>=dc&&st.bt<=0){
    // Dash Burst: one wide shot up the lane if EN was above the tier's threshold
    if(st.dburst&&st.en>[0,50,40,30][st.dburst]&&st.dbcd<=0){st.dbcd=1;fire(p,V3(0,-1).normalize(),st.shot,st.dmg,false,0x6fd3ff,st.pierce,st.wide*1.5)}
+   // Afterimage: ghost copy stays at the dash start and fires along for .5 s
+   if(st.aft&&st.aicd<=0){st.aicd=1;st.ai=.5;st.aip=p.clone();ghost.position.copy(p)}
    st.en-=dc;st.bt=.22;st.inv=Math.max(st.inv,.3);if(st.rico){st.rs=.45;st.rsHit=new Set()}}st.tap=0;
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);$('en').style.width=st.en+'%';
   p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);st.pvx=mx*sp;ricoShield(dt,p);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
@@ -1241,6 +1245,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
   const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull||st.empT);apexG.material.opacity=ap?.12:.06;
   st.cd-=dt;if(st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1);muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++){const s=fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot*(ap?st.apex>1?1.15:1.1:1),st.dmg,false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide);if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}
+   if(st.ai>0)for(let i=0;i<n;i++)fire(st.aip,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg*[0,.3,.4,.5][st.aft],false,0x9fe8ff,st.pierce,st.wide);
    // Whip / Tracking: the volley's middle shot becomes special on every 3rd / 5th volley (extra copies add damage)
    st.vol++;const c=vs[n>>1];if(st.venom&&st.vol%10===0){c.gren=1;c.life=3;c.m.scale.set(.5,.5,.5);c.m.material.color.setHex(0x7dff3a)}else if(st.track&&st.vol%5===0){c.track=1;c.dmg+=st.track;c.life=3;c.m.material.color.setHex(0x5ab0ff)}
    else if(st.whip&&st.vol%3===0){c.arc=(st.vol/3)%2?1:-1;c.v.x+=c.arc*12;c.dmg+=st.whip;c.life=2;c.m.material.color.setHex(0x4fe08a)}
