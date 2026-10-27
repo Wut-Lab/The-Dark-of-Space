@@ -365,6 +365,8 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_conf:[[-1,0,0,2,2,2,'y'],[-2,2,-1,4,3,3,'y'],[-3,5,-2,6,3,4,'h'],[-4,8,-2,8,1,4,'h'],[-4,11,0,1,1,1,'p'],[2,12,0,1,1,1,'n'],[0,13,0,1,1,1,'r'],[4,10,0,1,1,1,'y'],[-2,14,0,1,1,1,'n'],[3,15,0,1,1,1,'p'],[-5,13,0,1,1,1,'r']],
  u_aft:[[-1,0,0,2,10,2,'l'],[-4,2,0,8,3,2,'l'],[-1,10,0,2,2,2,'y'],[-7,-1,-3,2,8,1,'x'],[-9,1,-3,6,2,1,'x'],[5,-1,-3,2,8,1,'x'],[3,1,-3,6,2,1,'x']],
  u_chg:[[-3,0,-3,6,12,6,'d',0,'e'],[-2,1,-2,4,10,4,'a'],[-1,2,2,2,2,1,'y'],[-1,5,2,2,2,1,'y'],[-1,8,2,2,2,1,'x'],[-1,12,-1,2,2,2,'y'],[-5,4,-1,1,4,2,'x'],[4,4,-1,1,4,2,'x']],
+ u_sens:[[-6,0,-1,12,2,2,'d'],[-1,2,-1,2,6,2,'a'],[-2,8,-2,4,4,4,'x'],[-9,0,0,2,2,1,'y'],[7,0,0,2,2,1,'y'],[-11,0,0,1,2,1,'l'],[10,0,0,1,2,1,'l']],
+ u_kc:[[-8,0,-1,4,2,2,'a'],[-8,4,-1,4,2,2,'a'],[-8,0,-1,2,6,2,'a'],[-4,0,-1,2,6,2,'a'],[-3,2,0,6,2,1,'d'],[2,0,-1,4,2,2,'a'],[2,4,-1,4,2,2,'a'],[2,0,-1,2,6,2,'a'],[6,0,-1,2,6,2,'a'],[7,2,0,4,2,1,'d'],[11,0,-1,2,6,2,'x'],[15,0,-1,2,6,2,'x'],[11,0,-1,6,2,2,'x'],[11,4,-1,6,2,2,'x']],
  u_boot:[[-5,0,-1,10,13,3,'d',0,'e'],[-4,2,0,8,9,2,'a',0,'e'],[-1,3,1,2,8,1,'x'],[-4,6,1,8,1,1,'y'],[-3,9,1,2,2,1,'y'],[2,2,1,2,2,1,'y'],[-6,5,0,1,3,1,'x'],[5,8,0,1,2,1,'x']],
  u_plate:[[-5,0,-1,10,10,2,'a'],[-4,1,1,8,8,1,'g'],[-1,4,2,2,2,3,'d'],[0,5,5,1,1,2,'f'],[-4,1,1,1,1,1,'y'],[3,1,1,1,1,1,'y'],[-4,8,1,1,1,1,'y'],[3,8,1,1,1,1,'y'],[-5,4,-2,10,2,1,'h']],
  pu_patch:[[-3,0,-3,6,3,6,'f',0,'cy'],[-3,3,-3,6,2,6,'k',0,'cy'],[-3,5,-3,6,3,6,'f',0,'cy'],[-1,1,3,2,6,1,'x'],[-3,3,3,6,2,1,'x']],
@@ -1008,7 +1010,7 @@ function grab(d){const k=DROP[d.kind];
 function popMsg(t,c){const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=t;pp.style.color=c;pp.classList.add('go')}
 // Lifetime stats (localStorage 'darkstats') drive the Unlocks screen; reaching a goal adds its item to OWNED
 let LIFE={};try{LIFE=JSON.parse(localStorage.getItem('darkstats')||'{}')}catch(e){}
-const UNLOCKS=[{id:'up:Bootleg Shields',stat:'barrier',goal:30,how:'Block 30 hits with Barrier power-ups, in any mode, across runs'},{id:'up:Chargeable Core',stat:'sec1',goal:1,how:'Complete Sector 1 of Campaign'}];
+const UNLOCKS=[{id:'up:Bootleg Shields',stat:'barrier',goal:30,how:'Block 30 hits with Barrier power-ups, in any mode, across runs'},{id:'up:Chargeable Core',stat:'sec1',goal:1,how:'Complete Sector 1 of Campaign'},{id:'up:Kill Chain',stat:'boss5',goal:1,how:'Defeat the Sector 5 boss for the first time'}];
 function prog(k){LIFE[k]=(LIFE[k]||0)+1;try{localStorage.setItem('darkstats',JSON.stringify(LIFE))}catch(e){}
  for(const u of UNLOCKS)if(u.stat===k&&LIFE[k]>=u.goal&&!OWNED.includes(u.id)){OWNED.push(u.id);try{localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}popMsg('UNLOCKED: '+u.id.slice(3).toUpperCase(),'#ff3d6e')}}
 function flash(c){const f=$('flash');f.className='';void f.offsetWidth;f.className='go '+(c||'')}
@@ -1034,6 +1036,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  // Shop unlocks: in the pool only once bought in the main-menu Shop (6th field = Total Scrap price)
  // Unlock upgrades: 7th field names the Unlocks-screen goal; in the pool once that goal is met
  ['Chargeable Core','Hold still for 2 s to charge: shots deal +15% damage (II: +20%; III: +25%) until you move. Dashes cost 10% more EN',s=>s.chg=(s.chg||0)+1,'u','u_chg',0,'sec1'],
+ ['Kill Chain','Each kill adds a stack of +3% fire rate, up to 4 stacks (II: 5; III: 6). Taking a hit clears all stacks',s=>s.kc=(s.kc||0)+1,'r','u_kc',0,'boss5'],
  ['Bootleg Shields','Every 5th hit has a 50% chance to be blocked (II: every 4th, 75%; III: every 3rd, 100%); its energy gives your next shot +2 damage (+3, +4). Each block halves your strafe speed for 0.4 s',s=>s.boot++,'x','u_boot',0,'barrier'],
  ['Ram Plating','Collisions with units (dives, rams, mines) cost 1 less armor, never below 1, and the unit takes +3 damage per tier',s=>s.plate++,'c','u_plate',100],
  ['Confetti Payload','Destroyed units burst into confetti; each burst has a 10% chance per tier to shake loose +2 scrap',s=>s.confetti++,'c','u_conf',80],
@@ -1042,6 +1045,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor',s=>
  ['Apex Matrix','In the center 25% of the lane, shots fly 10% faster (II: 15%; III: also +8% fire rate). The center glows',s=>s.apex=(s.apex||0)+1,'c','u_tune'],
  ['Apex Pull','Units move 5% slower while in the center 25% of the lane (II: 10%; III: 15%). Not capital units or shots. The center glows',s=>s.pull=(s.pull||0)+1,'c','u_tune'],
  ['Apex EMP Tech','At 1/3 armor or less while in the center 25% of the lane, kills have +3% chance to drop an EMP (II: 4%; III: 5%). The center glows',s=>s.empT=(s.empT||0)+1,'c','u_tune'],
+ ['Sensitive Controls','Strafe 3% faster (II: 6%; III: 9%)',s=>s.sens=(s.sens||0)+1,'c','u_sens'],
  ['Afterimage','Dashing leaves a ghost at your start point for 0.5 s that fires with you at 30% damage (II: 40%; III: 50%). 1 s cooldown',s=>s.aft=(s.aft||0)+1,'c','u_aft'],
  ['Dash Burst','Dashing with over 50% EN (II: 40%; III: 30%) fires one 50% wider shot straight up the lane (1 s cooldown). Dashes cost 5% more EN',s=>s.dburst=(s.dburst||0)+1,'c','u_tune'],
  ['Phantom Armor','Start each zone with a 1-hit Barrier (III: 2 hits)',s=>s.phan=(s.phan||0)+1,'u','u_tune']];
@@ -1078,7 +1082,7 @@ function route(){running=false;st.elite=st.boss=0;shots.forEach(s=>S.remove(s.m)
  if(st.sec%5===4&&!st.b45){st.b45=st.zh<=3?1:2;if(st.b45===1)return evt(`Sector ${st.sec}.5 · Bonus unlocked`,`You took ${st.zh} hit${st.zh===1?'':'s'} this zone (3 or fewer needed). Boss at sector ${st.sec+1}.`,[[...NODE.bonus,()=>go('bonus')]])}
  // Every 10th sector: branch to the next zone
  if(st.sec%10===0&&st.ap!==st.sec){st.ap=st.sec;return evt(`Sector ${st.sec} cleared · Choose your zone`,`Ten more sectors and two more capital units ahead. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,Object.entries(ZONES).filter(([k])=>!(ZMIN[k]>st.sec)).map(([k,d])=>[k,d,()=>{st.area=k;route()}]))}
- if(st.b45===1)st.b45=2;if(st.sec===1)prog('sec1');st.sec++;if(st.sec%5===1){st.zh=0;st.b45=0}hud();const n=st.sec,nb=Math.ceil(n/5)*5;
+ if(st.b45===1)st.b45=2;if(st.sec===1)prog('sec1');if(st.sec===5)prog('boss5');st.sec++;if(st.sec%5===1){st.zh=0;st.b45=0}hud();const n=st.sec,nb=Math.ceil(n/5)*5;
  let opts=n%5===0?['boss']:shuf(['elite','yard','signal','dock'].filter(k=>!(k==='elite'&&n<3)&&!(k==='dock'&&st.hp>=st.max))).slice(0,3);if(n%5&&opts.length<2)opts=shuf(['combat',...opts]);
  evt(`Sector ${n} · Choose your route`,n===nb?'The capital unit is waiting.':`Boss at sector ${nb}. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,opts.map(k=>[...NODE[k],()=>go(k)]))}
 function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp;st.hp=Math.min(st.max,st.hp+Math.max(3,Math.ceil(st.max/2)));return evDone('Repair Dock',`Dock crews patch your hull: +${Math.ceil(st.hp-was)} armor (${Math.ceil(st.hp)}/${st.max}).`)}
@@ -1218,7 +1222,7 @@ function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;s
 function ram(e,n,k){hurt(st.plate?Math.max(1,n-1):n);e.hp-=k+3*st.plate}
 function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
- const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=.4;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}if(n)st.zh++;st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
+ const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=.4;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}if(n)st.kcs=0;st.zh++;st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
@@ -1235,7 +1239,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  FRO.visible=!!st&&!st.timed&&st.area==='The Frost Reach';if(FRO.visible)frostTick(dt,running?8:2.5,now);CRY.visible=!!st&&!st.timed&&st.area==='Red Crystal Asteroid Belt';if(CRY.visible)crystalTick(dt,running?10:3);ALK.visible=!!st&&!st.timed&&st.area==='The Alkaline Zone';if(ALK.visible)alkalineTick(dt,running?9:3,now);S.background.setHex(FRO.visible?0x040a16:CRY.visible?0x140506:ALK.visible?0x24272c:0x05060c);if(running&&player)alkTick(dt,player.position);if(running&&player)colTick(dt,player.position);
  if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
-  if(mx)st.dir=mx;let sp=st.spd;if(st.slow>0){st.slow-=dt;sp*=.5}
+  if(mx)st.dir=mx;let sp=st.spd*(1+.03*(st.sens||0));if(st.slow>0){st.slow-=dt;sp*=.5}
   st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0),dcc=st.chg?dc*1.1:dc;if((keys.shift||st.tap)&&st.en>=dcc&&st.bt<=0){
    // Dash Burst: one wide shot up the lane if EN was above the tier's threshold
    if(st.dburst&&st.en>[0,50,40,30][st.dburst]&&st.dbcd<=0){st.dbcd=1;fire(p,V3(0,-1).normalize(),st.shot,st.dmg,false,0x6fd3ff,st.pierce,st.wide*1.5)}
@@ -1247,7 +1251,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
   const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull||st.empT);apexG.material.opacity=ap?.12:.06;
-  st.cd-=dt;if(st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1);muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++){const s=fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot*(ap?st.apex>1?1.15:1.1:1),st.dmg*(st.chg&&st.still>=2?[1,1.15,1.2,1.25][st.chg]:1),false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide);if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}
+  st.cd-=dt;if(st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1)/(1+.03*(st.kcs||0));muzzleT=.05;const n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[];for(let i=0;i<n;i++,st.fired++){const s=fire(p,V3((i-(n-1)/2)*w,-1).normalize(),st.shot*(ap?st.apex>1?1.15:1.1:1),st.dmg*(st.chg&&st.still>=2?[1,1.15,1.2,1.25][st.chg]:1),false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce,st.wide);if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}
    if(st.ai>0)for(let i=0;i<n;i++)fire(st.aip,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg*[0,.3,.4,.5][st.aft],false,0x9fe8ff,st.pierce,st.wide);
    // Whip / Tracking: the volley's middle shot becomes special on every 3rd / 5th volley (extra copies add damage)
    st.vol++;const c=vs[n>>1];if(st.venom&&st.vol%10===0){c.gren=1;c.life=3;c.m.scale.set(.5,.5,.5);c.m.material.color.setHex(0x7dff3a)}else if(st.track&&st.vol%5===0){c.track=1;c.dmg+=st.track;c.life=3;c.m.material.color.setHex(0x5ab0ff)}
@@ -1295,7 +1299,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'||e.type==='geode'||e.type==='refract'||e.type==='crucible'||e.type==='mercury'){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
    st.kills++;boom(e.m.position,e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'||e.type==='geode'||e.type==='refract'||e.type==='crucible'||e.type==='mercury'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||e.type==='boss'||e.type==='warden'||e.type==='mino'||e.type==='caesar'||e.type==='glacier'||e.type==='dryice'||e.type==='onager'||e.type==='geode'||e.type==='refract'||e.type==='crucible'||e.type==='mercury');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
-   if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+   if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut({chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);snowTick(dt);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
