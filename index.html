@@ -179,8 +179,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
-<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li><li>The game goes fullscreen when a run starts and leaves it when you return to the main menu</li></ul>
-<h3>Touch</h3><ul><li>Phones and tablets play in <b>landscape</b>: turn your device sideways when a run starts. In portrait the game pauses until you do</li><li>Drag sideways anywhere to strafe</li><li>Tap <b>Dash</b> (bottom right) to dash</li><li>Tap <b>Pause</b> (top right) to pause</li></ul>
+<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>W</kbd> / <kbd>S</kbd> or <kbd>↑</kbd> / <kbd>↓</kbd>: ease forward and back a little to slip in front of or behind shots</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li><li>The game goes fullscreen when a run starts and leaves it when you return to the main menu</li></ul>
+<h3>Touch</h3><ul><li>Phones and tablets play in <b>landscape</b>: turn your device sideways when a run starts. In portrait the game pauses until you do</li><li>Drag sideways anywhere to strafe, and up or down to ease forward and back</li><li>Tap <b>Dash</b> (bottom right) to dash</li><li>Tap <b>Pause</b> (top right) to pause</li></ul>
 <h3>Firing</h3><ul><li>Your guns fire on their own, straight up the field</li></ul>
 <h3>Dash</h3><ul><li>A quick sideways burst in the direction you're moving</li><li>You can't be hurt during a dash</li><li>Each dash uses EN (the yellow bar), which refills over time</li></ul></div></div>
 
@@ -261,7 +261,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pzQuit"><b>Back to Main Menu</b><span>Ends this run.</span></button></div>
 <div id="pzUpg" hidden style="display:grid;gap:12px"><h2>UPGRADES</h2><div id="upgL"></div><button id="pzUBack"><b>Back</b><span>Return to the pause menu.</span></button></div>
 <div id="pzHelp" hidden style="display:grid;gap:12px"><h2>HOW TO PLAY</h2><ul>
-<li><kbd>A</kbd>/<kbd>D</kbd> or arrows strafe. On touch, play in landscape and drag sideways.</li>
+<li><kbd>A</kbd>/<kbd>D</kbd> or arrows strafe; <kbd>W</kbd>/<kbd>S</kbd> or arrows ease forward and back. On touch, play in landscape and drag in any direction.</li>
 <li>Your guns fire on their own, straight up the field.</li>
 <li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
 <li>Units dive at you. Shoot them mid-dive for double scrap.</li>
@@ -663,7 +663,7 @@ function alkTick(dt,p){if(st.area!=='The Alkaline Zone'||st.timed||st.bonus)retu
    cols_.push({m,w:new THREE.Object3D(),d:V3(-u.side*.25,1).normalize(),t:0,hp:4,hit:0,sp:11,col:0xf2f0ea})}}
  for(let i=SPURS.length;i--;)if(SPURS[i].m.position.z>14){S.remove(SPURS[i].m);SPURS.splice(i,1)}
  shimCd-=dt;if(shimCd<=0&&!shimT){shimT=.001;shimCd=10+Math.random()*6}if(shimT){shimT+=dt;shimmer(shimT<.5?shimT/.5:shimT<2?1:Math.max(0,1-(shimT-2)/.5));if(shimT>2.5){shimT=0;shimmer(0)}}}
-const FX=11;
+const FX=11,PZF=3.5,PZB=2;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
@@ -1406,8 +1406,8 @@ function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;b
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
  const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=1;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}if(st.timed){st.time-=5;n=0}if(n){st.kcs=0;st.zh++;if(st.jet&&st.scrap){st.scrap=Math.max(0,st.scrap-15);popMsg('-15 SCRAP','#ff8a3a')}}st.hp-=n&&n+st.vuln;st.inv=.8;flash();shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
-R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,dx:0,px:player?player.position.x:0});
-addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id)touch.dx=e.clientX-touch.x});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
+R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,dy:0,px:player?player.position.x:0,pz:player?player.position.z:0});
+addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id){touch.dx=e.clientX-touch.x;touch.dy=e.clientY-touch.y}});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
 function eShot(e,p){if(e.type==='boss')for(let a=-2;a<=2;a++)fire(e.m.position.clone().add(V3(0,4)),V3(a*.22,1).normalize(),8,1,true,0xff5a5a,0);else
  if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
@@ -1423,8 +1423,8 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
  FRO.visible=!!st&&!st.timed&&st.area==='The Frost Reach';if(FRO.visible)frostTick(dt,running?8:2.5,now);CRY.visible=!!st&&!st.timed&&st.area==='Red Crystal Asteroid Belt';if(CRY.visible)crystalTick(dt,running?10:3);ALK.visible=!!st&&!st.timed&&st.area==='The Alkaline Zone';if(ALK.visible)alkalineTick(dt,running?9:3,now);S.background.setHex(FRO.visible?0x040a16:CRY.visible?0x140506:ALK.visible?0x24272c:st&&!st.timed&&st.area==='Dark Space'?0x000001:0x05060c);if(running&&player){alkTick(dt,player.position);voidTick(dt,player.position)}if(running&&player)colTick(dt,player.position);
- if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
-  if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0}
+ if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),mz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+  if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0;const wz=THREE.MathUtils.clamp(touch.pz+touch.dy/innerHeight*12,-PZF,PZB)-p.z;mz=Math.abs(wz)>.15?Math.sign(wz):0}
   if(mx)st.dir=mx;let sp=st.spd*(1+.03*(st.sens||0)+(st.jet?Math.min([8,12,16][st.jet-1],[2,3,4][st.jet-1]*Math.floor(st.scrap/50))/100:0));if(st.slow>0){st.slow-=dt;sp*=.5}
   st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0),dcc=st.chg?dc*1.1:dc;if((keys.shift||st.tap)&&st.en>=dcc&&st.bt<=0){
    // Dash Burst: one wide shot up the lane if EN was above the tier's threshold
@@ -1433,7 +1433,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(st.aft&&st.aicd<=0){st.aicd=1;st.ai=.5;st.aip=p.clone();ghost.position.copy(p)}
    st.en-=dcc;st.bt=.22;st.inv=Math.max(st.inv,.3);if(st.rico){st.rs=.45;st.rsHit=new Set()}}st.tap=0;
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);$('en').style.width=st.en+'%';
-  p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);st.pvx=mx*sp;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
+  p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);p.z=THREE.MathUtils.clamp(p.z+mz*st.spd*.6*dt,-PZF,PZB);st.pvx=mx*sp;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
   const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull||st.empT);apexG.material.opacity=ap?.12:.06;
@@ -1499,7 +1499,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick ${st.elite?2:1} upgrade${st.elite?'s':''}`:'All units destroyed')}hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won)victory();else{st.picks=st.elite?2:1;offer()}}}}
- {const px=player?player.position.x:0;C.position.set(px*.35+(Math.random()-.5)*shake,6.5+(Math.random()-.5)*shake,11);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,.5,-12)}R.render(S,C)}
+ {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,5.6+(Math.random()-.5)*shake,11.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,.5,-16+pz*.3)}R.render(S,C)}
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('pSwift').onclick=()=>start('swift');
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
