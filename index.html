@@ -1499,7 +1499,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick ${st.elite?2:1} upgrade${st.elite?'s':''}`:'All units destroyed')}hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won)victory();else{st.picks=st.elite?2:1;offer()}}}}
- {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,5.6+(Math.random()-.5)*shake,11.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,.5,-16+pz*.3)}R.render(S,C)}
+ {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,4.6+(Math.random()-.5)*shake,11.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,1,-20+pz*.3)}R.render(S,C)}
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('pSwift').onclick=()=>start('swift');
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
