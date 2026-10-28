@@ -250,7 +250,7 @@ const PU=[
  {n:'Reactor Surge',c:'#22e4ff',m:'c',s:'proposed',k:'timed',d:'Full EN, and dashes cost nothing for 6 s'}];
 // Upgrade catalog: mirrors UPG in the game. src: p upgrade pick, s shop, e event
 const UP=[
- ['Tune-up','+5% damage, fire rate and strafe speed, +1 max armor. Always in the Salvage Yard for 20 scrap (still one purchase per visit)','c','util','pse'],
+ ['Tune-up','+5% damage, fire rate and strafe speed. Always in the Salvage Yard for 20 scrap (still one purchase per visit)','c','util','pse'],
  ['Salvage claws','+1 scrap per unit destroyed','u','util','pse'],
  ['Rail barrel','Shots fly 50% faster and pass through 1 more unit','r','off','pse'],
  ['Hair trigger','+1 projectile per volley, but strafe 25% slower','x','off','pse',1],
@@ -259,12 +259,12 @@ const UP=[
  ['Ricochet Shield','Dash raises a shield that bounces enemy shots off at an angle set by your motion (2 damage on hit). Dashes cost +15 energy. II: 4 contact damage. III: no extra energy cost','u','def','pse',1],
  ['Venom Launcher','Every 10th volley fires a green grenade: +2 damage to the target, 2 blast damage nearby. II: +1 center. III: +1 blast','r','off','pse',1],
  ['Beam Shot','Shots become beams with a long, damaging tail. +1 damage; fire 30% slower at tier I, 20% at II, 10% at III','u','off','pse',1],
- ['Bootleg Shields','Every 5th hit: 50% chance to block, next shot +2 damage (II: every 4th, 75%, +3; III: every 3rd, always, +4). Each block halves strafe speed for 0.4 s. Unlock: block 30 hits with Barriers','x','def','pseu',1],
+ ['Bootleg Shields','Every 5th hit: 50% chance to block, next shot +2 damage (II: every 4th, 75%, +3; III: every 3rd, always, +4). Each block halves strafe speed for 1 s. Unlock: block 30 hits with Barriers','x','def','pseu',1],
  ['Ram Plating','Collisions with units cost 1 less armor (min 1); the unit takes +3 damage per tier. Shop unlock: 100','c','def','pse'],
  ['Confetti Payload','Destroyed units burst into confetti; 10% chance per tier to shake loose +2 scrap. Shop unlock: 80','c','util','pse'],
  ['Wide Shot','Shots become 15% wider. Shop unlock: 120','c','off','pse'],
  ['Whip Shot','Every third volley, one shot arcs across the screen and does +1 damage. Shop unlock: 240','u','off','pse'],
- ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +1 damage. Shop unlock: 400','r','off','pse'],
+ ['Tracking Shot','Every fifth volley, one shot tracks the farthest target and does +2 damage. Shop unlock: 400','r','off','pse'],
  ['Chargeable Core','Hold still for 2 s to charge: shots deal +15% damage (II: +20%; III: +25%) until you move. Dashes cost 10% more EN. Unlock: complete Sector 1 of Campaign','u','off','pseu',1],
  ['Kill Chain','Each kill adds a stack of +3% fire rate, up to 4 stacks (II: 5; III: 6). Taking a hit clears all stacks. Unlock: defeat the Sector 5 boss','r','off','pseu'],
  ['Sensitive Controls','Strafe 3% faster (II: 6%; III: 9%)','c','mob','pse'],
@@ -276,7 +276,10 @@ const UP=[
  ['Phantom Armor','Start each zone with a 1-hit Barrier (III: 2 hits)','u','def','pse'],
  ['Tractor Coils','Power-up capsules drift toward you 20% faster and wait at your row 1 s longer (II: 25%, 1 s; III: 30%, 2 s). Unlock: collect 15 power-ups','c','util','pseu'],
  ['Point Blank','+10% damage to units in the lower half of the field (II: 15%; III: 20%)','c','off','pse'],
- ['Scrap Weld','Every 50 scrap you collect repairs 1 armor and spends 5 scrap (II: every 45, 1 armor, 3 scrap; III: every 40, 2 armor, 6 scrap). Up to 2 welds per sector','u','def','pse',1]];
+ ['Scrap Weld','Every 50 scrap you collect repairs 1 armor and spends 5 scrap (II: every 45, 1 armor, 3 scrap; III: every 40, 2 armor, 6 scrap). Up to 2 welds per sector','u','def','pse',1],
+ ['Scrap Cannon','Every 30 scrap you collect loads a heavy shell, up to 2 (II: every 25, up to 3; III: every 20, up to 3). Your next volley fires it: 6 damage, pierces every unit, +50% against capital units','r','off','pse',1],
+ ['Scrap Jet','+2% strafe speed per 50 scrap you hold, up to +8% (II: +3%, up to +12%; III: +4%, up to +16%). Each hit you take costs 15 scrap','u','util','pse',1],
+ ['Surge Catch','Grabbing any power-up refills 15% EN (II: 20%; III: 25%)','c','util','pse',1]];
 const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e',unlock:'u'};
 function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCase(),box=document.getElementById('ulists');
  box.innerHTML=Object.entries(RAR).filter(([k])=>F.rar==='all'||F.rar===k).map(([k,[name,col,price]])=>{const all=UP.filter(u=>u[2]===k),
