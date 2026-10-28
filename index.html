@@ -494,7 +494,7 @@ const MODELS={
  praet:()=>build('praet',PRAE,{d:0x262a31,a:0x8a929c,g:0xd4a52a,p:0x5a2a7a,c:0xb0201c,m:0xff3030,l:0xff8a3a,f:0xd8dde6},.1),
  geode:()=>build('geode',GEOD,CPAL,.55),
  refract:()=>build('refract',REFR,CPAL,.5),
- choir1:()=>build('choir1',choirM(1),CHPAL,.26),choir2:()=>build('choir2',choirM(2),CHPAL,.26),choir3:()=>build('choir3',choirM(3),CHPAL,.26),
+ choir1:()=>build('choir1',choirM(1),CHPAL,.26,2),choir2:()=>build('choir2',choirM(2),CHPAL,.26,2),choir3:()=>build('choir3',choirM(3),CHPAL,.26,2),
  moth:()=>build('moth',MOTH,{...APAL,n:0x9fe8ff},.25),
  crucible:()=>build('crucible',CRUC,{k:0x2a2826,i:0x4a4744,r:0x7a746c,h:0xff7a1a,y:0xffd060},.45),
  cdoor:()=>build('cdoor',CDOOR,{k:0x2a2826,i:0x4a4744,r:0x7a746c},.45),
@@ -547,12 +547,12 @@ const DRK=new THREE.Group();DRK.visible=false;S.add(DRK);const drkN=[];
 function darkBuild(){const cs=[0x5a1a8a,0x8a1a5a,0x1a2a8a,0x3a1a6a,0x6a2a7a];for(let i=0;i<26;i++){const g=glow(cs[i%5],18+Math.random()*26);g.material.opacity=.16+Math.random()*.12;
   g.position.set((Math.random()-.5)*70,-26-Math.random()*14,-100+i*4.6);DRK.add(g);drkN.push(g)}}
 function darkTick(dt,v){for(const g of drkN){g.position.z+=dt*v*.35;if(g.position.z>25)g.position.z-=120}}
-// Dark Space hazard "Void Orb": a pitch-black sphere with only a faint white-yellow halo; up close it reads faintly as a 3D ball.
+// Dark Space hazard "Void Orb": a pitch-black sphere with only a faint white-yellow halo and a faint glowing rim; up close it reads faintly as a 3D ball.
 // Hard to see, so you have to watch for it. Drifts down the lane with the terrain; touching it costs 2 armor. Can't be destroyed
-const VOIDS=[],VMAT=new THREE.MeshPhongMaterial({color:0x050507,specular:0x2a2a30,shininess:25}),VGEO=new THREE.SphereGeometry(1.25,20,14);let voidCd=4;
+const VOIDS=[],VMAT=new THREE.MeshPhongMaterial({color:0x050507,specular:0x2a2a30,shininess:25}),VGEO=new THREE.SphereGeometry(1.25,20,14),VRIM=new THREE.Group();for(const [r,o] of [[1.38,.07],[1.55,.045],[1.75,.025]])VRIM.add(new THREE.Mesh(new THREE.SphereGeometry(r,20,14),new THREE.MeshBasicMaterial({color:0xfff0c0,transparent:true,opacity:o,side:THREE.BackSide,blending:THREE.AdditiveBlending,depthWrite:false})));let voidCd=4;
 function voidClear(){VOIDS.forEach(v=>S.remove(v.g));VOIDS.length=0;voidCd=4}
 function voidTick(dt,p){if(st.area!=='Dark Space'||st.timed||st.bonus)return;voidCd-=dt;
- if(voidCd<=0){voidCd=(st.boss?5:3.6)+Math.random()*2.2;const g=new THREE.Group(),h=glow(0xfff0c0,3.6);h.material.opacity=.13;g.add(h,new THREE.Mesh(VGEO,VMAT));
+ if(voidCd<=0){voidCd=(st.boss?5:3.6)+Math.random()*2.2;const g=new THREE.Group(),h=glow(0xfff0c0,3.6);h.material.opacity=.13;g.add(h,VRIM.clone(),new THREE.Mesh(VGEO,VMAT));
   g.position.set(Math.max(-FX,Math.min(FX,(Math.random()<.5?p.x:0)+(Math.random()-.5)*12)),.9,-55);S.add(g);VOIDS.push({g,hit:0})}
  for(const v of VOIDS){v.g.position.z+=9*dt*(st.fast||1);if(!v.hit&&hd(v.g.position,p)<1.7&&st.inv<=0){v.hit=1;hurt(2);shake=Math.max(shake,.35)}}
  for(let i=VOIDS.length;i--;)if(VOIDS[i].g.position.z>14){S.remove(VOIDS[i].g);VOIDS.splice(i,1)}}
@@ -920,12 +920,13 @@ function refractUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
  else{e.tm+=dt;for(const l of e.lines){if(e.tm<1.1){beamTo(l.g,l.o,l.end,.12);l.g.visible=Math.floor(e.tm*10)%2==0}else{l.g.visible=false;beamTo(l.b,l.o,l.end,.9);
    if(!e.hit&&segD(l.o.x,l.o.z,l.end,p)<.8&&st.inv<=0){e.hit=1;hurt(2);shake=Math.max(shake,.3)}}}
   if(e.tm>1.7){for(const l of e.lines){BFX.remove(l.g);BFX.remove(l.b)}e.lines=[];e.hit=0;e.ph=1;e.cdL=p2?3.8:5}}}
-// Dark Space boss "Null Choir" (sector 35 pool): three floating obsidian obelisks banded with 1, 2 or 3 violet rings. They hum in turn:
+// Dark Space boss "Null Choir" (sector 35 pool): three floating obsidian obelisks shaped like the Washington Monument (tall tapering shaft, pyramid cap), banded with 1, 2 or 3 violet rings. They hum in turn:
 // the humming one glows, a violet guide line flashes toward you for 1 s, then a beam fires along it (2 damage). Turns overlap, so
 // you weave between lanes. Silence them low to high (1 ring, then 2, then 3); kill one out of order and the rest sing 35% faster
 const CHPAL={d:0x15141c,s:0x2c2a38,v:0xb060ff};
-const choirM=n=>[[-4,0,-4,8,2,8,'d',0,'r'],[-3,2,-3,6,10,6,'s',0,'r'],[-2,12,-2,4,10,4,'s',0,'r'],[-1,22,-1,2,6,2,'s'],[-1,28,-1,2,2,2,'v',0,'e'],
- [-1,14,2,2,6,1,'v'],[5,13,-1,1,4,2,'s',1],[4,19,0,1,3,1,'d',1],...[...Array(n)].map((_,i)=>[-4,4+3*i,-4,8,1,8,'v',0,'r'])];
+const choirM=n=>[[-4,0,-4,8,2,8,'d'],[-3,2,-3,6,9,6,'s'],[-2.5,11,-2.5,5,9,5,'s'],[-2,20,-2,4,9,4,'s'],
+ [-1.5,29,-1.5,3,1,3,'s'],[-1,30,-1,2,1,2,'s'],[-.5,31,-.5,1,1,1,'s'],[-1,32,-1,2,2,2,'v',0,'e'],
+ [-.5,13,2.5,1,6,.5,'v'],[5,13,-1,1,4,2,'s',1],[4,20,0,1,3,1,'d',1],...[...Array(n)].map((_,i)=>[-3.5,4+2.5*i,-3.5,7,.5,7,'v'])];
 function choirWave(){const k=hpk(),ch={list:[],next:1,rate:1,cd:2.5,turn:0,beams:[],t:0},xs=[-7,0,7].sort(()=>Math.random()-.5);BFX.clear();
  [1,2,3].forEach((n,i)=>{const m=MODELS['choir'+n](),gl=new THREE.Mesh(new THREE.SphereGeometry(.9,12,8),new THREE.MeshBasicMaterial({color:0xb060ff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
   gl.position.y=4.4;m.add(gl);m.position.set(xs[i],0,-62);S.add(m);const e={m,gl,type:'choir',state:'choir',rank:n,ch,x:xs[i],hp:55*k,hp0:55*k,slot:V3(0,0),r:1.5,ph:0,t:-i*.4,hum:0,cdO:2+i};ch.list.push(e);ents.push(e)});
