@@ -21,6 +21,8 @@ padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(
 font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none;font-variant-numeric:tabular-nums}
 #bar,#bar2{width:110px;height:10px;background:#ffffff1a;overflow:hidden}#bar i,#bar2 i{display:block;height:100%;background:var(--hp)}#bar2 i{background:var(--accent)}
 #boost{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));pointer-events:auto;padding:16px 22px;font-family:var(--display);letter-spacing:.1em;touch-action:none}
+#reel{z-index:70;background:transparent;cursor:pointer}#reel p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on{opacity:1}
+#reelSkip{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));font:600 .9rem "Chakra Petch",sans-serif;color:#9aa3b5;background:#0a0c14cc;border:1px solid #445;padding:10px 16px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
 .ov{position:fixed;inset:0;display:grid;place-items:center;background:#05060acc;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .card{background:var(--panel);border:1px solid #ffffff22;padding:24px;max-width:560px;width:100%;box-sizing:border-box;display:grid;gap:16px}
 h1,h2{font-family:var(--display);margin:0;font-weight:400;text-wrap:balance}h1{font-size:40px;color:var(--accent)}h2{font-size:22px}
@@ -128,7 +130,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="pwrap" hidden><div id="pups"></div><span id="ppop"></span></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
-<div class="ov scr" id="start"><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
+<div class="ov" id="reel"><p id="reelP">Tap or press any key</p><button id="reelSkip">Skip</button></div>
+<div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
@@ -137,6 +140,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="unlocks"><b>Unlocks</b></button>
 <button data-go="how"><b>How to Play</b></button>
 <button id="setBtn"><b>Settings</b></button>
+<button id="reelBtn"><b>Opening</b></button>
 <button data-go="credits"><b>Credits</b></button>
 <div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button></div>
 </nav></div></div>
@@ -252,7 +256,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
-<h3>Music &amp; sound</h3><ul><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li></ul>
+<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li></ul>
 <h3>Built with</h3><ul><li>three.js r128 (MIT License)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
@@ -1431,7 +1435,7 @@ function music(k){if(MU.cur===k)return;MU.cur=k;clearInterval(MU.iv);MU.iv=0;if(
  MU.iv=setInterval(()=>{if(AC.state!=='running')return;const S=SONGS[MU.cur],sd=60/S.bpm/4;if(MU.next<AC.currentTime-.2)MU.next=AC.currentTime+.02;
   while(MU.next<AC.currentTime+.12){muStep(S,MU.step++,MU.next);MU.next+=sd}},25)}
 // Gold Rush plays on the menus; needs a tap or key first, since browsers block audio until then
-let menuReady=0;setTimeout(()=>{menuReady=1;menuMusic()},1000);
+let menuReady=0;
 function menuMusic(){if(!menuReady||running||paused||![...document.querySelectorAll('.ov.scr')].some(e=>!e.hidden))return;try{AC=AC||new AudioContext();AC.resume()}catch(e){return}music('bonus')}
 addEventListener('pointerdown',menuMusic);addEventListener('keydown',menuMusic);
 function musicPause(on){if(!MU.out)return;MU.out.gain.setTargetAtTime(on?0:mVol(),AC.currentTime,.05);if(on){MU.held=MU.iv;clearInterval(MU.iv);MU.iv=0}else if(MU.held&&MU.cur){const k=MU.cur;MU.cur=null;const st0=MU.step;music(k);MU.step=st0;MU.held=0}}
@@ -1463,7 +1467,7 @@ const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/1000);last=now;
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
- driftTick(dt);thumbTick(dt);
+ driftTick(dt);reelTick(dt);thumbTick(dt);
  const dk=!!st&&!st.timed&&st.area==='Dark Space';for(let i=0;i<stars.length;i++){const s=stars[i];s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80;s.visible=!dk||i%30===0}
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
@@ -1687,6 +1691,26 @@ let drift=[],driftT=2;
 function driftTick(dt){if(!$('start').hidden){driftT-=dt;if(driftT<=0){driftT=4+Math.random()*5;const s=Math.random()<.5?1:-1,m=MODELS[Math.random()<.6?'chaser':'shooter']();
  m.position.set(-s*24,-1-Math.random()*3,-14-Math.random()*14);m.rotation.y=s*Math.PI/2;S.add(m);drift.push({m,v:s*(3+Math.random()*2)})}}
  for(const d of drift){d.m.position.x+=d.v*dt;d.m.position.y+=Math.sin(performance.now()/400+d.v)*.004;if(Math.abs(d.m.position.x)>26){S.remove(d.m);d.dead=1}}drift=drift.filter(d=>!d.dead)}
+// Opening reel: story paragraphs fade in over the starfield, Luna-M drifts past, soft static hums behind
+const REEL=['Long since humanity has moved on from Earth, a terrible disaster has struck....','For a time, things were quiet. Technology and societies advanced beautifully....','For a time, true peace was known....','For 100 years....','....Then,....','Humanity fell back on its old ways.  War. Greed.  The colonies fell the same way Earth did....',"It's time to search for salvation.  Board your craft."];
+let reelOn=0,reelI=-1,reelT=0,reelM=null,reelMT=1.5,ST=null;
+function staticOn(on){try{AC=AC||new AudioContext();AC.resume()}catch(e){return}
+ if(!on){if(ST){ST.g.gain.setTargetAtTime(0,AC.currentTime,.4);const s=ST;ST=null;setTimeout(()=>{try{s.src.stop()}catch(e){}},2000)}return}
+ if(ST)return;const b=AC.createBuffer(1,AC.sampleRate*4,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ const src=AC.createBufferSource();src.buffer=b;src.loop=true;const f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;f.Q.value=.6;
+ const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=4000;const sw=AC.createGain(),g=AC.createGain();sw.gain.value=.3;g.gain.value=0;
+ src.connect(f).connect(lp).connect(sw).connect(g).connect(AC.destination);src.start();g.gain.setTargetAtTime(.07*SET.on*SET.mus,AC.currentTime,.8);
+ ST={src,g,sw};(function swell(){if(!ST||ST.sw!==sw)return;const t=AC.currentTime,v=.15+Math.random()*.85,dur=1.5+Math.random()*3;sw.gain.setTargetAtTime(v,t,dur/3);f.frequency.setTargetAtTime(1200+Math.random()*1600,t,dur/2);setTimeout(swell,dur*1000)})()}
+function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classList.remove('on');staticOn(1)}
+function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}show('start');menuReady=1;menuMusic()}
+function reelOpen(){music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
+$('reel').onclick=e=>{if(e.target.id!=='reelSkip')reelGo()};addEventListener('keydown',()=>{if(!$('reel').hidden&&!reelOn)reelGo()});
+$('reelSkip').onclick=e=>{e.stopPropagation();reelEnd()};$('reelBtn').onclick=reelOpen;
+function reelTick(dt){if($('reel').hidden)return;
+ reelMT-=dt;if(!reelM&&reelMT<=0){reelM=moth.clone();reelM.visible=true;reelM.scale.setScalar(2.2);const s=Math.random()<.5?1:-1;reelM.position.set(-s*24,-2-Math.random()*2,-16-Math.random()*10);reelM.rotation.y=-s*Math.PI/2;reelM.userData.v=s*(1.6+Math.random()*.8);S.add(reelM)}
+ if(reelM){reelM.position.x+=reelM.userData.v*dt;reelM.position.z+=Math.sin(performance.now()/700)*.01;reelM.children.forEach((c,i)=>{if(i)c.scale.y=.15*(1+.6*Math.sin(performance.now()/90))});if(Math.abs(reelM.position.x)>26){S.remove(reelM);reelM=null;reelMT=4+Math.random()*4}}
+ if(!reelOn)return;reelT-=dt;if(reelT>0)return;const p=$('reelP');
+ if(p.classList.contains('on')){p.classList.remove('on');reelT=1.3}else{reelI++;if(reelI>=REEL.length){reelEnd();return}p.textContent=REEL[reelI];p.classList.add('on');reelT=1.2+2.6}}
 buildWorld();requestAnimationFrame(tick);
 </script>
 </body></html>
