@@ -1549,7 +1549,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick ${st.elite?2:1} upgrade${st.elite?'s':''}`:'All units destroyed')}hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won)victory();else{st.picks=st.elite?2:1;offer()}}}}
  {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,9.5+(Math.random()-.5)*shake,10.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-10+pz*.3)}R.render(S,C)}
-document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));$('pMech').onclick=()=>start('mech');$('pShip').onclick=()=>start('ship');$('pFalcon').onclick=()=>start('falcon');$('pSwift').onclick=()=>start('swift');
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>reelOpen(()=>start(k));
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
 {const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
@@ -1693,7 +1693,7 @@ function driftTick(dt){if(!$('start').hidden){driftT-=dt;if(driftT<=0){driftT=4+
  for(const d of drift){d.m.position.x+=d.v*dt;d.m.position.y+=Math.sin(performance.now()/400+d.v)*.004;if(Math.abs(d.m.position.x)>26){S.remove(d.m);d.dead=1}}drift=drift.filter(d=>!d.dead)}
 // Opening reel: story paragraphs fade in over the starfield, Luna-M drifts past, soft static hums behind
 const REEL=['Long since humanity has moved on from Earth, a terrible disaster has struck....','For a time, things were quiet. Technology and societies advanced beautifully....','For a time, true peace was known....','For 100 years....','....Then,....','Humanity fell back on its old ways.  War. Greed.  The colonies fell the same way Earth did....',"It's time to search for salvation.  Board your craft."];
-let reelOn=0,reelI=-1,reelT=0,reelM=null,reelMT=1.5,ST=null;
+let reelNext=null,reelOn=0,reelI=-1,reelT=0,reelM=null,reelMT=1.5,ST=null;
 function staticOn(on){try{AC=AC||new AudioContext();AC.resume()}catch(e){return}
  if(!on){if(ST){ST.g.gain.setTargetAtTime(0,AC.currentTime,.4);const s=ST;ST=null;setTimeout(()=>{try{s.src.stop()}catch(e){}},2000)}return}
  if(ST)return;const b=AC.createBuffer(1,AC.sampleRate*4,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
@@ -1702,8 +1702,8 @@ function staticOn(on){try{AC=AC||new AudioContext();AC.resume()}catch(e){return}
  src.connect(f).connect(lp).connect(sw).connect(g).connect(AC.destination);src.start();g.gain.setTargetAtTime(.07*SET.on*SET.mus,AC.currentTime,.8);
  ST={src,g,sw};(function swell(){if(!ST||ST.sw!==sw)return;const t=AC.currentTime,v=.15+Math.random()*.85,dur=1.5+Math.random()*3;sw.gain.setTargetAtTime(v,t,dur/3);f.frequency.setTargetAtTime(1200+Math.random()*1600,t,dur/2);setTimeout(swell,dur*1000)})()}
 function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classList.remove('on');staticOn(1)}
-function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}show('start');menuReady=1;menuMusic()}
-function reelOpen(){music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
+function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}const n=reelNext;reelNext=null;if(n){n();return}show('start');menuReady=1;menuMusic()}
+function reelOpen(next){reelNext=typeof next==='function'?next:null;music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
 $('reel').onclick=e=>{if(e.target.id!=='reelSkip')reelGo()};addEventListener('keydown',()=>{if(!$('reel').hidden&&!reelOn)reelGo()});
 $('reelSkip').onclick=e=>{e.stopPropagation();reelEnd()};$('reelBtn').onclick=reelOpen;
 function reelTick(dt){if($('reel').hidden)return;
