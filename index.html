@@ -103,6 +103,12 @@ text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
 .card h3{margin:4px 0 -8px;font:700 15px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
 .card ul{margin:0;padding-left:20px;color:var(--dim);line-height:1.6;display:grid;gap:2px}.card ul b{color:var(--fg)}
 .topics{display:grid;gap:12px}
+.elsort{display:flex;gap:6px;align-items:center;color:var(--dim);font-size:13px}.elsort button{padding:5px 10px;font:400 14px var(--display);box-shadow:0 2px 0 #000000b0}.elsort button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+#elSeen{font:400 15px var(--display);letter-spacing:.06em;color:var(--dim)}#elSeen b{color:var(--accent);font-weight:400}
+#elL{display:grid;gap:8px}.el{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start;border:1px solid #ffffff26;padding:6px;background:#ffffff08}
+.el canvas,.el .ph{width:72px;height:72px;border-radius:3px;background:radial-gradient(#ff5a5a22,transparent 70%)}.el .ph{display:grid;place-items:center;font:400 28px var(--display);color:var(--dim)}
+.el summary{cursor:pointer;font:400 18px var(--display);color:var(--accent);padding:6px 0;list-style-position:inside}.el.un summary{color:var(--dim);cursor:default}
+.el .st{font-size:13px;color:var(--fg);margin-bottom:4px}.el p{text-align:left;font-size:13px}
 .srow{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;font:400 17px var(--display);letter-spacing:.06em}.srow input{accent-color:var(--accent);margin:0;min-height:28px}.sv{display:grid;gap:2px}.sv small{color:var(--dim);font:400 13px var(--body);font-variant-numeric:tabular-nums}.srow input[type=checkbox]{width:28px;justify-self:start}
 #timer{position:fixed;left:0;right:0;text-align:center;pointer-events:none;font:400 30px/1 "Black Ops One","Arial Black",sans-serif;color:#ffe63a;letter-spacing:.05em;font-variant-numeric:tabular-nums;
 text-shadow:0 0 4px #fff,0 0 12px #ffffffaa,0 0 22px #fff6,0 2px 2px #000}
@@ -125,8 +131,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="start"><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
-<button data-go="crafts"><b>Campaign</b></button>
-<button data-go="timed"><b>Timed Attack</b></button>
+<button data-go="modes"><b>Play</b></button>
+<button id="logBtn"><b>Enemy Log</b></button>
 <button data-go="store"><b>Shop</b></button>
 <button data-go="unlocks"><b>Unlocks</b></button>
 <button data-go="how"><b>How to Play</b></button>
@@ -135,7 +141,12 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button></div>
 </nav></div></div>
 
-<div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="start">Back</button></div>
+<div class="ov scr" id="modes" hidden><div class="card"><div class="hd"><h2>Play</h2><button class="back" data-go="start">Back</button></div>
+<button data-go="crafts"><b>Campaign</b><span>Clear sector after sector, upgrading as you go.</span></button>
+<button data-go="timed"><b>Timed Attack</b><span>Three minutes, endless waves, score scrap.</span></button>
+<div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
+
+<div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="modes">Back</button></div>
 <p>Choose your machine. Clear sector after sector, upgrade between them, and see how far you get before your armor gives out.</p>
 <button id="pResume" hidden><b>Resume saved run</b><span id="resumeS"></span></button>
 <div class="row">
@@ -145,7 +156,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pSwift" data-own="craft:swift"><b>Swift</b><span>Speed frame. 8 armor, light rifle. Fastest strafe and dash recovery.</span></button>
 </div><p id="best"></p></div></div>
 
-<div class="ov scr" id="timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="start">Back</button></div>
+<div class="ov scr" id="timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="modes">Back</button></div>
 <p>Three minutes on the clock and endless waves. Score as much scrap as you can before time runs out.</p>
 <ul><li>Each hit costs <b>5 seconds</b> instead of armor</li><li>Waves speed up every 30 seconds; no upgrade stops</li><li>Destroyed units can drop time capsules: fly over one to grab it</li></ul>
 <div class="row">
@@ -212,6 +223,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
 <h3>Sniper</h3><ul><li>Grey, with a long rifle and a radar dish</li><li>Fires aimed shots, from the formation and while diving</li><li>Appears from sector 2</li></ul>
 <h3>And many more</h3><ul><li>These two are just the start. New units join as you go deeper, and each zone has its own. Watch for their tells (glows, flashes, red lanes) and learn how each one fights</li></ul>
+<h3>Enemy Log</h3><ul><li>Open it from the main menu or the pause menu. Each unit and capital unit fills in once you've seen it: tap a name for its starting health, difficulty and notes</li></ul>
 <h3>Capital units</h3><ul><li>Every zone ends in a boss: a <b>Capital Unit</b>, far bigger and tougher than anything before it</li><li>Each one fights its own way. Watch for its tells (flashes, shudders, red warnings) and learn its patterns</li><li>Bring it down for +60 scrap and 1 upgrade</li></ul></div></div>
 
 <div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
@@ -251,6 +263,10 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <label class="srow"><span>Sound</span><input type="checkbox" id="sOn"></label>
 <label class="srow"><span>Music</span><span class="sv"><input type="range" id="sMus" min="0" max="100"><small id="sMusV"></small></span></label>
 <label class="srow"><span>Sound effects</span><span class="sv"><input type="range" id="sSfx" min="0" max="100"><small id="sSfxV"></small></span></label></div></div>
+<div class="ov" id="elog" hidden style="z-index:60;display:block;overflow-y:auto;padding-block:24px"><div class="card" style="margin:0 auto"><div class="hd"><h2>Enemy Log</h2><button class="back" id="elBack">Back</button></div>
+<div class="stabs" role="tablist" aria-label="Enemy Log sections"><button role="tab" data-el="b" aria-selected="true">Basic</button><button role="tab" data-el="x" aria-selected="false">Bosses</button></div>
+<div class="hd"><div class="elsort">Sort: <button data-es="a" aria-pressed="true">A–Z</button><button data-es="d" aria-pressed="false">Difficulty</button></div><span id="elSeen"></span></div>
+<div id="elL"></div></div></div>
 <div id="rotate" hidden><div class="ph"></div><h2>Turn your device sideways</h2><p>In the Dark of Space plays in landscape, so you can see the whole field.</p></div>
 <div class="ov" id="cdet" hidden><div class="card"><canvas id="cdv" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><h2 id="cdN"></h2><div class="ss" id="cdS"></div><p>Drag to rotate</p><div class="row"><button id="cdGo"><b>Launch</b><span>Start with this craft.</span></button><button id="cdBack"><b>Back</b><span>Choose another.</span></button></div></div></div>
 <div class="ov" id="evt" hidden><div class="card"><h2 id="evH"></h2><p id="evT"></p><div class="row" id="evO"></div></div></div>
@@ -258,10 +274,10 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pauseBtn" hidden aria-label="Pause game">❚❚ PAUSE</button>
 <div id="pause" hidden><div class="pz">
 <div class="pl"><canvas id="viewer" aria-label="Your craft. Drag to rotate."></canvas><h2 id="pzName"></h2>
-<div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p></div>
+<div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p><button id="pzUp" style="width:min(100%,300px)"><b>Upgrades</b><span>Everything you've collected this run.</span></button></div>
 <div class="pr"><div id="pzMenu" style="display:grid;gap:12px"><h2>PAUSED</h2>
 <button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
-<button id="pzUp"><b>Upgrades</b><span>Everything you've collected this run.</span></button>
+<button id="pzLog"><b>Enemy Log</b><span>Every unit you've faced.</span></button>
 <button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
 <button id="pzSet"><b>Settings</b><span>Sound and music volume.</span></button>
 <button id="pzSave"><b>Save and Quit</b><span>Next time, pick up at the start of this sector.</span></button>
@@ -1445,7 +1461,7 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
  FRO.visible=!!st&&!st.timed&&st.area==='The Frost Reach';if(FRO.visible)frostTick(dt,running?8:2.5,now);CRY.visible=!!st&&!st.timed&&st.area==='Red Crystal Asteroid Belt';if(CRY.visible)crystalTick(dt,running?10:3);ALK.visible=!!st&&!st.timed&&st.area==='The Alkaline Zone';if(ALK.visible)alkalineTick(dt,running?9:3,now);S.background.setHex(FRO.visible?0x040a16:CRY.visible?0x140506:ALK.visible?0x24272c:st&&!st.timed&&st.area==='Dark Space'?0x000001:0x05060c);if(running&&player){alkTick(dt,player.position);voidTick(dt,player.position)}if(running&&player)colTick(dt,player.position);
- if(running){const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),mz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+ if(running){for(const e of ents)if(!SEEN[e.type])seeIt(e.type);const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),mz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.15?Math.sign(want):0;const wz=THREE.MathUtils.clamp(touch.pz+touch.dy/innerHeight*12,-PZF,PZB)-p.z;mz=Math.abs(wz)>.15?Math.sign(wz):0}
   if(mx)st.dir=mx;let sp=st.spd*(1+.03*(st.sens||0)+(st.jet?Math.min([8,12,16][st.jet-1],[2,3,4][st.jet-1]*Math.floor(st.scrap/50))/100:0));if(st.slow>0){st.slow-=dt;sp*=.5}
   moth.visible=!!st.moth;if(st.moth){st.ma=(st.ma||0)+dt*[0,1.3,1.7,2.1][st.moth];moth.position.set(p.x+Math.cos(st.ma)*2,p.y,p.z+Math.sin(st.ma)*2);moth.rotation.y=-st.ma;moth.children[1].scale.x=moth.children[2].scale.x=.45*(.7+.3*Math.abs(Math.sin(now*.012)))}st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0),dcc=st.chg?dc*1.1:dc;if((keys.shift||st.tap)&&st.en>=dcc&&st.bt<=0){
@@ -1612,6 +1628,26 @@ $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false)
 const setPct=()=>{$('sMusV').textContent=Math.round(SET.mus*100)+'%';$('sSfxV').textContent=Math.round(SET.sfx*100)+'%'};
 $('sOn').checked=!!SET.on;$('sMus').value=SET.mus*100;$('sSfx').value=SET.sfx*100;setPct();
 $('sOn').onchange=e=>{SET.on=e.target.checked?1:0;applySet()};$('sMus').oninput=e=>{SET.mus=e.target.value/100;applySet()};$('sSfx').oninput=e=>{SET.sfx=e.target.value/100;applySet();beep()};
+// Enemy Log: every unit and capital unit, blank until first seen in any mode. [type, name, model, base health, difficulty 1-5, description]
+const ELOG={b:[['chaser','Skirmisher','chaser',2,1,'Doesn\'t shoot; dives at you to ram.'],['shooter','Sniper','shooter',3,1,'Fires aimed shots, from the formation and while diving.'],['brute','Heavy','brute',9,2,'......'],
+ ['mine','Mine','mine',12,2,'......'],['lancer','Lancer','lancer',2.5,3,'......'],['slime','Ooze','slime3',8,3,'......'],['mote','Rime Mote','mote',1,1,'......'],['golem','Ice Golem','golem',8,3,'......'],
+ ['praet','Praetorian','praet',7,3,'......'],['splinter','Splinter','splinter',4,3,'......'],['moth','Flux Moth','moth',5,4,'......'],['voidbot','Void Bot','voidbot',6,4,'......']],
+ x:[['boss','Bastion','boss',45,1,'......'],['warden','Warden','warden',90,2,'......'],['mino','Minotaur','mino',70,2,'......'],['caesar','The Caesar','caesar',95,3,'......'],['onager','Onager','onager',80,3,'......'],
+ ['glacier','The Glacier','glacier',110,3,'......'],['dryice','Dry Ice','dryice',100,3,'......'],['geode','Geode','geode',150,4,'......'],['refract','Refraction','refract',130,4,'......'],
+ ['crucible','The Crucible','crucible',150,4,'......'],['mercury','Mercury','mercury',140,4,'......'],['choir','Null Choir','choir1',55,4,'......'],['priest','The Void Priest','priest',150,5,'......'],
+ ['prophet','The Void Prophet','prophet',140,5,'......'],['scion','Scion of the Void Gods','scion',260,5,'......']]};
+let SEEN={};try{SEEN=JSON.parse(localStorage.getItem('darkseen')||'{}')}catch(e){}
+function seeIt(t){SEEN[t]=1;try{localStorage.setItem('darkseen',JSON.stringify(SEEN))}catch(e){}}
+let elTab='b',elSort='a',elYaw=0,elRaf=0,elT=0;
+function elDraw(){const L=[...ELOG[elTab]].sort((a,b)=>elSort==='d'?a[4]-b[4]||a[1].localeCompare(b[1]):a[1].localeCompare(b[1]));
+ $('elSeen').innerHTML=`<b>${L.filter(e=>SEEN[e[0]]).length} of ${L.length}</b> Seen`;
+ $('elL').innerHTML=L.map(([t,n,k,hp,d,ds])=>SEEN[t]?`<div class="el"><canvas width="144" height="144" data-k="${k}"></canvas><details><summary>${n}</summary><div class="st">Starting health ${hp} · Difficulty ${'★'.repeat(d)}${'☆'.repeat(5-d)}</div><p>${ds}</p></details></div>`
+  :`<div class="el un"><div class="ph">?</div><details><summary onclick="return false">??????</summary></details></div>`).join('');
+ document.querySelectorAll('[data-el]').forEach(b=>b.setAttribute('aria-selected',b.dataset.el===elTab));document.querySelectorAll('[data-es]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.es===elSort))}
+function elSpin(t){if($('elog').hidden){elRaf=0;return}elYaw+=Math.min(.05,(t-(elT||t))/1000)*.6;elT=t;document.querySelectorAll('#elL canvas').forEach(c=>snap(c.dataset.k,elYaw,c));elRaf=requestAnimationFrame(elSpin)}
+function elOpen(){elDraw();$('elog').hidden=false;$('elog').scrollTop=0;elT=0;if(!elRaf)elRaf=requestAnimationFrame(elSpin)}
+document.querySelectorAll('[data-el]').forEach(b=>b.onclick=()=>{elTab=b.dataset.el;elDraw()});document.querySelectorAll('[data-es]').forEach(b=>b.onclick=()=>{elSort=b.dataset.es;elDraw()});
+$('logBtn').onclick=$('pzLog').onclick=elOpen;$('elBack').onclick=()=>$('elog').hidden=true;
 $('setBtn').onclick=$('pzSet').onclick=()=>$('settings').hidden=false;$('setBack').onclick=()=>$('settings').hidden=true;
 $('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
 addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
