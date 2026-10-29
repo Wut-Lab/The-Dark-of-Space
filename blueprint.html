@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style>[hidden]{display:none!important}body{margin:0}</style>
+<style>[hidden]{display:none!important}body{margin:0}.lore{font-style:italic;opacity:.75}
+</style>
 </head>
 <body>
 <title>In the Dark of Space Blueprint</title>
@@ -291,10 +292,11 @@ const UP=[
  ['Luna-M','A small green moth drone slowly orbits you, absorbing enemy shots it touches (II: faster orbit; III: faster still, and every 25 shots blocked repairs 1 armor)','r','def','pse'],
  ['Surge Catch','Grabbing any power-up refills 15% EN (II: 20%; III: 25%)','c','util','pse',1]];
 const RAR={c:['Common','#c9ced6',12],u:['Uncommon','#4fe08a',18],r:['Rare','#5ab0ff',26],x:['Contraband','#ff3d6e',22]},CAT={off:'Offense',def:'Defense',mob:'Mobility',util:'Utility'},SRC={pick:'p',shop:'s',event:'e',unlock:'u'};
+const LORE={'Tune-up':'Every 100,000 parsecs.','Salvage claws':'Sometimes they pick up useful scrap. Sometimes they pick up weird glowing things.','Rail barrel':'For when you want things to fly at the bad guys fast.','Hair trigger':'Filed down by a pilot who never came back to complain about the handling.','Enhanced EMPs':'Military-grade capacitors, "liberated" from a derelict picket ship. Hold still.','Overcharged Cells':'The warning label was in a language nobody reads anymore. Probably fine.','Luna-M':'A beautiful space moth, reminiscent of an ancient creature from Earth. They seem to be the only benevolent thing that goes in and out of the Dark.'};
 function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCase(),box=document.getElementById('ulists');
  box.innerHTML=Object.entries(RAR).filter(([k])=>F.rar==='all'||F.rar===k).map(([k,[name,col,price]])=>{const all=UP.filter(u=>u[2]===k),
   hit=all.filter(([n,d,,c,src,dw])=>(F.src==='all'||src.includes(SRC[F.src]))&&(F.cat==='all'||c===F.cat)&&(F.dw==='all'||(F.dw==='yes')===!!dw)&&(!q||(n+' '+d+' '+CAT[c]+' '+name).toLowerCase().includes(q)));
-  return `<section class="list" style="--c:${col}"><h2><span class="dot"></span>${name} <small>${hit.length} of ${all.length} · shop ${price}+</small></h2>${hit.length?hit.map(([n,d,,c,src,dw])=>`<div class="pu" style="--c:${col}"><i></i><b>${esc(n)} <span class="tg k">${CAT[c]}</span>${[...src].map(x=>`<span class="tg k">${{p:'Pick',s:'Shop',e:'Event',u:'Unlock'}[x]}</span>`).join('')}${dw?'<span class="tg proposed">Drawback</span>':''}</b><p>${esc(d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}</section>`}).join('');
+  return `<section class="list" style="--c:${col}"><h2><span class="dot"></span>${name} <small>${hit.length} of ${all.length} · shop ${price}+</small></h2>${hit.length?hit.map(([n,d,,c,src,dw])=>`<div class="pu" style="--c:${col}"><i></i><b>${esc(n)} <span class="tg k">${CAT[c]}</span>${[...src].map(x=>`<span class="tg k">${{p:'Pick',s:'Shop',e:'Event',u:'Unlock'}[x]}</span>`).join('')}${dw?'<span class="tg proposed">Drawback</span>':''}</b><p>${esc(d)}</p>${LORE[n]?`<p class="lore">“${esc(LORE[n])}”</p>`:''}</div>`).join(''):'<p class="none">Nothing matches.</p>'}</section>`}).join('');
  document.querySelectorAll('#p-up .fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
 const KIND={instant:'Instant',timed:'Lasts',charges:'Charges',clock:'Clock'},F={list:'all',status:'all',kind:'all',rar:'all',src:'all',cat:'all',dw:'all'},esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
 function renderPU(){const q=document.getElementById('q').value.trim().toLowerCase();
