@@ -103,7 +103,7 @@ text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
 .card h3{margin:4px 0 -8px;font:700 15px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
 .card ul{margin:0;padding-left:20px;color:var(--dim);line-height:1.6;display:grid;gap:2px}.card ul b{color:var(--fg)}
 .topics{display:grid;gap:12px}
-.srow{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;font:400 17px var(--display);letter-spacing:.06em}.srow input{accent-color:var(--accent);margin:0;min-height:28px}.srow input[type=checkbox]{width:28px;justify-self:start}
+.srow{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;font:400 17px var(--display);letter-spacing:.06em}.srow input{accent-color:var(--accent);margin:0;min-height:28px}.sv{display:grid;gap:2px}.sv small{color:var(--dim);font:400 13px var(--body);font-variant-numeric:tabular-nums}.srow input[type=checkbox]{width:28px;justify-self:start}
 #timer{position:fixed;left:0;right:0;text-align:center;pointer-events:none;font:400 30px/1 "Black Ops One","Arial Black",sans-serif;color:#ffe63a;letter-spacing:.05em;font-variant-numeric:tabular-nums;
 text-shadow:0 0 4px #fff,0 0 12px #ffffffaa,0 0 22px #fff6,0 2px 2px #000}
 #timer.low{animation:low .5s steps(1) infinite}@keyframes low{50%{color:#ff4d4d}}
@@ -249,8 +249,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 <div class="ov" id="settings" hidden style="z-index:60"><div class="card"><div class="hd"><h2>Settings</h2><button class="back" id="setBack">Back</button></div>
 <label class="srow"><span>Sound</span><input type="checkbox" id="sOn"></label>
-<label class="srow"><span>Music</span><input type="range" id="sMus" min="0" max="100"></label>
-<label class="srow"><span>Sound effects</span><input type="range" id="sSfx" min="0" max="100"></label></div></div>
+<label class="srow"><span>Music</span><span class="sv"><input type="range" id="sMus" min="0" max="100"><small id="sMusV"></small></span></label>
+<label class="srow"><span>Sound effects</span><span class="sv"><input type="range" id="sSfx" min="0" max="100"><small id="sSfxV"></small></span></label></div></div>
 <div id="rotate" hidden><div class="ph"></div><h2>Turn your device sideways</h2><p>In the Dark of Space plays in landscape, so you can see the whole field.</p></div>
 <div class="ov" id="cdet" hidden><div class="card"><canvas id="cdv" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><h2 id="cdN"></h2><div class="ss" id="cdS"></div><p>Drag to rotate</p><div class="row"><button id="cdGo"><b>Launch</b><span>Start with this craft.</span></button><button id="cdBack"><b>Back</b><span>Choose another.</span></button></div></div></div>
 <div class="ov" id="evt" hidden><div class="card"><h2 id="evH"></h2><p id="evT"></p><div class="row" id="evO"></div></div></div>
@@ -1301,10 +1301,10 @@ function die(won){running=false;music(null);if(!won)overJingle();$('deadH').text
 // Armor color: green above 75%, yellow above 25%, red at 25% and below (bar pulses)
 const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
 // Settings: master sound on/off plus music and effects volume (0-1), saved per browser. Effects share one gain node
-let SET={on:1,mus:1,sfx:1},SFXG=null;try{Object.assign(SET,JSON.parse(localStorage.getItem('darkset')||'{}'))}catch(e){}
+let SET={on:1,mus:.7,sfx:1},SFXG=null;try{Object.assign(SET,JSON.parse(localStorage.getItem('darkset')||'{}'))}catch(e){}
 const mVol=()=>MU.vol*SET.mus*SET.on;
 function sfxOut(){if(!SFXG){SFXG=AC.createGain();SFXG.connect(AC.destination)}SFXG.gain.value=SET.sfx*SET.on;return SFXG}
-function applySet(){try{localStorage.setItem('darkset',JSON.stringify(SET))}catch(e){}if(SFXG)SFXG.gain.value=SET.sfx*SET.on;if(MU.out&&!paused)MU.out.gain.value=mVol()}
+function applySet(){setPct();try{localStorage.setItem('darkset',JSON.stringify(SET))}catch(e){}if(SFXG)SFXG.gain.value=SET.sfx*SET.on;if(MU.out&&!paused)MU.out.gain.value=mVol()}
 let AC;function beep(){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=330;
  g.gain.setValueAtTime(.09,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g).connect(sfxOut());o.start(t);o.stop(t+.13)}catch(e){}}
 // Procedural soundtrack: distorted guitar, bass, drums and brass, sequenced on a 16th-note grid
@@ -1609,7 +1609,8 @@ function toMenu(){music(null);menuReady=0;clearTimeout(toMenu.t);toMenu.t=setTim
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;$('pzSave').onclick=()=>{paused=running=false;keepSave(secSnap);toMenu()};$('pResume').onclick=resume;resumeBtn();
-$('sOn').checked=!!SET.on;$('sMus').value=SET.mus*100;$('sSfx').value=SET.sfx*100;
+const setPct=()=>{$('sMusV').textContent=Math.round(SET.mus*100)+'%';$('sSfxV').textContent=Math.round(SET.sfx*100)+'%'};
+$('sOn').checked=!!SET.on;$('sMus').value=SET.mus*100;$('sSfx').value=SET.sfx*100;setPct();
 $('sOn').onchange=e=>{SET.on=e.target.checked?1:0;applySet()};$('sMus').oninput=e=>{SET.mus=e.target.value/100;applySet()};$('sSfx').oninput=e=>{SET.sfx=e.target.value/100;applySet();beep()};
 $('setBtn').onclick=$('pzSet').onclick=()=>$('settings').hidden=false;$('setBack').onclick=()=>$('settings').hidden=true;
 $('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
