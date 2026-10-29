@@ -1642,7 +1642,7 @@ function seeIt(t){SEEN[t]=1;try{localStorage.setItem('darkseen',JSON.stringify(S
 let elTab='b',elSort='a',elYaw=0,elRaf=0,elT=0;
 function elDraw(){const L=[...ELOG[elTab]].sort((a,b)=>elSort==='d'?a[4]-b[4]||a[1].localeCompare(b[1]):a[1].localeCompare(b[1]));
  $('elSeen').innerHTML=`<b>${L.filter(e=>SEEN[e[0]]).length} of ${L.length}</b> Seen`;
- $('elL').innerHTML=L.map(([t,n,k,hp,d,z,ds])=>SEEN[t]?`<div class="el"><div class="kc"><canvas width="144" height="144" data-k="${k}"></canvas><small>Kills ${KILLS[t]||0}</small></div><details><summary>${n}</summary><div class="st">Starting health ${hp} · Difficulty ${'★'.repeat(d)}${'☆'.repeat(5-d)} · Zone: ${z}</div><p>${ds}</p></details></div>`
+ $('elL').innerHTML=L.map(([t,n,k,hp,d,z,ds])=>SEEN[t]?`<div class="el"><div class="kc"><canvas width="144" height="144" data-k="${k}"></canvas><small>Kills ${(KILLS[t]||0)>=9999?'9999+':KILLS[t]||0}</small></div><details><summary>${n}</summary><div class="st">Starting health ${hp} · Difficulty ${'★'.repeat(d)}${'☆'.repeat(5-d)} · Zone: ${z}</div><p>${ds}</p></details></div>`
   :`<div class="el un"><div class="ph">?</div><details><summary onclick="return false">??????</summary></details></div>`).join('');
  document.querySelectorAll('[data-el]').forEach(b=>b.setAttribute('aria-selected',b.dataset.el===elTab));document.querySelectorAll('[data-es]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.es===elSort))}
 function elSpin(t){if($('elog').hidden){elRaf=0;return}elYaw+=Math.min(.05,(t-(elT||t))/1000)*.6;elT=t;document.querySelectorAll('#elL canvas').forEach(c=>snap(c.dataset.k,elYaw,c));elRaf=requestAnimationFrame(elSpin)}
