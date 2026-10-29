@@ -132,7 +132,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
-<button id="logBtn"><b>Enemy Log</b></button>
+<button id="logBtn"><b>Log</b></button>
 <button data-go="store"><b>Shop</b></button>
 <button data-go="unlocks"><b>Unlocks</b></button>
 <button data-go="how"><b>How to Play</b></button>
@@ -187,7 +187,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how-enemies"><b>Enemies</b><span>Who you're fighting</span></button>
 <button data-go="how-bonus"><b>Bonus Stages</b><span>Sector 4.5, if you earn it</span></button>
 <button data-go="how-upgrades"><b>Upgrades &amp; Scrap</b><span>Getting stronger</span></button>
-<button data-go="how-power"><b>Power-ups</b><span>EMP, Barrier, Spread Shot, Patch Kit</span></button>
+<button data-go="how-power"><b>Power-ups</b><span>Temporary boosts from drops</span></button>
 <button data-go="how-timed"><b>Timed Attack</b><span>Racing the clock</span></button>
 </div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 
@@ -212,7 +212,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li><li>You get about 5 seconds of open space before each wave flies in</li><li>Each sector has its own music: <i>Starfall Run</i> in normal sectors and <i>Gold Rush</i> in Bonus Stages. In boss sectors the music cuts out until the boss arrives, then <i>Iron Titan</i> kicks in. Some zones have their own sector and boss themes</li></ul>
 <h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li></ul>
 <h3>Waves</h3><ul><li>Each sector has 2 waves (3 from sector 10). The banner shows which wave you're on</li><li>Clear a wave and <b>WAVE CLEAR</b> flashes; the next wave arrives a moment later</li><li>Boss and Bonus sectors are a single wave</li></ul>
-<h3>End</h3><ul><li>When the last wave's Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose an upgrade and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li><li>New enemy types join gradually: Heavies from sector 4, Mines from 7, Lancers from 11, Ooze from 21. Elite sectors may show one a little early</li></ul></div></div>
+<h3>End</h3><ul><li>When the last wave's Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose an upgrade and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li><li>New enemy types join as you go deeper</li></ul></div></div>
 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
 <p>After each upgrade, choose how to reach the next sector. Every choice ends in a fight: stops happen on the way, then the sector's wave arrives.</p>
@@ -220,10 +220,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers. Watch for a lane glowing red: something is about to come down it</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 1 upgrade</li><li>Sector 40 in Dark Space is the <b>final boss</b>. Bring it down to win the run</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li><li><b>Save and Quit</b> (pause menu) ends the session; pick <b>Resume saved run</b> under Campaign to restart that sector from its beginning</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
-<h3>Skirmisher</h3><ul><li>Tan, with arm blades</li><li>Doesn't shoot; dives at you to ram</li></ul>
-<h3>Sniper</h3><ul><li>Grey, with a long rifle and a radar dish</li><li>Fires aimed shots, from the formation and while diving</li><li>Appears from sector 2</li></ul>
-<h3>And many more</h3><ul><li>These two are just the start. New units join as you go deeper, and each zone has its own. Watch for their tells (glows, flashes, red lanes) and learn how each one fights</li></ul>
-<h3>Enemy Log</h3><ul><li>Open it from the main menu or the pause menu. Each unit and capital unit fills in once you've seen it: tap a name for its starting health, difficulty, zone and notes. The kill count under each model covers all your runs</li></ul>
+<h3>Units</h3><ul><li>Enemy units fly in, form up at the top and dive at you. New units join as you go deeper, and each zone has its own. Watch for their tells (glows, flashes, red lanes) and learn how each one fights</li></ul>
+<h3>The Log</h3><ul><li>Open it from the main menu or the pause menu. Each unit and capital unit fills in once you've seen it: tap a name for its starting health, difficulty, zone and notes. The kill count under each model covers all your runs. Upgrades and power-ups fill in once you've picked them up</li></ul>
 <h3>Capital units</h3><ul><li>Every zone ends in a boss: a <b>Capital Unit</b>, far bigger and tougher than anything before it</li><li>Each one fights its own way. Watch for its tells (flashes, shudders, red warnings) and learn its patterns</li><li>Bring it down for +60 scrap and 1 upgrade</li></ul></div></div>
 
 <div class="ov scr" id="how-bonus" hidden><div class="card"><div class="hd"><h2>Bonus Stages</h2><button class="back" data-go="how">Back</button></div>
@@ -232,22 +230,22 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="how-upgrades" hidden><div class="card"><div class="hd"><h2>Upgrades &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
 <p>Upgrades are permanent for the rest of the run. Power-ups are different: temporary boosts that enemies drop and you fly over to use.</p>
 <h3>Getting upgrades</h3><ul><li>After each sector, choose one of three</li><li>Buy them at Salvage Yards</li><li>Some Unknown Signals pay out in upgrades</li><li>Each upgrade has 3 tiers (I, II, III): taking it again stacks the effect. At tier III it leaves the pool for the rest of the run</li><li>Pause and tap <b>Upgrades</b> to see everything you've collected</li></ul>
-<h3>Starting upgrades</h3><ul><li><b>Tune-up</b> (Common): +5% damage, fire rate and strafe speed</li><li><b style="color:#4fe08a">Salvage claws</b> (Uncommon): +1 scrap per unit destroyed</li><li><b style="color:#5ab0ff">Rail barrel</b> (Rare): shots fly 50% faster and pass through 1 more unit</li><li><b style="color:#ff3d6e">Hair trigger</b> (Contraband): +1 projectile per volley, but strafe 25% slower</li><li><b>Enhanced EMPs</b> (Common): EMP power-ups freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)</li><li><b style="color:#4fe08a">Beam Shot</b> (Uncommon): shots become beams with a long tail that also deals damage. +1 damage, but fire 30% slower; the slowdown drops to 20% at tier II and 10% at tier III</li><li><b>Overcharged Cells</b> (Common): energy recharges 20% faster per tier</li><li><b style="color:#4fe08a">Ricochet Shield</b> (Uncommon): dashing raises a shield that bounces enemy shots off at an angle set by your motion (2 damage to units they hit); dashes cost 15 more energy. Tier II: the shield deals 4 contact damage. Tier III: no extra energy cost</li><li><b style="color:#5ab0ff">Venom Launcher</b> (Rare): every 10th volley fires a green grenade: +2 damage to the unit it hits and 2 to units nearby. Tier II: +1 center damage. Tier III: +1 blast damage</li><li><b>Apex Matrix</b> (Common): in the center 25% of the lane, shots fly 10% faster (II: 15%; III: also +8% fire rate)</li><li><b>Apex Pull</b> (Common): units move 5% slower in the center 25% of the lane (II: 10%; III: 15%); not capital units or shots</li><li><b>Apex EMP Tech</b> (Common): at 1/3 armor or less in the center 25% of the lane, kills have +3% chance to drop an EMP (II: 4%; III: 5%)</li><li><b>Sensitive Controls</b> (Common): strafe 3% faster (II: 6%; III: 9%)</li><li><b>Afterimage</b> (Common): dashing leaves a ghost at your start point for 0.5 s that fires with you at 30% damage (II: 40%; III: 50%); 1 s cooldown</li><li><b>Dash Burst</b> (Common): dashing with over 50% EN (II: 40%; III: 30%) fires one 50% wider shot straight up the lane (1 s cooldown); dashes cost 5% more EN</li><li><b style="color:#4fe08a">Phantom Armor</b> (Uncommon): start each zone with a 1-hit Barrier (III: 2 hits)</li><li><b>Point Blank</b> (Common): +10% damage to units in the lower half of the field (II: 15%; III: 20%)</li><li><b style="color:#4fe08a">Scrap Weld</b> (Uncommon): every 50 scrap you collect repairs 1 armor and spends 5 scrap (II: every 45, 1 armor, 3 scrap; III: every 40, 2 armor, 6 scrap); up to 2 welds per sector</li><li><b style="color:#5ab0ff">Scrap Cannon</b> (Rare): every 30 scrap you collect loads a heavy shell, up to 2 (II: every 25, up to 3; III: every 20, up to 3). Your next volley fires it: 6 damage, pierces every unit, +50% against capital units</li><li><b style="color:#4fe08a">Scrap Jet</b> (Uncommon): +2% strafe speed per 50 scrap you hold, up to +8% (II: +3%, up to +12%; III: +4%, up to +16%); each hit you take costs 15 scrap</li><li><b style="color:#5ab0ff">Luna-M</b> (Rare): a green moth drone slowly orbits you and absorbs enemy shots it touches. Tier II: faster orbit. Tier III: faster still, and every 25 shots blocked repairs 1 armor</li><li><b>Surge Catch</b> (Common): grabbing any power-up refills 15% EN (II: 20%; III: 25%)</li></ul>
+<h3>Which upgrades?</h3><ul><li>Find out as you play. Each one you pick up is added to the <b>Log</b> (Upgrades tab) with its rarity and what it does</li></ul>
 <h3>Unlocking more</h3><ul><li>More upgrades are added to the pool by reaching goals on the main menu's <b>Unlocks</b> screen, or by buying them in the main-menu <b>Shop</b> with Total Scrap</li></ul>
 <h3>Rarity</h3><ul><li><b>Common</b> (grey), <b style="color:#4fe08a">Uncommon</b>, <b style="color:#5ab0ff">Rare</b> and <b style="color:#ff3d6e">Contraband</b></li><li>Contraband upgrades are the strongest, but each one has a drawback</li><li>Elite and boss rewards roll rarer upgrades more often</li></ul>
 <h3>Salvage Yard</h3><ul><li>Rarer upgrades cost more scrap, and prices rise each sector</li><li>Opens only before each boss (sectors 4, 9, 14...): 3 random upgrades, nothing guaranteed. One purchase per visit</li></ul>
-<h3>Scrap</h3><ul><li>Skirmisher: 1 · Sniper: 2 · Heavy: 5</li><li>Units destroyed mid-dive pay double</li><li>Kills pay about 10% less than these values on average</li><li>Scrap is your score for the run</li><li>When a run ends (or you quit), half your scrap is banked as <b>Total Scrap</b>, shown on the main menu. The other half repairs your craft back to 100%</li></ul></div></div>
+<h3>Scrap</h3><ul><li>Every unit pays scrap; bigger units pay more</li><li>Units destroyed mid-dive pay double</li><li>Kills pay about 10% less than these values on average</li><li>Scrap is your score for the run</li><li>When a run ends (or you quit), half your scrap is banked as <b>Total Scrap</b>, shown on the main menu. The other half repairs your craft back to 100%</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
 <h3>The clock</h3><ul><li>You start with <b>3:00</b>, shown at the top of the screen</li><li>It flashes red under 30 seconds</li><li>When it reaches zero, the run ends and your scrap is your score</li></ul>
 <h3>Hits</h3><ul><li>You have no armor bar in this mode: each hit costs <b>5 seconds</b></li></ul>
-<h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li><li>New enemy types join quickly: Heavies from wave 2, Mines from 3, Lancers from 4, Ooze from 7</li></ul>
-<h3>Time capsules</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it to grab it</li><li><b>Green</b> (common): +5 seconds</li><li><b>Gold</b> (rare): +5 seconds and 2.5 seconds of invulnerability</li><li>Capsules drift toward you and vanish if you miss them</li></ul></div></div>
+<h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li><li>New enemy types join quickly</li></ul>
+<h3>Time capsules</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it to grab it for extra time</li><li>Capsules drift toward you and vanish if you miss them</li></ul></div></div>
 
 <div class="ov scr" id="how-power" hidden><div class="card"><div class="hd"><h2>Power-ups</h2><button class="back" data-go="how">Back</button></div>
 <p>Power-ups are temporary boosts: destroyed units sometimes drop a glowing capsule with a dark band. Fly over it to grab it. Heavies and units shot mid-dive drop them more often. They work in every mode.</p>
-<h3>The three power-ups</h3><ul><li><b style="color:#4ad8ff">EMP</b> (blue): clears enemy fire and freezes every unit for 2.5 seconds</li><li><b style="color:#b47cff">Barrier</b> (violet): blocks the next 3 hits, then breaks</li><li><b style="color:#ff8a3a">Spread Shot</b> (orange): fires a 5-way fan for 5 seconds</li></ul>
-<h3>Shop power-ups</h3><ul><li>Buy these in the main-menu Shop to add them to the drops</li><li><b style="color:#e8ecf2">Patch Kit</b> (silver, Common, 80): repairs 2 armor in Campaign, or adds 3 seconds in Timed Attack. Common power-ups drop twice as often as the others</li></ul>
+<h3>Which power-ups?</h3><ul><li>Find out as you play. Each one you grab is added to the <b>Log</b> (Power-ups tab) with what it does</li></ul>
+<h3>Shop power-ups</h3><ul><li>More power-ups can be bought in the main-menu Shop to add them to the drops</li></ul>
 <h3>Tips</h3><ul><li>Active power-ups show as rings under the top bar. The ring empties as time runs out</li><li>Grabbing one you already have adds time, or refills the Barrier</li><li>Capsules blink just before they slip past you</li></ul></div></div>
 
 <div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="start">Back</button></div>
@@ -263,9 +261,9 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <label class="srow"><span>Sound</span><input type="checkbox" id="sOn"></label>
 <label class="srow"><span>Music</span><span class="sv"><input type="range" id="sMus" min="0" max="100"><small id="sMusV"></small></span></label>
 <label class="srow"><span>Sound effects</span><span class="sv"><input type="range" id="sSfx" min="0" max="100"><small id="sSfxV"></small></span></label></div></div>
-<div class="ov" id="elog" hidden style="z-index:60;display:block;overflow-y:auto;padding-block:24px"><div class="card" style="margin:0 auto"><div class="hd"><h2>Enemy Log</h2><button class="back" id="elBack">Back</button></div>
-<div class="stabs" role="tablist" aria-label="Enemy Log sections"><button role="tab" data-el="b" aria-selected="true">Basic</button><button role="tab" data-el="x" aria-selected="false">Bosses</button></div>
-<div class="hd"><div class="elsort">Sort: <button data-es="a" aria-pressed="true">A–Z</button><button data-es="d" aria-pressed="false">Difficulty</button></div><span id="elSeen"></span></div>
+<div class="ov" id="elog" hidden style="z-index:60;display:block;overflow-y:auto;padding-block:24px"><div class="card" style="margin:0 auto"><div class="hd"><h2>Log</h2><button class="back" id="elBack">Back</button></div>
+<div class="stabs" role="tablist" aria-label="Log sections"><button role="tab" data-el="b" aria-selected="true">Basic</button><button role="tab" data-el="x" aria-selected="false">Bosses</button><button role="tab" data-el="u" aria-selected="false">Upgrades</button><button role="tab" data-el="p" aria-selected="false">Power-ups</button></div>
+<div class="hd"><div class="elsort">Sort: <button data-es="a" aria-pressed="true">A–Z</button><button data-es="d" aria-pressed="false" id="esD">Difficulty</button></div><span id="elSeen"></span></div>
 <div id="elL"></div></div></div>
 <div id="rotate" hidden><div class="ph"></div><h2>Turn your device sideways</h2><p>In the Dark of Space plays in landscape, so you can see the whole field.</p></div>
 <div class="ov" id="cdet" hidden><div class="card"><canvas id="cdv" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><h2 id="cdN"></h2><div class="ss" id="cdS"></div><p>Drag to rotate</p><div class="row"><button id="cdGo"><b>Launch</b><span>Start with this craft.</span></button><button id="cdBack"><b>Back</b><span>Choose another.</span></button></div></div></div>
@@ -277,7 +275,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ss" id="pzSS" style="max-width:300px"></div><p>Drag to rotate</p><button id="pzUp" style="width:min(100%,300px)"><b>Upgrades</b><span>Everything you've collected this run.</span></button></div>
 <div class="pr"><div id="pzMenu" style="display:grid;gap:12px"><h2>PAUSED</h2>
 <button id="pzGo"><b>Continue</b><span>Back into the fight.</span></button>
-<button id="pzLog"><b>Enemy Log</b><span>Every unit you've faced.</span></button>
+<button id="pzLog"><b>Log</b><span>Enemies, upgrades and power-ups you've found.</span></button>
 <button id="pzHow"><b>How to Play</b><span>Controls and rules.</span></button>
 <button id="pzSet"><b>Settings</b><span>Sound and music volume.</span></button>
 <button id="pzSave"><b>Save and Quit</b><span>Next time, pick up at the start of this sector.</span></button>
@@ -292,8 +290,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li>
 <li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
 <li>Every 5th sector is a boss; the final boss waits at sector 40 in Dark Space, and beating it wins the run. Every 10 sectors you choose which zone to fly into next. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
-<li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). Blue EMP freezes units for 2.5 s, violet Barrier blocks 3 hits, orange Spread Shot fires a 5-way fan for 5 s.</li>
-<li><b>Timed Attack</b>: each hit costs 5 seconds. Grab green capsules for +5 s, gold for +5 s and brief invulnerability.</li>
+<li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). The Log lists every one you've found.</li>
+<li><b>Timed Attack</b>: each hit costs 5 seconds. Grab time capsules for extra time.</li>
 <li><kbd>Esc</kbd> or <kbd>P</kbd> pauses. Settings (here or on the main menu) set sound on/off, music and effects volume.</li></ul>
 <button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
 </div></div>
@@ -1181,7 +1179,7 @@ function boop(){try{if(!AC)return;const t=AC.currentTime,o=AC.createOscillator()
 // Low blaster: plays on every other volley so a high fire rate doesn't turn into a cacophony
 let volN=0;function blaster(){if(++volN%2)return;try{if(!AC)return;const t=AC.currentTime,o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.setValueAtTime(380,t);o.frequency.exponentialRampToValueAtTime(140,t+.09);
  f.type='lowpass';f.frequency.value=1800;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.11);o.connect(f).connect(g).connect(sfxOut());o.start(t);o.stop(t+.12)}catch(e){}}
-function grab(d){boop();const k=DROP[d.kind];
+function grab(d){boop();pickIt('p:'+d.kind);const k=DROP[d.kind];
  if(k.pu){boom(d.m.position,8,k.c);prog('pwr');if(st.surge)st.en=Math.min(100,st.en+[15,20,25][st.surge-1]);if(d.kind==='emp'){st.emp+=2.5+st.empB;shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='bar')st.bar=3;else if(d.kind==='patch'){if(st.timed)st.time+=3;else st.hp=Math.min(st.max,st.hp+2);hud()}else st.spr+=5;
   const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=k.pu;pp.style.color=k.css;pp.classList.add('go');return}
  st.time+=5;if(k.inv)st.gold=Math.max(st.gold,k.inv);
@@ -1261,7 +1259,7 @@ const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
 
 function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap${st.picks>1?` · ${st.picks} picks left`:''}`;const o=$('opts');o.innerHTML='';
  const ro=roll(3,st.elite||st.boss);ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>`;
-  b.onclick=()=>{f(st);st.upgrades.push(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
+  b.onclick=()=>{f(st);gotUp(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss; sector 4.5 is a bonus stage if the zone cost 3 hits or fewer
 const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +30 scrap and 2 upgrades.'],yard:['Salvage Yard','Shop for upgrades and repairs, then fight the sector.'],
@@ -1294,15 +1292,15 @@ const BOSSES=new Set(['boss','wp','warden','mino','caesar','glacier','dryice','o
 const early=()=>!st.timed&&st.sec<=10;
 function shop(){const stock=roll(3),cost=u=>PRICE[u[3]]+2*st.sec;let got=0;
  const draw=()=>evt('Salvage Yard',got?'Purchase made. The yard only trades once per visit.':`You have ${st.scrap} scrap. One purchase per visit; whatever you spend comes off your final count.`,[
-  ...stock.map((u,i)=>u&&avail(u)&&[`${u[0]} ${TN[tierOf(u[0])]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);st.upgrades.push(u[0]);stock[i]=null;got=1;hud();draw()},got||st.scrap<cost(u),u[3]]).filter(Boolean),
+  ...stock.map((u,i)=>u&&avail(u)&&[`${u[0]} ${TN[tierOf(u[0])]} · ${cost(u)}`,u[1],()=>{st.scrap-=cost(u);u[2](st);gotUp(u[0]);stock[i]=null;got=1;hud();draw()},got||st.scrap<cost(u),u[3]]).filter(Boolean),
   ['Repair 3 armor · 15',`Armor ${Math.ceil(st.hp)}/${st.max}`,()=>{st.scrap-=15;st.hp=Math.min(st.max,st.hp+3);got=1;hud();draw()},got||st.scrap<15||st.hp>=st.max],
   ['Leave','On to the sector.',fight]]);draw()}
 const EVENTS=[
  ()=>evt('Derelict Freighter','A gutted cargo hauler drifts past, its hold still sealed.',[['Strip the hull','+24 scrap, no risk.',()=>{st.scrap+=24;evDone('Derelict Freighter','You strip what you can: +24 scrap.')}],
-  ['Crack the hold','Half the time: a free upgrade. Half the time: it\'s rigged.',()=>{if(Math.random()<.5){const u=roll(1)[0];u[2](st);st.upgrades.push(u[0]);evDone('Derelict Freighter',`Inside: ${u[0]}. ${u[1]}.`)}
+  ['Crack the hold','Half the time: a free upgrade. Half the time: it\'s rigged.',()=>{if(Math.random()<.5){const u=roll(1)[0];u[2](st);gotUp(u[0]);evDone('Derelict Freighter',`Inside: ${u[0]}. ${u[1]}.`)}
    else{st.hp=Math.max(1,st.hp-3);evDone('Derelict Freighter','Booby-trapped. The blast costs 3 armor.')}}]]),
  ()=>evt('Distress Beacon','A looping SOS from a sector that should be empty.',[['Answer it','It\'s an ambush: an elite sector. +30 scrap and 2 upgrades if you win.',()=>{st.elite=1;wave();running=true}],['Ignore it','Fly on to the sector.',fight]]),
- ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Strip it for parts','A random upgrade, but the heat costs 2 armor.',()=>{const u=roll(1)[0];u[2](st);st.upgrades.push(u[0]);st.hp=Math.max(1,st.hp-2);evDone('Loose Reactor Core',`You salvage ${u[0]}: ${u[1]}. The heat costs 2 armor.`)}],
+ ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Strip it for parts','A random upgrade, but the heat costs 2 armor.',()=>{const u=roll(1)[0];u[2](st);gotUp(u[0]);st.hp=Math.max(1,st.hp-2);evDone('Loose Reactor Core',`You salvage ${u[0]}: ${u[1]}. The heat costs 2 armor.`)}],
   ['Sell it','+40 scrap.',()=>{st.scrap+=40;evDone('Loose Reactor Core','A salvage tug pays 40 scrap for it.')}]]),
  ()=>{st.scrap+=16;evDone('Scrap Cloud','Debris from an old battle. Your intakes catch +16 scrap.')}];
 function timeUp(){running=false;music(null);overJingle();st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=st.scrap>tbest;
@@ -1628,7 +1626,7 @@ $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false)
 const setPct=()=>{$('sMusV').textContent=Math.round(SET.mus*100)+'%';$('sSfxV').textContent=Math.round(SET.sfx*100)+'%'};
 $('sOn').checked=!!SET.on;$('sMus').value=SET.mus*100;$('sSfx').value=SET.sfx*100;setPct();
 $('sOn').onchange=e=>{SET.on=e.target.checked?1:0;applySet()};$('sMus').oninput=e=>{SET.mus=e.target.value/100;applySet()};$('sSfx').oninput=e=>{SET.sfx=e.target.value/100;applySet();beep()};
-// Enemy Log: every unit and capital unit, blank until first seen in any mode. [type, name, model, base health, difficulty 1-5, zone, description]
+// Log: every unit and capital unit (plus upgrade and power-up tabs below), blank until first seen in any mode. [type, name, model, base health, difficulty 1-5, zone, description]
 const ELOG={b:[['chaser','Skirmisher','chaser',2,1,'All','Doesn\'t shoot; dives at you to ram.'],['shooter','Sniper','shooter',3,1,'All','Fires aimed shots, from the formation and while diving.'],['brute','Heavy','brute',9,2,'All','......'],
  ['mine','Mine','mine',12,2,'All','......'],['lancer','Lancer','lancer',2.5,3,'All','......'],['slime','Ooze','slime3',8,3,'All','......'],['mote','Rime Mote','mote',1,1,'The Frost Reach','......'],['golem','Ice Golem','golem',8,3,'The Frost Reach','......'],
  ['praet','Praetorian','praet',7,3,'Legion Space','......'],['splinter','Splinter','splinter',4,3,'Red Crystal Asteroid Belt','......'],['moth','Flux Moth','moth',5,4,'The Alkaline Zone','......'],['voidbot','Void Bot','voidbot',6,4,'Dark Space','......']],
@@ -1640,9 +1638,21 @@ let SEEN={},KILLS={};try{SEEN=JSON.parse(localStorage.getItem('darkseen')||'{}')
 function killIt(t){KILLS[t]=(KILLS[t]||0)+1;try{localStorage.setItem('darkkills',JSON.stringify(KILLS))}catch(e){}}
 function seeIt(t){SEEN[t]=1;try{localStorage.setItem('darkseen',JSON.stringify(SEEN))}catch(e){}}
 let elTab='b',elSort='a',elYaw=0,elRaf=0,elT=0;
-function elDraw(){const L=[...ELOG[elTab]].sort((a,b)=>elSort==='d'?a[4]-b[4]||a[1].localeCompare(b[1]):a[1].localeCompare(b[1]));
- $('elSeen').innerHTML=`<b>${L.filter(e=>SEEN[e[0]]).length} of ${L.length}</b> Seen`;
- $('elL').innerHTML=L.map(([t,n,k,hp,d,z,ds])=>SEEN[t]?`<div class="el"><div class="kc"><canvas width="144" height="144" data-k="${k}"></canvas><small>Kills ${(KILLS[t]||0)>=9999?'9999+':KILLS[t]||0}</small></div><details><summary>${n}</summary><div class="st">Starting health ${hp} · Difficulty ${'★'.repeat(d)}${'☆'.repeat(5-d)} · Zone: ${z}</div><p>${ds}</p></details></div>`
+const LRAR={c:['Common',1,'#aab1bd'],u:['Uncommon',2,'#4fe08a'],r:['Rare',3,'#5ab0ff'],x:['Contraband',4,'#ff3d6e']},
+ PLOG=[['emp','EMP','u','Clears enemy fire and freezes every unit for 2.5 seconds.'],['bar','Barrier','u','Blocks the next 3 hits, then breaks.'],['spr','Spread Shot','u','Fires a 5-way fan for 5 seconds.'],
+ ['patch','Patch Kit','c','Repairs 2 armor in Campaign, or adds 3 seconds in Timed Attack. Bought in the Shop.'],['g','Time Capsule','c','Timed Attack only: +5 seconds.'],['y','Gold Time Capsule','r','Timed Attack only: +5 seconds and 2.5 seconds of invulnerability.']];
+let PICKS={};try{PICKS=JSON.parse(localStorage.getItem('darkpicks')||'{}')}catch(e){}
+function pickIt(id){PICKS[id]=(PICKS[id]||0)+1;try{localStorage.setItem('darkpicks',JSON.stringify(PICKS))}catch(e){}}
+function gotUp(n){st.upgrades.push(n);pickIt('u:'+n)}
+const cap=n=>(n||0)>=9999?'9999+':n||0,rarS=r=>`Rarity: <span style="color:${LRAR[r][2]}">${LRAR[r][0]}</span>`;
+for(const k in DROP)if(!MODELS['cap_'+k])MODELS['cap_'+k]=()=>build('cap_'+k,[[-2,0,-2,4,3,4,'c',0,'cy'],[-2,3,-2,4,1,4,'k',0,'cy'],[-2,4,-2,4,3,4,'c',0,'cy']],{c:DROP[k].c,k:DROP[k].pu?0x141826:0xffffff},.12);
+function elRows(){const t=elTab;
+ if(t==='u')return UPG.map(u=>({n:u[0],k:u[4],d:LRAR[u[3]][1],st:rarS(u[3]),ds:u[1],c:'Times picked up: '+cap(PICKS['u:'+u[0]]),seen:PICKS['u:'+u[0]]}));
+ if(t==='p')return PLOG.map(([k,n,r,ds])=>({n,k:'cap_'+k,d:LRAR[r][1],st:rarS(r),ds,c:'Times picked up: '+cap(PICKS['p:'+k]),seen:PICKS['p:'+k]}));
+ return ELOG[t].map(([id,n,k,hp,d,z,ds])=>({n,k,d,st:`Starting health ${hp} · Difficulty ${'★'.repeat(d)}${'☆'.repeat(5-d)} · Zone: ${z}`,ds,c:'Kills '+cap(KILLS[id]),seen:SEEN[id]}))}
+function elDraw(){const L=elRows().sort((a,b)=>elSort==='d'?a.d-b.d||a.n.localeCompare(b.n):a.n.localeCompare(b.n));$('esD').textContent=elTab==='b'||elTab==='x'?'Difficulty':'Rarity';
+ $('elSeen').innerHTML=`<b>${L.filter(e=>e.seen).length} of ${L.length}</b> ${elTab==='b'||elTab==='x'?'Seen':'Found'}`;
+ $('elL').innerHTML=L.map(e=>e.seen?`<div class="el"><div class="kc"><canvas width="144" height="144" data-k="${e.k}"></canvas><small>${e.c}</small></div><details><summary>${e.n}</summary><div class="st">${e.st}</div><p>${e.ds}</p></details></div>`
   :`<div class="el un"><div class="ph">?</div><details><summary onclick="return false">??????</summary></details></div>`).join('');
  document.querySelectorAll('[data-el]').forEach(b=>b.setAttribute('aria-selected',b.dataset.el===elTab));document.querySelectorAll('[data-es]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.es===elSort))}
 function elSpin(t){if($('elog').hidden){elRaf=0;return}elYaw+=Math.min(.05,(t-(elT||t))/1000)*.6;elT=t;document.querySelectorAll('#elL canvas').forEach(c=>snap(c.dataset.k,elYaw,c));elRaf=requestAnimationFrame(elSpin)}
