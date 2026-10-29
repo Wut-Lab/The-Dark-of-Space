@@ -140,7 +140,6 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="unlocks"><b>Unlocks</b></button>
 <button data-go="how"><b>How to Play</b></button>
 <button id="setBtn"><b>Settings</b></button>
-<button id="reelBtn"><b>Opening</b></button>
 <button data-go="credits"><b>Credits</b></button>
 <div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button></div>
 </nav></div></div>
@@ -1705,7 +1704,7 @@ function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classLi
 function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}const n=reelNext;reelNext=null;if(n){n();return}show('start');menuReady=1;menuMusic()}
 function reelOpen(next){reelNext=typeof next==='function'?next:null;music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
 $('reel').onclick=e=>{if(e.target.id!=='reelSkip')reelGo()};addEventListener('keydown',()=>{if(!$('reel').hidden&&!reelOn)reelGo()});
-$('reelSkip').onclick=e=>{e.stopPropagation();reelEnd()};$('reelBtn').onclick=reelOpen;
+$('reelSkip').onclick=e=>{e.stopPropagation();reelEnd()};
 function reelTick(dt){if($('reel').hidden)return;
  reelMT-=dt;if(!reelM&&reelMT<=0){reelM=moth.clone();reelM.visible=true;reelM.scale.setScalar(2.2);const s=Math.random()<.5?1:-1;reelM.position.set(-s*24,-2-Math.random()*2,-16-Math.random()*10);reelM.rotation.y=-s*Math.PI/2;reelM.userData.v=s*(1.6+Math.random()*.8);S.add(reelM)}
  if(reelM){reelM.position.x+=reelM.userData.v*dt;reelM.position.z+=Math.sin(performance.now()/700)*.01;reelM.children.forEach((c,i)=>{if(i)c.scale.y=.15*(1+.6*Math.sin(performance.now()/90))});if(Math.abs(reelM.position.x)>26){S.remove(reelM);reelM=null;reelMT=4+Math.random()*4}}
