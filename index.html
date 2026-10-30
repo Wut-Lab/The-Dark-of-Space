@@ -204,8 +204,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
-<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>W</kbd> / <kbd>S</kbd> or <kbd>↑</kbd> / <kbd>↓</kbd>: ease forward and back a little to slip in front of or behind shots</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li><li><b>Settings</b> (main menu or pause menu): sound on/off, music volume and sound effects volume</li><li>The game goes fullscreen when a run starts and leaves it when you return to the main menu</li></ul>
-<h3>Touch</h3><ul><li>Phones and tablets play in <b>landscape</b>: turn your device sideways when a run starts. In portrait the game pauses until you do</li><li>Drag sideways anywhere to strafe, and up or down to ease forward and back</li><li>Tap <b>Dash</b> (bottom right) to dash</li><li>Tap <b>Pause</b> (top right) to pause</li></ul>
+<h3>Keyboard</h3><ul><li><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd>: strafe left and right</li><li><kbd>W</kbd> / <kbd>S</kbd> or <kbd>↑</kbd> / <kbd>↓</kbd>: move forward and back through the lower part of the field (a bit slower than strafing) to dodge shots and line up attacks</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li><li><b>Settings</b> (main menu or pause menu): sound on/off, music volume and sound effects volume</li><li>The game goes fullscreen when a run starts and leaves it when you return to the main menu</li></ul>
+<h3>Touch</h3><ul><li>Phones and tablets play in <b>landscape</b>: turn your device sideways when a run starts. In portrait the game pauses until you do</li><li>Drag sideways anywhere to strafe, and up or down to move forward and back</li><li>Tap <b>Dash</b> (bottom right) to dash</li><li>Tap <b>Pause</b> (top right) to pause</li></ul>
 <h3>Firing</h3><ul><li>Your guns fire on their own, straight up the field</li></ul>
 <h3>Dash</h3><ul><li>A quick sideways burst in the direction you're moving</li><li>You can't be hurt during a dash</li><li>Each dash uses EN (the yellow bar), which refills over time</li></ul></div></div>
 
@@ -294,7 +294,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pzQuit"><b>Back to Main Menu</b><span>Ends this run.</span></button></div>
 <div id="pzUpg" hidden style="display:grid;gap:12px"><h2>UPGRADES</h2><div id="upgL"></div><button id="pzUBack"><b>Back</b><span>Return to the pause menu.</span></button></div>
 <div id="pzHelp" hidden style="display:grid;gap:12px"><h2>HOW TO PLAY</h2><ul>
-<li><kbd>A</kbd>/<kbd>D</kbd> or arrows strafe; <kbd>W</kbd>/<kbd>S</kbd> or arrows ease forward and back. On touch, play in landscape and drag in any direction.</li>
+<li><kbd>A</kbd>/<kbd>D</kbd> or arrows strafe; <kbd>W</kbd>/<kbd>S</kbd> or arrows move forward and back. On touch, play in landscape and drag in any direction.</li>
 <li>Your guns fire on their own, straight up the field.</li>
 <li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
 <li>Units dive at you. Shoot them mid-dive for double scrap.</li>
@@ -761,9 +761,9 @@ function bossWave(){st.boss=1;if(st.area==='Dark Space'&&st.sec%10===0)return sc
  const core={m,type:'boss',hp:45*k,slot:V3(0,0),state:'boss',t:-5,cd:10,r:4};
  for(const [x,y,z] of [[-3.6,1.17,0],[3.6,1.17,0],[0,1.17,3.2]]){const w=MODELS.wp();S.add(w);w.position.set(x,0,z-50);ents.push({m:w,type:'wp',hp:14*k,slot:V3(x,0),state:'boss',core,off:new THREE.Vector3(x,y,z),cd:9+Math.random()*2,r:1.1})}
  ents.push(core);hud();banner('WARNING',`Sector ${String(st.sec).padStart(2,'0')} · Capital unit. Shoot off its 3 turrets to expose the core`)}
-// Mine: drifts in and parks just ahead of the player's row, blocking that lane; touching it hurts
+// Mine: drifts in and parks at a random depth in the player's movement zone, blocking that lane; touching it hurts
 function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
- const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*hpk(),slot:V3(x,0),t:-3-i*.6,p0,p1:V3(x,-20),p2:V3(x,-.6),r:.8})}
+ const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*hpk(),slot:V3(x,0),t:-3-i*.6,p0,p1:V3(x,-20),p2:V3(x,-PZF+Math.random()*(PZF+PZB-.5)),r:.8})}
 function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;
  // after ~15 s parked it lifts off and leaves the field (no scrap)
  if(e.t>7){e.m.position.z-=14*dt;e.m.rotation.y+=dt*3;if(e.m.position.z<-45){e.escaped=1;e.hp=0}return}const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
@@ -822,7 +822,7 @@ function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.
  else if(e.atk==='sweep'){e.at+=dt;
   if(e.at<1.4)F.warn.visible=Math.floor(e.at*8)%2==0;
   else if(e.at<3.2){F.warn.visible=false;const u=(e.at-1.4)/1.8,x=e.side*(FX+1)*(1-u);TG.set(x,.8,4);beamTo(F.sweep,MZ,TG,.8);
-   const xa=MZ.x+(x-MZ.x)*(0-MZ.z)/(4-MZ.z);if(Math.abs(p.x-xa)<.9&&st.inv<=0)hurt(2)}
+   if(segD(MZ.x,MZ.z,TG,p)<.9&&st.inv<=0)hurt(2)}
   else{F.sweep.visible=false;e.atk=null;e.cdS=10+Math.random()*3;e.cdA=2}}
  else if(e.cdS<=0){e.atk='sweep';e.at=0;e.side=Math.random()<.5?-1:1;F.warn.position.set(e.side*FX/2,.05,(MZ.z+3)/2);F.warn.scale.set(FX,.02,3-MZ.z);F.warn.rotation.set(0,0,0)}
  else if(e.cdA<=0){e.atk='aim';e.at=.8;e.hit=0;e.tg=V3(p.x-MZ.x,p.z-MZ.z).setLength(40).add(MZ).setY(.8)}
@@ -1005,7 +1005,7 @@ function dryUp(e,dt,p){const M=e.m.position,B=e.fx.beam,W=e.fx.warn;e.cloud.forE
   if(e.tm>1.2){W.visible=Math.floor(e.tm*10)%2==0;W.position.set(M.x,.05,M.z+27);W.scale.set(3.6,.02,50);W.rotation.set(0,0,0)}
   if(e.tm>1.8){mist(0);W.visible=false;e.ph=3;e.tm=0;e.hit=0}}
  else if(e.ph===3){e.tm+=dt;B.position.set(M.x,1,M.z+27);B.scale.set(3.6,1,50);B.rotation.set(0,0,0);B.visible=true;
-  if(!e.hit&&Math.abs(p.x-M.x)<1.8+.4&&st.inv<=0){e.hit=1;hurt(2);shake=Math.max(shake,.3)}
+  if(!e.hit&&Math.abs(p.x-M.x)<1.8+.4&&p.z>M.z+2&&st.inv<=0){e.hit=1;hurt(2);shake=Math.max(shake,.3)}
   if(e.tm>1.1){B.visible=false;e.ph=1;e.moved=0;e.cdM=7+Math.random()*2;e.x0=M.x*.5;e.t=Math.asin(Math.max(-1,Math.min(1,(M.x-e.x0)/((FX-3)*(1-Math.abs(e.x0)/FX)||1))))/.9}}}
 // Onager boss: a giant flying Roman onager, turned three-quarters to the player in stage 1 so the throwing arm shows. The arm winches back, then snaps up against the crossbar to throw. Stage 1: holds the centre and lobs EMP bombs from the catapult on its back (a blue ring marks
 // where each lands: 1 damage and a stun that halves your speed), while Lancers make their usual runs. The hull is armored until
@@ -1142,7 +1142,7 @@ function crucibleUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2,am=(c,o)=>new T
  e.cdP-=dt*thr();if(e.cdP<=0){e.cdP=p2?3.6:4.5;const xs=p2?[p.x-3.2-Math.random(),p.x+3.2+Math.random()]:[p.x+(Math.random()-.5)*6];
   for(const x0 of xs){const x=Math.max(-FX+1,Math.min(FX-1,x0)),g=new THREE.Mesh(BOX,am(0xff7a1a,.3));g.position.set(x,.05,-5);g.scale.set(1.6,.02,16);BFX.add(g);e.pours.push({x,g,t:0})}}
  for(const q of e.pours){q.t+=dt;if(q.t<1.2){q.g.visible=Math.floor(q.t*8)%2==0;continue}
-  if(q.t<1.7){q.g.visible=true;q.g.material.color.setHex(0xffd060);q.g.material.opacity=.85;q.g.scale.y=.4;q.g.position.y=.3;if(!q.hit&&Math.abs(p.x-q.x)<1&&st.inv<=0){q.hit=1;hurt(2);shake=Math.max(shake,.3)}continue}
+  if(q.t<1.7){q.g.visible=true;q.g.material.color.setHex(0xffd060);q.g.material.opacity=.85;q.g.scale.y=.4;q.g.position.y=.3;if(!q.hit&&Math.abs(p.x-q.x)<1&&Math.abs(p.z+5)<8&&st.inv<=0){q.hit=1;hurt(2);shake=Math.max(shake,.3)}continue}
   if(!q.done){q.done=1;BFX.remove(q.g);const w=new THREE.Mesh(BOX,new THREE.MeshLambertMaterial({color:0xff7a1a,emissive:0x401000}));w.position.set(q.x,.4,-5);w.scale.set(1.3,.8,16);BFX.add(w);e.walls.push({w,t:0,cd:0})}}
  e.pours=e.pours.filter(q=>!q.done);
  for(const w of e.walls){w.t+=dt;w.cd-=dt;const c=Math.min(1,w.t/1.2);w.w.material.color.setRGB(1-.71*c,.48-.2*c,.1+.17*c);w.w.material.emissive.setRGB(.25*(1-c),.06*(1-c),0);
