@@ -739,7 +739,7 @@ function resumeBtn(){const b=$('pResume');b.hidden=!runSave;if(runSave)$('resume
 function resume(){const sv=runSave;keepSave(null);start(sv.kind);ents.forEach(e=>S.remove(e.m));ents=[];Object.assign(st,sv);st.banked=0;hud();wave()}
 function start(kind,timed){secSnap=null;if(!timed)keepSave(null);fx.forEach(f=>S.remove(f.m));fx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
- player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);
+ player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);{const z=new THREE.Box3().setFromObject(player.userData.body).getSize(new THREE.Vector3());st.pr=Math.max(.6,(z.x+z.z)/4*.9)}
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
  ['bar','hpt'].forEach(i=>$(i).hidden=st.timed);$('secL').textContent=st.timed?'Wave':'Sector';$('timer').hidden=!st.timed;landscape();setTimeout(orient,300);$('timer').className='';$('pwrap').hidden=false;pupK='';$('pups').innerHTML='';placeTimer();wave();running=true}
 // Timed Attack clock sits just under the HUD strip, centered
@@ -767,7 +767,7 @@ function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1
 function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;
  // after ~15 s parked it lifts off and leaves the field (no scrap)
  if(e.t>7){e.m.position.z-=14*dt;e.m.rotation.y+=dt*3;if(e.m.position.z<-45){e.escaped=1;e.hp=0}return}const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
- if(u>=1&&hd(e.m.position,p)<e.r+.6&&st.inv<=0)ram(e,2,2)}
+ if(u>=1&&hd(e.m.position,p)<er(e)+(st.pr||.6)&&st.inv<=0)ram(e,2,2)}
 // Lancer: flies in, hovers 1-2 s, slides to a side edge, flashes, then rams the spot where the player was; loops back in if it misses
 function lancerReset(e,t){const x=(Math.random()-.5)*14;Object.assign(e,{ph:0,t,p0:V3(x*.6,-44),p1:V3(x,-30),p2:V3(x,-17-Math.random()*4)})}
 function addLancer(i){const m=MODELS.lancer();m.visible=false;S.add(m);const e={m,type:'lancer',state:'lancer',hp:2.5*hpk(),slot:V3(i+.5,0),r:.6};lancerReset(e,-4.6-i*.8);m.position.copy(e.p0);ents.push(e)}
@@ -776,7 +776,7 @@ function lancerUp(e,dt,p){const M=e.m.position,f=st.fast||1;
  else if(e.ph===1){e.tm-=dt;if(e.tm<=0){e.ph=2;e.to=V3((Math.random()<.5?-1:1)*(FX-.8),-8)}}
  else if(e.ph===2){T.subVectors(e.to,M).setY(0);const d=T.length(),s=12*dt*f;if(d<=s){M.copy(e.to);e.ph=3;e.tm=.4}else M.addScaledVector(T.normalize(),s)}
  else if(e.ph===3){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*20)%2?1.3:1);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z);if(e.tm<=0){e.ph=4;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}
- else{M.addScaledVector(e.dir,20*dt*f);if(hd(M,p)<e.r+.6&&st.inv<=0)ram(e,2,3);if(M.z>6||Math.abs(M.x)>FX+4){lancerReset(e,0);M.copy(e.p0)}}}
+ else{M.addScaledVector(e.dir,20*dt*f);if(hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0)ram(e,2,3);if(M.z>6||Math.abs(M.x)>FX+4){lancerReset(e,0);M.copy(e.p0)}}}
 // Ooze (hard enemy): drifts in and creeps above your row, then squashes flat and flashes (the tell) and lunges at where you are,
 // splatting goo on your row and leaving a slime trail as it oozes back up. Goo slows you. Each kill splits it into two smaller,
 // faster copies (size 3 > 2 > 1): 7 blobs in all. No shots
@@ -791,7 +791,7 @@ function gooTick(dt,p){for(const g of goo){g.t+=dt;g.f.material.opacity=.3*Math.
  for(let i=goo.length;i--;)if(goo[i].t>=goo[i].life){S.remove(goo[i].f);goo[i].f.material.dispose();goo.splice(i,1)}}
 function oozeUp(e,dt,p){const M=e.m.position,o=OZ[e.sz],f=st.fast||1;e.hop=0;
  if(e.ph===0){e.t+=dt/2;if(e.t<0)return;e.m.visible=true;if(e.t>=1)e.ph=1;else M.copy(bez(e.p0,e.p1,e.p2,e.t));return}
- e.m.visible=true;const touch=()=>{if(hd(M,p)<e.r+.6&&st.inv<=0)ram(e,e.sz>1?2:1,3)};
+ e.m.visible=true;const touch=()=>{if(hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0)ram(e,e.sz>1?2:1,3)};
  if(e.ph===5){M.x+=e.vx*dt;M.z+=e.vz*dt;e.vx*=.9;e.vz*=.9;M.x=THREE.MathUtils.clamp(M.x,-FX+1,FX-1);if((e.tm-=dt)<=0){e.ph=1;e.tm=1.5+Math.random()}return}
  // creep toward a spot above you, dribbling a trail; lower rows than -12 mean it's still oozing back up from a lunge
  if(e.ph===1){T.set(p.x-M.x,0,-12-M.z);const d=T.length(),s=o.v*dt*f;if(d>s)M.addScaledVector(T.normalize(),s);
@@ -873,7 +873,7 @@ function minoUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1;e.m.scale.
  else if(e.ph===2){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.06:1);M.x+=(Math.random()-.5)*.15;e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);
   if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
- else if(e.ph===3){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<e.r+.6&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+ else if(e.ph===3){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=4;M.set((Math.random()-.5)*10,M.y,-45)}}
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=5+Math.random()*3;e.cdF=.8}}}
 // Scion of the Void Gods (final boss, sector 40 of Dark Space; very hard). 260 hp (scales). A 1 s shudder (invulnerable) marks each stage change.
@@ -905,7 +905,7 @@ function scionUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,hp=e.hp/e
  else if(e.ph===2){e.tm-=dt;e.rg.material.opacity=.35+.3*Math.sin(e.t*25);M.x+=(Math.random()-.5)*.15;e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);
   if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
- else if(e.ph===3){e.rg.material.opacity=.25;M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<e.r+.6&&st.inv<=0){e.hit=1;hurt((e.stg>=2?4:3)-(st.plate?1:0));shake=Math.max(shake,.45)}
+ else if(e.ph===3){e.rg.material.opacity=.25;M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt((e.stg>=2?4:3)-(st.plate?1:0));shake=Math.max(shake,.45)}
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=4;e.rg.material.opacity=0;M.set((Math.random()-.5)*10,0,-45)}}
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=e.stg===2?3.5+Math.random()*1.5:6+Math.random()*2;e.cdF=.8}}}
 function victory(){die(1);try{localStorage.setItem('darkwon',1)}catch(e){}$('deadH').textContent='Victory';$('deadH').style.color='var(--accent)';
@@ -962,7 +962,7 @@ function caesarUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,sp=e.sp;
  else if(e.ph===5){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.06:1);M.x+=(Math.random()-.5)*.15;e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);
   if(e.tm<=0){W.visible=false;e.ph=6;e.hit=0}}
- else if(e.ph===6){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<e.r+.6&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+ else if(e.ph===6){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=7;M.set(0,M.y,-45);e.m.rotation.y=0}}
  else if(e.ph===7){M.x+=-M.x*Math.min(1,dt*3);M.z+=(-20-M.z)*Math.min(1,dt*2.5);if(M.z>-21){e.ph=1;e.cdA=4+Math.random()*2.5;e.cdB=.8}}
  else{sp.rotation.x*=Math.max(0,1-dt*6);sp.rotation.y*=Math.max(0,1-dt*6);M.z+=(-20-M.z)*Math.min(1,dt*2);
@@ -1028,7 +1028,7 @@ function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.co
  else if(e.ph===2){e.tm-=dt;if(e.tm>.9){M.x+=(Math.max(-FX+3,Math.min(FX-3,p.x))-M.x)*Math.min(1,dt*3);return}
   if(!e.dir)e.dir=V3(p.x-M.x,p.z-M.z).normalize();e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.05:1);e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
- else if(e.ph===3){M.addScaledVector(e.dir,24*dt*(st.fast||1));if(!e.hit&&hd(M,p)<e.r+.6&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+ else if(e.ph===3){M.addScaledVector(e.dir,24*dt*(st.fast||1));if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+8){e.ph=4;M.set(0,M.y,-50);e.m.rotation.y=0;e.dir=null}}
  else{M.z+=(-26-M.z)*Math.min(1,dt*2.5);if(M.z>-27){e.ph=2;e.tm=1.2+Math.random()*1.5}}}
 // Praetorian (medium): marches in to the upper-mid field and paces side to side behind its shield. Every 3-4 s its chest cannon
@@ -1574,6 +1574,8 @@ addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id){touch.dx=e.
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
 // bend a dive's end point so its curve crosses the player's current spot, wherever they sit in the lane
 function diveAim(e,p){const a=e.p0,b=e.p1,c=e.p2;let lo=0,hi=1;for(let i=0;i<20;i++){const t=(lo+hi)/2,z=(1-t)**2*a.z+2*t*(1-t)*b.z+t*t*c.z;z<p.z?lo=t:hi=t}const t=Math.max(lo,.2);c.x=THREE.MathUtils.clamp((p.x-(1-t)**2*a.x-2*t*(1-t)*b.x)/(t*t),-FX-8,FX+8)}
+// hit radius from the unit's model footprint (at least its set radius, capped so attached effects don't bloat it)
+function er(e){if(e.rb==null){const z=new THREE.Box3().setFromObject(e.m).getSize(new THREE.Vector3()),k=e.m.scale.x||1;e.rb=Math.min(Math.max(e.r,(z.x+z.z)/4*.9/k),e.r*1.8)}return e.rb}
 function eShot(e,p){if(e.type==='boss')for(let a=-2;a<=2;a++)fire(e.m.position.clone().add(V3(0,4)),V3(a*.22,1).normalize(),8,1,true,0xff5a5a,0);else
  if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
  else fire(e.m.position,T.subVectors(p,e.m.position).setY(0).normalize(),11,1,true,0xff5a5a,0)}
@@ -1641,7 +1643,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    if(e.state==='form'){e.m.position.copy(slotPos(e));face=false;e.m.rotation.y=0}
    if(e.state==='dive'){e.t+=dt*(.45+st.sec*.02)*st.fast;e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
     if(e.t>=1){e.m.position.set(e.m.position.x,0,-40);Object.assign(e,{state:'enter',t:0,p0:e.m.position.clone(),p1:V3(e.slot.x,-36)})}
-    if(hd(e.m.position,p)<e.r+.6&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
+    if(hd(e.m.position,p)<er(e)+(st.pr||.6)&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
    // Apex Pull: drag regular units' movement in the center band (capital units are immune)
    if(st.pull&&!CAPS.has(e.type)&&Math.abs(e.m.position.x)<FX*.25)e.m.position.lerp(prev,st.pull*.05);
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
@@ -1653,7 +1655,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   for(const s of shots){const ox=s.m.position.x,oz=s.m.position.z;
    if(s.arc){s.v.x-=s.arc*10*dt;s.m.lookAt(T.copy(s.m.position).add(s.v))}
    if(s.track&&far){const sp=s.v.length();T.subVectors(far.m.position,s.m.position).setY(0).setLength(sp);s.v.lerp(T,Math.min(1,6*dt)).setLength(sp);s.m.lookAt(T.copy(s.m.position).add(s.v))}if(s.hd>0)s.hd-=dt;else if(s.home>0){s.home-=dt;const q=s.v.length();T.subVectors(p,s.m.position).setY(0).setLength(q);s.v.lerp(T,Math.min(1,1.5*dt)).setLength(q);s.m.lookAt(T.copy(s.m.position).add(s.v))}s.m.position.addScaledVector(s.v,s.enemy&&st.os>0&&s.m.position.z>-14?dt*.5:dt);s.life-=dt;
-   if(s.enemy){if(st.moth&&hd(s.m.position,moth.position)<.6){s.life=0;boom(s.m.position,3,0x6fff9a);if(st.moth>=3&&++st.mb%25===0&&st.hp<st.max){st.hp++;hud();boom(p,8,0x4fe08a)}}else if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(segD(ox,oz,s.m.position,p)<.7+(s.wide||0)&&st.inv<=0){hurt(s.dmg);s.life=0}}
+   if(s.enemy){if(st.moth&&hd(s.m.position,moth.position)<.6){s.life=0;boom(s.m.position,3,0x6fff9a);if(st.moth>=3&&++st.mb%25===0&&st.hp<st.max){st.hp++;hud();boom(p,8,0x4fe08a)}}else if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(segD(ox,oz,s.m.position,p)<(st.pr||.6)+.1+(s.wide||0)&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if((e.type==='boss'||e.type==='onager')&&armored(e)||BOSSES.has(e.type)&&now-e.v0<1500||e.iv>0){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;const dm=(st.pb&&e.m.position.z>-14?s.dmg*(1+[.1,.15,.2][st.pb-1]):s.dmg)*(BOSSES.has(e.type)?s.shell?1.5:.75:1);st.dealt+=Math.min(dm,e.hp);e.hp-=dm;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.gren){venom(e);s.life=0;break}if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
