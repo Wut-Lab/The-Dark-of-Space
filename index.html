@@ -79,6 +79,10 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
  #crafts .row,#timed .row{gap:8px;grid-template-columns:1fr}.cr>button:first-child{justify-content:flex-start}}
 #cdet .card{justify-items:center;text-align:center;max-width:380px}#cdv{width:min(100%,240px);aspect-ratio:1;touch-action:none;cursor:grab}#cdet .ss{max-width:300px}
 #cdet .row{width:100%;grid-template-columns:1fr 1fr}#cdN{font-size:28px;color:var(--accent)}
+/* Upgrade picks on short screens (phones sideways): one full-width row per option, name and rarity on the left, description and story reading across on the right */
+@media (max-height:520px){#pick .card{max-width:none;width:min(100%,820px);max-height:calc(100dvh - 16px);overflow-y:auto;padding-block:12px}#pick h2{font-size:20px}#pick .card>p{margin:2px 0 6px}
+ #opts{grid-template-columns:1fr;gap:6px}#opts button{display:grid;grid-template-columns:150px 1fr;column-gap:14px;align-items:start;text-align:left;padding:8px 12px}
+ #opts button>*{grid-column:2;margin:0}#opts button>.rar,#opts button>b{grid-column:1}#opts button>b{grid-row:2}#opts button>span{grid-row:1/3}#opts button>.lo{margin-top:2px}}
 #banner{position:fixed;left:0;right:0;top:24%;text-align:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #bar.crit i{animation:crit .5s infinite alternate}@keyframes crit{to{opacity:.35}}
 #banner::before{content:"// FLEET COMMAND //";display:block;font:600 12px var(--body);letter-spacing:.35em;color:#fff;margin-bottom:10px;text-shadow:0 2px 6px #000}
@@ -1312,7 +1316,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed',s=>{s.dmg*=1.05;s
  ['Magpie Claw','Every 8 s, the claw grabs the nearest enemy shot and fires it back with +3 damage. +8% scrap from kills. Only from The Magpie',s=>s.claw=1,'r','u_claw',0,'magpie'],
  ['Black Market Link','The Salvage Yard allows a second purchase at double price. +5 scrap at the end of each sector, +6% for each sector completed. Only from The Magpie',s=>s.bml=1,'r','u_bml',0,'magpie'],
  ['MaG-π','A small drone hovers on one side of you (changes each sector) with a 50% chance to catch enemy shots that reach it: +3 scrap each. +1% strafe speed per 25 scrap held. Only from The Magpie',s=>s.mpi=1,'r','u_mpi',0,'magpie'],
- ['Magpie Nest','+5 scrap at the end of each sector (+10 from sector 21). While you hold 75+ scrap (150+ from sector 21), upgrade picks show a 4th option, always Uncommon or Rare. Only from The Magpie',s=>s.nest=1,'r','u_nest',0,'magpie'],
+ ['Magpie Nest','+5 scrap at the end of each sector (+10 from sector 21). While you hold 100+ scrap (200+ from sector 21), upgrade picks show a 4th option, always Uncommon or Rare. Only from The Magpie',s=>s.nest=1,'r','u_nest',0,'magpie'],
  ['Glass Auto Cannons','+15% fire rate and strafe speed and +1 pierce on every shot, but -25% max armor (II: +25%, and you also fire a shot to each side; III: +35%, plus a shot straight behind you)',s=>{const t=s.glass=(s.glass||0)+1;if(t===1){s.pierce++;s.max=Math.max(1,Math.floor(s.max*.75));s.hp=Math.min(s.hp,s.max)}const k=[1.15,1.25/1.15,1.35/1.25][t-1];s.rate/=k;s.spd*=k},'x','u_glass',0,'explorer'],
  ['Bootleg Shields','Every 5th hit has a 50% chance to be blocked (II: every 4th, 75%; III: every 3rd, 100%); its energy gives your next shot +2 damage (+3, +4). Each block halves your strafe speed for 1 s',s=>s.boot++,'x','u_boot',0,'barrier'],
  ['Ram Plating','Collisions with units (dives, rams, mines) cost 1 less armor, never below 1, and the unit takes +3 damage per tier',s=>s.plate++,'c','u_plate',100],
@@ -1359,7 +1363,7 @@ const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
 // Tune-up: weak but helps every build; always in the shop and can be bought any number of times
 
 function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap${st.picks>1?` · ${st.picks} picks left`:''}`;const o=$('opts');o.innerHTML='';
- const ro=roll(3,st.elite||st.boss);if(st.nest&&st.scrap>=(st.sec>=21?150:75)){const q=UPG.filter(u=>(u[3]==='u'||u[3]==='r')&&avail(u)&&!ro.includes(u));if(q.length)ro.push(q[Math.random()*q.length|0])}ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:""}`;
+ const ro=roll(3,st.elite||st.boss);if(st.nest&&st.scrap>=(st.sec>=21?200:100)){const q=UPG.filter(u=>(u[3]==='u'||u[3]==='r')&&avail(u)&&!ro.includes(u));if(q.length)ro.push(q[Math.random()*q.length|0])}ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:""}`;
   b.onclick=()=>{f(st);gotUp(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss; sector 4.5 is a bonus stage if the zone cost 3 hits or fewer
