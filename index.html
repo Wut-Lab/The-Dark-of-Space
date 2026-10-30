@@ -260,7 +260,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
-<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Last Light</i>, a slow, grand take on Gold Rush, and the Scion's dying metallic roar, synthesized in code with the Web Audio API by Claude</li></ul>
+<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Afterglow</i>, a slow, grand take on Gold Rush, and the Scion's dying metallic roar, synthesized in code with the Web Audio API by Claude</li></ul>
 <h3>Built with</h3><ul><li>three.js r128 (MIT License)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
@@ -870,7 +870,7 @@ function roar(){if(!AC)return;try{muInit();const t=AC.currentTime,o=sfxOut(),g=A
  lf.frequency.value=17;lg.gain.value=.18;lf.connect(lg).connect(g.gain);lf.start(t);lf.stop(t+2.7);ws.connect(bp).connect(g).connect(o);
  for(const d of [0,7,-5]){const s=AC.createOscillator();s.type='sawtooth';s.frequency.setValueAtTime(110,t);s.frequency.exponentialRampToValueAtTime(38,t+2.4);s.detune.value=d*10;s.connect(ws);s.start(t);s.stop(t+2.7)}
  for(const [f,v] of [[311,.1],[787,.07],[1433,.04]]){const s=AC.createOscillator(),h=AC.createGain();s.frequency.setValueAtTime(f,t);s.frequency.exponentialRampToValueAtTime(f*.8,t+2.4);h.gain.setValueAtTime(v,t);h.gain.exponentialRampToValueAtTime(.001,t+2.2);s.connect(h).connect(o);s.start(t);s.stop(t+2.3)}}catch(e){}}
-// Ending: card fades out, closing lines fade in and out over static, then the craft drifts by with run stats to "Last Light"
+// Ending: card fades out, closing lines fade in and out over static, then the craft drifts by with run stats to "Afterglow"
 const OUTRO=['That monster came at us from the Dark, a place we\'ve barely explored....','Is there more?','Will we find salvation amongst the stars?','Or,.....','.......'];
 const wt=s=>new Promise(r=>setTimeout(r,s*1000));let OUTM=null;
 $('vCont').onclick=async()=>{$('dead').classList.add('vout');await wt(1);$('dead').hidden=true;$('dead').classList.remove('vin','vout');outro()};
@@ -1374,7 +1374,7 @@ const SONGS={
   k:'x.....x.x.......',s:'....x.......x...',h:'x.xxx.xxx.xxx.xx',g:'X..x..x.X..x..x.',
   A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
   mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
- finale:{name:'Last Light',bpm:96,root:45,
+ finale:{name:'Afterglow',bpm:96,root:45,
   k:'x.......x.x.....',s:'........x.......',h:'x...x...x...x...',g:'X.......X.......',
   A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
   mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
