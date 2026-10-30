@@ -224,7 +224,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Gale</h3><ul><li>Interceptor: 6 armor</li><li>Rapid lasers: fast fire, light damage</li><li>Fastest strafe</li></ul><div class="ss" data-ss="ship"></div>
 <h3>Falcon</h3><ul><li>Strike fighter: 9 armor</li><li>Twin cannons: medium fire rate and damage</li><li>Medium strafe</li></ul><div class="ss" data-ss="falcon"></div>
 <h3>Swift <small>(Shop, 500 Total Scrap)</small></h3><ul><li>Speed frame: 8 armor, torpedo head and torso, winged shoulders</li><li>Light rifle: same damage and fire rate as Falcon</li><li>Fastest strafe, and EN refills 30% faster for more dashes</li></ul><div class="ss" data-ss="swift"></div>
-<h3>Paint jobs</h3><ul><li>Buy them in the main-menu Shop's <b>Paint Jobs</b> tab with Total Scrap</li><li>Red, White &amp; Black (1000) recolors every craft; equip or unequip it in the Shop</li></ul></div></div>
+<h3>Paint jobs</h3><ul><li>Buy them in the main-menu Shop's <b>Paint Jobs</b> tab with Total Scrap</li><li>Red, Blue or Yellow, each with White &amp; Black (1000 each), recolors every craft</li><li>Equip or unequip one in the Shop; only one is on at a time, and none means factory colors</li></ul></div></div>
 
 <div class="ov scr" id="how-armor" hidden><div class="card"><div class="hd"><h2>Armor &amp; Damage</h2><button class="back" data-go="how">Back</button></div>
 <h3>The armor bar</h3><ul><li><b>Green</b>: 76–100%</li><li><b>Yellow</b>: 26–75%</li><li><b>Red</b>: 25% and below. The bar pulses and a warning beep sounds</li></ul>
@@ -587,7 +587,10 @@ const MODELS={
  brute:()=>build('brute',[...DRUDGE,...ARMS.brute],{...P,v:0x8a3b32,o:0x262a31,m:0xffd030},.11)};
 // Paint jobs recolor a player craft's palette by tone: bright cyan lights stay, saturated accents take the accent color,
 // then dark/mid/light tones take the paint's three colors. PAINT (localStorage 'darkpaint') is the equipped job, '' = factory.
-const PAINTS={rwb:{n:'Red, White & Black',acc:0xc8141e,t:[0x121316,0xc8141e,0xeceef1]}},CRAFTS=['mech','ship','falcon','swift'];
+// One job is equipped at a time. Each fits every craft. c = shop swatch color, cost = Total Scrap price
+const PAINTS={rwb:{n:'Red, White & Black',c:'#e8303a',acc:0xc8141e,t:[0x121316,0xc8141e,0xeceef1]},
+ bwb:{n:'Blue, White & Black',c:'#3d7dff',acc:0x1f5fd6,t:[0x121316,0x1f5fd6,0xeceef1]},
+ ywb:{n:'Yellow, White & Black',c:'#f2c21a',acc:0xf2c21a,t:[0x121316,0xf2c21a,0xeceef1]}},CRAFTS=['mech','ship','falcon','swift'];
 let PAINT='';try{PAINT=localStorage.getItem('darkpaint')||''}catch(e){}
 function pp(pal,p){const J=PAINTS[p];if(!J)return pal;const c=new THREE.Color(),h={};
  return Object.fromEntries(Object.entries(pal).map(([k,v])=>{c.setHex(v).getHSL(h);const L=.3*c.r+.59*c.g+.11*c.b;
@@ -1751,7 +1754,7 @@ const SHOP={
   {id:'craft:swift',n:'Swift',d:'Speed frame. Fastest strafe and EN refill; 8 armor. Flies in Campaign and Timed Attack.',icon:'swift',cost:500},
   {id:'craft:more',n:'More crafts',d:'Other machines are on the way.',soon:1}]},
  paint:{intro:'Paint jobs change how your crafts look.',items:[
-  {id:'paint:rwb',n:'Red, White & Black',d:'Universal: fits every craft. Dark plating goes black, mid tones and accents red, light panels white; cyan lights stay. Equip or unequip it here.',icon:'paint_rwb',c:'#e8303a',cost:1000},
+  ...Object.entries(PAINTS).map(([k,p])=>({id:'paint:'+k,n:p.n,d:`Fits every craft: ${p.n.split(',')[0].toLowerCase()} trim, white panels, black plating. Only one paint job is on at a time.`,icon:'paint_'+k,c:p.c,cost:1000})),
   {id:'paint:more',n:'More paint jobs',d:'Custom colors are on the way.',soon:1}]}};
 let shopTab='upgrades',shopYaw=0,shopAsk=null;
 function renderShop(){$('shopBank').textContent=bankT;const T=SHOP[shopTab];$('shopIntro').textContent=T.intro;
