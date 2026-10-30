@@ -134,7 +134,17 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="pwrap" hidden><div id="pups"></div><span id="ppop"></span></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
-<style>#dead.vin{animation:vfi 1.2s}@keyframes vfi{from{opacity:0}}#dead.vout,#outro .x{opacity:0;transition:opacity 1s}#outro{z-index:70;background:transparent}#outro .x.on{opacity:1}
+<style>#dead.vin{animation:vfi 1.2s}
+/* Victory card: violet-and-gold frame with a white-gold glow that diffuses out and slowly pulses, a spaced title over a thin rule, and a softer summary panel */
+#dead.vin .card{position:relative;border:1px solid #c9a24a99;background:radial-gradient(120% 80% at 50% 0%,#3a1f5e,var(--panel) 60%);box-shadow:0 0 0 1px #b060ff33 inset,0 0 10px #ffffffaa,0 0 34px #f3d77a88,0 0 90px #e8c86a44,0 0 160px #e8c86a22;animation:vglow 4s ease-in-out infinite alternate}
+#dead.vin .card::before,#dead.vin .card::after{content:'';position:absolute;left:12px;right:12px;height:1px;background:linear-gradient(90deg,transparent,#e8c86a,transparent)}
+#dead.vin .card::before{top:6px}#dead.vin .card::after{bottom:6px}
+#dead.vin #deadH{text-align:center;padding-left:.35em;letter-spacing:.35em;text-transform:uppercase;color:#f3d77a!important;text-shadow:0 0 18px #e8c86a88,0 0 4px #fff6;margin-bottom:0}
+#dead.vin #deadH::after{content:'\2726';display:block;font-size:14px;letter-spacing:0;color:#b060ff;margin-top:6px}
+#dead.vin #deadT{text-align:center;font-style:italic;color:#e6dcff}
+#dead.vin .sum{background:#ffffff0a;border:1px solid #ffffff14;padding:10px 12px;border-radius:6px}
+#dead.vin .sum dt{color:#c9a24a}
+@keyframes vglow{to{box-shadow:0 0 0 1px #b060ff55 inset,0 0 16px #ffffffcc,0 0 48px #f3d77aaa,0 0 120px #e8c86a66,0 0 200px #e8c86a33}}@keyframes vfi{from{opacity:0}}#dead.vout,#outro .x{opacity:0;transition:opacity 1s}#outro{z-index:70;background:transparent}#outro .x.on{opacity:1}
 #outS{position:fixed;right:max(24px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);display:grid;gap:6px;text-align:right;max-width:46vw;font:600 clamp(.85rem,2.4vw,1.1rem) "Chakra Petch",sans-serif;color:#dfe6f5}#outS div{opacity:0;transition:opacity 2.5s}#outS div.on{opacity:1}#outS div.go{transition:opacity 2.5s,transform 1.6s ease-in-out}#outS div b{display:block;font-size:.75em;color:#9aa3b5;letter-spacing:.12em;text-transform:uppercase}
 #outEnd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font:600 1.1rem "Chakra Petch",sans-serif;color:var(--accent);background:#0a0c14cc;border:1px solid #445;padding:12px 34px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
@@ -908,7 +918,7 @@ function scionUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,hp=e.hp/e
  else if(e.ph===3){e.rg.material.opacity=.25;M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt((e.stg>=2?4:3)-(st.plate?1:0));shake=Math.max(shake,.45)}
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=4;e.rg.material.opacity=0;M.set((Math.random()-.5)*10,0,-45)}}
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=e.stg===2?3.5+Math.random()*1.5:6+Math.random()*2;e.cdF=.8}}}
-function victory(){die(1);try{localStorage.setItem('darkwon',1)}catch(e){}$('deadH').textContent='Victory';$('deadH').style.color='var(--accent)';
+function victory(){die(1);try{localStorage.setItem('darkwon',1)}catch(e){}$('deadH').textContent='Victory';
  $('deadT').textContent=`${st.name} brought down the Scion of the Void Gods. The dark goes quiet... for now.`;$('dead').classList.add('vin');staticOn(1)}
 // Scion death: music cuts, the game drops to slow motion and the camera pushes in while it shudders, sheds sparks and fades out
 // with a metallic roar, then bursts in a white flash. Half a second of silence, then static; the victory card follows 5s later
@@ -1417,9 +1427,11 @@ function timeUp(){running=false;music(null);overJingle();st.time=0;$('clock').te
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
+// Victory card: first three upgrades taken, with their level (I-III), then "and more."
+function upShort(){const u=[...new Set(st.upgrades)],l=u.slice(0,3).map(n=>n+' '+['I','II','III'][Math.min(2,st.upgrades.filter(x=>x===n).length-1)]).join(', ');return u.length>3?l+', and more.':l}
 function die(won){running=false;$('again').hidden=!!won;$('vCont').hidden=!won;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
- $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?st.upgrades.join(', '):'None'],
+ $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?won?upShort():st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Armor color: green above 75%, yellow above 25%, red at 25% and below (bar pulses)
 const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
