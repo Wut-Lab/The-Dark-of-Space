@@ -80,9 +80,9 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
 #cdet .card{justify-items:center;text-align:center;max-width:380px}#cdv{width:min(100%,240px);aspect-ratio:1;touch-action:none;cursor:grab}#cdet .ss{max-width:300px}
 #cdet .row{width:100%;grid-template-columns:1fr 1fr}#cdN{font-size:28px;color:var(--accent)}
 /* Upgrade picks on short screens (phones sideways): one full-width row per option, name and rarity on the left, description and story reading across on the right */
-@media (max-height:520px){#pick .card{max-width:none;width:min(100%,820px);max-height:calc(100dvh - 16px);overflow-y:auto;padding-block:12px}#pick h2{font-size:20px}#pick .card>p{margin:2px 0 6px}
- #opts{grid-template-columns:1fr;gap:6px}#opts button{display:grid;grid-template-columns:150px 1fr;column-gap:14px;align-items:start;text-align:left;padding:8px 12px}
- #opts button>*{grid-column:2;margin:0}#opts button>.rar,#opts button>b{grid-column:1}#opts button>b{grid-row:2}#opts button>span{grid-row:1/3}#opts button>.lo{margin-top:2px}}
+@media (max-height:520px){#pick .card,#evt .card{max-width:none;width:min(100%,820px);max-height:calc(100dvh - 16px);overflow-y:auto;padding-block:12px}#pick h2,#evt h2{font-size:20px}#pick .card>p,#evt .card>p{margin:2px 0 6px}
+ #opts,#evO{grid-template-columns:1fr;gap:6px}#opts button,#evO button{display:grid;grid-template-columns:170px 1fr;column-gap:14px;align-items:start;text-align:left;padding:8px 12px}
+ #opts button>*,#evO button>*{grid-column:2;margin:0}#opts button>.rar,#opts button>b,#evO button>.rar,#evO button>b{grid-column:1}#opts button>b,#evO .rar~b{grid-row:2}#opts button>span,#evO .rar~span{grid-row:1/3}#opts button>.lo{margin-top:2px}}
 #banner{position:fixed;left:0;right:0;top:24%;text-align:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #bar.crit i{animation:crit .5s infinite alternate}@keyframes crit{to{opacity:.35}}
 #banner::before{content:"// FLEET COMMAND //";display:block;font:600 12px var(--body);letter-spacing:.35em;color:#fff;margin-bottom:10px;text-shadow:0 2px 6px #000}
