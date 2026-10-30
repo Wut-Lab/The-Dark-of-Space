@@ -1573,7 +1573,7 @@ R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id){touch.dx=e.clientX-touch.x;touch.dy=e.clientY-touch.y}});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
 // bend a dive's end point so its curve crosses the player's current spot, wherever they sit in the lane
-function diveAim(e,p){const a=e.p0,b=e.p1,c=e.p2;let lo=0,hi=1;for(let i=0;i<20;i++){const t=(lo+hi)/2,z=(1-t)**2*a.z+2*t*(1-t)*b.z+t*t*c.z;z<p.z?lo=t:hi=t}const t=Math.max(lo,.2);c.x=THREE.MathUtils.clamp((p.x-(1-t)**2*a.x-2*t*(1-t)*b.x)/(t*t),-FX-8,FX+8)}
+function diveAim(e,p){const a=e.p0,b=e.p1,c=e.p2,t=.65,u=1-t,side=Math.sign(b.x-a.x)||1;c.x=p.x+side*5;b.x=THREE.MathUtils.clamp((p.x-u*u*a.x-t*t*c.x)/(2*t*u),-FX-12,FX+12);b.z=(p.z-u*u*a.z-t*t*c.z)/(2*t*u)}
 // hit radius from the unit's model footprint (at least its set radius, capped so attached effects don't bloat it)
 function er(e){if(e.rb==null){const z=new THREE.Box3().setFromObject(e.m).getSize(new THREE.Vector3()),k=e.m.scale.x||1;e.rb=Math.min(Math.max(e.r,(z.x+z.z)/4*.9/k),e.r*1.8)}return e.rb}
 function eShot(e,p){if(e.type==='boss')for(let a=-2;a<=2;a++)fire(e.m.position.clone().add(V3(0,4)),V3(a*.22,1).normalize(),8,1,true,0xff5a5a,0);else
