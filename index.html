@@ -1350,7 +1350,7 @@ const EVENTS=[
    else{st.hp=Math.max(1,st.hp-3);evDone('Derelict Freighter','Booby-trapped. The blast costs 3 armor.')}}]]),
  ()=>evt('Distress Beacon','A looping SOS from a sector that should be empty.',[['Answer it','Half the time: an ambush (elite sector). Half the time: an old signal worth salvaging.',()=>{if(Math.random()<.5)evt('It\'s an Ambush!','Hostiles were waiting at the beacon. Win for +30 scrap and 2 upgrades.',[['Fight','Elite sector.',()=>{st.elite=1;wave();running=true}]]);
    else{const p=UPG.filter(u=>u[3]==='r'&&avail(u)),u=p.length?p[Math.random()*p.length|0]:roll(1)[0];st.scrap+=10;u[2](st);gotUp(u[0]);evDone('It\'s an Old Signal That\'s Still Running',`Nobody home. You salvage what you can: +10 scrap and ${u[0]}. ${u[1]}.`)}}],['Ignore it','Fly on to the sector.',fight]]),
- ()=>evt('Stranded Explorer','An old explorer\'s ship is crippled. He asks for parts to fix it.',[['Help him out','Give up your choice of 3 random upgrades for his repairs. He gives you a random upgrade in return.',()=>evt('Stranded Explorer','Which parts do you hand over?',roll(3).map(u=>[u[0],u[1],()=>{const g=roll(1)[0];g[2](st);gotUp(g[0]);evDone('Stranded Explorer',`He takes the ${u[0]} and gets his engines running. In thanks he gives you ${g[0]}. ${g[1]}.`)},0,u[3]]))],['Don\'t help him','Fly on to the sector.',fight]]),
+ ()=>{const own=shuf([...new Set(st.upgrades)]).slice(0,3);evt('Stranded Explorer','An old explorer\'s ship is crippled. He asks for parts to fix it.',[['Help him out',own.length?`Give up one of your upgrades (your choice of ${own.length}). He gives you a random upgrade in return.`:'You have no upgrades to spare.',()=>evt('Stranded Explorer','Which upgrade do you strip for parts?',own.map(n=>{const u=UPG.find(u=>u[0]===n);return[n+(tierOf(n)>1?' '+TN[tierOf(n)-1]:''),'Lose one tier of this upgrade.',()=>{dropUp(n);const g=roll(1)[0];g[2](st);gotUp(g[0]);evDone('Stranded Explorer',`He takes your ${n} and gets his engines running. In thanks he gives you ${g[0]}. ${g[1]}.`)},0,u&&u[3]]})),!own.length],['Don\'t help him','Fly on to the sector.',fight]])},
  ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Strip it for parts','A random upgrade, but the heat costs 2 armor.',()=>{const u=roll(1)[0];u[2](st);gotUp(u[0]);st.hp=Math.max(1,st.hp-2);evDone('Loose Reactor Core',`You salvage ${u[0]}: ${u[1]}. The heat costs 2 armor.`)}],
   ['Sell it','+40 scrap.',()=>{st.scrap+=40;evDone('Loose Reactor Core','A salvage tug pays 40 scrap for it.')}]]),
  ()=>{st.scrap+=16;evDone('Scrap Cloud','Debris from an old battle. Your intakes catch +16 scrap.')}];
@@ -1717,6 +1717,10 @@ const LRAR={c:['Common',1,'#aab1bd'],u:['Uncommon',2,'#4fe08a'],r:['Rare',3,'#5a
 let PICKS={};try{PICKS=JSON.parse(localStorage.getItem('darkpicks')||'{}')}catch(e){}
 function pickIt(id){PICKS[id]=(PICKS[id]||0)+1;try{localStorage.setItem('darkpicks',JSON.stringify(PICKS))}catch(e){}}
 function gotUp(n){st.upgrades.push(n);pickIt('u:'+n)}
+// Remove one tier of an owned upgrade: reset every stat an upgrade can touch to its starting value, then replay the rest in order
+function dropUp(n){const i=st.upgrades.lastIndexOf(n);if(i<0)return;st.upgrades.splice(i,1);const b=BASE[st.kind],f={...b,enr:b.enr||1,wide:1},K=new Set(),
+ p=new Proxy({...f},{set(o,k,v){K.add(k);o[k]=v;return true}});UPG.forEach(u=>u[2](p));K.forEach(k=>st[k]=k in f?f[k]:0);
+ st.upgrades.forEach(x=>{const u=UPG.find(u=>u[0]===x);if(u)u[2](st)})}
 const cap=n=>(n||0)>=9999?'9999+':n||0,rarS=r=>`Rarity: <span style="color:${LRAR[r][2]}">${LRAR[r][0]}</span>`;
 for(const k in DROP)if(!MODELS['cap_'+k])MODELS['cap_'+k]=()=>build('cap_'+k,[[-2,0,-2,4,3,4,'c',0,'cy'],[-2,3,-2,4,1,4,'k',0,'cy'],[-2,4,-2,4,3,4,'c',0,'cy']],{c:DROP[k].c,k:DROP[k].pu?0x141826:0xffffff},.12);
 function elRows(){const t=elTab;
