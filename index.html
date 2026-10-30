@@ -1427,9 +1427,11 @@ function timeUp(){running=false;music(null);overJingle();st.time=0;$('clock').te
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
+// Victory card: first three upgrades taken, with their level (I-III), then "and more."
+function upShort(){const u=[...new Set(st.upgrades)],l=u.slice(0,3).map(n=>n+' '+['I','II','III'][Math.min(2,st.upgrades.filter(x=>x===n).length-1)]).join(', ');return u.length>3?l+', and more.':l}
 function die(won){running=false;$('again').hidden=!!won;$('vCont').hidden=!won;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
- $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?st.upgrades.join(', '):'None'],
+ $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?won?upShort():st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Armor color: green above 75%, yellow above 25%, red at 25% and below (bar pulses)
 const hpCol=f=>f<=.25?'#ff4d4d':f<=.75?'#f2c230':'#4fe08a';
