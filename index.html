@@ -1644,6 +1644,8 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    if(e.state==='dive'){e.t+=dt*(.45+st.sec*.02)*st.fast;e.m.position.copy(bez(e.p0,e.p1,e.p2,Math.min(e.t,1)));
     if(e.t>=1){e.m.position.set(e.m.position.x,0,-40);Object.assign(e,{state:'enter',t:0,p0:e.m.position.clone(),p1:V3(e.slot.x,-36)})}
     if(hd(e.m.position,p)<er(e)+(st.pr||.6)&&st.inv<=0){ram(e,e.type==='brute'?3:2,3)}}
+   // entry swoops and fly-bys can cross the player's area too, so they ram like dives
+   if((e.state==='enter'||e.state==='fly')&&e.m.visible&&e.t>0&&hd(e.m.position,p)<er(e)+(st.pr||.6)&&st.inv<=0)ram(e,e.type==='brute'?3:2,3);
    // Apex Pull: drag regular units' movement in the center band (capital units are immune)
    if(st.pull&&!CAPS.has(e.type)&&Math.abs(e.m.position.x)<FX*.25)e.m.position.lerp(prev,st.pull*.05);
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
