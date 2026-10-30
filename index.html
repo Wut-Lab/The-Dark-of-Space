@@ -1374,12 +1374,12 @@ const SONGS={
   k:'x.....x.x.......',s:'....x.......x...',h:'x.xxx.xxx.xxx.xx',g:'X..x..x.X..x..x.',
   A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
   mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
- finale:{name:'Afterglow',bpm:96,root:45,len:54,
-  // ~1:50: 16 slow bars at 96, 14 bars speeding up to 144 with the Gold Rush groove, then 24 bars of A-minor epic metal
-  // (galloping double kick, palm-muted riffs, its own chords and melody; the last melody bar echoes Gold Rush's opening fall), then a held final chord
-  bpmAt:i=>i<256?96:i<480?96+48*(i-256)/224:144,
-  parts:[{to:16},{from:16,to:30,k:'x.....x.x.......',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X..x..x.X..x..x.'},
-   {from:30,to:54,k:'x.xxx.xxx.xxx.xx',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X...............',riff:['.00.00.00.003.5.','.00.00.0.c.a.7.5'],
+ finale:{name:'Afterglow',bpm:96,root:45,len:52,
+  // ~1:45: 14 slow bars at 96, 14 bars speeding up to 144 with the Gold Rush groove, then 24 bars of A-minor epic metal
+  // (rock beat with double-kick pushes, ringing power-chord riffs, its own chords and melody; the last melody bar echoes Gold Rush's opening fall), then a held final chord
+  bpmAt:i=>i<224?96:i<448?96+48*(i-224)/224:144,
+  parts:[{to:14,map:[0,1,2,3,6,7,8,9,10,11,12,13,14,15]},{from:14,to:28,k:'x.....x.x.......',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X..x..x.X..x..x.'},
+   {from:28,to:52,k:'x.....x.x.x...xx',s:'....x.......x...',h:'x...x...x...x...',g:'................',riff:['0.....0.3...5.3.','0.....0.a...7.5.'],
     A:[0,-4,-2,0,0,-4,-2,-5],B:[-4,-2,0,0,-4,-2,3,-5],
     mel:'c---a---8---7---7---8---a-------c---e---f---e---c---------------f---e---c---a---a---c---e-------f---h---j---h---j---h---f---b---'}],
   k:'x.......x.x.....',s:'........x.......',h:'x...x...x...x...',g:'X.......X.......',
@@ -1466,9 +1466,9 @@ function muStep(S,i,t){if(S.intro){if(i<S.intro*16){const j=i%16,b=i>>4;MU.dv=1;
  const sd=60/bpmOf(S,i)/4,j=i%16;let bar=(i>>4)%16;
  if(S.parts){const B=i>>4;if(S.len&&B>=S.len){if(i===S.len*16){DR.crash(t);DR.kick(t);guitar(t,S.root,sd*16,true);bass(t,S.root-12,sd*16);brass(t,[S.root+12,S.root+19,S.root+24],sd*14,.12)}return}
   // Sections can swap patterns, chords and melody; bars count from the section start (A once, then B repeats)
-  const P=S.parts.find(p=>B<p.to);if(P){S=Object.assign({},S,P);const l=B-(P.from||0);bar=l<16?l:8+l%8}}
+  const P=S.parts.find(p=>B<p.to);if(P){S=Object.assign({},S,P);const l=B-(P.from||0);bar=P.map?P.map[l]:l<16?l:8+l%8}}
  const secB=bar>=8,ch=S.root+(secB?S.B:S.A)[bar%8];
- if(S.riff){const rc=S.riff[bar%2][j];if(rc!=='.')guitar(t,ch+parseInt(rc,36),sd*.8,false)}
+ if(S.riff){const R=S.riff[bar%2],rc=R[j];if(rc!=='.'){let n=1;while(j+n<16&&R[j+n]==='.'&&n<6)n++;guitar(t,ch+parseInt(rc,36),n*sd*.95,n>1)}}
  MU.dv=S.dv||1;if(S.k[j]==='x')DR.kick(t);if(S.c&&S.c[j]==='x')DR.clank(t);if(S.s[j]==='x')DR.snare(t);else if(S.s[j]==='r'){DR.snare(t,.45);DR.snare(t+sd/2,.35)}if(S.h[j]==='x'&&!(j===0&&bar%4===0))DR.hat(t);if(j===0&&bar%4===0)DR.crash(t);
  if(j>=12&&(bar%8===7)&&S===SONGS.boss)DR.snare(t);
  const gc=S.g[j];if(gc!=='.'){let n=1;while(j+n<16&&S.g[j+n]==='.'&&n<4)n++;guitar(t,ch,gc==='X'?n*sd:sd*.7,gc==='X')}
