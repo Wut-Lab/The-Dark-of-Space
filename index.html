@@ -146,7 +146,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how"><b>How to Play</b></button>
 <button id="setBtn"><b>Settings</b></button>
 <button data-go="credits"><b>Credits</b></button>
-<div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button></div>
+<div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button><button id="ztEnd" style="padding:4px 10px">View ending</button></div>
 </nav></div></div>
 
 <div class="ov scr" id="modes" hidden><div class="card"><div class="hd"><h2>Play</h2><button class="back" data-go="start">Back</button></div>
@@ -1588,7 +1588,9 @@ document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t
 // Playtest runs are never saved, banked or counted as a best
 {const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
  $('ztGo').onclick=()=>{const z=$('ztZ').value,n=+$('ztS').value;start($('ztC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
-  Object.assign(st,{dev:1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()}}$('again').onclick=toMenu;
+  Object.assign(st,{dev:1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()};
+ // View ending: drops into Dark Space's final sector and fells the Scion at once
+ $('ztEnd').onclick=()=>{$('ztZ').value='Dark Space';$('ztS').value='10';$('ztGo').onclick();setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}$('again').onclick=toMenu;
 // Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
 let paused=false,yaw=.6,pitch=.15,drag=null;
 const VR=new THREE.WebGLRenderer({canvas:$('viewer'),antialias:true,alpha:true}),VS=new THREE.Scene(),VC=new THREE.PerspectiveCamera(35,1,.1,100),VG=new THREE.Group();
