@@ -710,7 +710,7 @@ function alkTick(dt,p){if(st.area!=='The Alkaline Zone'||st.timed||st.bonus)retu
    cols_.push({m,w:new THREE.Object3D(),d:V3(-u.side*.25,1).normalize(),t:0,hp:4,hit:0,sp:11,col:0xf2f0ea})}}
  for(let i=SPURS.length;i--;)if(SPURS[i].m.position.z>14){S.remove(SPURS[i].m);SPURS.splice(i,1)}
  shimCd-=dt;if(shimCd<=0&&!shimT){shimT=.001;shimCd=10+Math.random()*6}if(shimT){shimT+=dt;shimmer(shimT<.5?shimT/.5:shimT<2?1:Math.max(0,1-(shimT-2)/.5));if(shimT>2.5){shimT=0;shimmer(0)}}}
-const FX=11,PZF=8,PZB=2;
+const FX=11,PZF=10,PZB=2;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
@@ -1572,6 +1572,8 @@ addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('key
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,dy:0,px:player?player.position.x:0,pz:player?player.position.z:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id){touch.dx=e.clientX-touch.x;touch.dy=e.clientY-touch.y}});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
+// bend a dive's end point so its curve crosses the player's current spot, wherever they sit in the lane
+function diveAim(e,p){const a=e.p0,b=e.p1,c=e.p2;let lo=0,hi=1;for(let i=0;i<20;i++){const t=(lo+hi)/2,z=(1-t)**2*a.z+2*t*(1-t)*b.z+t*t*c.z;z<p.z?lo=t:hi=t}const t=Math.max(lo,.2);c.x=THREE.MathUtils.clamp((p.x-(1-t)**2*a.x-2*t*(1-t)*b.x)/(t*t),-FX-8,FX+8)}
 function eShot(e,p){if(e.type==='boss')for(let a=-2;a<=2;a++)fire(e.m.position.clone().add(V3(0,4)),V3(a*.22,1).normalize(),8,1,true,0xff5a5a,0);else
  if(e.type==='brute')for(const a of[-.25,0,.25])fire(e.m.position,V3(a,1).normalize(),9,1,true,0xff5a5a,0);
  else fire(e.m.position,T.subVectors(p,e.m.position).setY(0).normalize(),11,1,true,0xff5a5a,0)}
@@ -1626,7 +1628,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    if(st.wA>=W[0]&&(st.wN||0)<2&&st.hp<st.max){st.wA=0;st.wN=(st.wN||0)+1;st.hp=Math.min(st.max,st.hp+W[1]);st.scrap-=W[2];popMsg('WELD +'+W[1],'#4fe08a');hud()}st.wL=st.scrap}
   const emp=st.emp>0;if(!emp){sway+=dt*.6;diveCd-=dt}
   if(diveCd<=0){const f=ents.filter(e=>e.state==='form');if(f.length){const e=f[Math.random()*f.length|0],side=Math.sign(e.m.position.x)||1;
-   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)});if(!NOFIRE[e.type])eShot(e,p)}diveCd=Math.max(.6,2.6-st.sec*.12)*(.6+Math.random()*.8)/st.fast*(early()?1.3:1)}
+   Object.assign(e,{state:'dive',t:0,p0:e.m.position.clone().setY(0),p1:V3(e.m.position.x+side*7,-6),p2:V3(p.x,7)});diveAim(e,p);if(!NOFIRE[e.type])eShot(e,p)}diveCd=Math.max(.6,2.6-st.sec*.12)*(.6+Math.random()*.8)/st.fast*(early()?1.3:1)}
   for(const e of ents){if(emp){if(e.type==='warden')wardenCalm(e);if(e.type==='mino'||e.type==='caesar')e.fx.warn.visible=false;if(e.m.visible)e.m.rotation.z=(Math.random()-.5)*.35;continue}e.m.rotation.z=0;if(e.m.visible&&!e.v0)e.v0=now;const prev=e.m.position.clone();let face=true;
    if(e.state==='boss'){face=false;if(e.core)e.m.position.set(e.core.m.position.x+e.off.x,0,e.core.m.position.z+e.off.z);
     else{e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());e.m.position.set(Math.sin(e.t*.45)*4*k,0,-50+28*k*(2-k))}}
@@ -1651,7 +1653,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   for(const s of shots){const ox=s.m.position.x,oz=s.m.position.z;
    if(s.arc){s.v.x-=s.arc*10*dt;s.m.lookAt(T.copy(s.m.position).add(s.v))}
    if(s.track&&far){const sp=s.v.length();T.subVectors(far.m.position,s.m.position).setY(0).setLength(sp);s.v.lerp(T,Math.min(1,6*dt)).setLength(sp);s.m.lookAt(T.copy(s.m.position).add(s.v))}if(s.hd>0)s.hd-=dt;else if(s.home>0){s.home-=dt;const q=s.v.length();T.subVectors(p,s.m.position).setY(0).setLength(q);s.v.lerp(T,Math.min(1,1.5*dt)).setLength(q);s.m.lookAt(T.copy(s.m.position).add(s.v))}s.m.position.addScaledVector(s.v,s.enemy&&st.os>0&&s.m.position.z>-14?dt*.5:dt);s.life-=dt;
-   if(s.enemy){if(st.moth&&hd(s.m.position,moth.position)<.6){s.life=0;boom(s.m.position,3,0x6fff9a);if(st.moth>=3&&++st.mb%25===0&&st.hp<st.max){st.hp++;hud();boom(p,8,0x4fe08a)}}else if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(hd(s.m.position,p)<.7+(s.wide||0)&&st.inv<=0){hurt(s.dmg);s.life=0}}
+   if(s.enemy){if(st.moth&&hd(s.m.position,moth.position)<.6){s.life=0;boom(s.m.position,3,0x6fff9a);if(st.moth>=3&&++st.mb%25===0&&st.hp<st.max){st.hp++;hud();boom(p,8,0x4fe08a)}}else if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(segD(ox,oz,s.m.position,p)<.7+(s.wide||0)&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if((e.type==='boss'||e.type==='onager')&&armored(e)||BOSSES.has(e.type)&&now-e.v0<1500||e.iv>0){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;const dm=(st.pb&&e.m.position.z>-14?s.dmg*(1+[.1,.15,.2][st.pb-1]):s.dmg)*(BOSSES.has(e.type)?s.shell?1.5:.75:1);st.dealt+=Math.min(dm,e.hp);e.hp-=dm;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.gren){venom(e);s.life=0;break}if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
