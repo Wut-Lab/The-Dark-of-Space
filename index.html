@@ -260,7 +260,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
-<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Afterglow</i>, a slow, grand take on Gold Rush, and the Scion's dying metallic roar, synthesized in code with the Web Audio API by Claude</li></ul>
+<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Afterglow</i>, a take on Gold Rush that builds from slow and grand to driving guitar riffs, and the Scion's dying metallic roar, synthesized in code with the Web Audio API by Claude</li></ul>
 <h3>Built with</h3><ul><li>three.js r128 (MIT License)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
@@ -1374,7 +1374,11 @@ const SONGS={
   k:'x.....x.x.......',s:'....x.......x...',h:'x.xxx.xxx.xxx.xx',g:'X..x..x.X..x..x.',
   A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
   mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
- finale:{name:'Afterglow',bpm:96,root:45,
+ finale:{name:'Afterglow',bpm:96,root:45,len:56,
+  // ~2 min: 16 slow bars at 96, 16 bars speeding up to 132 with the Gold Rush groove, 24 driving bars with guitar riffs, then a held final chord
+  bpmAt:i=>i<256?96:i<512?96+36*(i-256)/256:132,
+  parts:[{to:16},{to:32,k:'x.....x.x.......',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X..x..x.X..x..x.'},
+   {to:56,k:'x.x...x.x.x...x.',s:'....x.......x...',h:'xxxxxxxxxxxxxxxx',riff:['0.0c0.0a0.07050.','0.0c0.0a0c.a.7.5']}],
   k:'x.......x.x.....',s:'........x.......',h:'x...x...x...x...',g:'X.......X.......',
   A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
   mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
@@ -1456,7 +1460,9 @@ function overJingle(){try{if(!AC)return;muInit();const g=MU.out.gain,b=.32;g.can
 function bell(t,m,len){const g=AC.createGain();g.connect(MU.out);env(g,t,.004,.16,.02,len+.9);for(const [iv,v] of [[0,1],[12,.35],[19,.12]]){const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.value=mhz(m+iv);og.gain.value=v;o.connect(og).connect(g);o.start(t);o.stop(t+len+1)}}
 // Songs with an intro open with S.intro bars of slow, quiet drums (kick, low toms, then soft hats and a snare build) before the full band
 function muStep(S,i,t){if(S.intro){if(i<S.intro*16){const j=i%16,b=i>>4;MU.dv=1;if(j%8===0)DR.kick(t);if(j===4||j===12)DR.tom(t,b<1?.5:.8);if(b>=2&&j%4===2)DR.hat(t);if(b===S.intro-1&&j>=8)DR.snare(t,.25+(j-8)*.09);return}i-=S.intro*16}
- const sd=60/S.bpm/4,j=i%16,bar=(i>>4)%16,secB=bar>=8,ch=S.root+(secB?S.B:S.A)[bar%8];
+ const sd=60/bpmOf(S,i)/4,j=i%16,bar=(i>>4)%16,secB=bar>=8,ch=S.root+(secB?S.B:S.A)[bar%8];
+ if(S.parts){const B=i>>4;if(S.len&&B>=S.len){if(i===S.len*16){DR.crash(t);DR.kick(t);guitar(t,S.root,sd*16,true);bass(t,S.root-12,sd*16);brass(t,[S.root+12,S.root+19,S.root+24],sd*14,.12)}return}
+  const P=S.parts.find(p=>B<p.to);if(P)S=Object.assign({},S,P);if(S.riff){const rc=S.riff[B%2][j];if(rc!=='.')guitar(t,ch+parseInt(rc,36),sd*.8,false);S=Object.assign({},S,{g:'................'})}}
  MU.dv=S.dv||1;if(S.k[j]==='x')DR.kick(t);if(S.c&&S.c[j]==='x')DR.clank(t);if(S.s[j]==='x')DR.snare(t);else if(S.s[j]==='r'){DR.snare(t,.45);DR.snare(t+sd/2,.35)}if(S.h[j]==='x'&&!(j===0&&bar%4===0))DR.hat(t);if(j===0&&bar%4===0)DR.crash(t);
  if(j>=12&&(bar%8===7)&&S===SONGS.boss)DR.snare(t);
  const gc=S.g[j];if(gc!=='.'){let n=1;while(j+n<16&&S.g[j+n]==='.'&&n<4)n++;guitar(t,ch,gc==='X'?n*sd:sd*.7,gc==='X')}
@@ -1465,8 +1471,10 @@ function muStep(S,i,t){if(S.intro){if(i<S.intro*16){const j=i%16,b=i>>4;MU.dv=1;
  else if(j===0||j===10)brass(t,[ch+12,ch+19,ch+24],j?sd*1.5:sd*3,S.bell?.05:.1)}
 // Which boss track a zone uses
 const bossTrk=()=>st&&st.area==='Dark Space'?'darkboss':st&&st.area==='The Alkaline Zone'?'alkboss':st&&st.area==='Legion Space'?'legionboss':'boss';
+// Song tempo at a step: fixed, or the song's own curve (Afterglow speeds up)
+const bpmOf=(S,i)=>S.bpmAt?S.bpmAt(i):S.bpm;
 function music(k){if(MU.cur===k)return;MU.cur=k;clearInterval(MU.iv);MU.iv=0;if(!k||!AC)return;muInit();MU.step=0;MU.next=AC.currentTime+.08;MU.out.gain.value=mVol();
- MU.iv=setInterval(()=>{if(AC.state!=='running')return;const S=SONGS[MU.cur],sd=60/S.bpm/4;if(MU.next<AC.currentTime-.2)MU.next=AC.currentTime+.02;
+ MU.iv=setInterval(()=>{if(AC.state!=='running')return;const S=SONGS[MU.cur],sd=60/bpmOf(S,MU.step)/4;if(MU.next<AC.currentTime-.2)MU.next=AC.currentTime+.02;
   while(MU.next<AC.currentTime+.12){muStep(S,MU.step++,MU.next);MU.next+=sd}},25)}
 // Gold Rush plays on the menus; needs a tap or key first, since browsers block audio until then
 let menuReady=0;
