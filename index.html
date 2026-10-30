@@ -223,7 +223,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Kestrel</h3><ul><li>Mobile frame: 12 armor</li><li>Heavy rifle: slow fire, big damage</li><li>Slowest strafe</li></ul><div class="ss" data-ss="mech"></div>
 <h3>Gale</h3><ul><li>Interceptor: 6 armor</li><li>Rapid lasers: fast fire, light damage</li><li>Fastest strafe</li></ul><div class="ss" data-ss="ship"></div>
 <h3>Falcon</h3><ul><li>Strike fighter: 9 armor</li><li>Twin cannons: medium fire rate and damage</li><li>Medium strafe</li></ul><div class="ss" data-ss="falcon"></div>
-<h3>Swift <small>(Shop, 500 Total Scrap)</small></h3><ul><li>Speed frame: 8 armor, torpedo head and torso, winged shoulders</li><li>Light rifle: same damage and fire rate as Falcon</li><li>Fastest strafe, and EN refills 30% faster for more dashes</li></ul><div class="ss" data-ss="swift"></div></div></div>
+<h3>Swift <small>(Shop, 500 Total Scrap)</small></h3><ul><li>Speed frame: 8 armor, torpedo head and torso, winged shoulders</li><li>Light rifle: same damage and fire rate as Falcon</li><li>Fastest strafe, and EN refills 30% faster for more dashes</li></ul><div class="ss" data-ss="swift">
+<h3>Paint jobs</h3><ul><li>Buy them in the main-menu Shop's <b>Paint Jobs</b> tab with Total Scrap</li><li>Red, White &amp; Black (1000) recolors every craft; equip or unequip it in the Shop</li></ul></div></div></div>
 
 <div class="ov scr" id="how-armor" hidden><div class="card"><div class="hd"><h2>Armor &amp; Damage</h2><button class="back" data-go="how">Back</button></div>
 <h3>The armor bar</h3><ul><li><b>Green</b>: 76–100%</li><li><b>Yellow</b>: 26–75%</li><li><b>Red</b>: 25% and below. The bar pulses and a warning beep sounds</li></ul>
@@ -577,13 +578,21 @@ const MODELS={
  magpie:()=>{const g=build('magpie',MAGPIE,MPAL,.2);g.userData.wings=build('mwing',MWING,MPAL,.2);g.add(g.userData.wings);return g},wchunk:()=>build('wchunk',WCHUNK,MPAL,.2),magpi:()=>build('magpi',MAGPI,MPAL,.12),nest:()=>build('nest',NEST,{...MPAL,o:0x8a6a3a,b:0x5a4426},.12),hulk:()=>build('hulk',HULK,{...P,o:0x7a4a2a},.2),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
- mech:()=>build('mech',KESTREL,P,.065,2),
- ship:()=>build('ship',GALE,P,.07,2),
- falcon:()=>build('falcon',FALCON,P,.07,2),
- swift:()=>build('swift',SWIFT,{...P,s:0x2fb6c9},.05,2),
+ mech:(p=PAINT)=>build('mech'+p,KESTREL,pp(P,p),.065,2),
+ ship:(p=PAINT)=>build('ship'+p,GALE,pp(P,p),.07,2),
+ falcon:(p=PAINT)=>build('falcon'+p,FALCON,pp(P,p),.07,2),
+ swift:(p=PAINT)=>build('swift'+p,SWIFT,pp({...P,s:0x2fb6c9},p),.05,2),
  chaser:()=>build('chaser',[...DRUDGE,...ARMS.chaser],{...P,v:0xb59a68,o:0xd9dde3,m:0xff3030},.08),
  shooter:()=>build('shooter',[...DRUDGE,...ARMS.shooter],{...P,v:0x7f8c96,o:0x262a31,m:0xff3030},.08),
  brute:()=>build('brute',[...DRUDGE,...ARMS.brute],{...P,v:0x8a3b32,o:0x262a31,m:0xffd030},.11)};
+// Paint jobs recolor a player craft's palette by tone: bright cyan lights stay, saturated accents take the accent color,
+// then dark/mid/light tones take the paint's three colors. PAINT (localStorage 'darkpaint') is the equipped job, '' = factory.
+const PAINTS={rwb:{n:'Red, White & Black',acc:0xc8141e,t:[0x121316,0xc8141e,0xeceef1]}},CRAFTS=['mech','ship','falcon','swift'];
+let PAINT='';try{PAINT=localStorage.getItem('darkpaint')||''}catch(e){}
+function pp(pal,p){const J=PAINTS[p];if(!J)return pal;const c=new THREE.Color(),h={};
+ return Object.fromEntries(Object.entries(pal).map(([k,v])=>{c.setHex(v).getHSL(h);const L=.3*c.r+.59*c.g+.11*c.b;
+  return [k,h.h>.42&&h.h<.6&&h.s>.5&&h.l>.58?v:h.s>.45&&h.l>.3?J.acc:J.t[L<.25?0:L<.42?1:2]]}))}
+for(const p in PAINTS)MODELS['paint_'+p]=()=>MODELS.mech(p);
 // Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
 let world=new THREE.Group();S.add(world);const stars=[];
 function buildWorld(){S.background=new THREE.Color(0x05060c);
@@ -1742,18 +1751,22 @@ const SHOP={
   {id:'craft:swift',n:'Swift',d:'Speed frame. Fastest strafe and EN refill; 8 armor. Flies in Campaign and Timed Attack.',icon:'swift',cost:500},
   {id:'craft:more',n:'More crafts',d:'Other machines are on the way.',soon:1}]},
  paint:{intro:'Paint jobs change how your crafts look.',items:[
+  {id:'paint:rwb',n:'Red, White & Black',d:'Universal: fits every craft. Dark plating goes black, mid tones and accents red, light panels white; cyan lights stay. Equip or unequip it here.',icon:'paint_rwb',c:'#e8303a',cost:1000},
   {id:'paint:more',n:'More paint jobs',d:'Custom colors are on the way.',soon:1}]}};
 let shopTab='upgrades',shopYaw=0,shopAsk=null;
 function renderShop(){$('shopBank').textContent=bankT;const T=SHOP[shopTab];$('shopIntro').textContent=T.intro;
  document.querySelectorAll('.stabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===shopTab));
- $('shopL').innerHTML=T.items.map(it=>{const own=OWNED.includes(it.id),act=own?'<em class="own">Owned</em>':it.soon?'<em class="soon">Coming soon</em>':
+ $('shopL').innerHTML=T.items.map(it=>{const own=OWNED.includes(it.id),pk=it.id.startsWith('paint:')&&it.id.slice(6),act=own&&pk?`<button class="act" data-paint="${pk}">${PAINT===pk?'Unequip':'Equip'}</button>`:own?'<em class="own">Owned</em>':it.soon?'<em class="soon">Coming soon</em>':
   shopAsk===it.id?`<button class="act" data-buy="${it.id}">Confirm · ${it.cost}</button>`:`<button class="act" data-ask="${it.id}" ${bankT<it.cost?'disabled':''}>${it.cost} scrap</button>`;
   return `<div class="si" style="--c:${it.c||'#aab1bd'}">${it.icon?`<canvas width="112" height="112" data-k="${it.icon}"></canvas>`:`<div class="ph">${it.soon?'?':'◆'}</div>`}<b>${it.n}${it.tag?` <em class="rar" style="color:${it.c}">${it.tag}</em>`:''}</b><span>${it.d}</span>${act}</div>`}).join('')}
 document.querySelectorAll('.stabs button').forEach(b=>b.onclick=()=>{shopTab=b.dataset.tab;shopAsk=null;renderShop()});
-$('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest('[data-buy]');
- if(a){shopAsk=a.dataset.ask;renderShop()}
+$('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest('[data-buy]'),pt=e.target.closest('[data-paint]');
+ if(pt)setPaint(PAINT===pt.dataset.paint?'':pt.dataset.paint);
+ else if(a){shopAsk=a.dataset.ask;renderShop()}
  else if(y){const it=Object.values(SHOP).flatMap(t=>t.items).find(i=>i.id===y.dataset.buy);if(it&&bankT>=it.cost){bankT-=it.cost;OWNED.push(it.id);
-  try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}totT();syncCrafts()}shopAsk=null;renderShop()}};
+  try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}totT();syncCrafts();if(it.id.startsWith('paint:'))setPaint(it.id.slice(6))}shopAsk=null;renderShop()}};
+// Equip a paint job ('' = factory colors); cached craft thumbnails are dropped so they rebuild in the new colors
+function setPaint(p){PAINT=p;try{localStorage.setItem('darkpaint',p)}catch(e){}for(const k of CRAFTS)if(TM[k]){TS.remove(TM[k].g);delete TM[k]}renderShop()}
 document.querySelector('[data-go=store]').addEventListener('click',()=>{shopAsk=null;renderShop()});
 function syncCrafts(){document.querySelectorAll('[data-own]').forEach(b=>{const w=b.closest('.cr')||b;w.hidden=!OWNED.includes(b.dataset.own)})}
 syncCrafts();document.querySelectorAll('[data-go=crafts],[data-go=timed]').forEach(b=>b.addEventListener('click',syncCrafts));
