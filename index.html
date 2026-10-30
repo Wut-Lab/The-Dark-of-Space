@@ -1682,7 +1682,7 @@ const TOUCH=matchMedia('(pointer:coarse)');
 function landscape(){const d=document.documentElement;if(document.fullscreenElement)return;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>TOUCH.matches&&screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
-function toMenu(){music(null);menuReady=0;clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
+function toMenu(){music(null);staticOn(0);menuReady=0;clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;$('pzSave').onclick=()=>{paused=running=false;keepSave(secSnap);toMenu()};$('pResume').onclick=resume;resumeBtn();
