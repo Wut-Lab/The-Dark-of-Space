@@ -84,7 +84,7 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
 #banner::before{content:"// FLEET COMMAND //";display:block;font:600 12px var(--body);letter-spacing:.35em;color:#fff;margin-bottom:10px;text-shadow:0 2px 6px #000}
 #banner .bt{display:inline-block;border-block:3px solid #fff;padding:8px 22px 4px;font:400 clamp(32px,8.5vw,78px)/1.05 "Black Ops One","Arial Black",sans-serif;color:#f2c230;letter-spacing:.06em;
 text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,3px 3px #fff,-3px 3px #fff,3px -3px #fff,-3px -3px #fff,0 8px 0 #000a}
-#banner.void .bt{border-color:#b060ff}#banner .bs{margin-top:16px;font-size:15px;font-weight:600;color:#fff;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 2px 6px #000}
+#banner.void .bt{border-color:#b060ff}#banner.void.go{animation:vbn 3s ease-in-out forwards}@keyframes vbn{0%{opacity:0}25%,70%{opacity:1}100%{opacity:0}}#banner .bs{margin-top:16px;font-size:15px;font-weight:600;color:#fff;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 2px 6px #000}
 #banner.go{animation:bn 2.3s ease-out forwards}
 @keyframes bn{0%{opacity:0;transform:scale(1.25)}10%{opacity:1;transform:scale(1)}19%{transform:scale(1.07)}28%{transform:scale(1)}37%{transform:scale(1.07)}46%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#banner.go{animation:bnr 2.3s forwards}@keyframes bnr{0%,80%{opacity:1}100%{opacity:0}}}
@@ -1183,7 +1183,7 @@ let bnT;
 // Areas (zones): ten sectors each, two bosses. Sectors 1–10 are The Open Zone; after every 10th sector the player picks the next zone from ZONES (Legion Space or The Frost Reach; the hard Red Crystal Asteroid Belt from sector 20)
 const ZONES={'Legion Space':'Sandstone ruins in neon light. Its capital units are Caesar-class.','The Frost Reach':'Frozen wreckage under a pale aurora. Its capital units are ice-bound juggernauts.','Red Crystal Asteroid Belt':'A cave of floating red crystal. Hard: tougher units, deadlier capital units.','The Alkaline Zone':'Shimmering grey alkali metal, choked with calcium build-up. Hard: tougher units, narrow lanes.','Dark Space':'The wide open dark between the stars. The last stretch.'},ZMIN={'Red Crystal Asteroid Belt':20,'The Alkaline Zone':20,'Dark Space':30};
 function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;el.classList.toggle('void',!!(st&&st.won));
- el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,2400)}
+ el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,el.classList.contains('void')?3100:2400)}
 const slotPos=e=>e.slot.clone().setX(e.slot.x+Math.sin(sway)*2);
 // Scripted entries: pairs fly a sweep, loop or figure-eight, then ease into their slot
 function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
@@ -1601,7 +1601,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   else if(!ents.length&&!st.clearT){st.clearT=st.timed?1.4:2.2;
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;if(st.won)banner('Dark Space Cleared...','');else banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick ${st.elite?2:1} upgrade${st.elite?'s':''}`:'All units destroyed')}hud()}
-  if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won){}else{st.picks=st.elite?2:1;offer()}}}}
+  if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won)st.clearT=1e9;else{st.picks=st.elite?2:1;offer()}}}}
  {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,9.5+(Math.random()-.5)*shake,10.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-10+pz*.3);
   // Scion death: the camera slowly pushes in on it and holds there until Continue
   if(FALL){const k=Math.min(1,FALL.t/2.4),e=k*k*(3-2*k),q=FALL.p;C.position.lerp(T.set(q.x*.6,q.y+6,q.z+16),e*.6);C.lookAt(px*.2*(1-e)+q.x*e,q.y*e,(-10+pz*.3)*(1-e)+q.z*e)}}R.render(S,C)}
