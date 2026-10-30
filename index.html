@@ -21,7 +21,7 @@ padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(
 font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none;font-variant-numeric:tabular-nums}
 #bar,#bar2{width:110px;height:10px;background:#ffffff1a;overflow:hidden}#bar i,#bar2 i{display:block;height:100%;background:var(--hp)}#bar2 i{background:var(--accent)}
 #boost{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));pointer-events:auto;padding:16px 22px;font-family:var(--display);letter-spacing:.1em;touch-action:none}
-#reel{z-index:70;background:transparent;cursor:pointer}#reel p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on{opacity:1}
+#reel{z-index:70;background:transparent;cursor:pointer}#reel p,#outro p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on,#outro p.on{opacity:1}
 #reelSkip{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));font:600 .9rem "Chakra Petch",sans-serif;color:#9aa3b5;background:#0a0c14cc;border:1px solid #445;padding:10px 16px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
 .ov{position:fixed;inset:0;display:grid;place-items:center;background:#05060acc;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .card{background:var(--panel);border:1px solid #ffffff22;padding:24px;max-width:560px;width:100%;box-sizing:border-box;display:grid;gap:16px}
@@ -130,6 +130,11 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="pwrap" hidden><div id="pups"></div><span id="ppop"></span></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
+<style>#dead.vin{animation:vfi 1.2s}@keyframes vfi{from{opacity:0}}#dead.vout,#outro .x{opacity:0;transition:opacity 1s}#outro{z-index:70;background:transparent}#outro .x.on{opacity:1}
+#outS{position:fixed;inset:0;display:grid;place-content:center;gap:14px;text-align:center;font:600 clamp(1rem,3.2vw,1.3rem) "Chakra Petch",sans-serif;color:#dfe6f5}#outS div b{display:block;font-size:.75em;color:#9aa3b5;letter-spacing:.12em;text-transform:uppercase}
+#outEnd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font:600 1.1rem "Chakra Petch",sans-serif;color:var(--accent);background:#0a0c14cc;border:1px solid #445;padding:12px 34px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+#blk{position:fixed;inset:0;background:#000;z-index:95}</style>
+<div class="ov" id="outro" hidden><p id="outP"></p><div id="outS" class="x"></div><button id="outEnd" class="x" hidden>End</button></div><div id="blk" hidden></div>
 <div class="ov" id="reel"><p id="reelP">Tap or press any key</p><button id="reelSkip">Skip</button></div>
 <div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
@@ -141,7 +146,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how"><b>How to Play</b></button>
 <button id="setBtn"><b>Settings</b></button>
 <button data-go="credits"><b>Credits</b></button>
-<div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button></div>
+<div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button><button id="ztEnd" style="padding:4px 10px">View ending</button></div>
 </nav></div></div>
 
 <div class="ov scr" id="modes" hidden><div class="card"><div class="hd"><h2>Play</h2><button class="back" data-go="start">Back</button></div>
@@ -255,7 +260,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
-<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li></ul>
+<h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Last Light</i>, a slow, grand take on Gold Rush, and the Scion's dying metallic roar, synthesized in code with the Web Audio API by Claude</li></ul>
 <h3>Built with</h3><ul><li>three.js r128 (MIT License)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
@@ -298,7 +303,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li><kbd>Esc</kbd> or <kbd>P</kbd> pauses. Settings (here or on the main menu) set sound on/off, music and effects volume.</li></ul>
 <button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
 </div></div>
-<div class="ov" id="dead" hidden><div class="card"><h2 id="deadH" style="color:var(--danger)">Rig destroyed</h2><p id="deadT"></p><dl class="sum" id="sum"></dl><button id="again"><b>Main menu</b><span>Pick a mode and a machine.</span></button></div></div>
+<div class="ov" id="dead" hidden><div class="card"><h2 id="deadH" style="color:var(--danger)">Rig destroyed</h2><p id="deadT"></p><dl class="sum" id="sum"></dl><button id="vCont" hidden><b>Continue</b><span>The dark goes quiet.</span></button><button id="again"><b>Main menu</b><span>Pick a mode and a machine.</span></button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
@@ -854,7 +859,31 @@ function scionUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,hp=e.hp/e
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=4;e.rg.material.opacity=0;M.set((Math.random()-.5)*10,0,-45)}}
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=e.stg===2?3.5+Math.random()*1.5:6+Math.random()*2;e.cdF=.8}}}
 function victory(){die(1);try{localStorage.setItem('darkwon',1)}catch(e){}$('deadH').textContent='Victory';$('deadH').style.color='var(--accent)';
- $('deadT').textContent=`${st.name} brought down the Scion of the Void Gods. The dark goes quiet... for now.`}
+ $('deadT').textContent=`${st.name} brought down the Scion of the Void Gods. The dark goes quiet... for now.`;$('dead').classList.add('vin');staticOn(1)}
+// Scion death: shudders, sheds sparks and fades out with a metallic roar; the victory card follows .5s later
+let FALL=null;
+function scionFall(m){S.add(m);m.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true}});shots.forEach(s=>{if(s.enemy)s.life=0});FALL={m,t:0,b:0,p:m.position.clone()};roar()}
+function fallTick(dt){if(!FALL)return;const F=FALL,k=Math.min(1,(F.t+=dt)/2.4);if(F.m.parent){F.m.position.copy(F.p).add(T.set((Math.random()-.5)*.6,(Math.random()-.5)*.3,(Math.random()-.5)*.4));F.m.traverse(o=>{if(o.material)o.material.opacity=1-k});
+ if((F.b-=dt)<=0){F.b=.25;boom(F.p,6,0xcfd6e6)}if(k>=1)S.remove(F.m)}if(F.t>=2.9){FALL=null;if(running)victory()}}
+function roar(){if(!AC)return;try{muInit();const t=AC.currentTime,o=sfxOut(),g=AC.createGain(),ws=AC.createWaveShaper(),bp=AC.createBiquadFilter(),lf=AC.createOscillator(),lg=AC.createGain();
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.45,t+.15);g.gain.exponentialRampToValueAtTime(.001,t+2.6);ws.curve=MU.dist;bp.type='bandpass';bp.Q.value=6;bp.frequency.setValueAtTime(1400,t);bp.frequency.exponentialRampToValueAtTime(260,t+2.4);
+ lf.frequency.value=17;lg.gain.value=.18;lf.connect(lg).connect(g.gain);lf.start(t);lf.stop(t+2.7);ws.connect(bp).connect(g).connect(o);
+ for(const d of [0,7,-5]){const s=AC.createOscillator();s.type='sawtooth';s.frequency.setValueAtTime(110,t);s.frequency.exponentialRampToValueAtTime(38,t+2.4);s.detune.value=d*10;s.connect(ws);s.start(t);s.stop(t+2.7)}
+ for(const [f,v] of [[311,.1],[787,.07],[1433,.04]]){const s=AC.createOscillator(),h=AC.createGain();s.frequency.setValueAtTime(f,t);s.frequency.exponentialRampToValueAtTime(f*.8,t+2.4);h.gain.setValueAtTime(v,t);h.gain.exponentialRampToValueAtTime(.001,t+2.2);s.connect(h).connect(o);s.start(t);s.stop(t+2.3)}}catch(e){}}
+// Ending: card fades out, closing lines fade in and out over static, then the craft drifts by with run stats to "Last Light"
+const OUTRO=['That monster came at us from the Dark, a place we\'ve barely explored....','Is there more?','Will we find salvation amongst the stars?','Or,.....','.......'];
+const wt=s=>new Promise(r=>setTimeout(r,s*1000));let OUTM=null;
+$('vCont').onclick=async()=>{$('dead').classList.add('vout');await wt(1);$('dead').hidden=true;$('dead').classList.remove('vin','vout');outro()};
+async function outro(){ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;BFX.clear();clearDrops();['hud','timer','pwrap','banner','evt'].forEach(i=>$(i).hidden=true);
+ const o=$('outro'),p=$('outP'),sv=$('outS'),e=$('outEnd');o.hidden=false;sv.innerHTML='';sv.classList.remove('on');e.hidden=true;e.classList.remove('on');
+ for(const l of OUTRO){p.textContent=l;p.classList.add('on');await wt(3.6);p.classList.remove('on');await wt(1.3)}
+ await wt(1.2);staticOn(0);music('finale');OUTM={m:null,t:1};
+ const kt=st.kt||{},top=Object.entries(kt).filter(([k])=>!BOSSES.has(k)).sort((a,b)=>b[1]-a[1])[0],nm=k=>{for(const r of [...ELOG.b,...ELOG.x])if(r[0]===k)return r[1];return k};
+ sv.innerHTML=[['Units destroyed',cap(st.kills)],['Bosses felled',Object.entries(kt).filter(([k])=>BOSSES.has(k)).reduce((a,[,n])=>a+n,0)],['Damage dealt',Math.round(st.dealt).toLocaleString()],['Most destroyed',top?`${nm(top[0])} ×${top[1]}`:'None'],['Upgrades installed',st.upgrades.length]].map(([a,b])=>`<div><b>${a}</b>${b}</div>`).join('');
+ await wt(2);sv.classList.add('on');await wt(9);sv.classList.remove('on');await wt(1.2);e.hidden=false;void e.offsetWidth;e.classList.add('on')}
+function outTick(dt){if(!OUTM||$('outro').hidden)return;if(!OUTM.m&&(OUTM.t-=dt)<=0){const s=Math.random()<.5?1:-1,m=MODELS[st.kind]();m.scale.setScalar(1.6);m.position.set(-s*24,-1,-12);m.rotation.y=s*Math.PI/2;S.add(m);OUTM.m=m;OUTM.v=s*3.2}
+ const m=OUTM.m;if(m){m.position.x+=OUTM.v*dt;m.position.y=-1+Math.sin(performance.now()/600)*.3;if(Math.abs(m.position.x)>26){S.remove(m);OUTM.m=null;OUTM.t=2}}}
+$('outEnd').onclick=async()=>{$('blk').hidden=false;$('outro').hidden=true;if(OUTM&&OUTM.m)S.remove(OUTM.m);OUTM=null;music(null);await wt(.4);toMenu();$('blk').hidden=true};
 // Caesar boss (medium): 3-shot cannon bursts that mildly track; closes in and sweeps its spear (red zone tell);
 // shudders and shield-rams down a red lane, then resets to the back middle
 function caesarWave(){const m=MODELS.caesar(),k=hpk();S.add(m);m.position.set(0,0,-50);BFX.clear();
@@ -1322,7 +1351,7 @@ function timeUp(){running=false;music(null);overJingle();st.time=0;$('clock').te
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'New best!':`Best score: ${tbest} scrap.`}`;
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
-function die(won){running=false;music(null);if(!won)overJingle();$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
+function die(won){running=false;$('again').hidden=!!won;$('vCont').hidden=!won;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
@@ -1343,6 +1372,10 @@ const SONGS={
   mel:'7---c---f---e-c-c-------a-c-7---f---j---h---f-e-e-----------a-c-f---e---c---e-f-h-------f-e-c---e---f---h---j---j---------------'},
  bonus:{name:'Gold Rush',bpm:140,root:45,
   k:'x.....x.x.......',s:'....x.......x...',h:'x.xxx.xxx.xxx.xx',g:'X..x..x.X..x..x.',
+  A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
+  mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
+ finale:{name:'Last Light',bpm:96,root:45,
+  k:'x.......x.x.....',s:'........x.......',h:'x...x...x...x...',g:'X.......X.......',
   A:[0,7,-3,5,0,7,5,7],B:[5,7,0,-3,5,7,0,0],
   mel:'9---7---5---9---b---c---e-------g---e---c---7---9-------c---g---h---g---e---c---e---g---j-------g-----e-c---e---c---------------'},
  boss:{name:'Iron Titan',bpm:168,root:38,
@@ -1468,7 +1501,7 @@ const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/1000);last=now;
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
- driftTick(dt);reelTick(dt);thumbTick(dt);
+ driftTick(dt);reelTick(dt);fallTick(dt);outTick(dt);thumbTick(dt);
  const dk=!!st&&!st.timed&&st.area==='Dark Space';for(let i=0;i<stars.length;i++){const s=stars[i];s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80;s.visible=!dk||i%30===0}
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
@@ -1534,8 +1567,8 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
    if(s.enemy){if(st.moth&&hd(s.m.position,moth.position)<.6){s.life=0;boom(s.m.position,3,0x6fff9a);if(st.moth>=3&&++st.mb%25===0&&st.hp<st.max){st.hp++;hud();boom(p,8,0x4fe08a)}}else if(st.rs>0&&hd(s.m.position,p)<1.5)bounce(s,p);else if(hd(s.m.position,p)<.7+(s.wide||0)&&st.inv<=0){hurt(s.dmg);s.life=0}}
    else for(const e of ents)if(e.m.visible&&!s.hit.has(e)&&e.hp>0&&(s.tail?segD(ox-s.v.x/s.v.length()*s.tail/2,oz-s.v.z/s.v.length()*s.tail/2,T.copy(s.v).setLength(s.tail/2).add(s.m.position),e.m.position):segD(ox,oz,s.m.position,e.m.position))<e.r+(e.state==='dive'||e.state==='enter'?.6:.3)+.09*(s.w-1)){if((e.type==='boss'||e.type==='onager')&&armored(e)||BOSSES.has(e.type)&&now-e.v0<1500||e.iv>0){s.life=0;boom(s.m.position,2,0x9aa3ad);break}if(!s.hit.size)st.hits++;const dm=(st.pb&&e.m.position.z>-14?s.dmg*(1+[.1,.15,.2][st.pb-1]):s.dmg)*(BOSSES.has(e.type)?s.shell?1.5:.75:1);st.dealt+=Math.min(dm,e.hp);e.hp-=dm;s.hit.add(e);e.m.scale.setScalar(1.25);if(s.gren){venom(e);s.life=0;break}if(s.pierce--<=0){s.life=0;break}}}
   shots=shots.filter(s=>s.life>0||(S.remove(s.m),0));
-  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion')st.won=1;if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
-   st.kills++;killIt(e.type);boom(e.m.position,BOSSES.has(e.type)&&e.type!=='wp'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||BOSSES.has(e.type)&&e.type!=='wp');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
+  ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
+   st.kills++;killIt(e.type);(st.kt=st.kt||{})[e.type]=(st.kt[e.type]||0)+1;boom(e.m.position,BOSSES.has(e.type)&&e.type!=='wp'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||BOSSES.has(e.type)&&e.type!=='wp');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
    if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut({chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);snowTick(dt);
@@ -1548,14 +1581,16 @@ function tick(now){requestAnimationFrame(tick);const dt=Math.min(.05,(now-last)/
   else if(!ents.length&&!st.clearT){st.clearT=st.timed?1.4:2.2;
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick ${st.elite?2:1} upgrade${st.elite?'s':''}`:'All units destroyed')}hud()}
-  if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won)victory();else{st.picks=st.elite?2:1;offer()}}}}
+  if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won){}else{st.picks=st.elite?2:1;offer()}}}}
  {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,9.5+(Math.random()-.5)*shake,10.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-10+pz*.3)}R.render(S,C)}
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>reelOpen(()=>start(k));
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
 {const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
  $('ztGo').onclick=()=>{const z=$('ztZ').value,n=+$('ztS').value;start($('ztC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
-  Object.assign(st,{dev:1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()}}$('again').onclick=toMenu;
+  Object.assign(st,{dev:1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()};
+ // View ending: drops into Dark Space's final sector and fells the Scion at once
+ $('ztEnd').onclick=()=>{$('ztZ').value='Dark Space';$('ztS').value='10';$('ztGo').onclick();setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}$('again').onclick=toMenu;
 // Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
 let paused=false,yaw=.6,pitch=.15,drag=null;
 const VR=new THREE.WebGLRenderer({canvas:$('viewer'),antialias:true,alpha:true}),VS=new THREE.Scene(),VC=new THREE.PerspectiveCamera(35,1,.1,100),VG=new THREE.Group();
