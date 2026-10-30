@@ -710,7 +710,7 @@ function alkTick(dt,p){if(st.area!=='The Alkaline Zone'||st.timed||st.bonus)retu
    cols_.push({m,w:new THREE.Object3D(),d:V3(-u.side*.25,1).normalize(),t:0,hp:4,hit:0,sp:11,col:0xf2f0ea})}}
  for(let i=SPURS.length;i--;)if(SPURS[i].m.position.z>14){S.remove(SPURS[i].m);SPURS.splice(i,1)}
  shimCd-=dt;if(shimCd<=0&&!shimT){shimT=.001;shimCd=10+Math.random()*6}if(shimT){shimT+=dt;shimmer(shimT<.5?shimT/.5:shimT<2?1:Math.max(0,1-(shimT-2)/.5));if(shimT>2.5){shimT=0;shimmer(0)}}}
-const FX=11,PZF=3.5,PZB=2;
+const FX=11,PZF=8,PZB=2;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
@@ -1671,9 +1671,9 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    else{const bn=st.boss?60:st.elite?30:0;st.scrap+=bn;
     {const ex=(st.bml?Math.round(5*(1+.06*st.sec)):0)+(st.nest?st.sec>=21?10:5:0);if(ex&&!st.timed){st.scrap+=ex;popMsg(`+${ex} SCRAP`,'#3affd0')}}if(st.won)banner('Dark Space Cleared...','');else banner(st.timed?'WAVE CLEAR':st.boss?'CAPITAL UNIT DOWN':st.elite?'ELITE CLEAR':'SECTOR CLEAR',bn?`+${bn} scrap · pick ${st.elite?2:1} upgrade${st.elite?'s':''}`:'All units destroyed')}hud()}
   if(st.clearT){st.clearT-=dt;if(st.clearT<=0){st.clearT=0;if(st.mid){st.mid=0;st.wv++;wave(1)}else if(st.timed){st.sec++;wave()}else if(st.won)st.clearT=1e9;else if(st.magA)magpieWin();else{st.picks=st.elite?2:1;offer()}}}}
- {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,9.5+(Math.random()-.5)*shake,10.5+pz*.4);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-10+pz*.3);
+ {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,12+(Math.random()-.5)*shake,7.5+pz*.6);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-9+pz*.5);
   // Scion death: the camera slowly pushes in on it and holds there until Continue
-  if(FALL){const k=Math.min(1,FALL.t/2.4),e=k*k*(3-2*k),q=FALL.p;C.position.lerp(T.set(q.x*.6,q.y+6,q.z+16),e*.6);C.lookAt(px*.2*(1-e)+q.x*e,q.y*e,(-10+pz*.3)*(1-e)+q.z*e)}}R.render(S,C)}
+  if(FALL){const k=Math.min(1,FALL.t/2.4),e=k*k*(3-2*k),q=FALL.p;C.position.lerp(T.set(q.x*.6,q.y+6,q.z+16),e*.6);C.lookAt(px*.2*(1-e)+q.x*e,q.y*e,(-9+pz*.5)*(1-e)+q.z*e)}}R.render(S,C)}
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>reelOpen(()=>start(k));
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
