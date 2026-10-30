@@ -1596,7 +1596,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    if(st.aft&&st.aicd<=0){st.aicd=1;st.ai=.5;st.aip=p.clone();ghost.position.copy(p)}
    st.en-=dcc;st.bt=.22;st.inv=Math.max(st.inv,.3);if(st.rico){st.rs=.45;st.rsHit=new Set()}}st.tap=0;
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);$('en').style.width=st.en+'%';
-  p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);p.z=THREE.MathUtils.clamp(p.z+mz*st.spd*.7*dt,-PZF,PZB);st.pvx=mx*sp;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
+  p.x=THREE.MathUtils.clamp(p.x+mx*sp*dt,-FX,FX);p.z=THREE.MathUtils.clamp(p.z+mz*sp*.9*dt,-PZF,PZB);st.pvx=mx*sp;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);player.rotation.z=-mx*.25;p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45:.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15}
   const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull||st.empT);apexG.material.opacity=ap?.12:.06;
