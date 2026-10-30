@@ -131,10 +131,10 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
 <div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span></div>
 <style>#dead.vin{animation:vfi 1.2s}@keyframes vfi{from{opacity:0}}#dead.vout,#outro .x{opacity:0;transition:opacity 1s}#outro{z-index:70;background:transparent}#outro .x.on{opacity:1}
-#outS{position:fixed;inset:0;display:grid;place-content:center;gap:14px;text-align:center;font:600 clamp(1rem,3.2vw,1.3rem) "Chakra Petch",sans-serif;color:#dfe6f5}#outS div b{display:block;font-size:.75em;color:#9aa3b5;letter-spacing:.12em;text-transform:uppercase}
+#outS{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);transition:left 1.2s ease-in-out,transform 1.2s ease-in-out;display:grid;gap:14px;text-align:center;font:600 clamp(1rem,3.2vw,1.3rem) "Chakra Petch",sans-serif;color:#dfe6f5}#outS div{opacity:0;transition:opacity .8s}#outS div.on{opacity:1}#outS.side{left:calc(100% - max(24px,env(safe-area-inset-right,0px)));transform:translate(-100%,-50%);text-align:right}#outS div b{display:block;font-size:.75em;color:#9aa3b5;letter-spacing:.12em;text-transform:uppercase}
 #outEnd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font:600 1.1rem "Chakra Petch",sans-serif;color:var(--accent);background:#0a0c14cc;border:1px solid #445;padding:12px 34px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
-<div class="ov" id="outro" hidden><p id="outP"></p><div id="outS" class="x"></div><button id="outEnd" class="x" hidden>End</button></div><div id="blk" hidden></div>
+<div class="ov" id="outro" hidden><p id="outP"></p><div id="outS"></div><button id="outEnd" class="x" hidden>End</button></div><div id="blk" hidden></div>
 <div class="ov" id="reel"><p id="reelP">Tap or press any key</p><button id="reelSkip">Skip</button></div>
 <div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
@@ -860,11 +860,11 @@ function scionUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,hp=e.hp/e
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=e.stg===2?3.5+Math.random()*1.5:6+Math.random()*2;e.cdF=.8}}}
 function victory(){die(1);try{localStorage.setItem('darkwon',1)}catch(e){}$('deadH').textContent='Victory';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} brought down the Scion of the Void Gods. The dark goes quiet... for now.`;$('dead').classList.add('vin');staticOn(1)}
-// Scion death: shudders, sheds sparks and fades out with a metallic roar; the victory card follows .5s later
+// Scion death: shudders, sheds sparks and fades out with a metallic roar; static starts halfway, the victory card follows ~3s later
 let FALL=null;
 function scionFall(m){S.add(m);m.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true}});shots.forEach(s=>{if(s.enemy)s.life=0});FALL={m,t:0,b:0,p:m.position.clone()};roar()}
 function fallTick(dt){if(!FALL)return;const F=FALL,k=Math.min(1,(F.t+=dt)/2.4);if(F.m.parent){F.m.position.copy(F.p).add(T.set((Math.random()-.5)*.6,(Math.random()-.5)*.3,(Math.random()-.5)*.4));F.m.traverse(o=>{if(o.material)o.material.opacity=1-k});
- if((F.b-=dt)<=0){F.b=.25;boom(F.p,6,0xcfd6e6)}if(k>=1)S.remove(F.m)}if(F.t>=2.9){FALL=null;if(running)victory()}}
+ if((F.b-=dt)<=0){F.b=.25;boom(F.p,6,0xcfd6e6)}if(k>=1)S.remove(F.m)}if(F.t>=1.2&&!F.s){F.s=1;staticOn(1)}if(F.t>=4.2){FALL=null;if(running)victory()}}
 function roar(){if(!AC)return;try{muInit();const t=AC.currentTime,o=sfxOut(),g=AC.createGain(),ws=AC.createWaveShaper(),bp=AC.createBiquadFilter(),lf=AC.createOscillator(),lg=AC.createGain();
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.45,t+.15);g.gain.exponentialRampToValueAtTime(.001,t+2.6);ws.curve=MU.dist;bp.type='bandpass';bp.Q.value=6;bp.frequency.setValueAtTime(1400,t);bp.frequency.exponentialRampToValueAtTime(260,t+2.4);
  lf.frequency.value=17;lg.gain.value=.18;lf.connect(lg).connect(g.gain);lf.start(t);lf.stop(t+2.7);ws.connect(bp).connect(g).connect(o);
@@ -875,12 +875,12 @@ const OUTRO=['That monster came at us from the Dark, a place we\'ve barely explo
 const wt=s=>new Promise(r=>setTimeout(r,s*1000));let OUTM=null;
 $('vCont').onclick=async()=>{$('dead').classList.add('vout');await wt(1);$('dead').hidden=true;$('dead').classList.remove('vin','vout');outro()};
 async function outro(){ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;BFX.clear();clearDrops();['hud','timer','pwrap','banner','evt'].forEach(i=>$(i).hidden=true);
- const o=$('outro'),p=$('outP'),sv=$('outS'),e=$('outEnd');o.hidden=false;sv.innerHTML='';sv.classList.remove('on');e.hidden=true;e.classList.remove('on');
+ const o=$('outro'),p=$('outP'),sv=$('outS'),e=$('outEnd');o.hidden=false;sv.innerHTML='';sv.classList.remove('side');e.hidden=true;e.classList.remove('on');
  for(const l of OUTRO){p.textContent=l;p.classList.add('on');await wt(3.6);p.classList.remove('on');await wt(1.3)}
  await wt(1.2);staticOn(0);music('finale');OUTM={m:null,t:1};
  const kt=st.kt||{},top=Object.entries(kt).filter(([k])=>!BOSSES.has(k)).sort((a,b)=>b[1]-a[1])[0],nm=k=>{for(const r of [...ELOG.b,...ELOG.x])if(r[0]===k)return r[1];return k};
  sv.innerHTML=[['Units destroyed',cap(st.kills)],['Bosses felled',Object.entries(kt).filter(([k])=>BOSSES.has(k)).reduce((a,[,n])=>a+n,0)],['Damage dealt',Math.round(st.dealt).toLocaleString()],['Most destroyed',top?`${nm(top[0])} ×${top[1]}`:'None'],['Most used power-up',(p=>p?(PLOG.find(r=>r[0]===p[0])||[,p[0]])[1]+` ×${p[1]}`:'None')(Object.entries(st.pu||{}).sort((a,b)=>b[1]-a[1])[0])],['Upgrades installed',st.upgrades.length]].map(([a,b])=>`<div><b>${a}</b>${b}</div>`).join('');
- await wt(2);sv.classList.add('on');await wt(9);sv.classList.remove('on');await wt(1.2);e.hidden=false;void e.offsetWidth;e.classList.add('on')}
+ await wt(2);for(const d of sv.children){d.classList.add('on');await wt(.9)}await wt(1.5);sv.classList.add('side');await wt(8);e.hidden=false;void e.offsetWidth;e.classList.add('on')}
 function outTick(dt){if(!OUTM||$('outro').hidden)return;if(!OUTM.m&&(OUTM.t-=dt)<=0){const s=Math.random()<.5?1:-1,m=MODELS[st.kind]();m.scale.setScalar(1.6);m.position.set(-s*24,-1,-12);m.rotation.y=s*Math.PI/2;S.add(m);OUTM.m=m;OUTM.v=s*3.2}
  const m=OUTM.m;if(m){m.position.x+=OUTM.v*dt;m.position.y=-1+Math.sin(performance.now()/600)*.3;if(Math.abs(m.position.x)>26){S.remove(m);OUTM.m=null;OUTM.t=2}}}
 $('outEnd').onclick=async()=>{$('blk').hidden=false;$('outro').hidden=true;if(OUTM&&OUTM.m)S.remove(OUTM.m);OUTM=null;music(null);await wt(.4);toMenu();$('blk').hidden=true};
