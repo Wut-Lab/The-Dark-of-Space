@@ -53,7 +53,7 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 @media (prefers-reduced-motion:reduce){#rotate .ph{animation:none;transform:rotate(-90deg)}}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
-button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}
+button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}.lo{display:block;font-style:italic;color:var(--dim);font-size:12px;opacity:.8;margin-top:4px}
 kbd{font-family:var(--display);font-size:11px;border:1px solid #ffffff33;padding:1px 5px}
 #tot{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));font:400 15px var(--display);letter-spacing:.08em;color:var(--dim)}#tot b{color:var(--accent);font-weight:400}
 #pauseBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));padding:8px 14px;font-family:var(--display);letter-spacing:.12em;display:block}
@@ -70,7 +70,7 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
 @media (max-width:640px){.pz{grid-template-columns:1fr;align-content:start;overflow-y:auto}#viewer{width:min(70%,260px)}}
 @media (prefers-reduced-motion:reduce){#pause{transition:none}}
 /* Short landscape screens (phones turned sideways): tighter pause menu so everything fits and centers vertically */
-@media (max-height:520px){.pz{padding-block:10px;overflow-y:auto}.pr{gap:8px}.pr h2{font-size:18px}.pr button{padding:9px 14px}.pr button span{display:none}
+@media (max-height:520px){.pz{padding-block:10px;overflow-y:auto}.pr{gap:8px}.pr h2{font-size:18px}.pr button{padding:9px 14px}.pr button span,.pr button .lo{display:none}
  #viewer{width:min(100%,170px)}.pl{gap:4px}.pl h2{font-size:22px}.pl>p{display:none}.pl .ss{gap:2px 8px;margin-top:2px}#upgL{max-height:62vh}}
 .cr{display:contents}.th,.stb{display:none}
 @media (max-width:600px){.cr{display:flex;gap:8px}.cr>button:first-child{flex:1;display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px}
@@ -1262,6 +1262,8 @@ const inPool=u=>(!u[5]&&!u[6])||OWNED.includes('up:'+u[0]);
 const tierOf=n=>st?st.upgrades.filter(x=>x===n).length:0,TN=['I','II','III'],avail=u=>inPool(u)&&tierOf(u[0])<3;
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:24,u:36,r:52,x:44};
 // Weighted draw of n different upgrades; elite and boss rewards use the better odds
+// Story line shown under each upgrade
+const LORE={'Tune-up':'Every 100,000 parsecs.','Salvage claws':'Sometimes they pick up useful scrap. Sometimes they pick up weird glowing things.','Rail barrel':'For when you want things to fly at the bad guys fast.','Hair trigger':'Filed down by a pilot who never came back to complain about the handling.','Enhanced EMPs':'Military-grade capacitors, "liberated" from a derelict picket ship. Hold still.','Overcharged Cells':'The warning label was in a language nobody reads anymore. Probably fine.','Afterimage':'Leaving a bit of yourself behind to get ahead.','Sn-0W':'A beautiful owl-like robot that you found in the Frost Reach. It really likes you... You really like it.','Point Blank':'Range is a suggestion. So is personal space.','Surge Catch':'Someone wired the intake straight to the power-up collector. Don\'t ask what else it eats.','Venom Launcher':'Someone rigged the blasters to make a bigger boom.','Beam Shot':'Partially lost technology, but we can still concentrate our blaster shots into a beam.','Confetti Payload':'Fun is fun.','Kill Chain':'Downing enemies in quick succession seems to yield some good results.','Sensitive Controls':'Breathe on the stick and the ship is already there.','Scrap Weld':'Duct tape, but hotter.','Apex Matrix':'Holding your position can be advantageous, sometimes.','Apex Pull':'It\'s strange. When you do this, things seem to go your way.','Apex EMP Tech':'A bit of technology that\'s made its way all the way from Earth. It\'s old, but it rarely fails us.','Phantom Armor':'A strange chip floated toward us from the darkest reaches we\'ve explored. It wanted to be found.','Scrap Cannon':'Ammo is ammo.','Scrap Jet':'Burn the junk, go faster. Recycling has never been this fun.','Dash Burst':'If you\'re going to run, take a few of them with you.','Ram Plating':'The best defense is a very heavy offense.','Wide Shot':'For those who can\'t aim.','Whip Shot':'We find that shooting away from the target often still hits something.','Tracking Shot':'Some smart weapon technology that has been used for ages. It\'s hard to beat weapons that aim for you.','Bootleg Shields':'Almost as good as the real thing. Maybe better. We don\'t know.','Ricochet Shield':'Return to sender.','Chargeable Core':'Patience, pilot. Good things come to those who wait.','Tractor Coils':'Why fly to the scrap when the scrap can fly to you?','Luna-M':'A beautiful space moth, reminiscent of an ancient creature from Earth. They seem to be the only benevolent thing that goes in and out of the Dark.'};
 function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.filter(avail).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
  const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&avail(u));if(!pool.length)continue;const u=pool[Math.random()*pool.length|0];
  // Skipped last offer: 60% chance to redraw, so the same few upgrades don't keep coming back
@@ -1270,7 +1272,7 @@ const tag=r=>`<em class="rar r-${r}">${RAR[r]}</em>`;
 // Tune-up: weak but helps every build; always in the shop and can be bought any number of times
 
 function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Sector ${st.sec} cleared · ${st.scrap} scrap${st.picks>1?` · ${st.picks} picks left`:''}`;const o=$('opts');o.innerHTML='';
- const ro=roll(3,st.elite||st.boss);ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>`;
+ const ro=roll(3,st.elite||st.boss);ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:""}`;
   b.onclick=()=>{f(st);gotUp(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss; sector 4.5 is a bonus stage if the zone cost 3 hits or fewer
@@ -1659,7 +1661,7 @@ function gotUp(n){st.upgrades.push(n);pickIt('u:'+n)}
 const cap=n=>(n||0)>=9999?'9999+':n||0,rarS=r=>`Rarity: <span style="color:${LRAR[r][2]}">${LRAR[r][0]}</span>`;
 for(const k in DROP)if(!MODELS['cap_'+k])MODELS['cap_'+k]=()=>build('cap_'+k,[[-2,0,-2,4,3,4,'c',0,'cy'],[-2,3,-2,4,1,4,'k',0,'cy'],[-2,4,-2,4,3,4,'c',0,'cy']],{c:DROP[k].c,k:DROP[k].pu?0x141826:0xffffff},.12);
 function elRows(){const t=elTab;
- if(t==='u')return UPG.map(u=>({n:u[0],k:u[4],d:LRAR[u[3]][1],st:rarS(u[3]),ds:u[1],c:'Times picked up: '+cap(PICKS['u:'+u[0]]),seen:PICKS['u:'+u[0]]}));
+ if(t==='u')return UPG.map(u=>({n:u[0],k:u[4],d:LRAR[u[3]][1],st:rarS(u[3]),ds:u[1]+(LORE[u[0]]?'<em class=\"lo\">“'+LORE[u[0]]+'”</em>':''),c:'Times picked up: '+cap(PICKS['u:'+u[0]]),seen:PICKS['u:'+u[0]]}));
  if(t==='p')return PLOG.map(([k,n,r,ds])=>({n,k:'cap_'+k,d:LRAR[r][1],st:rarS(r),ds,c:'Times picked up: '+cap(PICKS['p:'+k]),seen:PICKS['p:'+k]}));
  return ELOG[t].map(([id,n,k,hp,d,z,ds])=>({n,k,d,st:`Starting health ${hp} · Difficulty ${'★'.repeat(d)}${'☆'.repeat(5-d)} · Zone: ${z}`,ds,c:'Kills '+cap(KILLS[id]),seen:SEEN[id]}))}
 function elDraw(){const L=elRows().sort((a,b)=>elSort==='d'?a.d-b.d||a.n.localeCompare(b.n):a.n.localeCompare(b.n));$('esD').textContent=elTab==='b'||elTab==='x'?'Difficulty':'Rarity';
