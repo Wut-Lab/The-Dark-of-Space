@@ -368,9 +368,12 @@ const FALCON=[[-3,0,-16,6,5,30,'f',0,'e'],[-2,3,0,4,3,8,'l',0,'e'],[-1,4,-12,2,1
  [-1,4,-16,2,7,6,'a',0,'fin'],[1,0,-19,3,4,4,'d',1,'cz'],[1,1,-20,3,2,1,'l',1],[-1,1,13,2,2,4,'d',0,'cz'],[11,0,-8,2,2,8,'d',1,'cz']];
 // Capital unit "Bastion": slab hull with side sponsons, bridge tower and a red core eye; its three turrets are separate weak points
 // The Magpie: black-and-white patchwork mothership, stitched-on rust and olive hull scraps, teal eye and a forward tractor claw
-const MAGPIE=[[-12,0,-10,24,6,20,'k',0,'r'],[-15,1,-6,6,4,12,'w',1,'e'],[-8,6,-6,16,4,12,'w',0,'r'],[-5,10,-4,10,4,8,'k',0,'r'],[-3,11,4,6,2,1,'m'],
- [-21,2,-3,7,2,7,'o',1],[-23,1,-1,3,4,3,'b',1],[-10,6,5,4,1,4,'b'],[4,6,-8,4,1,4,'o'],[-2,0,10,4,3,6,'a'],[-4,0,15,2,2,5,'m',1],[-6,3,-13,4,3,4,'o',1],[-5,4,-14,2,1,1,'m',1]],
+const MAGPIE=[[-3,3,10,6,3,3,'n'],[-2,3,13,4,3,3,'n'],[-1,4,16,2,1,3,'n'],[-12,0,-10,24,6,20,'k',0,'r'],[-15,1,-6,6,4,12,'w',1,'e'],[-8,6,-6,16,4,12,'w',0,'r'],[-5,10,-4,10,4,8,'k',0,'r'],[-3,11,4,6,2,1,'m'],
+ [-10,6,5,4,1,4,'b'],[4,6,-8,4,1,4,'o'],[-2,0,10,4,3,6,'a'],[-4,0,15,2,2,5,'m',1],[-6,3,-13,4,3,4,'o',1],[-5,4,-14,2,1,1,'m',1]],
+MWING=[[-21,2,-3,7,2,7,'o',1],[-23,1,-1,3,4,3,'b',1]],WCHUNK=[[-2,0,-2,4,2,4,'o'],[-1,2,-1,2,1,2,'b']],
  HULK=[[-3,0,-2,6,3,4,'a',0,'r'],[-2,3,-1,3,2,2,'o'],[1,1,2,2,1,1,'b'],[-4,1,0,1,1,2,'g']];
+// Magpie palette: black and white hull, glossy black beak-colored nose cone (n), rust and olive scrap wings, teal glow
+const MPAL={...P,k:0x101216,w:0xe4e6ea,n:0x050608,o:0x7a4a2a,m:0x3affd0};
 const BASTION=[[-14,0,-14,28,7,28,'v',0,'r'],[14,0,-11,8,6,20,'v',1,'e'],[-7,1,12,14,5,8,'o',0,'r'],[-5,7,-9,10,8,10,'d',0,'r'],[-3,9,1,6,4,1,'k'],[-2,10,1,4,2,1,'m'],
  [6,1,-17,5,5,4,'d',1,'cz'],[7,2,-18,3,3,1,'l',1],[10,7,-8,2,1,16,'h',1],[-1,15,-7,1,6,1,'d'],[-9,7,4,18,1,2,'d']];
 const TURRET=[[-4,0,-4,8,4,8,'d',0,'cy'],[-3,4,-3,6,3,6,'o',0,'e'],[1,4,2,1,1,8,'a',1,'cz'],[-1,6,0,2,1,1,'m']];
@@ -555,7 +558,7 @@ const MODELS={
  mercury:()=>build('mercury',MERC,{m:0xc8d0d8,d:0x8a929c,b:0xf0f4f8,k:0x3a3e44,c:0x9fe8ff},.21),
  voidbot:()=>build('voidbot',VBOT,{d:0x24242a,p:0x3a2258,v:0xb060ff},.18),
  prophet:()=>build('prophet',PROPH,PPAL,.38),priest:()=>build('priest',PRIEST,PPAL,.38),orbstaff:()=>build('orbstaff',OSTAFF,PPAL,.38),pstaff:()=>build('pstaff',PSTAFF,PPAL,.38),
- magpie:()=>build('magpie',MAGPIE,{...P,k:0x101216,w:0xe4e6ea,o:0x7a4a2a,m:0x3affd0},.2),hulk:()=>build('hulk',HULK,{...P,o:0x7a4a2a},.2),
+ magpie:()=>{const g=build('magpie',MAGPIE,MPAL,.2);g.userData.wings=build('mwing',MWING,MPAL,.2);g.add(g.userData.wings);return g},wchunk:()=>build('wchunk',WCHUNK,MPAL,.2),hulk:()=>build('hulk',HULK,{...P,o:0x7a4a2a},.2),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
  mech:()=>build('mech',KESTREL,P,.065,2),
@@ -820,7 +823,7 @@ function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.
  if(e.cdM<=0){e.cdM=8+Math.random()*3;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let i=0;i<1+(Math.random()<.5);i++)addMob(i)}}
 // Minotaur boss: shoulder cannons fire left, right, left... at you; now and then it stops, shudders and flashes a red lane (the tell), then rams down it
 // The Magpie (Silent Hulk event, before a capital unit from sector 10): drags derelict hulks in front of itself as shields and fires a tractor beam that steals scrap.
-// At half health its patchwork hull breaks off: 3-shot spreads and an edge-to-edge sweeping beam (1 damage). Win: +40 scrap, stolen scrap back, the Magpie Claw, then the capital unit
+// At half health its scrap wings tear off and tumble down the lane as debris (1 damage on contact): then 3-shot spreads and an edge-to-edge sweeping beam (1 damage). Win: +40 scrap, stolen scrap back, the Magpie Claw, then the capital unit
 const YAX=new THREE.Vector3(0,1,0);
 function magpieWave(){const m=MODELS.magpie(),k=hpk();S.add(m);m.position.set(0,0,-55);BFX.clear();music(null);st.magA=1;st.stole=0;st.wv=st.wvs=1;
  const e={m,type:'magpie',state:'magpie',hp:70*k,hp0:70*k,slot:V3(0,0),t:0,r:3,ph:0,cdF:2,cdT:4,cdH:0,cdS:7,fx:{tb:beamMesh(0x3affd0,.22),sw:beamMesh(0xff3060,.3)}};ents.push(e);
@@ -829,7 +832,11 @@ function addHulk(b,i){const m=MODELS.hulk();S.add(m);m.position.copy(b.m.positio
 function hulkUp(e,dt){const B=e.boss.m.position;e.a+=dt*.9;e.m.position.set(B.x+Math.sin(e.a)*6,0,B.z+6+Math.cos(e.a*1.3)*.8);e.m.rotation.y+=dt*.6}
 function magpieUp(e,dt,p){const M=e.m.position,TB=e.fx.tb,SW=e.fx.sw,f=st.fast||1,lane=(x,W,w)=>{W.position.set(x,.05,(M.z+8)/2);W.scale.set(w,.02,8-M.z);W.rotation.set(0,0,0)};
  if(e.ph===0){e.t+=dt;const k=Math.min(1,e.t/3);if(e.t>2.6)music(bossTrk());M.z=-55+33*k*(2-k);if(k<1)return;e.ph=1}
- const half=e.hp<e.hp0/2;if(half&&e.ph===1){e.ph=2;boom(M,40,0x7a4a2a,true);boom(M,30,0xe4e6ea,true);shake=Math.max(shake,.5);e.m.scale.setScalar(.85)}
+ const half=e.hp<e.hp0/2;if(half&&e.ph===1){e.ph=2;e.m.remove(e.m.userData.wings);boom(M,40,0x7a4a2a,true);boom(M,30,0xe4e6ea,true);shake=Math.max(shake,.5);e.deb=[];
+  // Wing debris: 6 chunks (3 per side) tumble down the lane one after another; touching one costs 1 armor. Can't be shot
+  for(let i=0;i<6;i++){const c=MODELS.wchunk(),sd=i%2?1:-1;c.position.set(M.x+sd*(3.6+Math.random()),0,M.z);BFX.add(c);e.deb.push({m:c,d:.35*i,vx:sd*(.4+Math.random()*1.2)-c.position.x*.08,sp:(Math.random()-.5)*6})}}
+ if(e.deb)for(const d of e.deb){if(!d.m.parent)continue;if((d.d-=dt)>0)continue;const q=d.m.position;q.z+=9*dt*(st.fast||1);q.x=Math.max(-FX,Math.min(FX,q.x+d.vx*dt));d.m.rotation.x+=d.sp*dt;d.m.rotation.y+=d.sp*.7*dt;
+  if(hd(q,p)<1.3&&st.inv<=0){hurt(1);boom(q,10,0x7a4a2a);BFX.remove(d.m)}else if(q.z>10)BFX.remove(d.m)}
  M.x+=(Math.sin(e.t*.5)*5-M.x)*Math.min(1,dt);e.t+=dt;
  // Shield hulks: up to 3 in stage 1, one dragged back in every 8 s
  if(e.ph===1&&(e.cdH-=dt)<=0){e.cdH=8;if(ents.filter(x=>x.type==='hulk'&&x.hp>0).length<3)addHulk(e,Math.random()*6)}
