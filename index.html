@@ -278,7 +278,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>The clock</h3><ul><li>You start with <b>3:00</b>, shown at the top of the screen</li><li>It flashes red under 30 seconds</li><li>When it reaches zero, the run ends and your scrap is your score</li></ul>
 <h3>Hits</h3><ul><li>You have no armor bar in this mode: each hit costs <b>5 seconds</b></li></ul>
 <h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li><li>New enemy types join quickly</li></ul>
-<h3>Hard Mode</h3><ul><li>Unlocks once you defeat the Scion. Turn it on from the Timed Attack screen</li><li><b>Lights Out</b>: the field goes dark except a cone of light ahead of you and your muzzle flashes</li><li>You start by picking 3 of 6 upgrades at random tiers: 2 Rare or Contraband, 2 Uncommon, 2 Common</li><li>Every unit has +1 armor. Your final score is ×1.5</li></ul>
+<h3>Hard Mode</h3><ul><li>Unlocks once you defeat the Scion. Turn it on from the Timed Attack screen</li><li><b>Lights Out</b>: the field goes dark except a cone of light ahead of you and your muzzle flashes. Units outside the cone are faint shadows, and enemy shots are dimmed</li><li>You start by picking 3 of 6 upgrades at random tiers (no armor upgrades): 2 Rare or Contraband, 2 Uncommon, 2 Common</li><li>Every unit has +1 armor. Your final score is ×1.5</li></ul>
 <h3>Time capsules</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it to grab it for extra time</li><li>Capsules drift toward you and vanish if you miss them</li></ul></div></div>
 
 <div class="ov scr" id="how-power" hidden><div class="card"><div class="hd"><h2>Power-ups</h2><button class="back" data-go="how">Back</button></div>
@@ -1439,7 +1439,7 @@ function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
 const fx=[],BODY={magpie:0x101216,hulk:0x56606b,chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e,mino:0x8a3b32,caesar:0xd4a52a,glacier:0x8fd0f0,mote:0xcfeeff,dryice:0xbfe6ff,onager:0xd4a52a,cata:0x8a6a1e,slime:0x5fd36a,geode:0x6a2a20,refract:0xff2a3a,choir:0x6a3aa8,prophet:0x7a3ad8,priest:0x8a4ae8,scion:0x2a1a4a,nox:0x141c3a,umbra:0x141c3a,imago:0x141c3a,voidbot:0x4a2a72,crucible:0x4a4744,mercury:0xc8d0d8,mdecoy:0xc8d0d8,moth:0x9aa0a8,splinter:0xff2a3a,praet:0x8a929c,golem:0xcfeeff};let shake=0,muzzleT=0;
 // Hard Mode (Timed Attack): Lights Out. The field goes dark except a cone of light ahead of you and your muzzle flashes
 const LO={cone:new THREE.SpotLight(0xfff2d8,0,40,.42,.5,1),flash:new THREE.PointLight(0xffd9a0,0,14,2),beam:new THREE.Mesh(new THREE.PlaneGeometry(16,28).rotateX(-Math.PI/2).translate(0,0,-14),new THREE.MeshBasicMaterial({map:(()=>{const c=document.createElement('canvas');c.width=64;c.height=128;const x=c.getContext('2d'),g=x.createLinearGradient(0,128,0,0);g.addColorStop(0,'rgba(255,242,216,.5)');g.addColorStop(1,'rgba(255,242,216,0)');x.fillStyle=g;x.beginPath();x.moveTo(32,128);x.lineTo(0,0);x.lineTo(64,0);x.fill();return new THREE.CanvasTexture(c)})(),transparent:true,opacity:.35,blending:THREE.AdditiveBlending,depthWrite:false}))};LO.beam.visible=false;S.add(LO.cone,LO.cone.target,LO.flash,LO.beam);
-function lightsOut(on){hemi.intensity=on?.05:.9;sun.intensity=on?.05:.8;LO.beam.visible=!!on;if(!on)LO.cone.intensity=LO.flash.intensity=0}
+function lightsOut(on){hemi.intensity=on?.14:.9;sun.intensity=on?.05:.8;LO.beam.visible=!!on;if(!on)LO.cone.intensity=LO.flash.intensity=0}
 const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
 function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat(i%3?col:0xffb040));m.position.copy(pos);m.position.y+=.8;m.scale.setScalar(.12+Math.random()*.18);S.add(m);
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
@@ -1504,7 +1504,7 @@ function gimTick(p){gimbal.visible=!!st.gim;if(!st.gim)return;const d=GIMC.clone
 // Void Bot Blink Tech: the dash jumps to the far third of the lane; II/III fire a purple 3-shot fan from the start/landing points
 function blink(p){const o=p.clone(),t=Math.abs(p.x)<FX/3?st.dir||1:-Math.sign(p.x);p.x=t*FX*2/3;st.bt=0;boom(o,10,0xb060ff);boom(p,10,0xb060ff);
  const fan=q=>{for(let i=-1;i<=1;i++)fire(q,V3(i*.28,-1).normalize(),st.shot,st.dmg*1.5,false,0xb060ff,st.pierce,st.wide*1.2)};if(st.blink>=2)fan(o);if(st.blink>=3)fan(p)}
-function fire(from,dir,spd,dmg,enemy,col,pierce,w=1){const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18*w,.18,.6);
+function fire(from,dir,spd,dmg,enemy,col,pierce,w=1){if(enemy&&st&&st.hard)col=new THREE.Color(col).multiplyScalar(.45);const m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:col}));m.scale.set(.18*w,.18,.6);
  m.position.copy(from);m.position.y=1.1;m.lookAt(m.position.clone().add(dir));S.add(m);shots.push({m,v:dir.clone().multiplyScalar(spd),dmg,enemy,life:40/spd,pierce,w,hit:new Set()});if(FALL){m.visible=false;shots[shots.length-1].life=0}return shots[shots.length-1]}
 // Upgrades (permanent for the run; power-ups are the temporary drops): [name, effect, apply, rarity, icon model]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
 const UPG=[['Tune-up','+5% damage, fire rate and strafe speed',s=>{s.dmg*=1.05;s.rate/=1.05;s.spd*=1.05},'c','u_tune'],
@@ -1584,7 +1584,9 @@ function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Se
   b.onclick=()=>{f(st);gotUp(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
 // Hard Mode start: 6 unlocked upgrades (no Magpie pool), 2 Rare or Contraband, 2 Uncommon, 2 Common, each at a random tier. Pick 3
-function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0]),sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
+// Armor upgrades do nothing without an armor bar, so Hard Mode never offers them
+const HARDNO=['Extra Armor','Black Ice Plating','Ram Plating','Phantom Armor','Scrap Weld','Apex EMP Tech'];
+function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0])&&!HARDNO.includes(u[0]),sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
  const o=$('opts'),left=()=>{$('pickT').textContent=`Hard Mode · Lights Out · ${n} pick${n>1?'s':''} left`};o.innerHTML='';
  sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
   b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}b.remove();hud();if(--n>0)left();else{$('pick').hidden=true;running=true}};o.append(b)});
