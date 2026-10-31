@@ -158,7 +158,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #dead.vin #deadT{text-align:center;font-style:italic;color:#e6dcff}
 #dead.vin .sum{background:#ffffff0a;border:1px solid #ffffff14;padding:10px 12px;border-radius:6px}
 #dead.vin .sum dt{color:#c9a24a}
-@keyframes vglow{to{box-shadow:0 0 0 1px #b060ff55 inset,0 0 16px #ffffffcc,0 0 48px #f3d77aaa,0 0 120px #e8c86a66,0 0 200px #e8c86a33}}@keyframes vfi{from{opacity:0}}#dead.vout,#outro .x{opacity:0;transition:opacity 1s}#outro{z-index:70;background:transparent}#outro .x.on{opacity:1}
+@keyframes vglow{to{box-shadow:0 0 0 1px #b060ff55 inset,0 0 16px #ffffffcc,0 0 48px #f3d77aaa,0 0 120px #e8c86a66,0 0 200px #e8c86a33}}@keyframes vfi{from{opacity:0}}.mfi{animation:vfi 1s}#dead.vout,#outro .x{opacity:0;transition:opacity 1s}#outro{z-index:70;background:transparent}#outro .x.on{opacity:1}
 #outS{position:fixed;right:max(24px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);display:grid;gap:6px;text-align:right;max-width:46vw;font:600 clamp(.85rem,2.4vw,1.1rem) "Chakra Petch",sans-serif;color:#dfe6f5}#outS div{opacity:0;transition:opacity 2.5s}#outS div.on{opacity:1}#outS div.go{transition:opacity 2.5s,transform 1.6s ease-in-out}#outS div b{display:block;font-size:.75em;color:#9aa3b5;letter-spacing:.12em;text-transform:uppercase}
 #outEnd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font:600 1.1rem "Chakra Petch",sans-serif;color:var(--accent);background:#0a0c14cc;border:1px solid #445;padding:12px 34px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
@@ -1666,7 +1666,7 @@ function brass(t,ms,len,v){const f=AC.createBiquadFilter(),g=AC.createGain();f.t
  const vib=len>.4&&AC.createOscillator(),vg=AC.createGain();if(vib){vib.frequency.value=5.5;vg.gain.value=7;vib.connect(vg);vib.start(t+.15);vib.stop(t+len+.2)}
  for(const m of ms)for(const dt of [-7,7]){const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mhz(m);o.detune.value=dt;if(vib)vg.connect(o.detune);o.connect(f);o.start(t);o.stop(t+len+.2)}}
 // Game over jingle "Fading Signal": a slow, sad A-minor take on the menu's Gold Rush. The same falling four-note figure repeats a step lower each time, then drops to one held low A
-function overJingle(){try{if(!AC)return;muInit();const g=MU.out.gain,b=.32;g.cancelScheduledValues(AC.currentTime);g.value=mVol();let t=AC.currentTime+.2;
+function overJingle(){try{if(!AC)return;muInit();overJingle.e=performance.now()+7300;const g=MU.out.gain,b=.32;g.cancelScheduledValues(AC.currentTime);g.value=mVol();let t=AC.currentTime+.2;
  for(const [ph,bs] of [[[76,74,72,69],45],[[74,72,69,67],41],[[72,69,67,64],40]]){ph.forEach((m,i)=>brass(t+i*b,[m],b*.85,.11));bass(t,bs-12,b*4);t+=b*4+.1}
  brass(t,[57,45],2.8,.12);bass(t,33,2.8)}catch(e){}}
 // Bell: a frosty chime (sine plus a bright upper partial, long decay) that carries the melody in the Frost Reach tracks
@@ -1850,7 +1850,8 @@ document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.
  $('ztGo').onclick=()=>{const z=$('ztZ').value,n=+$('ztS').value;start($('ztC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
   Object.assign(st,{dev:1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()};
  // View ending: drops into Dark Space's final sector and fells the Scion at once
- $('ztEnd').onclick=()=>{$('ztZ').value='Dark Space';$('ztS').value='10';$('ztGo').onclick();setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}$('again').onclick=toMenu;
+ $('ztEnd').onclick=()=>{$('ztZ').value='Dark Space';$('ztS').value='10';$('ztGo').onclick();setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
+$('again').onclick=async()=>{const d=$('dead');if(d.classList.contains('vout'))return;d.classList.add('vout');await wt(1);await wt(Math.max(0,(overJingle.e||0)-performance.now())/1000);d.classList.remove('vout');toMenu();const m=$('start');m.classList.add('mfi');setTimeout(()=>m.classList.remove('mfi'),1000)};
 // Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
 let paused=false,yaw=.6,pitch=.15,drag=null;
 const VR=new THREE.WebGLRenderer({canvas:$('viewer'),antialias:true,alpha:true}),VS=new THREE.Scene(),VC=new THREE.PerspectiveCamera(35,1,.1,100),VG=new THREE.Group();
