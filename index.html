@@ -79,6 +79,15 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
  .cr>button:first-child>span{display:none}.cr>button:first-child b{font-size:18px}.th{display:block;width:56px;height:56px;flex:none}
  .stb{display:grid;place-items:center;flex:none;width:72px;padding:6px;font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
  #crafts .row,#timed .row{gap:8px;grid-template-columns:1fr}.cr>button:first-child{justify-content:flex-start}}
+/* Paint preview (Shop) and paint bay (craft select): centered Back on top; bay has the craft left, paint picker right, launch below */
+.pjo{display:block;overflow-y:auto;padding-block:16px;background:#05060af2}.pjo>.card{margin:8px auto}.pjc{max-width:640px;padding:14px 20px;text-align:center;background:#0d1018}.pjh{display:flex;justify-content:center;margin-bottom:2px}.pjc h2{color:var(--accent)}
+.pjg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.pjg figure{margin:0}.pjg canvas{width:min(100%,40vh);aspect-ratio:1}
+.pjg figcaption{font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.cpb{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:center;text-align:left}#cpwV{width:min(100%,46vh);aspect-ratio:1;justify-self:center;touch-action:none;cursor:grab}.pjc h2{margin:4px 0 8px}
+.cps{display:grid;gap:8px}.cps label{font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}.cps small{color:var(--dim)}
+#cpwS{font:15px var(--display);color:var(--fg);background:#0b0e15;border:1px solid #ffffff33;padding:10px;border-radius:3px;width:100%}
+#cpwGo{display:block;margin:10px auto 0;min-width:220px;text-align:center}
+.si .acts{grid-row:1/3;grid-column:3;display:grid;gap:6px}.si .acts .act{grid-row:auto;grid-column:auto}
 #cdet .card{justify-items:center;text-align:center;max-width:380px}#cdv{width:min(100%,240px);aspect-ratio:1;touch-action:none;cursor:grab}#cdet .ss{max-width:300px}
 #cdet .row{width:100%;grid-template-columns:1fr 1fr}#cdN{font-size:28px;color:var(--accent)}
 /* Upgrade picks on short screens (phones sideways): one full-width row per option, name and rarity on the left, description and story reading across on the right */
@@ -229,7 +238,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Gale</h3><ul><li>Interceptor: 6 armor</li><li>Rapid lasers: fast fire, light damage</li><li>Fastest strafe</li></ul><div class="ss" data-ss="ship"></div>
 <h3>Falcon</h3><ul><li>Strike fighter: 9 armor</li><li>Twin cannons: medium fire rate and damage</li><li>Medium strafe</li></ul><div class="ss" data-ss="falcon"></div>
 <h3>Swift <small>(Shop, 500 Total Scrap)</small></h3><ul><li>Speed frame: 8 armor, torpedo head and torso, winged shoulders</li><li>Light rifle: Falcon's damage with slightly slower fire</li><li>Fastest strafe, and EN refills 30% faster for more dashes</li></ul><div class="ss" data-ss="swift"></div>
-<h3>Paint jobs</h3><ul><li>Buy them in the main-menu Shop's <b>Paint Jobs</b> tab with Total Scrap</li><li>Red, Blue or Yellow, each with White &amp; Black (1000 each), recolors every craft</li><li><b>Void Regalia</b>, <b>Sterling Coat</b>, <b>Gilded Coat</b> and <b>Plasma Blend</b> are earned, not bought; the <b>Unlocks</b> screen has hints</li><li>Equip or unequip one in the Shop; only one is on at a time, and none means factory colors</li></ul></div></div>
+<h3>Paint jobs</h3><ul><li>Buy them in the main-menu Shop's <b>Paint Jobs</b> tab with Total Scrap</li><li>Red, Blue or Yellow, each with White &amp; Black (1000 each), recolors every craft</li><li><b>Void Regalia</b>, <b>Sterling Coat</b>, <b>Gilded Coat</b> and <b>Plasma Blend</b> are earned, not bought; the <b>Unlocks</b> screen has hints</li><li>Preview any paint job on all your crafts from the Shop</li><li>After you pick a craft (either mode), choose a paint job and <b>Equip</b> it for that run; when the run ends your craft goes back to Default (factory colors)</li></ul></div></div>
 
 <div class="ov scr" id="how-armor" hidden><div class="card"><div class="hd"><h2>Armor &amp; Damage</h2><button class="back" data-go="how">Back</button></div>
 <h3>The armor bar</h3><ul><li><b>Green</b>: 76–100%</li><li><b>Yellow</b>: 26–75%</li><li><b>Red</b>: 25% and below. The bar pulses and a warning beep sounds</li></ul>
@@ -295,6 +304,10 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="hd"><div class="elsort">Sort: <button data-es="a" aria-pressed="true">A–Z</button><button data-es="d" aria-pressed="false" id="esD">Difficulty</button></div><span id="elSeen"></span></div>
 <div id="elL"></div></div></div>
 <div id="rotate" hidden><div class="ph"></div><h2>Turn your device sideways</h2><p>In the Dark of Space plays in landscape, so you can see the whole field.</p></div>
+<div class="ov pjo" id="pjv" hidden style="z-index:61"><div class="card pjc"><div class="pjh"><button class="back" id="pjvBack">Back</button></div><h2 id="pjvN"></h2><div id="pjvL" class="pjg"></div></div></div>
+<div class="ov pjo" id="cpw" hidden style="z-index:61"><div class="card pjc"><div class="pjh"><button class="back" id="cpwBack">Back</button></div><h2 id="cpwN"></h2>
+<div class="cpb"><canvas id="cpwV" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><div class="cps"><label for="cpwS">Paint job</label><select id="cpwS"></select><button class="act" id="cpwE"></button><small>Drag the craft to turn it</small></div></div>
+<button id="cpwGo"><b>Begin Expedition</b></button></div></div>
 <div class="ov" id="cdet" hidden><div class="card"><canvas id="cdv" width="384" height="384" aria-label="Craft model. Drag to rotate."></canvas><h2 id="cdN"></h2><div class="ss" id="cdS"></div><p>Drag to rotate</p><div class="row"><button id="cdGo"><b>Launch</b><span>Start with this craft.</span></button><button id="cdBack"><b>Back</b><span>Choose another.</span></button></div></div></div>
 <div class="ov" id="evt" hidden><div class="card"><h2 id="evH"></h2><p id="evT"></p><div class="row" id="evO"></div></div></div>
 <div class="ov" id="pick" hidden><div class="card"><h2 id="pickT">Sector cleared</h2><p>Choose one upgrade from the salvage.</p><div class="row" id="opts"></div></div></div>
@@ -591,16 +604,16 @@ const MODELS={
  magpie:()=>{const g=build('magpie',MAGPIE,MPAL,.2);g.userData.wings=build('mwing',MWING,MPAL,.2);g.add(g.userData.wings);return g},wchunk:()=>build('wchunk',WCHUNK,MPAL,.2),magpi:()=>build('magpi',MAGPI,MPAL,.12),nest:()=>build('nest',NEST,{...MPAL,o:0x8a6a3a,b:0x5a4426},.12),hulk:()=>build('hulk',HULK,{...P,o:0x7a4a2a},.2),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
- mech:(p=PAINT)=>rig('mech',KESTREL,pp(P,p),.065,9,[32,36],[36,41],[41],1.6,1.95,.7,[.715,.91,1.625]),
- ship:(p=PAINT)=>build('ship'+p,GALE,pp(P,p),.07,2),
- falcon:(p=PAINT)=>build('falcon'+p,FALCON,pp(P,p),.07,2),
- swift:(p=PAINT)=>rig('swift',SWIFT,pp({...P,s:0x2fb6c9},p),.05,4,[16,19],[22,25],[],1,1.55,.45,[.425,.875,.9]),
+ mech:(p='')=>rig('mech',KESTREL,pp(P,p),.065,9,[32,36],[36,41],[41],1.6,1.95,.7,[.715,.91,1.625]),
+ ship:(p='')=>build('ship'+p,GALE,pp(P,p),.07,2),
+ falcon:(p='')=>build('falcon'+p,FALCON,pp(P,p),.07,2),
+ swift:(p='')=>rig('swift',SWIFT,pp({...P,s:0x2fb6c9},p),.05,4,[16,19],[22,25],[],1,1.55,.45,[.425,.875,.9]),
  chaser:()=>build('chaser',[...DRUDGE,...ARMS.chaser],{...P,v:0xb59a68,o:0xd9dde3,m:0xff3030},.08),
  shooter:()=>build('shooter',[...DRUDGE,...ARMS.shooter],{...P,v:0x7f8c96,o:0x262a31,m:0xff3030},.08),
  brute:()=>build('brute',[...DRUDGE,...ARMS.brute],{...P,v:0x8a3b32,o:0x262a31,m:0xffd030},.11)};
 // Paint jobs recolor a player craft's palette by tone: bright cyan lights stay, saturated accents take the accent color,
-// then dark/mid/light tones take the paint's three colors. PAINT (localStorage 'darkpaint') is the equipped job, '' = factory.
-// One job is equipped at a time. Each fits every craft. c = shop swatch color, cost = Total Scrap price
+// then dark/mid/light tones take the paint's three colors. PJ holds the job equipped for the next run per craft, '' = factory. It's set in the paint bay before launch,
+// kept in the run (st.paint, so resumed runs keep it) and cleared when the run ends. Every job fits every craft. c = shop swatch color, cost = Total Scrap price
 const PAINTS={rwb:{n:'Red, White & Black',c:'#e8303a',acc:0xc8141e,t:[0x121316,0xc8141e,0xeceef1]},
  bwb:{n:'Blue, White & Black',c:'#3d7dff',acc:0x1f5fd6,t:[0x121316,0x1f5fd6,0xeceef1]},
  ywb:{n:'Yellow, White & Black',c:'#f2c21a',acc:0xf2c21a,t:[0x121316,0xf2c21a,0xeceef1]},
@@ -609,7 +622,7 @@ const PAINTS={rwb:{n:'Red, White & Black',c:'#e8303a',acc:0xc8141e,t:[0x121316,0
  sterling:{n:'Sterling Coat',c:'#c9d2dc',acc:0x2a9bff,t:[0x2a9bff,0xaeb6c0,0xf4f6f8,0xc4cad3],lock:'Face a worthy foe and leave without a scratch.',d:'polished silver with white panels and neon blue trim'},
  gilded:{n:'Gilded Coat',c:'#e6bf45',acc:0xa324ff,t:[0xa324ff,0xc9971f,0xf6f2e6,0xe2b93f],lock:'Humble a mighty foe without a single scratch.',d:'gold leaf with white panels and neon purple trim'},
  plasma:{n:'Plasma Blend',c:'#39ff7a',acc:0x8d939b,t:[0x9d24ff,0x39ff7a,0xff3fb4,0x39ff7a],lock:'Race the clock, and never pass up a gift.',d:'neon green, pink and purple with a touch of dull silver'}},CRAFTS=['mech','ship','falcon','swift'];
-let PAINT='';try{PAINT=localStorage.getItem('darkpaint')||''}catch(e){}
+const PJ={};
 function pp(pal,p){const J=PAINTS[p];if(!J)return pal;const c=new THREE.Color(),h={};
  return Object.fromEntries(Object.entries(pal).map(([k,v])=>{c.setHex(v).getHSL(h);const L=.3*c.r+.59*c.g+.11*c.b;
   return [k,h.h>.42&&h.h<.6&&h.s>.5&&h.l>.58?v:h.s>.45&&h.l>.3?J.acc:J.t[L<.25?0:L<.42?1:L<.6||!J.t[3]?2:3]]}))}
@@ -625,7 +638,7 @@ PAINTS.sterling.fx=(c,h,q)=>{if(h.s>.35)return;const g=Math.pow(.5+.5*Math.sin((
  c.setHSL(.6,.1,THREE.MathUtils.clamp(.16+.3*q.y+.12*h.l+.06*Math.sin(q.y*70)+.38*g,.14,.82))};
 PAINTS.plasma.fx=(c,h,q)=>{if(h.s<.5||h.h>.45&&h.h<.6)return;const t=((q.x*.8+q.y*1.2+q.z*.5)*3.2%3+3)%3,i=Math.floor(t),w=t-i;
  c.lerp(NEON[i].clone().lerp(NEON[(i+1)%3],w*w*(3-2*w)),.85)};
-for(const k of CRAFTS){const f=MODELS[k];MODELS[k]=(p=PAINT)=>{const g=f(p),x=PAINTS[p]&&PAINTS[p].fx;return x?finish(g,x):g}}
+for(const k of CRAFTS){const f=MODELS[k];MODELS[k]=(p=PJ[k]||'')=>{const g=f(p),x=PAINTS[p]&&PAINTS[p].fx;return x?finish(g,x):g}}
 for(const p in PAINTS)MODELS['paint_'+p]=()=>MODELS.mech(p);
 // Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
 let world=new THREE.Group();S.add(world);const stars=[];
@@ -791,8 +804,8 @@ function keepSave(v){try{v?localStorage.setItem('darksave',v):localStorage.remov
 function resumeBtn(){const b=$('pResume');b.hidden=!runSave;if(runSave)$('resumeS').textContent=`${BASE[runSave.kind].name} · Sector ${runSave.sec}${runSave.b45===1?'.5':''} · ${runSave.scrap} scrap`}
 // Low Profile: shrink the craft and its hit radius (I 10%, II 15%, III 20%)
 function applySize(){const k=[1,.9,.85,.8][Math.min(3,st.lowp||0)];if(player)player.userData.body.scale.setScalar(k);st.pr=(st.pr0||.6)*k}
-function resume(){const sv=runSave;keepSave(null);start(sv.kind);ents.forEach(e=>S.remove(e.m));ents=[];Object.assign(st,sv);st.banked=0;applySize();hud();wave()}
-function start(kind,timed){secSnap=null;if(!timed)keepSave(null);fx.forEach(f=>S.remove(f.m));fx.length=0;pfx.forEach(q=>S.remove(q.m));pfx.forEach(q=>q.m.material.dispose());pfx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
+function resume(){const sv=runSave;keepSave(null);PJ[sv.kind]=sv.paint||'';start(sv.kind);ents.forEach(e=>S.remove(e.m));ents=[];Object.assign(st,sv);st.banked=0;applySize();hud();wave()}
+function start(kind,timed){secSnap=null;if(!timed)keepSave(null);fx.forEach(f=>S.remove(f.m));fx.length=0;pfx.forEach(q=>S.remove(q.m));pfx.forEach(q=>q.m.material.dispose());pfx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());if(!player.userData.body.userData.legs){const bb=new THREE.Box3().setFromObject(player.userData.body),eg=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));eg.position.set(0,(bb.min.y+bb.max.y)/2,bb.min.z);player.userData.body.add(player.userData.eg=eg)}player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);{const z=new THREE.Box3().setFromObject(player.userData.body).getSize(new THREE.Vector3());st.pr=st.pr0=Math.max(.6,(z.x+z.z)/4*.9)}
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -1781,7 +1794,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,12+(Math.random()-.5)*shake,7.5+pz*.6);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-9+pz*.5);
   // Scion death: the camera slowly pushes in on it and holds there until Continue
   if(FALL){const k=Math.min(1,FALL.t/2.4),e=k*k*(3-2*k),q=FALL.p;C.position.lerp(T.set(q.x*.6,q.y+6,q.z+16),e*.6);C.lookAt(px*.2*(1-e)+q.x*e,q.y*e,(-9+pz*.5)*(1-e)+q.z*e)}}R.render(S,C)}
-document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>start(b.dataset.t,true));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>reelOpen(()=>start(k));
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.t,()=>start(b.dataset.t,true)));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>cpOpen(k,()=>reelOpen(()=>start(k)));
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
 {const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
@@ -1831,29 +1844,48 @@ const SHOP={
   {id:'craft:swift',n:'Swift',d:'Speed frame. Fastest strafe and EN refill; 8 armor. Flies in Campaign and Timed Attack.',icon:'swift',cost:500},
   {id:'craft:more',n:'More crafts',d:'Other machines are on the way.',soon:1}]},
  paint:{intro:'Paint jobs change how your crafts look.',items:[
-  ...Object.entries(PAINTS).map(([k,p])=>({id:'paint:'+k,n:p.n,d:p.d?`Fits every craft: ${p.d}.`:`Fits every craft: ${p.n.split(',')[0].toLowerCase()} trim, white panels, black plating. Only one paint job is on at a time.`,icon:'paint_'+k,c:p.c,cost:1000,lock:p.lock})),
+  ...Object.entries(PAINTS).filter(([,p])=>!p.lock).map(([k,p])=>({id:'paint:'+k,n:p.n,d:p.d?`Fits every craft: ${p.d}.`:`Fits every craft: ${p.n.split(',')[0].toLowerCase()} trim, white panels, black plating. Equip it for a run after you pick a craft.`,icon:'paint_'+k,c:p.c,cost:1000,lock:p.lock})),
   {id:'paint:more',n:'More paint jobs',d:'Custom colors are on the way.',soon:1}]}};
 let shopTab='upgrades',shopYaw=0,shopAsk=null;
 function renderShop(){$('shopBank').textContent=bankT;const T=SHOP[shopTab];$('shopIntro').textContent=T.intro;
  document.querySelectorAll('.stabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===shopTab));
- $('shopL').innerHTML=T.items.filter(it=>!it.req||LIFE[it.req]||OWNED.includes(it.id)).map(it=>{const own=OWNED.includes(it.id),pk=it.id.startsWith('paint:')&&it.id.slice(6),act=own&&pk?`<button class="act" data-paint="${pk}">${PAINT===pk?'Unequip':'Equip'}</button>`:own?'<em class="own">Owned</em>':it.soon?'<em class="soon">Coming soon</em>':it.lock?'<em class="soon">Locked</em>':
+ $('shopL').innerHTML=T.items.filter(it=>!it.req||LIFE[it.req]||OWNED.includes(it.id)).map(it=>{const own=OWNED.includes(it.id),pk=it.id.startsWith('paint:')&&it.id.slice(6),act=own&&pk?'<button class="act" disabled>Purchased</button>':own?'<em class="own">Owned</em>':it.soon?'<em class="soon">Coming soon</em>':it.lock?'<em class="soon">Locked</em>':
   shopAsk===it.id?`<button class="act" data-buy="${it.id}">Confirm · ${it.cost}</button>`:`<button class="act" data-ask="${it.id}" ${bankT<it.cost?'disabled':''}>${it.cost} scrap</button>`;
-  return `<div class="si" style="--c:${it.c||'#aab1bd'}">${it.icon&&!(it.lock&&!own)?`<canvas width="112" height="112" data-k="${it.icon}"></canvas>`:`<div class="ph">${it.soon||it.lock&&!own?'?':'◆'}</div>`}<b>${it.n}${it.tag?` <em class="rar" style="color:${it.c}">${it.tag}</em>`:''}</b><span>${it.lock&&!own?'<i class="goal">Hint: '+it.lock+'</i>':it.d}</span>${act}</div>`}).join('')}
+  return `<div class="si" style="--c:${it.c||'#aab1bd'}">${it.icon&&!(it.lock&&!own)?`<canvas width="112" height="112" data-k="${it.icon}"></canvas>`:`<div class="ph">${it.soon||it.lock&&!own?'?':'◆'}</div>`}<b>${it.n}${it.tag?` <em class="rar" style="color:${it.c}">${it.tag}</em>`:''}</b><span>${it.lock&&!own?'<i class="goal">Hint: '+it.lock+'</i>':it.d}</span>${pk?`<div class="acts">${act}<button class="act" data-pv="${pk}">Preview</button></div>`:act}</div>`}).join('')}
 document.querySelectorAll('.stabs button').forEach(b=>b.onclick=()=>{shopTab=b.dataset.tab;shopAsk=null;renderShop()});
-$('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest('[data-buy]'),pt=e.target.closest('[data-paint]');
- if(pt)setPaint(PAINT===pt.dataset.paint?'':pt.dataset.paint);
+$('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest('[data-buy]'),pv=e.target.closest('[data-pv]');
+ if(pv)pjvOpen(pv.dataset.pv);
  else if(a){shopAsk=a.dataset.ask;renderShop()}
  else if(y){const it=Object.values(SHOP).flatMap(t=>t.items).find(i=>i.id===y.dataset.buy);if(it&&bankT>=it.cost){bankT-=it.cost;OWNED.push(it.id);
-  try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}totT();syncCrafts();if(it.id.startsWith('paint:'))setPaint(it.id.slice(6))}shopAsk=null;renderShop()}};
-// Equip a paint job ('' = factory colors); cached craft thumbnails are dropped so they rebuild in the new colors
-function setPaint(p){PAINT=p;try{localStorage.setItem('darkpaint',p)}catch(e){}for(const k of CRAFTS)if(TM[k]){TS.remove(TM[k].g);delete TM[k]}renderShop()}
+  try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}totT();syncCrafts()}shopAsk=null;renderShop()}};
+// Equip a paint job on one craft for the next run ('' = factory colors); its cached thumbnail is dropped so it rebuilds in the new colors
+function setPaint(k,p){PJ[k]=p;if(TM[k]){TS.remove(TM[k].g);delete TM[k]}}
+// Preview model key for a craft in a given paint, registered on first use
+function pvKey(k,p){const key='pv_'+k+'_'+(p||'d');if(!MODELS[key])MODELS[key]=()=>MODELS[k](p);return key}
+const ownedCrafts=()=>CRAFTS.filter(k=>!BASE[k].shop||OWNED.includes(BASE[k].shop));
+// Shop paint preview: every craft you own, slowly turning in the chosen paint
+let pjYaw=0;function pjvOpen(p){$('pjvN').textContent=PAINTS[p].n;$('pjvL').innerHTML=ownedCrafts().map(k=>`<figure><canvas width="256" height="256" data-k="${pvKey(k,p)}"></canvas><figcaption>${BASE[k].name}</figcaption></figure>`).join('');$('pjv').hidden=false}
+$('pjvBack').onclick=()=>$('pjv').hidden=true;
+// Paint bay: opens after picking a craft in either mode, always in factory colors. Drag the craft to turn it, pick a paint, equip it for this run, then launch
+let cpK=null,cpSel='',cpGo=null,cpYaw=.6,cpDrag=null;
+function cpOpen(k,go){cpK=k;cpGo=go;setPaint(k,'');cpSel='';$('cpwN').textContent=BASE[k].name;
+ const own=Object.keys(PAINTS).filter(p=>OWNED.includes('paint:'+p)).sort((a,b)=>PAINTS[a].n.localeCompare(PAINTS[b].n));
+ $('cpwS').innerHTML='<option value="">Default</option>'+own.map(p=>`<option value="${p}">${PAINTS[p].n}</option>`).join('');$('cpwS').value=cpSel;cpEq();$('cpw').hidden=false}
+function cpEq(){const eq=PJ[cpK]||'',b=$('cpwE');b.disabled=cpSel===eq&&!eq;b.textContent=cpSel!==eq?'Equip':eq?'Unequip':'Equipped'}
+$('cpwS').onchange=e=>{cpSel=e.target.value;cpEq()};
+$('cpwE').onclick=()=>{const eq=PJ[cpK]||'';if(cpSel===eq){if(!eq)return;cpSel='';$('cpwS').value=''}setPaint(cpK,cpSel);cpEq()};
+$('cpwBack').onclick=()=>$('cpw').hidden=true;$('cpwGo').onclick=()=>{$('cpw').hidden=true;cpGo&&cpGo()};
+$('cpwV').onpointerdown=e=>{cpDrag=e.clientX;$('cpwV').setPointerCapture(e.pointerId)};$('cpwV').onpointermove=e=>{if(cpDrag!=null){cpYaw+=(e.clientX-cpDrag)*.01;cpDrag=e.clientX}};
+$('cpwV').onpointerup=$('cpwV').onpointercancel=()=>cpDrag=null;
 document.querySelector('[data-go=store]').addEventListener('click',()=>{shopAsk=null;renderShop()});
 function syncCrafts(){document.querySelectorAll('[data-own]').forEach(b=>{const w=b.closest('.cr')||b;w.hidden=!OWNED.includes(b.dataset.own)})}
 syncCrafts();document.querySelectorAll('[data-go=crafts],[data-go=timed]').forEach(b=>b.addEventListener('click',syncCrafts));
 function renderUnlocks(){$('unlL').innerHTML=UNLOCKS.map(x=>{const pj=PAINTS[x.id.slice(6)],u=x.id.startsWith('paint:')?[pj.n,'Paint job: fits every craft. Equip it in the Shop\'s Paint Jobs tab.',0,'p','paint_'+x.id.slice(6)]:UPG.find(v=>'up:'+v[0]===x.id),have=Math.min(LIFE[x.stat]||0,x.goal),done=OWNED.includes(x.id);
  return `<div class="si" style="--c:${RCOL[u[3]]}">${done?`<canvas width="112" height="112" data-k="${u[4]}"></canvas>`:'<div class="ph">?</div>'}<b>${u[0]} <em class="rar" style="color:${RCOL[u[3]]}">${RAR[u[3]]}</em></b><span>${done?u[1]+'<br>':''}<i class="goal">${done?x.how:'Hint: '+x.hint}</i><span class="prg"><span class="pbar"><i style="width:${have/x.goal*100}%"></i></span>${done?'':`${have} / ${x.goal}`}</span></span>${done?'<em class="own">Unlocked</em>':'<em class="soon">Locked</em>'}</div>`}).join('')}
 document.querySelector('[data-go=unlocks]').addEventListener('click',renderUnlocks);
-function shopTick(dt){const sh=!$('store').hidden,ul=!$('unlocks').hidden;if(!sh&&!ul)return;shopYaw+=dt*.9;$(sh?'shopL':'unlL').querySelectorAll('canvas[data-k]').forEach(c=>snap(c.dataset.k,shopYaw,c,c.dataset.k.startsWith('u_')?.75:.72))}
+function shopTick(dt){if(!$('cpw').hidden){if(cpDrag==null)cpYaw+=dt*.4;snap(pvKey(cpK,cpSel),cpYaw,$('cpwV'),.75);return}
+ if(!$('pjv').hidden){pjYaw+=dt*.5;$('pjvL').querySelectorAll('canvas').forEach(c=>snap(c.dataset.k,pjYaw,c,.85));return}
+ const sh=!$('store').hidden,ul=!$('unlocks').hidden;if(!sh&&!ul)return;shopYaw+=dt*.9;$(sh?'shopL':'unlL').querySelectorAll('canvas[data-k]').forEach(c=>snap(c.dataset.k,shopYaw,c,c.dataset.k.startsWith('u_')?.75:.72))}
 function thumbTick(dt){shopTick(dt);if(!PHONE.matches)return;thYaw+=dt*.9;
  if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
  for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}
@@ -1870,7 +1902,7 @@ const TOUCH=matchMedia('(pointer:coarse)');
 function landscape(){const d=document.documentElement;if(document.fullscreenElement)return;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>TOUCH.matches&&screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
-function toMenu(){music(null);staticOn(0);FALL=null;menuReady=0;clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
+function toMenu(){for(const k of CRAFTS)if(PJ[k])setPaint(k,'');music(null);staticOn(0);FALL=null;menuReady=0;clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;$('pzSave').onclick=()=>{paused=running=false;keepSave(secSnap);toMenu()};$('pResume').onclick=resume;resumeBtn();
