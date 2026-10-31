@@ -581,8 +581,11 @@ const MODELS={
  magpie:()=>{const g=build('magpie',MAGPIE,MPAL,.2);g.userData.wings=build('mwing',MWING,MPAL,.2);g.add(g.userData.wings);return g},wchunk:()=>build('wchunk',WCHUNK,MPAL,.2),magpi:()=>build('magpi',MAGPI,MPAL,.12),nest:()=>build('nest',NEST,{...MPAL,o:0x8a6a3a,b:0x5a4426},.12),hulk:()=>build('hulk',HULK,{...P,o:0x7a4a2a},.2),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
- mech:(p=PAINT)=>{const g=build('mechU'+p,KESTREL.slice(9),pp(P,p),.065,2),l=build('mechL'+p,KESTREL.slice(0,9),pp(P,p),.065,2),h=new THREE.Group();
-  h.position.y=1.6;l.position.y=-1.6;h.add(l);g.add(h);g.userData.legs=h;return g},
+ mech:(p=PAINT)=>{const g=build('mechU'+p,KESTREL.slice(9,32).concat(KESTREL.slice(42)),pp(P,p),.065,2),l=build('mechL'+p,KESTREL.slice(0,9),pp(P,p),.065,2),h=new THREE.Group();
+  h.position.y=1.6;l.position.y=-1.6;h.add(l);g.add(h);g.userData.legs=h;
+  // Arms hang from shoulder pivots: right carries the rifle, left the shield
+  const sh=KESTREL.slice(32,36),arm=(k,pt,sx)=>{const a=build(k+p,pt,pp(P,p),.065,2),j=new THREE.Group();j.position.set(sx*.7,1.95,0);a.position.set(-sx*.7,-1.95,0);j.add(a);g.add(j);return j};
+  g.userData.arms=[arm('mechR',sh.map(q=>[...q.slice(0,7),0,q[8]]).concat(KESTREL.slice(36,41)),1),arm('mechA',sh.map(q=>[-q[0]-q[3],...q.slice(1,7),0,q[8]]).concat([KESTREL[41]]),-1)];return g},
  ship:(p=PAINT)=>build('ship'+p,GALE,pp(P,p),.07,2),
  falcon:(p=PAINT)=>build('falcon'+p,FALCON,pp(P,p),.07,2),
  swift:(p=PAINT)=>build('swift'+p,SWIFT,pp({...P,s:0x2fb6c9},p),.05,2),
@@ -1638,7 +1641,8 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45-mz*(mz<0?.25:.55):.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15;
    // Kestrel legs hang weightless, trailing opposite the strafe
-   const L=b.userData.legs;if(L){const w=.18-mz*(mz<0?.55:.6)+Math.sin(now/260)*.05;L.rotation.x+=(w-b.rotation.x-L.rotation.x)*.08}}
+   const L=b.userData.legs;if(L){const w=.18-mz*(mz<0?.55:.6)+Math.sin(now/260)*.05;L.rotation.x+=(w-b.rotation.x-L.rotation.x)*.08}
+   if(b.userData.arms)b.userData.arms.forEach((A,i)=>{if(!i){A.rotation.set(-b.rotation.x,0,0);return}A.rotation.x+=(-mz*(mz<0?.3:.25)+Math.sin(now/300+i*1.7)*.04-A.rotation.x)*.06;A.rotation.z+=(mx*.3-A.rotation.z)*.06})}
   const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull||st.empT);apexG.material.opacity=ap?.12:.06;
   if(st.claw&&!FALL&&(st.clawT=(st.clawT||0)-dt)<=0){let b=null,bd=12;for(const s of shots)if(s.enemy&&s.life>0){const d=hd(s.m.position,p);if(d<bd){bd=d;b=s}}
    if(b){st.clawT=8;b.life=0;boom(b.m.position,6,0x3affd0);fire(p,V3(0,-1),st.shot,st.dmg+3,false,0x3affd0,st.pierce,1.6)}}
