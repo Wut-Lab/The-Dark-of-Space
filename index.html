@@ -1392,7 +1392,7 @@ const UPG=[['Tune-up','+5% damage, fire rate and strafe speed',s=>{s.dmg*=1.05;s
  ['Dash Burst','Dashing with over 50% EN (II: 40%; III: 30%) fires one 50% wider shot straight up the lane (1 s cooldown). Dashes cost 5% more EN',s=>s.dburst=(s.dburst||0)+1,'c','u_tune'],
  ['Phantom Armor','Start each zone with a 1-hit Barrier (III: 2 hits)',s=>s.phan=(s.phan||0)+1,'u','u_tune'],
  // Tractor Coils: capsules fall faster and wait at your row before leaving
- ['Low Profile','Your craft shrinks 10%, and its hit box with it, but -1 max armor (II: 15% smaller, -1 more; III: 20% smaller, -1 more)',s=>{s.lowp=(s.lowp||0)+1;s.max=Math.max(1,s.max-1);s.hp=Math.min(s.hp,s.max);applySize()},'u','u_lowp',0,'khit'],
+ ['Low Profile','Your craft shrinks 10%, and its hit box with it, but -1 max armor (II: 15% smaller; III: 20% smaller, -1 more)',s=>{s.lowp=(s.lowp||0)+1;if(s.lowp!==2){s.max=Math.max(1,s.max-1);s.hp=Math.min(s.hp,s.max)}applySize()},'u','u_lowp',0,'khit'],
  ['Tractor Coils','Power-up capsules drift toward you 20% faster and wait at your row 1 s longer (II: 25%, 1 s; III: 30%, 2 s)',s=>s.trac=(s.trac||0)+1,'c','u_trac',0,'pwr'],
  ['Point Blank','+10% damage to units in the lower half of the field (II: 15%; III: 20%)',s=>s.pb=(s.pb||0)+1,'c','u_pb'],
  // Scrap Weld: scrap gained fills a meter; when full, repair armor and spend a little scrap (max 2 welds per sector)
