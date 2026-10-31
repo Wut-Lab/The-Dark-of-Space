@@ -1359,7 +1359,7 @@ function fire(from,dir,spd,dmg,enemy,col,pierce,w=1){const m=new THREE.Mesh(BOX,
 // Upgrades (permanent for the run; power-ups are the temporary drops): [name, effect, apply, rarity, icon model]. Rarity c common, u uncommon, r rare, x contraband (strong, with a drawback)
 const UPG=[['Tune-up','+5% damage, fire rate and strafe speed',s=>{s.dmg*=1.05;s.rate/=1.05;s.spd*=1.05},'c','u_tune'],
  ['Salvage claws','+1 scrap per unit destroyed',s=>s.sb++,'u','u_claw'],['Rail barrel','Shots fly 50% faster and pass through 1 more unit',s=>{s.shot*=1.5;s.pierce+=1},'r','u_rail'],
- ['Extra Armor','+1 max armor (II: +1 more; III: +1 more, and once per sector a hit that would cost 2+ armor costs 1 less)',s=>{s.xarm=(s.xarm||0)+1;s.max++;s.hp++},'c','u_xarm'],
+ ['Extra Armor','+1 max armor (II: +1 more; III: once per sector, a hit that would cost 2+ armor costs 1 less)',s=>{s.xarm=(s.xarm||0)+1;if(s.xarm<3){s.max++;s.hp++}},'c','u_xarm'],
  ['Black Ice Plating','Hits cost 1 less armor (never below 1), but all repairs are halved (II: also +2 max armor; III: hits of 3+ cost 2 less)',s=>{const t=s.bip=(s.bip||0)+1;if(t===2){s.max+=2;s.hp+=2}},'x','u_bice'],
  ['Hair trigger','+1 projectile per volley, but strafe 25% slower',s=>{s.multi+=1;s.spd*=.75},'x','u_trig'],
  ['Enhanced EMPs','EMPs freeze units 0.2 s longer per tier (2.7 / 2.9 / 3.1 s)',s=>s.empB+=.2,'c','u_emp'],
