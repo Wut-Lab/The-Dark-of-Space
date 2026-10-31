@@ -343,6 +343,12 @@ const P={g:0x6b7280,d:0x262a31,a:0x56606b,b:0x6b7350,h:0xe8742a,l:0x4fe8ff,y:0xf
 // 'wing' leading/trailing edges sweep back toward the tip, 'fin' leading edge sweeps back with height.
 // k subdivides every part for finer voxels. Hidden interior cells are culled; colors get slight jitter.
 const memo={};
+// Legged frame: legs [0,nl) hang from a hip pivot; arm parts [a0,a1) are mirrored onto shoulder pivots, right arm takes gun parts, left takes shield parts
+function rig(key,K,pal,s,nl,[a0,a1],[g0,g1],sh,hy,sy,sx){const pk=key+JSON.stringify(pal),used=new Set([...Array(nl).keys()]);for(let i=a0;i<a1;i++)used.add(i);for(let i=g0;i<g1;i++)used.add(i);sh.forEach(i=>used.add(i));
+ const g=build(pk+'U',K.filter((_,i)=>!used.has(i)),pal,s,2),l=build(pk+'L',K.slice(0,nl),pal,s,2),h=new THREE.Group();
+ h.position.y=hy;l.position.y=-hy;h.add(l);g.add(h);g.userData.legs=h;
+ const am=K.slice(a0,a1),arm=(k,pt,d)=>{const a=build(pk+k,pt,pal,s,2),j=new THREE.Group();j.position.set(d*sx,sy,0);a.position.set(-d*sx,-sy,0);j.add(a);g.add(j);return j};
+ g.userData.arms=[arm('R',am.map(q=>[...q.slice(0,7),0,q[8]]).concat(K.slice(g0,g1)),1),arm('A',am.map(q=>[-q[0]-q[3],...q.slice(1,7),0,q[8]]).concat(sh.map(i=>K[i])),-1)];return g}
 function build(key,parts,pal,s,k=1){if(!memo[key]){const cells=new Map();
  for(const part of parts){const [x,y,z,w,h,d]=part.slice(0,6).map(v=>v*k),[,,,,,,c,M,sh]=part;
   for(const x0 of M?[x,-x-w]:[x])for(let i=0;i<w;i++)for(let j=0;j<h;j++)for(let q=0;q<d;q++){
@@ -581,14 +587,10 @@ const MODELS={
  magpie:()=>{const g=build('magpie',MAGPIE,MPAL,.2);g.userData.wings=build('mwing',MWING,MPAL,.2);g.add(g.userData.wings);return g},wchunk:()=>build('wchunk',WCHUNK,MPAL,.2),magpi:()=>build('magpi',MAGPI,MPAL,.12),nest:()=>build('nest',NEST,{...MPAL,o:0x8a6a3a,b:0x5a4426},.12),hulk:()=>build('hulk',HULK,{...P,o:0x7a4a2a},.2),
  boss:()=>build('boss',BASTION,{...P,v:0x4a4f58,o:0x6a2e28,m:0xff3030},.2),
  wp:()=>build('wp',TURRET,{...P,o:0x8a3b32,m:0xffd030},.2),
- mech:(p=PAINT)=>{const g=build('mechU'+p,KESTREL.slice(9,32).concat(KESTREL.slice(42)),pp(P,p),.065,2),l=build('mechL'+p,KESTREL.slice(0,9),pp(P,p),.065,2),h=new THREE.Group();
-  h.position.y=1.6;l.position.y=-1.6;h.add(l);g.add(h);g.userData.legs=h;
-  // Arms hang from shoulder pivots: right carries the rifle, left the shield
-  const sh=KESTREL.slice(32,36),arm=(k,pt,sx)=>{const a=build(k+p,pt,pp(P,p),.065,2),j=new THREE.Group();j.position.set(sx*.7,1.95,0);a.position.set(-sx*.7,-1.95,0);j.add(a);g.add(j);return j};
-  g.userData.arms=[arm('mechR',sh.map(q=>[...q.slice(0,7),0,q[8]]).concat(KESTREL.slice(36,41)),1),arm('mechA',sh.map(q=>[-q[0]-q[3],...q.slice(1,7),0,q[8]]).concat([KESTREL[41]]),-1)];return g},
+ mech:(p=PAINT)=>rig('mech',KESTREL,pp(P,p),.065,9,[32,36],[36,41],[41],1.6,1.95,.7),
  ship:(p=PAINT)=>build('ship'+p,GALE,pp(P,p),.07,2),
  falcon:(p=PAINT)=>build('falcon'+p,FALCON,pp(P,p),.07,2),
- swift:(p=PAINT)=>build('swift'+p,SWIFT,pp({...P,s:0x2fb6c9},p),.05,2),
+ swift:(p=PAINT)=>rig('swift',SWIFT,pp({...P,s:0x2fb6c9},p),.05,4,[16,19],[22,25],[],1,1.55,.45),
  chaser:()=>build('chaser',[...DRUDGE,...ARMS.chaser],{...P,v:0xb59a68,o:0xd9dde3,m:0xff3030},.08),
  shooter:()=>build('shooter',[...DRUDGE,...ARMS.shooter],{...P,v:0x7f8c96,o:0x262a31,m:0xff3030},.08),
  brute:()=>build('brute',[...DRUDGE,...ARMS.brute],{...P,v:0x8a3b32,o:0x262a31,m:0xffd030},.11)};
