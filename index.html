@@ -148,7 +148,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div id="timer" hidden><b id="clock">3:00</b><span id="tpop"></span></div>
 <div id="pwrap" hidden><div id="pups"></div><span id="ppop"></span></div>
 <div id="banner" hidden><div class="bt"></div><div class="bs"></div></div>
-<div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span><span title="Damage per shot">DMG <b id="dmgR">1</b></span><span title="Shots fired per second, counting every shot in a volley">SHOT RATE <b id="rofR">0</b>/s</span><span title="Volleys per second (the Cycle stat)">CYCLE <b id="cycR">0</b>/s</span></div>
+<div id="hud" hidden><span id="pilot"></span><div id="bar"><i></i></div><span id="hpt"></span><span>EN</span><div id="bar2"><i id="en"></i></div><button id="boost">DASH · SHIFT</button><span><span id="secL">Sector</span> <b id="sec">1</b></span><span>Units left <b id="left">0</b></span><span>Scrap <b id="scr">0</b></span><span title="Damage per shot">DMG <b id="dmgR">1</b></span><span title="Volleys per second (the Cycle stat)">CYCLE <b id="cycR">0</b>/s</span></div>
 <style>#dead.vin{animation:vfi 1.2s}
 /* Victory card: violet-and-gold frame with a white-gold glow that diffuses out and slowly pulses, a spaced title over a thin rule, and a softer summary panel */
 #dead.vin .card{position:relative;border:1px solid #c9a24a99;background:radial-gradient(120% 80% at 50% 0%,#3a1f5e,var(--panel) 60%);box-shadow:0 0 0 1px #b060ff33 inset,0 0 10px #ffffffaa,0 0 34px #f3d77a88,0 0 90px #e8c86a44,0 0 160px #e8c86a22;animation:vglow 4s ease-in-out infinite alternate}
@@ -248,7 +248,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="how-sectors" hidden><div class="card"><div class="hd"><h2>Sectors</h2><button class="back" data-go="how">Back</button></div>
 <h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li><li>You get about 5 seconds of open space before each wave flies in</li><li>Each sector has its own music: <i>Starfall Run</i> in normal sectors and <i>Gold Rush</i> in Bonus Stages. In boss sectors the music cuts out until the boss arrives, then <i>Iron Titan</i> kicks in. Some zones have their own sector and boss themes</li></ul>
-<h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li><li><b>DMG</b>, <b>SHOT RATE</b> and <b>CYCLE</b> in the top bar show your damage per shot, shots fired per second (every shot in a volley counts) and volleys fired per second, so you can see what upgrades do</li></ul>
+<h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li><li><b>DMG</b> and <b>CYCLE</b> in the top bar show your damage per shot and volleys fired per second, so you can see what upgrades do</li></ul>
 <h3>Waves</h3><ul><li>Each sector has 2 waves (3 from sector 10). The banner shows which wave you're on</li><li>Clear a wave and <b>WAVE CLEAR</b> flashes; the next wave arrives a moment later</li><li>Boss and Bonus sectors are a single wave</li></ul>
 <h3>End</h3><ul><li>When the last wave's Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose an upgrade and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li><li>New enemy types join as you go deeper</li></ul></div></div>
 
@@ -331,7 +331,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
 <li>Units dive at you. Shoot them mid-dive for double scrap.</li>
 <li>Clear a sector to pick one upgrade (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss: it can't be hurt for 1.5 s as it arrives and takes 25% less damage. Threat: every upgrade you take gives enemies +3% health and fire rate. Enemies shoot as they start a dive. When armor hits zero, the run ends.</li><li>Save and Quit keeps the run: resume it from Campaign, back at the start of the current sector.</li>
-<li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li><li><b>DMG</b>, <b>SHOT RATE</b> and <b>CYCLE</b> in the top bar show your damage per shot, shots fired per second (every shot in a volley counts) and volleys fired per second, so you can see what upgrades do</li>
+<li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li><li><b>DMG</b> and <b>CYCLE</b> in the top bar show your damage per shot and volleys fired per second, so you can see what upgrades do</li>
 <li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
 <li>Every 5th sector is a boss; the final boss waits at sector 40 in Dark Space, and beating it wins the run. Every 10 sectors you choose which zone to fly into next. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
 <li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). The Log lists every one you've found.</li>
@@ -1543,7 +1543,7 @@ function prog(k){if(st&&st.dev)return;const gw=GODS.map(g=>g.ok());LIFE[k]=(LIFE
  for(const u of UNLOCKS)if((u.stat===k||u.also===k)&&LIFE[u.stat]>=u.goal&&(!u.also||LIFE[u.also])&&!OWNED.includes(u.id)){OWNED.push(u.id);try{localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}popMsg('UNLOCKED: '+(u.id.startsWith('paint:')?PAINTS[u.id.slice(6)].n+' paint':u.id.slice(3)).toUpperCase(),'#ff3d6e')}}
 function flash(c){const f=$('flash');f.className='';void f.offsetWidth;f.className='go '+(c||'')}
 // Power-up rings under the HUD: fill shows time left (Barrier: hits left)
-let pupK='',enW='',dmgW='',rofW='',cycW='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/(2.5+st.empB),'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);if(st.sta>0)a.push(['sta',st.sta/5,'STA']);if(st.sld>0)a.push(['slide',st.sld/5,'SLD']);
+let pupK='',enW='',dmgW='',cycW='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/(2.5+st.empB),'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);if(st.sta>0)a.push(['sta',st.sta/5,'STA']);if(st.sld>0)a.push(['slide',st.sld/5,'SLD']);
  const k=a.map(x=>x[0]+Math.round(Math.min(1,x[1])*40)+x[2]).join();if(k===pupK)return;pupK=k;
  $('pups').innerHTML=a.map(([n,f,l])=>`<i style="--c:${DROP[n].css};--p:${Math.min(1,f)}">${l}</i>`).join('')}
 // Luna-M moth: body plus forewings and hind wings, seen from above
@@ -1914,8 +1914,8 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   if(st.qsT>0){st.qsT-=dt;sp*=1.25}
   if(st.sld>0){st.sld-=dt;sp*=1+Math.min(.3,.1+.05*Math.floor(st.scrap/50))}
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);{const w=Math.round(st.en)+'%';if(enW!==w)$('en').style.width=enW=w}
-  // HUD readouts: damage per shot, shots per second and volleys per second (Cycle) (only written when they change)
-  {const d=+st.dmg.toFixed(1)+'',r=(st.multi/st.rate).toFixed(1),c=(1/st.rate).toFixed(1);if(dmgW!==d)$('dmgR').textContent=dmgW=d;if(rofW!==r)$('rofR').textContent=rofW=r;if(cycW!==c)$('cycR').textContent=cycW=c}
+  // HUD readouts: damage per shot and volleys per second (Cycle) (only written when they change)
+  {const d=+st.dmg.toFixed(1)+'',c=(1/st.rate).toFixed(1);if(dmgW!==d)$('dmgR').textContent=dmgW=d;if(cycW!==c)$('cycR').textContent=cycW=c}
   // Instant start/stop; velocity reads 0 when pinned against a wall
   {st.vx=mx*sp;const nx=THREE.MathUtils.clamp(p.x+st.vx*dt,-FX,FX);if(nx!==p.x+st.vx*dt)st.vx=0;p.x=nx;p.z=THREE.MathUtils.clamp(p.z+mz*sp*.9*dt,-PZF,PZB)}st.pvx=st.vx;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
