@@ -214,12 +214,13 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 </div>
 <div class="pane" id="p-pu" role="tabpanel" aria-labelledby="t-pu" hidden>
 <div class="find"><input type="search" id="q" placeholder="Search power-ups…" aria-label="Search power-ups">
-<div class="fl" data-f="list"><span>List</span><button data-v="all">Both</button><button data-v="campaign">Campaign</button><button data-v="timed">Timed Attack</button></div>
+<div class="fl" data-f="list"><span>List</span><button data-v="all">All</button><button data-v="both">Both modes</button><button data-v="campaign">Campaign only</button><button data-v="timed">Timed Attack only</button></div>
 <div class="fl" data-f="status"><span>Status</span><button data-v="all">All</button><button data-v="built">Built</button><button data-v="planned">Planned</button><button data-v="proposed">Proposed</button></div>
 <div class="fl" data-f="kind"><span>Effect</span><button data-v="all">All</button><button data-v="instant">Instant</button><button data-v="timed">Lasts</button><button data-v="charges">Charges</button><button data-v="clock">Clock</button></div></div>
 <p class="sub"><b>Power-ups</b> are temporary boosts enemies drop; fly over one to use it. Permanent buffs are <b>upgrades</b> (see the Upgrades tab).</p>
-<section class="list" id="l-campaign"><h2>Campaign <small></small></h2><div class="items"></div></section>
-<section class="list" id="l-timed"><h2>Timed Attack <small></small></h2><div class="items"></div></section>
+<section class="list" id="l-both"><h2>Both Game Modes <small></small></h2><div class="items"></div></section>
+<section class="list" id="l-campaign"><h2>Campaign Only <small></small></h2><div class="items"></div></section>
+<section class="list" id="l-timed"><h2>Timed Attack Only <small></small></h2><div class="items"></div></section>
 <p class="sub">Planned items come from module 03. Proposed items are Claude's suggestions for Campaign-only drops; edit or reject them in the notes.</p>
 </div>
 <div class="pane" id="p-en" role="tabpanel" aria-labelledby="t-en" hidden>
@@ -263,6 +264,8 @@ const PU=[
  {n:'Gold Capsule',c:'#ffd23a',m:'t',s:'built',k:'clock',d:'+5 s and 2.5 s of invulnerability. Rare'},
  {n:'Repair Kit',c:'#ff5a6e',m:'c',s:'proposed',k:'instant',d:'Repairs 3 armor (Timed Attack has no armor)'},
  {n:'Scrap Magnet',c:'#ffb040',m:'c',s:'proposed',k:'timed',d:'Double scrap from kills for 8 s'},
+ {n:'Scrap Slide',c:'#ffc94a',m:'c',s:'built',k:'timed',d:'Post-game: drops once the Scion has fallen. For 5 s, +10% strafe speed plus 5% per 50 scrap held (up to +30%), and kills pay +1 scrap'},
+ {n:'Stasis',c:'#9ff0ff',m:'t',s:'built',k:'timed',d:'Post-game: drops once the Scion has fallen. Stops the clock for 5 s, and every unit and enemy shot moves at half speed'},
  {n:'Reactor Surge',c:'#22e4ff',m:'c',s:'proposed',k:'timed',d:'Full EN, and dashes cost nothing for 6 s'}];
 // Upgrade catalog: mirrors UPG in the game. src: p upgrade pick, s shop, e event
 const UP=[
@@ -331,10 +334,10 @@ function renderUP(){const q=document.getElementById('uq').value.trim().toLowerCa
  document.querySelectorAll('#p-up .fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
 const KIND={instant:'Instant',timed:'Lasts',charges:'Charges',clock:'Clock'},F={list:'all',status:'all',kind:'all',rar:'all',src:'all',cat:'all',dw:'all'},esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
 function renderPU(){const q=document.getElementById('q').value.trim().toLowerCase();
- for(const [id,flag] of [['campaign','c'],['timed','t']]){const box=document.getElementById('l-'+id);box.hidden=F.list!=='all'&&F.list!==id;
-  const all=PU.filter(p=>p.m.includes(flag)),hit=all.filter(p=>(F.status==='all'||p.s===F.status)&&(F.kind==='all'||p.k===F.kind)&&(!q||(p.n+' '+p.d+' '+p.s+' '+KIND[p.k]).toLowerCase().includes(q)));
+ for(const [id,flag] of [['both','ct'],['campaign','c'],['timed','t']]){const box=document.getElementById('l-'+id);box.hidden=F.list!=='all'&&F.list!==id;
+  const all=PU.filter(p=>p.m===flag),hit=all.filter(p=>(F.status==='all'||p.s===F.status)&&(F.kind==='all'||p.k===F.kind)&&(!q||(p.n+' '+p.d+' '+p.s+' '+KIND[p.k]).toLowerCase().includes(q)));
   box.querySelector('small').textContent=hit.length+' of '+all.length;
-  box.querySelector('.items').innerHTML=hit.length?hit.map(p=>`<div class="pu" style="--c:${p.c}"><i></i><b>${esc(p.n)} <span class="tg ${p.s}">${p.s}</span><span class="tg k">${KIND[p.k]}</span>${p.m==='ct'?'<span class="tg k">Both modes</span>':''}</b><p>${esc(p.d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}
+  box.querySelector('.items').innerHTML=hit.length?hit.map(p=>`<div class="pu" style="--c:${p.c}"><i></i><b>${esc(p.n)} <span class="tg ${p.s}">${p.s}</span><span class="tg k">${KIND[p.k]}</span></b><p>${esc(p.d)}</p></div>`).join(''):'<p class="none">Nothing matches.</p>'}
  document.querySelectorAll('.fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
 document.getElementById('q').addEventListener('input',renderPU);document.getElementById('uq').addEventListener('input',renderUP);
 document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F[g.dataset.f]=b.dataset.v;renderPU();renderUP()}));
