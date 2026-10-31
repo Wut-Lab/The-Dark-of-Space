@@ -15,11 +15,13 @@
 --display:"Saira Condensed","Arial Narrow",sans-serif;--body:"Chakra Petch",system-ui,sans-serif;color-scheme:dark}
 html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--body)}
 canvas{display:block;touch-action:none}
-#hud{position:fixed;top:0;left:0;right:0;margin-right:110px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+#hud{position:fixed;top:0;left:0;right:0;margin-right:110px;display:flex;gap:11px;align-items:center;flex-wrap:nowrap;white-space:nowrap;font-weight:700;
 padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px;
 padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
 font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none;font-variant-numeric:tabular-nums}
 #bar,#bar2{width:110px;height:10px;background:#ffffff1a;overflow:hidden}#bar i,#bar2 i{display:block;height:100%;background:var(--hp)}#bar2 i{background:var(--accent)}
+@media (max-width:900px){#hud{gap:6px;font-size:11px;letter-spacing:.02em;padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:4px}#bar,#bar2{width:56px}}
+@media (max-width:480px){#hud{flex-wrap:wrap}}
 #boost{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));pointer-events:auto;padding:16px 22px;font-family:var(--display);letter-spacing:.1em;touch-action:none}
 #reel{z-index:70;background:transparent;cursor:pointer}#reel p,#outro p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on,#outro p.on{opacity:1}
 #reelSkip{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));font:600 .9rem "Chakra Petch",sans-serif;color:#9aa3b5;background:#0a0c14cc;border:1px solid #445;padding:10px 16px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
