@@ -1492,9 +1492,9 @@ const DROP={g:{c:0x45ff7a,css:'#45ff7a',inv:0},y:{c:0xffd23a,css:'#ffd23a',inv:2
  // Shop power-ups: in the drop pool once bought (shop = OWNED id); w = drop weight (Common 2, others 1)
  patch:{c:0xe8ecf2,css:'#e8ecf2',pu:'PATCH KIT',shop:'pu:patch',w:2},
  // Post-game power-ups: in the pool once the Scion has fallen
- sta:{c:0x9ff0ff,css:'#9ff0ff',pu:'STASIS',scion:1}}
+ sta:{c:0x9ff0ff,css:'#9ff0ff',pu:'STASIS',scion:1},slide:{c:0xffc94a,css:'#ffc94a',pu:'SCRAP SLIDE',scion:1}}
 // Drop pools per mode (mirrors the blueprint's Power Ups tab). g/y are time capsules: Timed Attack only, rolled at their own rates
-const POOLS={campaign:['emp','bar','spr','patch'],timed:['emp','bar','spr','patch','sta','g','y']},drops=[];
+const POOLS={campaign:['emp','bar','spr','patch','slide'],timed:['emp','bar','spr','patch','sta','g','y']},drops=[];
 const GLOW=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);
  g.addColorStop(0,'#fff');g.addColorStop(.35,'#ffffff88');g.addColorStop(1,'#fff0');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
 const glow=(c,s)=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:c,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));m.scale.setScalar(s);return m};
@@ -1511,7 +1511,7 @@ function boop(){try{if(!AC)return;const t=AC.currentTime,o=AC.createOscillator()
 let volN=0;function blaster(){if(++volN%2)return;try{if(!AC)return;const t=AC.currentTime,o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.setValueAtTime(380,t);o.frequency.exponentialRampToValueAtTime(140,t+.09);
  f.type='lowpass';f.frequency.value=1800;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.11);o.connect(f).connect(g).connect(sfxOut());o.start(t);o.stop(t+.12)}catch(e){}}
 function grab(d){boop();pickIt('p:'+d.kind);(st.pu=st.pu||{})[d.kind]=(st.pu[d.kind]||0)+1;const k=DROP[d.kind];
- if(k.pu){if(st.grav){const g=[0,10,12,15][st.grav];st.scrap+=g;popMsg('+'+g+' SCRAP','#b060ff')}boom(d.m.position,8,k.c);prog('pwr');if(st.timed)prog('tpwr');if(st.surge)st.en=Math.min(100,st.en+[15,20,25][st.surge-1]);if(d.kind==='emp'){st.emp+=2.5+st.empB+Math.min(2,st.shelp||0);shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='sta')st.sta=5;else if(d.kind==='bar')st.bar=st.shelp>=3?4:3;else if(d.kind==='patch'){if(st.timed)st.time+=3;else st.hp=Math.min(st.max,st.hp+(st.shelp>=3?3:2));hud()}else st.spr+=5+Math.min(2,st.shelp||0);
+ if(k.pu){if(st.grav){const g=[0,10,12,15][st.grav];st.scrap+=g;popMsg('+'+g+' SCRAP','#b060ff')}boom(d.m.position,8,k.c);prog('pwr');if(st.timed)prog('tpwr');if(st.surge)st.en=Math.min(100,st.en+[15,20,25][st.surge-1]);if(d.kind==='emp'){st.emp+=2.5+st.empB+Math.min(2,st.shelp||0);shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='sta')st.sta=5;else if(d.kind==='slide')st.sld=5;else if(d.kind==='bar')st.bar=st.shelp>=3?4:3;else if(d.kind==='patch'){if(st.timed)st.time+=3;else st.hp=Math.min(st.max,st.hp+(st.shelp>=3?3:2));hud()}else st.spr+=5+Math.min(2,st.shelp||0);
   const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=k.pu;pp.style.color=k.css;pp.classList.add('go');return}
  st.time+=5;if(k.inv)st.gold=Math.max(st.gold,k.inv);
  const t=$('timer'),pp=$('tpop');t.classList.remove('gain');pp.classList.remove('go');void t.offsetWidth;t.classList.add('gain');
@@ -1525,7 +1525,7 @@ function prog(k){if(st&&st.dev)return;const gw=GODS.map(g=>g.ok());LIFE[k]=(LIFE
  for(const u of UNLOCKS)if((u.stat===k||u.also===k)&&LIFE[u.stat]>=u.goal&&(!u.also||LIFE[u.also])&&!OWNED.includes(u.id)){OWNED.push(u.id);try{localStorage.setItem('darkowned',JSON.stringify(OWNED))}catch(e){}popMsg('UNLOCKED: '+(u.id.startsWith('paint:')?PAINTS[u.id.slice(6)].n+' paint':u.id.slice(3)).toUpperCase(),'#ff3d6e')}}
 function flash(c){const f=$('flash');f.className='';void f.offsetWidth;f.className='go '+(c||'')}
 // Power-up rings under the HUD: fill shows time left (Barrier: hits left)
-let pupK='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/(2.5+st.empB),'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);if(st.sta>0)a.push(['sta',st.sta/5,'STA']);
+let pupK='';function pups(){const a=[];if(st.emp>0)a.push(['emp',st.emp/(2.5+st.empB),'EMP']);if(st.bar>0)a.push(['bar',st.bar/3,'×'+st.bar]);if(st.spr>0)a.push(['spr',st.spr/5,'SPR']);if(st.sta>0)a.push(['sta',st.sta/5,'STA']);if(st.sld>0)a.push(['slide',st.sld/5,'SLD']);
  const k=a.map(x=>x[0]+Math.round(Math.min(1,x[1])*40)+x[2]).join();if(k===pupK)return;pupK=k;
  $('pups').innerHTML=a.map(([n,f,l])=>`<i style="--c:${DROP[n].css};--p:${Math.min(1,f)}">${l}</i>`).join('')}
 // Luna-M moth: body plus forewings and hind wings, seen from above
@@ -1891,6 +1891,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    st.en-=dcc;if(st.met)meteor(p);st.bt=.22;st.dl=0;if(st.qs)st.qsT=st.qs>1?2:1.5;if(st.mh)st.mhT=1;st.inv=Math.max(st.inv,.3);if(st.blink)blink(p);if(st.rico){st.rs=.45;st.rsHit=new Set()}}st.tap=0;
   if(st.shelp>=2&&(st.spr>0||st.emp>0))sp*=.9;gimTick(p);buTick(dt,p);metTick(dt,p);nzTick(dt);
   if(st.qsT>0){st.qsT-=dt;sp*=1.25}
+  if(st.sld>0){st.sld-=dt;sp*=1+Math.min(.3,.1+.05*Math.floor(st.scrap/50))}
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);$('en').style.width=st.en+'%';
   // Instant start/stop; velocity reads 0 when pinned against a wall
   {st.vx=mx*sp;const nx=THREE.MathUtils.clamp(p.x+st.vx*dt,-FX,FX);if(nx!==p.x+st.vx*dt)st.vx=0;p.x=nx;p.z=THREE.MathUtils.clamp(p.z+mz*sp*.9*dt,-PZF,PZB)}st.pvx=st.vx;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
@@ -1972,7 +1973,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m);prog('scion')}if(GODN[e.type]){st.won=2;st.godN=GODN[e.type];scionFall(e.m);prog(e.type)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){if(!e.escaped)buzz([90,50,160]);if(st.boss&&!st.bhit&&!e.escaped){const d=([...ELOG.b,...ELOG.x].find(q=>q[0]===e.type)||[])[4]||0;if(d>=3)prog('nohit3');if(d>=4)prog('nohit4')}BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
    st.kills++;killIt(e.type);(st.kt=st.kt||{})[e.type]=(st.kt[e.type]||0)+1;boom(e.m.position,BOSSES.has(e.type)&&e.type!=='wp'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||BOSSES.has(e.type)&&e.type!=='wp');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
    if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].scion||LIFE.scion>=1)&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
-   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut((st.claw?1.08:1)*{magpie:0,hulk:1,chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,nox:80,umbra:80,imago:80,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
+   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut((st.claw?1.08:1)*{magpie:0,hulk:1,chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,nox:80,umbra:80,imago:80,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb+(st.sld>0?1:0)}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);snowTick(dt);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
@@ -2125,7 +2126,7 @@ let elTab='b',elSort='a',elYaw=0,elRaf=0,elT=0;
 const LRAR={c:['Common',1,'#aab1bd'],u:['Uncommon',2,'#4fe08a'],r:['Rare',3,'#5ab0ff'],x:['Contraband',4,'#ff3d6e']},
  PLOG=[['emp','EMP','u','Clears enemy fire and freezes every unit for 2.5 seconds.'],['bar','Barrier','u','Blocks the next 3 hits, then breaks.'],['spr','Spread Shot','u','Fires a 5-way fan for 5 seconds.'],
  ['patch','Patch Kit','c','Repairs 2 armor in Campaign, or adds 3 seconds in Timed Attack. Bought in the Shop.'],['g','Time Capsule','c','Timed Attack only: +5 seconds.'],['y','Gold Time Capsule','r','Timed Attack only: +5 seconds and 2.5 seconds of invulnerability.'],
- ...(LIFE.scion>=1?[['sta','Stasis','r','Timed Attack only: stops the clock for 5 seconds, and every unit and enemy shot moves at half speed.']]:[])];
+ ...(LIFE.scion>=1?[['slide','Scrap Slide','r','Campaign only: for 5 seconds, +10% strafe speed plus 5% for every 50 scrap you hold (up to +30%), and kills pay +1 scrap.'],['sta','Stasis','r','Timed Attack only: stops the clock for 5 seconds, and every unit and enemy shot moves at half speed.']]:[])];
 let PICKS={};try{PICKS=JSON.parse(localStorage.getItem('darkpicks')||'{}')}catch(e){}
 function pickIt(id){PICKS[id]=(PICKS[id]||0)+1;try{localStorage.setItem('darkpicks',JSON.stringify(PICKS))}catch(e){}}
 function gotUp(n){st.upgrades.push(n);st.hl=st.hp;pickIt('u:'+n)}
