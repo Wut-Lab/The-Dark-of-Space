@@ -1699,8 +1699,8 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    st.en-=dcc;st.bt=.22;st.dl=0;st.inv=Math.max(st.inv,.3);if(st.blink)blink(p);if(st.rico){st.rs=.45;st.rsHit=new Set()}}st.tap=0;
   if(st.shelp>=2&&(st.spr>0||st.emp>0))sp*=.9;gimTick(p);
   if(st.bt>0){st.bt-=dt;sp*=3;mx=st.dir}else st.en=Math.min(100,st.en+30*st.enr*dt);$('en').style.width=st.en+'%';
-  // Smooth movement: velocity eases toward the input (dash snaps), so starts and stops glide instead of jerking
-  {const k=Math.min(1,dt*(st.bt>0?40:13));st.vx=(st.vx||0)+(mx*sp-(st.vx||0))*k;st.vz=(st.vz||0)+(mz*sp*.9-(st.vz||0))*k;const nx=THREE.MathUtils.clamp(p.x+st.vx*dt,-FX,FX),nz=THREE.MathUtils.clamp(p.z+st.vz*dt,-PZF,PZB);if(nx!==p.x+st.vx*dt)st.vx=0;if(nz!==p.z+st.vz*dt)st.vz=0;p.x=nx;p.z=nz}st.pvx=st.vx;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
+  // Instant start/stop; velocity reads 0 when pinned against a wall
+  {st.vx=mx*sp;const nx=THREE.MathUtils.clamp(p.x+st.vx*dt,-FX,FX);if(nx!==p.x+st.vx*dt)st.vx=0;p.x=nx;p.z=THREE.MathUtils.clamp(p.z+mz*sp*.9*dt,-PZF,PZB)}st.pvx=st.vx;st.still=mx||st.bt>0?0:(st.still||0)+dt;ricoShield(dt,p);p.y=st.kind==='mech'||st.legs?.4+Math.sin(now/200)*.1:Math.sin(now/300)*.15;
   if(st.hp>0&&st.hp/st.max<=.25){st.bp=(st.bp||0)-dt;if(st.bp<=0){beep();st.bp=1}}else st.bp=0;
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45-mz*(mz<0?.25:.55):.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15;
    // Kestrel legs hang weightless, trailing opposite the strafe
