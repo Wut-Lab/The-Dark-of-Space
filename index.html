@@ -1261,7 +1261,7 @@ let bnT;
 const ZONES={'Legion Space':'Sandstone ruins in neon light. Its capital units are Caesar-class.','The Frost Reach':'Frozen wreckage under a pale aurora. Its capital units are ice-bound juggernauts.','Red Crystal Asteroid Belt':'A cave of floating red crystal. Hard: tougher units, deadlier capital units.','The Alkaline Zone':'Shimmering grey alkali metal, choked with calcium build-up. Hard: tougher units, narrow lanes.','Dark Space':'The wide open dark between the stars. The last stretch.'},ZMIN={'Red Crystal Asteroid Belt':20,'The Alkaline Zone':20,'Dark Space':30};
 // Hit flash: every mesh of a struck unit goes white for a few frames
 const FLASHM=new THREE.MeshLambertMaterial({color:0xffffff,emissive:0xffffff});
-function hitFlash(e){FLASHM.color.setHex(0xffffff);FLASHM.emissive.setHex(0xffffff);FLASHM.opacity=1;if(!e.flT)e.m.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.userData.fm=o.material;o.material=FLASHM}});e.flT=.07}
+function hitFlash(e){FLASHM.color.setHex(0xffffff);FLASHM.emissive.setHex(0xffffff);FLASHM.opacity=1;if(!e.flT)e.m.traverse(o=>{if(o.isMesh){o.userData.fm=o.material;o.material=FLASHM}});e.flT=.07}
 function hitUnflash(e){e.flT=0;e.m.traverse(o=>{if(o.userData.fm){o.material=o.userData.fm;delete o.userData.fm}})}
 function banner(t,sub){const el=$('banner');el.querySelector('.bt').textContent=t;el.querySelector('.bs').textContent=sub;el.hidden=false;el.classList.toggle('void',!!(st&&st.won));
  el.classList.remove('go');void el.offsetWidth;el.classList.add('go');clearTimeout(bnT);bnT=setTimeout(()=>el.hidden=true,el.classList.contains('void')?3100:2400)}
