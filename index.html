@@ -1756,14 +1756,14 @@ const SHOP={
   {id:'craft:swift',n:'Swift',d:'Speed frame. Fastest strafe and EN refill; 8 armor. Flies in Campaign and Timed Attack.',icon:'swift',cost:500},
   {id:'craft:more',n:'More crafts',d:'Other machines are on the way.',soon:1}]},
  paint:{intro:'Paint jobs change how your crafts look.',items:[
-  ...Object.entries(PAINTS).map(([k,p])=>({id:'paint:'+k,n:p.n,d:p.lock?`Fits every craft: black plating, neon purple trim, gray and pale yellow panels. Hint: ${p.lock}`:`Fits every craft: ${p.n.split(',')[0].toLowerCase()} trim, white panels, black plating. Only one paint job is on at a time.`,icon:'paint_'+k,c:p.c,cost:1000,lock:p.lock})),
+  ...Object.entries(PAINTS).map(([k,p])=>({id:'paint:'+k,n:p.n,d:p.lock?`Fits every craft: black plating, neon purple trim, gray and pale yellow panels.`:`Fits every craft: ${p.n.split(',')[0].toLowerCase()} trim, white panels, black plating. Only one paint job is on at a time.`,icon:'paint_'+k,c:p.c,cost:1000,lock:p.lock})),
   {id:'paint:more',n:'More paint jobs',d:'Custom colors are on the way.',soon:1}]}};
 let shopTab='upgrades',shopYaw=0,shopAsk=null;
 function renderShop(){$('shopBank').textContent=bankT;const T=SHOP[shopTab];$('shopIntro').textContent=T.intro;
  document.querySelectorAll('.stabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===shopTab));
  $('shopL').innerHTML=T.items.map(it=>{const own=OWNED.includes(it.id),pk=it.id.startsWith('paint:')&&it.id.slice(6),act=own&&pk?`<button class="act" data-paint="${pk}">${PAINT===pk?'Unequip':'Equip'}</button>`:own?'<em class="own">Owned</em>':it.soon?'<em class="soon">Coming soon</em>':it.lock?'<em class="soon">Locked</em>':
   shopAsk===it.id?`<button class="act" data-buy="${it.id}">Confirm · ${it.cost}</button>`:`<button class="act" data-ask="${it.id}" ${bankT<it.cost?'disabled':''}>${it.cost} scrap</button>`;
-  return `<div class="si" style="--c:${it.c||'#aab1bd'}">${it.icon&&!(it.lock&&!own)?`<canvas width="112" height="112" data-k="${it.icon}"></canvas>`:`<div class="ph">${it.soon?'?':'◆'}</div>`}<b>${it.n}${it.tag?` <em class="rar" style="color:${it.c}">${it.tag}</em>`:''}</b><span>${it.d}</span>${act}</div>`}).join('')}
+  return `<div class="si" style="--c:${it.c||'#aab1bd'}">${it.icon&&!(it.lock&&!own)?`<canvas width="112" height="112" data-k="${it.icon}"></canvas>`:`<div class="ph">${it.soon||it.lock&&!own?'?':'◆'}</div>`}<b>${it.n}${it.tag?` <em class="rar" style="color:${it.c}">${it.tag}</em>`:''}</b><span>${it.lock&&!own?'<i class="goal">Hint: '+it.lock+'</i>':it.d}</span>${act}</div>`}).join('')}
 document.querySelectorAll('.stabs button').forEach(b=>b.onclick=()=>{shopTab=b.dataset.tab;shopAsk=null;renderShop()});
 $('shopL').onclick=e=>{const a=e.target.closest('[data-ask]'),y=e.target.closest('[data-buy]'),pt=e.target.closest('[data-paint]');
  if(pt)setPaint(PAINT===pt.dataset.paint?'':pt.dataset.paint);
@@ -1776,7 +1776,7 @@ document.querySelector('[data-go=store]').addEventListener('click',()=>{shopAsk=
 function syncCrafts(){document.querySelectorAll('[data-own]').forEach(b=>{const w=b.closest('.cr')||b;w.hidden=!OWNED.includes(b.dataset.own)})}
 syncCrafts();document.querySelectorAll('[data-go=crafts],[data-go=timed]').forEach(b=>b.addEventListener('click',syncCrafts));
 function renderUnlocks(){$('unlL').innerHTML=UNLOCKS.map(x=>{const pj=PAINTS[x.id.slice(6)],u=x.id.startsWith('paint:')?[pj.n,'Paint job: fits every craft. Equip it in the Shop\'s Paint Jobs tab.',0,'p','paint_'+x.id.slice(6)]:UPG.find(v=>'up:'+v[0]===x.id),have=Math.min(LIFE[x.stat]||0,x.goal),done=OWNED.includes(x.id);
- return `<div class="si" style="--c:${RCOL[u[3]]}">${done?`<canvas width="112" height="112" data-k="${u[4]}"></canvas>`:'<div class="ph">?</div>'}<b>${u[0]} <em class="rar" style="color:${RCOL[u[3]]}">${RAR[u[3]]}</em></b><span>${u[1]}<br><i class="goal">${done?x.how:'Hint: '+x.hint}</i><span class="pbar"><i style="width:${have/x.goal*100}%"></i></span>${done?'':`${have} / ${x.goal}`}</span>${done?'<em class="own">Unlocked</em>':'<em class="soon">Locked</em>'}</div>`}).join('')}
+ return `<div class="si" style="--c:${RCOL[u[3]]}">${done?`<canvas width="112" height="112" data-k="${u[4]}"></canvas>`:'<div class="ph">?</div>'}<b>${u[0]} <em class="rar" style="color:${RCOL[u[3]]}">${RAR[u[3]]}</em></b><span>${done?u[1]+'<br>':''}<i class="goal">${done?x.how:'Hint: '+x.hint}</i><span class="pbar"><i style="width:${have/x.goal*100}%"></i></span>${done?'':`${have} / ${x.goal}`}</span>${done?'<em class="own">Unlocked</em>':'<em class="soon">Locked</em>'}</div>`}).join('')}
 document.querySelector('[data-go=unlocks]').addEventListener('click',renderUnlocks);
 function shopTick(dt){const sh=!$('store').hidden,ul=!$('unlocks').hidden;if(!sh&&!ul)return;shopYaw+=dt*.9;$(sh?'shopL':'unlL').querySelectorAll('canvas[data-k]').forEach(c=>snap(c.dataset.k,shopYaw,c,c.dataset.k.startsWith('u_')?.75:.72))}
 function thumbTick(dt){shopTick(dt);if(!PHONE.matches)return;thYaw+=dt*.9;
