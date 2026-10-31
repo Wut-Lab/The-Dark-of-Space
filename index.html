@@ -1642,7 +1642,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   {const b=player.userData.body,lean=(st.kind==='mech'||st.legs?.45-mz*(mz<0?.25:.55):.06)+(st.bt>0?.2:0);b.rotation.x+=(lean-b.rotation.x)*.15;
    // Kestrel legs hang weightless, trailing opposite the strafe
    const L=b.userData.legs;if(L){const w=.18-mz*(mz<0?.55:.6)+Math.sin(now/260)*.05;L.rotation.x+=(w-b.rotation.x-L.rotation.x)*.08}
-   if(b.userData.arms)b.userData.arms.forEach((A,i)=>{A.rotation.x+=(-mz*(mz<0?.3:.25)+Math.sin(now/300+i*1.7)*.04-A.rotation.x)*.06;A.rotation.z+=(mx*.3-A.rotation.z)*.06})}
+   if(b.userData.arms)b.userData.arms.forEach((A,i)=>{if(!i){A.rotation.set(-b.rotation.x,0,0);return}A.rotation.x+=(-mz*(mz<0?.3:.25)+Math.sin(now/300+i*1.7)*.04-A.rotation.x)*.06;A.rotation.z+=(mx*.3-A.rotation.z)*.06})}
   const ap=st.apex&&Math.abs(p.x)<FX*.25;apexG.visible=!!(st.apex||st.pull||st.empT);apexG.material.opacity=ap?.12:.06;
   if(st.claw&&!FALL&&(st.clawT=(st.clawT||0)-dt)<=0){let b=null,bd=12;for(const s of shots)if(s.enemy&&s.life>0){const d=hd(s.m.position,p);if(d<bd){bd=d;b=s}}
    if(b){st.clawT=8;b.life=0;boom(b.m.position,6,0x3affd0);fire(p,V3(0,-1),st.shot,st.dmg+3,false,0x3affd0,st.pierce,1.6)}}
