@@ -78,7 +78,8 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
 @media (max-width:600px){.cr{display:flex;gap:8px}.cr>button:first-child{flex:1;display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px}
  .cr>button:first-child>span{display:none}.cr>button:first-child b{font-size:18px}.th{display:block;width:56px;height:56px;flex:none}
  .stb{display:grid;place-items:center;flex:none;width:72px;padding:6px;font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
- #crafts .row,#timed .row{gap:8px;grid-template-columns:1fr}.cr>button:first-child{justify-content:flex-start}}
+ #crafts .row,#timed .row{gap:8px;grid-template-columns:1fr}
+#tHard{width:100%;margin-top:10px;display:grid;gap:2px;text-align:left}#tHard.on{border-color:var(--danger);box-shadow:0 0 12px #ff5a5a66}#tHard.on b{color:var(--danger)}.cr>button:first-child{justify-content:flex-start}}
 /* Paint preview (Shop) and paint bay (craft select): centered Back on top; bay has the craft left, paint picker right, launch below */
 .pjo{display:block;overflow-y:auto;padding-block:16px;background:#05060af2}.pjo>.card{margin:8px auto}.pjc{max-width:640px;padding:14px 20px;text-align:center;background:#0d1018}.pjh{display:flex;justify-content:center;margin-bottom:2px}.pjc h2{color:var(--accent)}
 .pjg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.pjg figure{margin:0}.pjg canvas{width:min(100%,40vh);aspect-ratio:1}
@@ -200,7 +201,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-t="ship"><b>Gale</b><span>Fast strafe, rapid lasers.</span></button>
 <button data-t="falcon"><b>Falcon</b><span>Balanced all round.</span></button>
 <button data-t="swift" data-own="craft:swift"><b>Swift</b><span>Fastest strafe and dash recovery.</span></button>
-</div><p id="tbest"></p></div></div>
+</div><button id="tHard" hidden><b>Hard Mode: Off</b><span>Lights Out, 3 of 6 random upgrades, +1 enemy armor, score ×1.5</span></button><p id="tbest"></p></div></div>
 
 <div class="ov scr" id="store" hidden><div class="card"><div class="hd"><h2>Shop</h2><button class="back" data-go="start">Back</button></div>
 <p class="bank">Total Scrap: <b id="shopBank">0</b></p>
@@ -277,6 +278,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>The clock</h3><ul><li>You start with <b>3:00</b>, shown at the top of the screen</li><li>It flashes red under 30 seconds</li><li>When it reaches zero, the run ends and your scrap is your score</li></ul>
 <h3>Hits</h3><ul><li>You have no armor bar in this mode: each hit costs <b>5 seconds</b></li></ul>
 <h3>Waves</h3><ul><li>Waves keep coming with no upgrade stops or bonus stages</li><li>Every 30 seconds, units dive faster and more often</li><li>New enemy types join quickly</li></ul>
+<h3>Hard Mode</h3><ul><li>Unlocks once you defeat the Scion. Turn it on from the Timed Attack screen</li><li><b>Lights Out</b>: the field goes dark except a cone of light ahead of you and your muzzle flashes</li><li>You start by picking 3 of 6 upgrades at random tiers: 2 Rare or Contraband, 2 Uncommon, 2 Common</li><li>Every unit has +1 armor. Your final score is ×1.5</li></ul>
 <h3>Time capsules</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it to grab it for extra time</li><li>Capsules drift toward you and vanish if you miss them</li></ul></div></div>
 
 <div class="ov scr" id="how-power" hidden><div class="card"><div class="hd"><h2>Power-ups</h2><button class="back" data-go="how">Back</button></div>
@@ -333,7 +335,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
 <li>Every 5th sector is a boss; the final boss waits at sector 40 in Dark Space, and beating it wins the run. Every 10 sectors you choose which zone to fly into next. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
 <li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). The Log lists every one you've found.</li>
-<li><b>Timed Attack</b>: each hit costs 5 seconds. Grab time capsules for extra time.</li>
+<li><b>Timed Attack</b>: each hit costs 5 seconds. Grab time capsules for extra time. <b>Hard Mode</b> (after the Scion falls): the lights go out, you start with 3 of 6 random upgrades, units get +1 armor, and score is ×1.5.</li>
 <li><kbd>Esc</kbd> or <kbd>P</kbd> pauses. Settings (here or on the main menu) set sound on/off, music and effects volume.</li></ul>
 <button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
 </div></div>
@@ -343,7 +345,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 const $=id=>document.getElementById(id);
 const R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));document.body.prepend(R.domElement);
 const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(50,1,.1,300);
-S.add(new THREE.HemisphereLight(0xbfd4ff,0x221a10,.9));const sun=new THREE.DirectionalLight(0xffffff,.8);sun.position.set(5,10,3);S.add(sun);
+const hemi=new THREE.HemisphereLight(0xbfd4ff,0x221a10,.9);S.add(hemi);const sun=new THREE.DirectionalLight(0xffffff,.8);sun.position.set(5,10,3);S.add(sun);
 function fit(){R.setSize(innerWidth,innerHeight);C.aspect=innerWidth/innerHeight;C.fov=C.aspect<1?78:50;C.updateProjectionMatrix()}addEventListener('resize',fit);fit();
 const BOX=new THREE.BoxGeometry(1,1,1),mats={};
 const mat=c=>mats[c]||(mats[c]=new THREE.MeshLambertMaterial({color:c}));
@@ -831,11 +833,11 @@ function resume(){const sv=runSave;keepSave(null);PJ[sv.kind]=sv.paint||'';start
 // meshes and removes anything a run added to the scene (SCN0 = the scene before the first run), so nothing carries into the menu
 let SCN0=null;function fieldClear(sweep){fx.forEach(f=>S.remove(f.m));fx.length=0;pfx.forEach(q=>S.remove(q.m));pfx.forEach(q=>q.m.material.dispose());pfx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;
  if(!sweep)return;mist(0);shimmer(0);for(const o of [muzzle,moth,magpi,owl,ghost,gimbal,apexG,RSH])if(o)o.visible=false;if(SCN0)for(const o of [...S.children])if(!SCN0.has(o)&&o!==RSH)S.remove(o)}
-function start(kind,timed){secSnap=null;if(!timed)keepSave(null);if(!SCN0)SCN0=new Set(S.children);fieldClear();try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
+function start(kind,timed){secSnap=null;if(!timed)keepSave(null);if(!SCN0)SCN0=new Set(S.children);fieldClear();try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,hard:timed===2?1:0,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());if(!player.userData.body.userData.legs){const bb=new THREE.Box3().setFromObject(player.userData.body),eg=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));eg.position.set(0,(bb.min.y+bb.max.y)/2,bb.min.z);player.userData.body.add(player.userData.eg=eg)}player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);{const z=new THREE.Box3().setFromObject(player.userData.body).getSize(new THREE.Vector3());st.pr=st.pr0=Math.max(.6,(z.x+z.z)/4*.9)}
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
- ['bar','hpt'].forEach(i=>$(i).hidden=st.timed);$('secL').textContent=st.timed?'Wave':'Sector';$('timer').hidden=!st.timed;landscape();setTimeout(orient,300);$('timer').className='';$('pwrap').hidden=false;pupK='';$('pups').innerHTML='';placeTimer();wave();running=true}
+ ['bar','hpt'].forEach(i=>$(i).hidden=st.timed);$('secL').textContent=st.timed?'Wave':'Sector';$('timer').hidden=!st.timed;landscape();setTimeout(orient,300);$('timer').className='';$('pwrap').hidden=false;pupK='';$('pups').innerHTML='';placeTimer();wave();running=true;lightsOut(st.hard);if(st.hard)hardPick()}
 // Timed Attack clock sits just under the HUD strip, centered
 function placeTimer(){requestAnimationFrame(()=>{const h=$('hud').getBoundingClientRect().bottom;$('timer').style.top=h-2+'px';$('pwrap').style.top=(st&&st.timed?$('timer').getBoundingClientRect().bottom+2:h+6)+'px'})}addEventListener('resize',placeTimer);
 const mmss=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
@@ -1435,6 +1437,9 @@ function entryPos(e,u){const s=e.ps,P2=Math.PI*2;let q;
  q.x+=e.mate;return q}
 // Effects: voxel debris, camera shake, muzzle flash
 const fx=[],BODY={magpie:0x101216,hulk:0x56606b,chaser:0xb59a68,shooter:0x7f8c96,brute:0x8a3b32,boss:0x4a4f58,wp:0x8a3b32,mine:0x3a3f47,lancer:0x6b2a3a,warden:0x55606e,mino:0x8a3b32,caesar:0xd4a52a,glacier:0x8fd0f0,mote:0xcfeeff,dryice:0xbfe6ff,onager:0xd4a52a,cata:0x8a6a1e,slime:0x5fd36a,geode:0x6a2a20,refract:0xff2a3a,choir:0x6a3aa8,prophet:0x7a3ad8,priest:0x8a4ae8,scion:0x2a1a4a,nox:0x141c3a,umbra:0x141c3a,imago:0x141c3a,voidbot:0x4a2a72,crucible:0x4a4744,mercury:0xc8d0d8,mdecoy:0xc8d0d8,moth:0x9aa0a8,splinter:0xff2a3a,praet:0x8a929c,golem:0xcfeeff};let shake=0,muzzleT=0;
+// Hard Mode (Timed Attack): Lights Out. The field goes dark except a cone of light ahead of you and your muzzle flashes
+const LO={cone:new THREE.SpotLight(0xfff2d8,0,40,.42,.5,1),flash:new THREE.PointLight(0xffd9a0,0,14,2),beam:new THREE.Mesh(new THREE.PlaneGeometry(16,28).rotateX(-Math.PI/2).translate(0,0,-14),new THREE.MeshBasicMaterial({map:(()=>{const c=document.createElement('canvas');c.width=64;c.height=128;const x=c.getContext('2d'),g=x.createLinearGradient(0,128,0,0);g.addColorStop(0,'rgba(255,242,216,.5)');g.addColorStop(1,'rgba(255,242,216,0)');x.fillStyle=g;x.beginPath();x.moveTo(32,128);x.lineTo(0,0);x.lineTo(64,0);x.fill();return new THREE.CanvasTexture(c)})(),transparent:true,opacity:.35,blending:THREE.AdditiveBlending,depthWrite:false}))};LO.beam.visible=false;S.add(LO.cone,LO.cone.target,LO.flash,LO.beam);
+function lightsOut(on){hemi.intensity=on?.05:.9;sun.intensity=on?.05:.8;LO.beam.visible=!!on;if(!on)LO.cone.intensity=LO.flash.intensity=0}
 const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
 function boom(pos,n,col,big){for(let i=0;i<n;i++){const m=new THREE.Mesh(BOX,mat(i%3?col:0xffb040));m.position.copy(pos);m.position.y+=.8;m.scale.setScalar(.12+Math.random()*.18);S.add(m);
  fx.push({m,v:V3((Math.random()-.5)*8,(Math.random()-.5)*8).setY(Math.random()*5),life:.6+Math.random()*.4})}if(big)shake=Math.max(shake,.35)}
@@ -1578,6 +1583,12 @@ function offer(){running=false;if(st.boss)music(null);$('pickT').textContent=`Se
  const ro=roll(3,st.elite||st.boss);if(st.nest&&st.scrap>=(st.sec>=21?200:100)){const q=UPG.filter(u=>(u[3]==='u'||u[3]==='r')&&avail(u)&&!ro.includes(u));if(q.length)ro.push(q[Math.random()*q.length|0])}ro.forEach(([t,d,f,r])=>{const b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[tierOf(t)]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:""}`;
   b.onclick=()=>{f(st);gotUp(t);st.skip=ro.map(u=>u[0]).filter(n=>n!==t);$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)});
  if(!o.children.length){const b=document.createElement('button');b.innerHTML='<b>Scrap cache</b><span>Every upgrade is at tier III. Take +30 scrap instead.</span>';b.onclick=()=>{st.scrap+=30;hud();$('pick').hidden=true;if(--st.picks>0)offer();else route()};o.append(b)}$('pick').hidden=false}
+// Hard Mode start: 6 unlocked upgrades (no Magpie pool), 2 Rare or Contraband, 2 Uncommon, 2 Common, each at a random tier. Pick 3
+function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0]),sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
+ const o=$('opts'),left=()=>{$('pickT').textContent=`Hard Mode · Lights Out · ${n} pick${n>1?'s':''} left`};o.innerHTML='';
+ sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
+  b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}b.remove();hud();if(--n>0)left();else{$('pick').hidden=true;running=true}};o.append(b)});
+ left();$('pick').hidden=!sel.length;running=!sel.length}
 // Campaign route: after each upgrade, pick the next stop. Every stop is a sector; every 5th is a boss; sector 4.5 is a bonus stage if the zone cost 3 hits or fewer
 const NODE={combat:['Combat','A standard sector.'],elite:['Elite','Tougher units. +30 scrap and 2 upgrades.'],yard:['Salvage Yard','Shop for upgrades and repairs, then fight the sector.'],
  dock:['Repair Dock','Restore half your armor, then fight the sector.'],signal:['Unknown Signal','A random event, then the sector. Could be salvage. Could be a trap.'],boss:['Capital Unit','A capital unit guards the zone. +60 scrap and 1 upgrade.'],bonus:['Bonus Stage','Units loop past without shooting.']};
@@ -1624,7 +1635,7 @@ const EVENTS=[
  ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Strip it for parts','A random upgrade, but the heat costs 2 armor.',()=>{const u=roll(1)[0];u[2](st);gotUp(u[0]);st.hp=Math.max(1,st.hp-2);evDone('Loose Reactor Core',`You salvage ${u[0]}: ${u[1]}. The heat costs 2 armor.`)}],
   ['Sell it','+40 scrap.',()=>{st.scrap+=40;evDone('Loose Reactor Core','A salvage tug pays 40 scrap for it.')}]]),
  ()=>{st.scrap+=16;evDone('Scrap Cloud','Debris from an old battle. Your intakes catch +16 scrap.')}];
-function timeUp(){running=false;music(null);overJingle();st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=st.scrap>tbest;
+function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);lightsOut(0)}music(null);overJingle();st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=st.scrap>tbest;
  if(nb){tbest=st.scrap;try{localStorage.setItem('darktimedbest',tbest)}catch(e){}tbestT()}
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'':`Best score: ${tbest} scrap.`}`;$('nbest').hidden=!nb;
@@ -1902,7 +1913,8 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   gooTick(dt,p);snowTick(dt);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);fx.splice(i,1)}
-  muzzleT-=dt;muzzle.visible=muzzleT>0;{const t=player.userData.body.userData.tip;if(t)muzzle.position.copy(muz(p)).setY(1.1);else muzzle.position.set(p.x,1.1,p.z-1.3)}muzzle.scale.setScalar(.35+Math.random()*.2);
+  muzzleT-=dt;muzzle.visible=muzzleT>0;if(st.hard){LO.cone.intensity=2.2;LO.beam.position.set(p.x,.6,p.z-.8);LO.cone.position.set(p.x,3,p.z+1);LO.cone.target.position.set(p.x,0,p.z-24);LO.flash.position.set(p.x,1.5,p.z-1.5);LO.flash.intensity=muzzleT>0?2.6:Math.max(0,LO.flash.intensity-dt*30);for(const e of ents)if(!e.h1){e.h1=1;e.hp+=1;if(e.hp0)e.hp0+=1}}
+{const t=player.userData.body.userData.tip;if(t)muzzle.position.copy(muz(p)).setY(1.1);else muzzle.position.set(p.x,1.1,p.z-1.3)}muzzle.scale.setScalar(.35+Math.random()*.2);
   if(st.hp<=0)die();
   else if(st.timed&&st.time<=0)timeUp();
   else if(!ents.length&&!st.clearT&&st.wv<st.wvs){st.clearT=1.4;st.mid=1;banner('WAVE CLEAR',`Wave ${st.wv+1} of ${st.wvs} incoming`)}
@@ -1915,7 +1927,8 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  {const px=player?player.position.x:0,pz=player?player.position.z:0;C.position.set(px*.35+(Math.random()-.5)*shake,12+(Math.random()-.5)*shake,7.5+pz*.6);shake=Math.max(0,shake-dt*1.2);C.lookAt(px*.2,0,-9+pz*.5);
   // Scion death: the camera slowly pushes in on it and holds there until Continue
   if(FALL){const k=Math.min(1,FALL.t/2.4),e=k*k*(3-2*k),q=FALL.p;C.position.lerp(T.set(q.x*.6,q.y+6,q.z+16),e*.6);C.lookAt(px*.2*(1-e)+q.x*e,q.y*e,(-9+pz*.5)*(1-e)+q.z*e)}}R.render(S,C)}
-document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.t,()=>start(b.dataset.t,true)));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>cpOpen(k,()=>reelOpen(()=>start(k)));
+let tHard=0;$('tHard').onclick=()=>{tHard^=1;$('tHard').classList.toggle('on',!!tHard);$('tHard').querySelector('b').textContent='Hard Mode: '+(tHard?'On':'Off')};
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.t,()=>start(b.dataset.t,tHard?2:true)));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>cpOpen(k,()=>reelOpen(()=>start(k)));
 // Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
 // Playtest runs are never saved, banked or counted as a best
 {const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
@@ -2024,7 +2037,7 @@ const TOUCH=matchMedia('(pointer:coarse)');
 function landscape(){const d=document.documentElement;if(document.fullscreenElement)return;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>TOUCH.matches&&screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
-function toMenu(){saveLast();for(const k of CRAFTS)if(PJ[k])setPaint(k,'');music(null);staticOn(0);FALL=null;menuReady=0;fieldClear(1);clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
+function toMenu(){saveLast();for(const k of CRAFTS)if(PJ[k])setPaint(k,'');music(null);staticOn(0);FALL=null;menuReady=0;fieldClear(1);lightsOut(0);clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
 $('pauseBtn').onclick=()=>showPause(true);$('pzGo').onclick=()=>showPause(false);$('pzQuit').onclick=toMenu;$('pzSave').onclick=()=>{paused=running=false;keepSave(secSnap);toMenu()};$('pResume').onclick=resume;resumeBtn();
@@ -2077,7 +2090,7 @@ $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-d
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
-function show(id){document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+function show(id){if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
