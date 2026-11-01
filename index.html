@@ -341,7 +341,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li><kbd>Esc</kbd> or <kbd>P</kbd> pauses. Settings (here or on the main menu) set sound on/off, music and effects volume.</li></ul>
 <button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
 </div></div>
-<div class="ov" id="dead" hidden><div class="card"><h2 id="deadH" style="color:var(--danger)">Rig destroyed</h2><div id="nbest" hidden>NEW BEST</div><p id="deadT"></p><dl class="sum" id="sum"></dl><button id="vExp" hidden><b>Continue Exploration</b><span>Take a boss upgrade, then face what waits beyond the Dark.</span></button><button id="vCont" hidden><b>Go Back and Regroup</b><span>End the run.</span></button><button id="again"><b>Main menu</b><span>Pick a mode and a machine.</span></button></div></div>
+<div class="ov" id="dead" hidden><div class="card"><h2 id="deadH" style="color:var(--danger)">Destroyed</h2><div id="nbest" hidden>NEW BEST</div><p id="deadT"></p><dl class="sum" id="sum"></dl><button id="vExp" hidden><b>Continue Exploration</b><span>Take a boss upgrade, then face what waits beyond the Dark.</span></button><button id="vCont" hidden><b>Go Back and Regroup</b><span>End the run.</span></button><button id="again"><b>Main menu</b><span>Pick a mode and a machine.</span></button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
@@ -1726,7 +1726,7 @@ function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);li
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Victory card: first three upgrades taken, with their level (I-III), then "and more."
 function upShort(){const u=[...new Set(st.upgrades)],l=u.slice(0,3).map(n=>n+' '+['I','II','III'][Math.min(2,st.upgrades.filter(x=>x===n).length-1)]).join(', ');return u.length>3?l+', and more.':l}
-function die(won){running=false;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Rig destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
+function die(won){running=false;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?won?upShort():st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
