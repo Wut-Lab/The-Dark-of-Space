@@ -307,13 +307,14 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="devpw" hidden><div class="card devpw"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
 <p>Playtest tools. Enter the password.</p><form id="devF" class="drow"><input id="devP" type="password" inputmode="numeric" autocomplete="off" placeholder="Password" aria-label="Password"><button type="submit">Enter</button></form><p id="devE" class="dbad" hidden>Wrong password.</p></div></div>
 <div class="ov scr" id="devc" hidden><canvas id="dvbg" aria-hidden="true"></canvas><div class="card devc"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
-<p class="dnote">Playtest runs are never saved, banked or counted toward bests, stats or unlocks.</p>
-<h3>Loadout</h3><div class="dgrid"><label>Craft<select id="dvC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select></label><label>Start scrap<select id="dvS"><option>0</option><option>100</option><option>300</option><option>1000</option></select></label><label class="dchk"><input type="checkbox" id="dvI"> Invulnerable</label></div>
+<p class="dnote">Playtest runs are never saved, banked or counted toward bests, stats or unlocks. Every upgrade, power-up and paint job is unlocked in them.</p>
+<h3>Loadout</h3><div class="dgrid"><label>Craft<select id="dvC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select></label><label>Start scrap<select id="dvS"><option>0</option><option>100</option><option>300</option><option>1000</option></select></label><label>Paint job<select id="dvJ"></select></label><label class="dchk"><input type="checkbox" id="dvI"> Invulnerable</label></div>
 <h3>Zones</h3><p class="dnote">Any zone at any sector, with its enemies, hazards, music and bosses.</p><div class="dgrid"><label>Zone<select id="ztZ"></select></label><label>Sector<select id="ztS"></select></label><button id="ztGo">Play sector</button></div>
 <h3>Bosses</h3><p class="dnote">Fight one capital unit in its home zone.</p><div class="dgrid"><label class="dwide">Boss<select id="dvB"></select></label><button id="dvBGo">Fight</button></div>
 <h3>Events</h3><p class="dnote">Trigger a route event, stop or encounter in the zone picked above, then play on from there.</p><div class="dgrid"><label class="dwide">Event<select id="dvE"></select></label><button id="dvEGo">Run event</button></div>
 <h3>Modes</h3><div class="dgrid"><button id="dvT1">Timed Attack</button><button id="dvT2">Hard Timed</button></div>
-<h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div></div></div>
+<h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div>
+<h3>Progress</h3><p class="dnote">Wipe all progress on this device: scrap, shop items, unlocks, stats, Log, bests and saved runs. Settings are kept.</p><div class="dgrid"><button id="dvWipe">Reset progress</button></div></div></div>
 <div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="start">Back</button></div>
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
@@ -1689,7 +1690,7 @@ const UPG=[['Void Draw','A void glow sits at your muzzle. While you\'re pushed f
 const CAPS=new Set(['boss','caesar','cata','crucible','glacier','golem','mino','onager','praet','warden','mercury','wp']);
 // Apex Matrix / Apex Pull: the center band (|x| under a quarter of the field) lights up once taken
 const apexG=new THREE.Mesh(new THREE.PlaneGeometry(FX*.5,90),new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:.07,blending:THREE.AdditiveBlending,depthWrite:false}));apexG.rotation.x=-Math.PI/2;apexG.position.set(0,-.9,-35);apexG.visible=false;S.add(apexG);
-const inPool=u=>(!u[5]&&!u[6])||OWNED.includes('up:'+u[0]);
+const inPool=u=>(!u[5]&&!u[6])||OWNED.includes('up:'+u[0])||!!(st&&st.dev);// Dev Corner runs: every upgrade is in the pool
 // Tiers: each upgrade can be taken up to 3 times per run, then leaves the pool
 const tierOf=n=>st?st.upgrades.filter(x=>x===n).length:0,TN=['I','II','III'],avail=u=>inPool(u)&&tierOf(u[0])<3&&(!u[8]||!!st&&(u[8]===1?!!st.boss:st.post===1));
 const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband',p:'Paint'},ODDS={c:60,u:27,r:10,x:3},ODDS_HI={c:30,u:36,r:24,x:10},PRICE={c:24,u:36,r:52,x:44};
@@ -2159,7 +2160,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   {let j=0;for(const s of shots)if(s.life>0)shots[j++]=s;else S.remove(s.m);shots.length=j}
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m);prog('scion')}if(GODN[e.type]){st.won=2;st.godN=GODN[e.type];scionFall(e.m);prog(e.type)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){if(!e.escaped)buzz([90,50,160]);if(st.boss&&!st.bhit&&!e.escaped){const d=([...ELOG.b,...ELOG.x].find(q=>q[0]===e.type)||[])[4]||0;if(d>=3)prog('nohit3');if(d>=4)prog('nohit4')}BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
    st.kills++;killIt(e.type);if(st.eh)ehWell(e.m.position);(st.kt=st.kt||{})[e.type]=(st.kt[e.type]||0)+1;boom(e.m.position,BOSSES.has(e.type)&&e.type!=='wp'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||BOSSES.has(e.type)&&e.type!=='wp');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
-   if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(1+(st.wg?.5:0)+(st.pg?.3:0)+(st.bg?.3:0))*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].scion||LIFE.scion>=1)&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+dwt(k),0),pk=pool[0];for(const k of pool)if((q-=dwt(k))<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+   if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(1+(st.wg?.5:0)+(st.pg?.3:0)+(st.bg?.3:0))*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(st.dev||(!DROP[k].scion||LIFE.scion>=1)&&(!DROP[k].shop||OWNED.includes(DROP[k].shop))));let q=Math.random()*pool.reduce((a,k)=>a+dwt(k),0),pk=pool[0];for(const k of pool)if((q-=dwt(k))<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut((st.claw?1.08:1)*(st.dkx||1)*{vspirit:3,magpie:0,hulk:1,chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,nox:80,umbra:80,imago:80,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb+(st.sld>0?1:0)+(st.pk==='scrap'?1:0)}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);snowTick(dt);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
@@ -2202,9 +2203,12 @@ let DG=null;function devGods(){if(!DG){const r=new THREE.WebGLRenderer({canvas:$
 {let ok=0;const DEVPW='1111';$('devBtn').onclick=()=>{if(ok)return show('devc');$('devP').value='';$('devE').hidden=true;show('devpw');setTimeout(()=>$('devP').focus(),50)};
  $('devF').onsubmit=e=>{e.preventDefault();if($('devP').value===DEVPW){ok=1;show('devc')}else{$('devE').hidden=false;$('devP').select()}};
  const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
+ // dStart: start a run with the picked craft and paint (any paint, owned or not; the hangar's pick is restored)
+ function dStart(h){const k=$('dvC').value,o=PJ[k];PJ[k]=$('dvJ').value;start(k,h);PJ[k]=o}
+ $('dvJ').innerHTML='<option value="">Factory</option>'+Object.entries(PAINTS).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join('');
  const lo=()=>{st.dev=1;st.hi=-1;st.banked=1;st.scrap=+$('dvS').value;if($('dvI').checked)st.dvInv=1;hud()};
  // devRun: start a playtest run at zone z, sector n (1-10). wv=false leaves the field empty for a boss or event
- function devRun(z,n,wv=true){start($('dvC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
+ function devRun(z,n,wv=true){dStart();ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
   Object.assign(st,{area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});lo();if(wv)wave()}
  $('ztGo').onclick=()=>devRun($('ztZ').value,+$('ztS').value);
  const OZ='The Open Zone',DS='Dark Space',BL=[['Bastion',OZ,5,()=>{const r=Math.random;Math.random=()=>.1;try{bossWave()}finally{Math.random=r}}],['Warden',OZ,5,wardenWave],['Minotaur',OZ,10,minoWave],['The Magpie',OZ,10,magpieWave],
@@ -2218,7 +2222,10 @@ let DG=null;function devGods(){if(!DG){const r=new THREE.WebGLRenderer({canvas:$
   ['Phantom Space Station',()=>station(on)],['The Fork in the Dark',()=>fork(on)],['Stranded Nauts',()=>{st.nautF=1;on()}],['Mysterious Altars (post-game)',()=>{st.post=1;altars(on)}],['Bonus wave',()=>{bonusWave();running=true}]];
  $('dvE').innerHTML=EL.map((e,i)=>`<option value="${i}">${e[0]}</option>`).join('');
  $('dvEGo').onclick=()=>{devRun($('ztZ').value,Math.min(9,Math.max(1,+$('ztS').value%5?+$('ztS').value:+$('ztS').value-1)),false);running=false;EL[$('dvE').value][1]()};
- const tm=h=>{start($('dvC').value,h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
+ const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
+ // Reset progress: two taps; clears every saved key except settings, then reloads
+ $('dvWipe').onclick=()=>{const b=$('dvWipe');if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again to wipe';setTimeout(()=>{delete b.dataset.arm;b.textContent='Reset progress'},3000);return}
+  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
  $('dvReel').onclick=()=>reelOpen(()=>show('devc'));
  // View ending: drops into Dark Space's final sector and fells the Scion at once
  $('ztEnd').onclick=()=>{devRun(DS,10,false);st.boss=1;scionWave();running=true;setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
