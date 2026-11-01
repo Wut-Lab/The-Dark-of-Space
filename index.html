@@ -2058,7 +2058,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  // Black Ice Plating: any armor gained since last frame is halved; half points carry over so small repairs still add up
  if(st&&st.bip){if(st.hp>st.hl){st.hb=(st.hb||0)+(st.hp-st.hl)/2;const w=Math.floor(st.hb);st.hb-=w;st.hp=st.hl+w;if(player)hud()}st.hl=st.hp}
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
- driftTick(dt);reelTick(dt);gateTick(dt);nautTick(dt);if(running&&st&&st.naut&&st.hp<st.max&&(st.nrt=(st.nrt||0)+dt)>=20){st.nrt=0;st.hp=Math.min(st.max,st.hp+1);hud()}fallTick(rdt);outTick(dt);thumbTick(dt);
+ driftTick(dt);reelTick(dt);gateTick(dt);nautTick(dt);if(running&&st&&st.naut){if(st.hp>=st.max)st.nrt=0;else if((st.nrt=(st.nrt||0)+dt)>=20){st.nrt=0;st.hp=Math.min(st.max,st.hp+1);hud()}}fallTick(rdt);outTick(dt);thumbTick(dt);
  const dk=!!st&&!st.timed&&st.area==='Dark Space';for(let i=0;i<stars.length;i++){const s=stars[i];s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80;s.visible=!dk||i%30===0}
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
