@@ -1778,13 +1778,18 @@ function stationWin(){st.phA=0;running=false;const rares=shuf(UPG.filter(u=>avai
 function vDash(p){st.vdh=st.vdh||new Set();for(const e of ents)if(e.hp>0&&e.m.visible&&!st.vdh.has(e)&&Math.hypot(e.m.position.x-p.x,e.m.position.z-p.z)<(e.r||.6)+.9){st.vdh.add(e);if(!BOSSES.has(e.type)||e.inPos){e.hp-=2+st.dmg;hitFlash(e)}}}
 // Space Nautilus Pod: two drift by in the background for a sector (the forecast); next sector the pod crosses the lane in the quiet start.
 // Touch one: Reparative Barrier for 2 sectors (+1 armor every 20 s up to max, EN regen +5%)
-function nautModel(){const g=new THREE.Group(),M=c=>new THREE.MeshStandardMaterial({color:c,roughness:.5,emissive:0x40c8c0,emissiveIntensity:.15,transparent:true}),cr=M(0xf2e6cc),br=M(0xa8683a);
- for(let i=0;i<14;i++){const a=i*.55,r=.25+i*.09,b=new THREE.Mesh(new THREE.SphereGeometry(.18+i*.055,10,8),i%3?cr:br);b.position.set(Math.cos(a)*r,Math.sin(a)*r,0);g.add(b)}
- for(let i=0;i<7;i++){const t=new THREE.Mesh(new THREE.ConeGeometry(.08,1.4,5),M(0xe8d8bc));t.rotation.z=Math.PI/2+(i-3)*.18;t.position.set(1.9,(i-3)*.14-.2,0);g.add(t)}
- const gl=glow(0x80fff0,4.5);gl.material.opacity=.4;g.add(gl);return g}
+function nautModel(){const g=new THREE.Group(),C=[0xff3fd0,0x30c8ff,0xffffff,0xfff040,0x40ff70].map(c=>new THREE.Color(c)),col=t=>{const f=t*(C.length-1),k=Math.min(C.length-2,f|0);return C[k].clone().lerp(C[k+1],f-k)},
+ M=c=>new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.45,roughness:.4,transparent:true});
+ // Shell: a log spiral of chambers, pink at the coil's heart through blue, white and yellow to green at the opening (facing back)
+ for(let i=0;i<14;i++){const a=i*.55+2.59,r=.25+i*.09,b=new THREE.Mesh(new THREE.SphereGeometry(.18+i*.055,12,10),M(col(i/13)));b.position.set(Math.cos(a)*r,Math.sin(a)*r,0);g.add(b)}
+ // Tentacles: a bundle from the shell opening, trailing behind as it swims shell-first
+ const hood=new THREE.Mesh(new THREE.SphereGeometry(.45,10,8),M(col(1)));hood.scale.set(.7,1,1);hood.position.set(-1.55,-.45,0);g.add(hood);
+ for(let i=0;i<10;i++){const a=(i/9-.5)*.9,len=1.1+Math.random()*.8,t=new THREE.Mesh(new THREE.ConeGeometry(.06,len,5),M(0xf4fff0));t.userData.a=a;t.rotation.z=Math.PI/2+a;
+  t.position.set(-1.75-Math.cos(a)*len/2,-.45-Math.sin(a)*len/2+(i%2?.12:-.12),(i%3-1)*.15);g.add(t)}
+ const gl=glow(0xffffff,5);gl.material.opacity=.45;g.add(gl);return g}
 function nautAdd(bg){const g=nautModel(),d=Math.random()<.5?1:-1;g.scale.setScalar(bg?1.3:.55+Math.random()*.15);g.userData={d,v:bg?1.6:3.2,ph:Math.random()*6,bg};g.rotation.y=d>0?0:Math.PI;g.rotation.x=-.3;S.add(g);(st.nauts=st.nauts||[]).push(g);return g}
-function nautPod(){const d=Math.random()<.5?1:-1,z0=-2-Math.random()*3;seeIt('naut');for(let i=0;i<5;i++){const g=nautAdd(0);g.userData.d=d;g.rotation.y=d>0?0:Math.PI;g.position.set(-d*(17+i*1.6),.6,z0+(i%3-1)*1.6+Math.random()*.6)}}
-function nautTick(dt){if(!st||!st.nauts)return;const p=player&&player.position;st.nauts=st.nauts.filter(g=>{const u=g.userData;u.ph+=dt;g.position.x+=u.d*u.v*dt;g.position.y=(u.bg?-6:.6)+Math.sin(u.ph*1.3)*.25;g.children.forEach((c,i)=>{if(c.geometry&&c.geometry.type==='ConeGeometry')c.rotation.z+=Math.sin(u.ph*3+i)*.004});
+function nautPod(){const d=Math.random()<.5?1:-1,z0=-2-Math.random()*3;seeIt('naut');for(let i=0;i<7;i++){const g=nautAdd(0);g.userData.d=d;g.rotation.y=d>0?0:Math.PI;g.position.set(-d*(17+i*1.5),.6,z0+(i%3-1)*1.7+Math.random()*.6)}}
+function nautTick(dt){if(!st||!st.nauts)return;const p=player&&player.position;st.nauts=st.nauts.filter(g=>{const u=g.userData;u.ph+=dt;g.position.x+=u.d*u.v*dt;g.position.y=(u.bg?-6:.6)+Math.sin(u.ph*1.3)*.25;g.children.forEach((c,i)=>{if(c.geometry&&c.geometry.type==='ConeGeometry')c.rotation.z=Math.PI/2+c.userData.a+Math.sin(u.ph*2.5+i)*.12});
   if(!u.bg&&p&&running&&!st.naut&&Math.hypot(g.position.x-p.x,g.position.z-p.z)<1.9){st.naut=2;st.nrt=0;popMsg('REPARATIVE BARRIER','#80fff0');boom(g.position,12,0x80fff0)}
   if(g.position.x*u.d>(u.bg?40:22)){S.remove(g);return false}return true})}
 function go(k){if(st.nautF===1){st.nautF=2;const d=Math.random()<.5?1:-1;for(let i=0;i<2;i++){const g=nautAdd(1);g.userData.d=d;g.rotation.y=d>0?0:Math.PI;g.position.set(-d*(10+i*9),-6,-40-i*6)}}if(k==='yard')return shop();if(k==='dock'){const was=st.hp,a=Math.max(3,Math.ceil(st.max/2));st.hp=Math.min(st.max,st.hp+(st.bip?Math.ceil(a/2):a));st.hl=st.hp;return evDone('Repair Dock',`Dock crews patch your hull: +${Math.ceil(st.hp-was)} armor (${Math.ceil(st.hp)}/${st.max})${st.bip?'. Your Black Ice Plating only takes half the work':''}.`)}
