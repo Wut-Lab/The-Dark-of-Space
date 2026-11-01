@@ -35,7 +35,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .sum{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:14px}.sum dt{color:var(--dim)}.sum dd{margin:0}
 .rar{font:600 11px var(--display);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:#aab1bd}.r-u .rar{color:#4fe08a}.r-r .rar{color:#5ab0ff}.r-x .rar{color:#ff3d6e}
 button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:linear-gradient(#ff3d6e1f,#ff3d6e08)}
-#evt{overflow-y:auto;padding-block:24px}#evO{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}#evO button{padding:10px 12px}
+#evt{overflow-y:auto;padding-block:24px}#evt.fade{animation:evf .7s ease-out}@keyframes evf{from{opacity:0}}#evO{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}#evO button{padding:10px 12px}
 .ss{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;width:100%;text-align:left;margin-top:6px}
 .ss .l,.ss .v{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}.ss .v{color:var(--fg);text-align:right;text-transform:none;font-variant-numeric:tabular-nums}
 .ss .b{height:6px;background:#ffffff1a}.ss .b i{display:block;height:100%;background:var(--accent)}
@@ -1728,8 +1728,18 @@ const ZPERK={fort:{n:'Fortify',d:'+2 max armor, but -15% strafe speed',on:s=>{s.
  live:{n:'Live Dangerously',d:'+10% cycle, but enemies fire 5% faster',on:s=>{s.rate/=1.1},off:s=>{s.rate*=1.1}},
  tech:{n:'Average Technician',d:'Upgrade odds: Uncommon 45%, but Common 45% and Rare 7%',on:()=>{},off:()=>{}},
  after:{n:'Afterburner',d:'+20% strafe speed and dashes cost 20% less EN, but collisions cost +1 armor',on:s=>{s.spd*=1.2},off:s=>{s.spd/=1.2}}};
-function zoneGate(){const ks=shuf(Object.keys(ZPERK)).slice(0,3),done=()=>{hud();st.sec--;route()};
- evt('Zone Gate','A checkpoint station guards the way into the next zone. Take one perk for this zone only. Each comes with a drawback.',[...ks.map(k=>[ZPERK[k].n,ZPERK[k].d,()=>{st.pk=k;ZPERK[k].on(st);done()}]),['Choose Nothing','Fly on as you are.',done]])}
+// Zone Gate model: floating metal ring with fence wings and red chevrons pointing at the center
+function gateModel(){const g=new THREE.Group(),M=(c,e)=>new THREE.MeshStandardMaterial({color:c,emissive:e||0,emissiveIntensity:e?1.2:0,metalness:.6,roughness:.45,transparent:true}),mt=M(0x5a606c),dk=M(0x2a2e36),rd=M(0xff2030,0xff2030),B=(w,h,d,m,x,y,z,rz)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);b.rotation.z=rz||0;g.add(b);return b};
+ g.add(new THREE.Mesh(new THREE.TorusGeometry(5,.5,10,40),mt));const inner=new THREE.Mesh(new THREE.TorusGeometry(4.35,.12,8,40),M(0xff3040,0xff2030));g.add(inner);
+ for(let i=0;i<8;i++){const a=i*Math.PI/4;B(.5,1.3,.9,dk,Math.cos(a)*5,Math.sin(a)*5,0,a)}
+ for(const sx of [-1,1]){for(let k=0;k<4;k++)B(.35,4.2-k*.5,.35,dk,sx*(6+k*2.1),0,0);B(6.6,.22,.2,mt,sx*8.9,1.4,0);B(6.6,.22,.2,mt,sx*8.9,-1.4,0);B(6.6,.18,.2,mt,sx*8.9,0,0);
+  for(let k=0;k<3;k++)B(2.4,.12,.12,mt,sx*(7.05+k*2.1),0,0,sx*.6);
+  for(let k=0;k<3;k++)for(const s2 of [-1,1])B(.9,.2,.2,rd,sx*(9.6-k*1.3)-sx*.3,s2*.3+2.6,0,sx*s2*.75)}
+ const gl=glow(0xff2030,9);gl.material.opacity=.35;g.add(gl);g.userData.inner=inner;g.rotation.x=-.2;return g}
+function gateTick(dt){const g=st&&st.gate;if(!g)return;g.userData.t=(g.userData.t||0)+dt;g.position.y=Math.sin(g.userData.t*1.1)*.35;g.userData.inner.rotation.z+=dt*.6;
+ const o=g.userData.out?Math.max(0,1-(g.userData.t-g.userData.out)/.8):Math.min(1,g.userData.t/.6);g.traverse(m=>{if(m.material)m.material.opacity=m.material.isSpriteMaterial?o*.35:o});if(g.userData.out&&!o){S.remove(g);st.gate=0}}
+function zoneGate(){const ks=shuf(Object.keys(ZPERK)).slice(0,3),done=()=>{$('evt').classList.remove('fade');const g=st.gate;if(g)g.userData.out=g.userData.t;hud();st.sec--;route()};
+ const g=st.gate=gateModel();g.position.set(0,-1.5,-24);S.add(g);$('evt').hidden=true;hud();setTimeout(()=>{$('evt').classList.add('fade');evt('Zone Gate','A checkpoint station guards the way into the next zone. Take one perk for this zone only. Each comes with a drawback.',[...ks.map(k=>[ZPERK[k].n,ZPERK[k].d,()=>{st.pk=k;ZPERK[k].on(st);done()}]),['Choose Nothing','Fly on as you are.',done]])},1600)}
 function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp,a=Math.max(3,Math.ceil(st.max/2));st.hp=Math.min(st.max,st.hp+(st.bip?Math.ceil(a/2):a));st.hl=st.hp;return evDone('Repair Dock',`Dock crews patch your hull: +${Math.ceil(st.hp-was)} armor (${Math.ceil(st.hp)}/${st.max})${st.bip?'. Your Black Ice Plating only takes half the work':''}.`)}
  if(k==='signal')return EVENTS[Math.random()*EVENTS.length|0]();st.elite=k==='elite'?1:0;wave();running=true}
 // Kill scrap pays 90%, randomly rounded so the average holds on small values
@@ -1950,7 +1960,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  // Black Ice Plating: any armor gained since last frame is halved; half points carry over so small repairs still add up
  if(st&&st.bip){if(st.hp>st.hl){st.hb=(st.hb||0)+(st.hp-st.hl)/2;const w=Math.floor(st.hb);st.hb-=w;st.hp=st.hl+w;if(player)hud()}st.hl=st.hp}
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
- driftTick(dt);reelTick(dt);fallTick(rdt);outTick(dt);thumbTick(dt);
+ driftTick(dt);reelTick(dt);gateTick(dt);fallTick(rdt);outTick(dt);thumbTick(dt);
  const dk=!!st&&!st.timed&&st.area==='Dark Space';for(let i=0;i<stars.length;i++){const s=stars[i];s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80;s.visible=!dk||i%30===0}
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
