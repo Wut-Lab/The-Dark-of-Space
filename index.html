@@ -460,6 +460,7 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_cold:[[-3,0,-3,6,6,6,'r'],[-2,6,-2,4,4,4,'r'],[-1,10,-1,2,3,2,'w'],[-5,1,-1,2,3,2,'w'],[3,1,-1,2,3,2,'w']],u_horn:[[-2,0,-2,4,4,4,'a'],[-1,4,-1,2,4,2,'w'],[0,8,-1,2,3,2,'w'],[1,11,-1,2,2,2,'y']],
  u_grav:[[-3,0,-3,6,6,6,'q'],[-4,1,-2,8,4,4,'q'],[-2,1,-4,4,4,8,'q'],[-4,2,-4,8,1,8,'v'],[-1,2,-1,2,2,2,'v']],u_mon:[[-5,0,-3,10,2,6,'d'],[-4,2,-2,8,2,4,'a'],[-1,4,-1,2,7,2,'y'],[-3,10,-2,6,2,4,'a'],[-5,0,-4,2,2,1,'k'],[3,0,-4,2,2,1,'k']],u_laser:[[-3,0,-3,6,5,6,'d'],[-2,5,-2,4,3,4,'a'],[-1,8,-1,2,8,2,'x'],[-2,16,-1,4,1,2,'y']],u_qs:[[-4,0,-1,2,8,2,'r'],[-1,2,-1,2,8,2,'r'],[2,4,-1,2,8,2,'r'],[-6,0,0,14,1,1,'y']],
  u_troph:[[-4,0,-4,8,2,8,'q'],[-4,10,-4,8,2,8,'q'],[-4,2,-4,2,8,2,'q'],[2,2,-4,2,8,2,'q'],[-4,2,2,2,8,2,'q'],[2,2,2,2,8,2,'q'],[-2,3,-2,4,6,4,'x'],[-1,12,-1,2,2,2,'v']],
+ u_gw:[[-4,0,-4,8,8,8,'w',0,'e'],[-3,1,-2,6,6,6,'W',0,'e']],u_gp:[[-4,0,-4,8,8,8,'u',0,'e'],[-3,1,-2,6,6,6,'U',0,'e']],u_gb:[[-4,0,-4,8,8,8,'b',0,'e'],[-3,1,-2,6,6,6,'B',0,'e']],
  u_glass:[[-6,0,-1,12,3,3,'q'],[-5,3,0,3,8,2,'q'],[2,3,0,3,8,2,'q'],[-5,11,0,3,1,2,'v'],[2,11,0,3,1,2,'v'],[-2,2,1,4,2,1,'v']],
  u_boot:[[-5,0,-1,10,13,3,'d',0,'e'],[-4,2,0,8,9,2,'a',0,'e'],[-1,3,1,2,8,1,'x'],[-4,6,1,8,1,1,'y'],[-3,9,1,2,2,1,'y'],[2,2,1,2,2,1,'y'],[-6,5,0,1,3,1,'x'],[5,8,0,1,2,1,'x']],
  u_plate:[[-5,0,-1,10,10,2,'a'],[-4,1,1,8,8,1,'g'],[-1,4,2,2,2,3,'d'],[0,5,5,1,1,2,'f'],[-4,1,1,1,1,1,'y'],[3,1,1,1,1,1,'y'],[-4,8,1,1,1,1,'y'],[3,8,1,1,1,1,'y'],[-5,4,-2,10,2,1,'h']],
@@ -475,7 +476,7 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_surge:[[-3,0,-2,6,8,4,'f',0,'r'],[-3,3,-2,6,2,4,'k',0,'r'],[0,8,0,2,2,1,'y'],[-1,10,0,2,2,1,'y'],[0,12,0,2,2,1,'y'],[-4,14,-1,8,2,2,'y'],[-5,14,-1,1,2,2,'d'],[4,14,-1,1,2,2,'d']],
  u_weld:[[-4,1,-1,8,8,2,'n'],[-1,-1,-1,2,12,2,'n'],[-6,4,-1,12,2,2,'n'],[-1,3,1,2,4,1,'f'],[-2,4,1,4,2,1,'f'],[5,9,0,1,1,1,'y'],[6,10,0,1,1,1,'y'],[4,10,0,1,1,1,'h']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
-const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8,q:0x3a2258,v:0xb060ff};
+const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8,q:0x3a2258,v:0xb060ff,W:0xffffff,w:0xc8ccd8,U:0xd070ff,u:0x8a20d0,B:0x60d0ff,b:0x1c80d0};
 // Mine: spiked sphere with a rust band and red lights. Lancer: dart-shaped ramming drone
 const MINE=[[-5,0,-5,10,10,10,'v',0,'e'],[-6,4,-6,12,2,12,'o',0,'e'],[-1,10,-1,2,3,2,'d'],[5,4,-1,3,2,2,'d',1],[-1,4,5,2,2,3,'d'],[-1,4,-8,2,2,3,'d'],[-1,7,4,2,1,1,'m'],[-1,7,-5,2,1,1,'m'],[-1,13,-1,2,1,2,'m']];
 const LANCER=[[-2,1,-8,4,3,16,'v',0,'e'],[2,1,-6,7,1,10,'o',1,'delta'],[-1,1,7,2,2,6,'d',0,'cz'],[-2,1,-10,4,3,2,'d'],[-1,2,-11,2,1,1,'m'],[-1,4,-1,2,1,3,'m'],[7,0,-6,1,3,4,'d',1]];
@@ -1517,6 +1518,8 @@ const DROP={g:{c:0x45ff7a,css:'#45ff7a',inv:0},y:{c:0xffd23a,css:'#ffd23a',inv:2
  // Post-game power-ups: in the pool once the Scion has fallen
  sta:{c:0x9ff0ff,css:'#9ff0ff',pu:'STASIS',scion:1},slide:{c:0xffc94a,css:'#ffc94a',pu:'SCRAP SLIDE',scion:1}}
 // Drop pools per mode (mirrors the blueprint's Power Ups tab). g/y are time capsules: Timed Attack only, rolled at their own rates
+// Drop weight: Purple Gift triples Barrier, Blue Gift triples EMP
+const dwt=k=>(DROP[k].w||1)*(k==='bar'&&st.pg?3:1)*(k==='emp'&&st.bg?3:1);
 const POOLS={campaign:['emp','bar','spr','patch','slide'],timed:['emp','bar','spr','patch','sta','g','y']},drops=[];
 const GLOW=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);
  g.addColorStop(0,'#fff');g.addColorStop(.35,'#ffffff88');g.addColorStop(1,'#fff0');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
@@ -1615,6 +1618,9 @@ const UPG=[['Void Draw','A void glow sits at your muzzle. While you\'re pushed f
  ['Black Market Link','The Salvage Yard allows a second purchase at double price. +5 scrap at the end of each sector, +6% for each sector completed. Only from The Magpie',s=>s.bml=1,'r','u_bml',0,'magpie'],
  ['MaG-π','A small drone hovers on one side of you (changes each sector) with a 50% chance to catch enemy shots that reach it: +3 scrap each. +1% strafe speed per 25 scrap held. Only from The Magpie',s=>s.mpi=1,'r','u_mpi',0,'magpie'],
  ['Magpie Nest','+5 scrap at the end of each sector (+10 from sector 21). While you hold 100+ scrap (200+ from sector 21), upgrade picks show a 4th option, always Uncommon or Rare. Only from The Magpie',s=>s.nest=1,'r','u_nest',0,'magpie'],
+ ['The White Gift','Power-ups drop 50% more often. Only from the Mysterious Altars',s=>s.wg=1,'r','u_gw',0,'altar'],
+ ['The Purple Gift','Power-ups drop 30% more often, Barriers three times as often as others. -1 max armor. Only from the Mysterious Altars',s=>{s.pg=1;s.max=Math.max(1,s.max-1);s.hp=Math.min(s.hp,s.max)},'r','u_gp',0,'altar'],
+ ['The Blue Gift','Power-ups drop 30% more often, EMPs three times as often as others. -10% strafe speed. Only from the Mysterious Altars',s=>{s.bg=1;s.spd*=.9},'r','u_gb',0,'altar'],
  ['Glass Auto Cannons','+15% fire rate and strafe speed and +1 pierce on every shot, but -25% max armor (II: +25%, and you also fire a shot to each side; III: +35%, plus a shot straight behind you)',s=>{const t=s.glass=(s.glass||0)+1;if(t===1){s.pierce++;s.max=Math.max(1,Math.floor(s.max*.75));s.hp=Math.min(s.hp,s.max)}const k=[1.15,1.25/1.15,1.35/1.25][t-1];s.rate/=k;s.spd*=k},'x','u_glass',0,'explorer'],
  ['Bootleg Shields','Every 5th hit has a 50% chance to be blocked (II: every 4th, 75%; III: every 3rd, 100%); its energy gives your next shot +2 damage (+3, +4). Each block halves your strafe speed for 1 s',s=>s.boot++,'x','u_boot',0,'barrier'],
  ['Ram Plating','Collisions with units (dives, rams, mines) cost 1 less armor, never below 1, and the unit takes +3 damage per tier',s=>s.plate++,'c','u_plate',100],
@@ -1692,8 +1698,27 @@ function route(){running=false;st.elite=st.boss=0;shots.forEach(s=>S.remove(s.m)
  if(st.b45===1)st.b45=2;if(st.sec===1)prog('sec1');if(st.sec===5)prog('boss5');if(st.sec%5===0&&st.area==='The Frost Reach')prog('frostboss');st.sec++;st.wN=0;if(st.sec%5===1){st.zh=0;st.b45=0}hud();const n=st.sec,nb=Math.ceil(n/5)*5;
  // The Silent Hulk: once per run, 25% before a capital unit from sector 10 on. Board it to fight The Magpie, then go straight into the capital unit
  if(n%5===0&&n>=10&&!st.timed&&!st.mag&&Math.random()<.25){st.mag=1;return evt('The Silent Hulk','A massive wreck drifts in the dark, stitched together from dozens of ships. Something inside is still moving.',[['Board it','Fight The Magpie, then the capital unit. Win: +40 scrap and a random Magpie upgrade (rare).',magpieWave],['Leave it','Fly on to the capital unit.',()=>go('boss')]])}
- let opts=n%5===0?['boss']:n%5===4?['yard',...shuf(['elite','signal','dock'].filter(k=>!(k==='dock'&&st.hp>=st.max))).slice(0,2)]:shuf(['elite','signal','dock'].filter(k=>!(k==='elite'&&n<3)&&!(k==='dock'&&st.hp>=st.max))).slice(0,3);if(n%5&&opts.length<2)opts=shuf(['combat',...opts]);
- evt(`Sector ${n} · Choose your route`,n===nb?'The capital unit is waiting.':`Boss at sector ${nb}. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,opts.map(k=>[...NODE[k],()=>go(k)]))}
+ // Way 1: 35% of route choices carry one Unknown Signal card. Way 2: if none, 15% for a random-occurrence event
+ const sig=n%5!==0&&Math.random()<.35;let opts=['boss'];if(n%5){const need=(n%5===4?2:3)-(sig?1:0),b=shuf(['elite','dock'].filter(k=>!(k==='elite'&&n<3)&&!(k==='dock'&&st.hp>=st.max)));if(b.length<need)b.push('combat');opts=b.slice(0,need);if(sig)opts.push('signal');opts=n%5===4?['yard',...shuf(opts)]:shuf(opts)}
+ const show=()=>evt(`Sector ${n} · Choose your route`,n===nb?'The capital unit is waiting.':`Boss at sector ${nb}. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,opts.map(k=>[...NODE[k],()=>go(k)]));
+ if(n%5&&!sig&&!st.timed&&Math.random()<.15){const r=RANDEV.filter(e=>e.ok());if(r.length){const e=r[Math.random()*r.length|0];if(e.once)st['ev_'+e.k]=1;return e.run(e.rep?null:show)}}show()}
+// Way 2 events. once: once per run. rep: replaces the sector (else plays before the route choice)
+const RANDEV=[{k:'altars',once:1,rep:0,ok:()=>LIFE.scion>=1&&!st.ev_altars,run:altars}];
+// Mysterious Altars (post-game): an in-between sector with three altars; fly into one for its gift
+const ALT=[{c:0xffffff,n:'The White Gift',h:'The altar hums softly. You feel comfortable and safe. You are guided to touch it and feel as though you must offer something.',ac:'Offer 50 scrap (or all you have).',yes:'The humming intensifies. It sounds almost,... Satisfied.',no:'The humming stops. You leave.'},
+ {c:0xc040ff,n:'The Purple Gift',h:'The altar crackles as if coursing with electricity. It is both awe inspiring and terrifying. You want to flee, but something draws you to touch it.',ac:'Receive its gift.',yes:'The crackling stops.',no:'The crackling intensifies. You take off.'},
+ {c:0x30b8ff,n:'The Blue Gift',h:'The altar vibrates slightly. Curiosity draws you to touch it.',ac:'Receive its gift.',yes:'The altar begins to shudder violently.',no:'The vibrations stop abruptly. It\'s eerily quiet. You leave.'}];
+function altars(next){BFX.clear();clearDrops();st.altNext=next;st.alt=[];const M=(c,e)=>new THREE.MeshStandardMaterial({color:c,emissive:e||0,emissiveIntensity:.6,roughness:.5});
+ ALT.forEach((a,i)=>{const g=new THREE.Group(),post=new THREE.Mesh(new THREE.CylinderGeometry(.55,.75,3,6),M(0x2a2d36)),cap=new THREE.Mesh(new THREE.OctahedronGeometry(.6),M(0x3a3e4a)),
+  bowl=new THREE.Mesh(new THREE.SphereGeometry(.85,12,8,0,Math.PI*2,Math.PI/2,Math.PI/2),M(0x50545f,a.c)),orb=new THREE.Mesh(new THREE.SphereGeometry(.42,14,10),M(a.c,a.c)),gl=glow(a.c,4.5),ring=new THREE.Mesh(new THREE.TorusGeometry(1.15,.07,8,32),new THREE.MeshBasicMaterial({color:a.c})),rg=glow(a.c,3.2);ring.rotation.x=Math.PI/2;ring.position.y=-1.5;rg.position.y=-1.5;rg.material.opacity=.45;g.add(ring,rg);
+  bowl.material.side=THREE.DoubleSide;orb.material.emissiveIntensity=1.4;post.position.y=-.5;cap.position.y=1.2;cap.scale.y=.5;gl.position.y=2.6;g.add(post,cap,bowl,orb,gl);g.rotation.x=-.35;
+  g.position.set((i-1)*6.5,0,-24);S.add(g);st.alt.push({g,bowl,orb,a,i,t:i*2})});
+ running=true;st.wv=st.wvs=1;hud();banner('MYSTERIOUS ALTARS','Three altars drift out of the dark. Fly into one.')}
+function altTick(dt){for(const o of st.alt){o.t+=dt;if(o.g.position.z<-1.5)o.g.position.z+=dt*2.2;o.bowl.position.y=1.9+Math.sin(o.t*1.6)*.15;o.orb.position.y=2.7+Math.sin(o.t*1.6+1)*.22;o.orb.rotation.y+=dt;o.g.children[0].position.y=o.g.children[1].position.y=-1.5+Math.sin(o.t*1.2)*.1;
+  if(Math.abs(player.position.x-o.g.position.x)<1.5&&Math.abs(o.g.position.z)<2.5)return altCard(o)}}
+function altEnd(h,t){st.alt.forEach(o=>S.remove(o.g));st.alt=0;const nx=st.altNext;evt(h,t,[['Continue','On to the route choice.',()=>nx?nx():route()]])}
+function altCard(o){running=false;const a=o.a,u=UPG.find(u=>u[0]===a.n);evt('Mysterious Altar',a.h,[['Accept the Gift',a.ac,()=>{if(!o.i)st.scrap-=Math.min(50,st.scrap);
+  evt(a.n,a.yes+' '+u[1],[['Take it and leave','Rare · added to your upgrades.',()=>{u[2](st);gotUp(u[0]);hud();altEnd(a.n,'You fly on.')}]])}],['Leave','',()=>altEnd('Mysterious Altar',a.no)]])}
 function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp,a=Math.max(3,Math.ceil(st.max/2));st.hp=Math.min(st.max,st.hp+(st.bip?Math.ceil(a/2):a));st.hl=st.hp;return evDone('Repair Dock',`Dock crews patch your hull: +${Math.ceil(st.hp-was)} armor (${Math.ceil(st.hp)}/${st.max})${st.bip?'. Your Black Ice Plating only takes half the work':''}.`)}
  if(k==='signal')return EVENTS[Math.random()*EVENTS.length|0]();st.elite=k==='elite'?1:0;wave();running=true}
 // Kill scrap pays 90%, randomly rounded so the average holds on small values
@@ -2011,7 +2036,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   {let j=0;for(const s of shots)if(s.life>0)shots[j++]=s;else S.remove(s.m);shots.length=j}
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m);prog('scion')}if(GODN[e.type]){st.won=2;st.godN=GODN[e.type];scionFall(e.m);prog(e.type)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){if(!e.escaped)buzz([90,50,160]);if(st.boss&&!st.bhit&&!e.escaped){const d=([...ELOG.b,...ELOG.x].find(q=>q[0]===e.type)||[])[4]||0;if(d>=3)prog('nohit3');if(d>=4)prog('nohit4')}BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
    st.kills++;killIt(e.type);if(st.eh)ehWell(e.m.position);(st.kt=st.kt||{})[e.type]=(st.kt[e.type]||0)+1;boom(e.m.position,BOSSES.has(e.type)&&e.type!=='wp'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||BOSSES.has(e.type)&&e.type!=='wp');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
-   if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].scion||LIFE.scion>=1)&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+(DROP[k].w||1),0),pk=pool[0];for(const k of pool)if((q-=DROP[k].w||1)<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
+   if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(1+(st.wg?.5:0)+(st.pg?.3:0)+(st.bg?.3:0))*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].scion||LIFE.scion>=1)&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+dwt(k),0),pk=pool[0];for(const k of pool)if((q-=dwt(k))<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
    if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut((st.claw?1.08:1)*{magpie:0,hulk:1,chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,nox:80,umbra:80,imago:80,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb+(st.sld>0?1:0)}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);snowTick(dt);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
@@ -2021,7 +2046,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   // Dead Man's Switch: survive a fatal hit at 1 armor with an EMP, once per zone (twice at III); repairs stop at 75% max armor
   if(st.dms){if(st.dmsZ!==st.area){st.dmsZ=st.area;st.dmsN=0}const cap=Math.ceil(st.max*.75);if(st.hp>(st.hpL??st.hp)&&st.hp>cap){st.hp=Math.max(st.hpL,cap);hud()}
    if(st.hp<=0&&st.dmsN<(st.dms>2?2:1)){st.dmsN++;st.hp=1;st.emp+=2.5;shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp');boom(player.position,40,0xb47cff,true);popMsg('DEAD MAN\'S SWITCH','#b47cff');if(st.dms>1)st.inv=Math.max(st.inv,2);hud()}st.hpL=st.hp}
-  if(st.hp<=0)die();
+  if(st.alt)altTick(dt);else if(st.hp<=0)die();
   else if(st.timed&&st.time<=0)timeUp();
   else if(!ents.length&&!st.clearT&&st.wv<st.wvs){st.clearT=1.4;st.mid=1;banner('WAVE CLEAR',`Wave ${st.wv+1} of ${st.wvs} incoming`)}
   else if(!ents.length&&!st.clearT){st.clearT=st.timed?1.4:2.2;
