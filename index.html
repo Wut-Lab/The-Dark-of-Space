@@ -125,6 +125,11 @@ text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:12px}.ft{display:flex;justify-content:flex-end}
 .back{padding:6px 12px;font:600 12px var(--body);letter-spacing:.14em;text-transform:uppercase;box-shadow:0 3px 0 #000000b0,inset 0 1px 0 #ffffff2a}
 .back:active{transform:translateY(2px)}
+.devb{opacity:.7;border-style:dashed!important}.devc{max-width:640px}.devpw{max-width:380px}.dnote{margin:0;font-size:13px;opacity:.7}.dbad{margin:0;color:#ff5a6e}
+.drow{display:flex;gap:8px}.drow input{flex:1;min-width:0}.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;align-items:end}
+.dgrid label{display:grid;gap:4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.9}.dgrid .dwide{grid-column:span 2}.dgrid .dchk{display:flex;align-items:center;gap:6px;min-height:36px}
+.devc select,.devpw input{font:inherit;font-size:14px;padding:7px 8px;background:#0a0d16;color:inherit;border:1px solid #ffffff33;border-radius:4px;min-width:0}.dgrid button,.drow button{padding:8px 12px}
+@media (max-width:420px){.dgrid .dwide{grid-column:1/-1}}
 .card h3{margin:4px 0 -8px;font:700 15px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
 .card ul{margin:0;padding-left:20px;color:var(--dim);line-height:1.6;display:grid;gap:2px}.card ul b{color:var(--fg)}
 .topics{display:grid;gap:12px}
@@ -181,7 +186,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how"><b>How to Play</b></button>
 <button id="setBtn"><b>Settings</b></button>
 <button data-go="credits"><b>Credits</b></button>
-<div id="zt" style="margin-top:10px;padding:8px;border:1px dashed #556;font:12px var(--ui,sans-serif);color:#9aa3b5;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b style="width:100%">Dev: zone playtest</b><select id="ztZ"></select><select id="ztS"></select><select id="ztC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select><button id="ztGo" style="padding:4px 10px">Play</button><button id="ztEnd" style="padding:4px 10px">View ending</button></div>
+<button id="devBtn" class="devb"><b>Dev Corner</b></button>
 </nav></div></div>
 
 <div class="ov scr" id="modes" hidden><div class="card"><div class="hd"><h2>Play</h2><button class="back" data-go="start">Back</button></div>
@@ -293,6 +298,16 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Shop power-ups</h3><ul><li>More power-ups can be bought in the main-menu Shop to add them to the drops</li></ul>
 <h3>Tips</h3><ul><li>Active power-ups show as rings under the top bar. The ring empties as time runs out</li><li>Grabbing one you already have adds time, or refills the Barrier</li><li>Capsules blink just before they slip past you</li></ul></div></div>
 
+<div class="ov scr" id="devpw" hidden><div class="card devpw"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
+<p>Playtest tools. Enter the password.</p><form id="devF" class="drow"><input id="devP" type="password" inputmode="numeric" autocomplete="off" placeholder="Password" aria-label="Password"><button type="submit">Enter</button></form><p id="devE" class="dbad" hidden>Wrong password.</p></div></div>
+<div class="ov scr" id="devc" hidden><div class="card devc"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
+<p class="dnote">Playtest runs are never saved, banked or counted toward bests, stats or unlocks.</p>
+<h3>Loadout</h3><div class="dgrid"><label>Craft<select id="dvC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select></label><label>Start scrap<select id="dvS"><option>0</option><option>100</option><option>300</option><option>1000</option></select></label><label class="dchk"><input type="checkbox" id="dvI"> Invulnerable</label></div>
+<h3>Zones</h3><p class="dnote">Any zone at any sector, with its enemies, hazards, music and bosses.</p><div class="dgrid"><label>Zone<select id="ztZ"></select></label><label>Sector<select id="ztS"></select></label><button id="ztGo">Play sector</button></div>
+<h3>Bosses</h3><p class="dnote">Fight one capital unit in its home zone.</p><div class="dgrid"><label class="dwide">Boss<select id="dvB"></select></label><button id="dvBGo">Fight</button></div>
+<h3>Events</h3><p class="dnote">Trigger a route event, stop or encounter in the zone picked above, then play on from there.</p><div class="dgrid"><label class="dwide">Event<select id="dvE"></select></label><button id="dvEGo">Run event</button></div>
+<h3>Modes</h3><div class="dgrid"><button id="dvT1">Timed Attack</button><button id="dvT2">Hard Timed</button></div>
+<h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div></div></div>
 <div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="start">Back</button></div>
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
@@ -1714,11 +1729,12 @@ function route(){running=false;if(st.lout)lightsOut(0);st.lout=st.dkx=st.dkU=0;s
  // Zone Gate: a zone perk ends when its zone does; 40% chance of a new gate at each new zone (11, 21, 31)
  if(n%10===1&&n>1&&!st.timed){if(st.gz!==n){if(st.pk){ZPERK[st.pk].off(st);st.pk=0;hud()}st.gz=n;if(Math.random()<.4)return zoneGate()}}
  // The Silent Hulk: once per run, 25% before a capital unit from sector 10 on. Board it to fight The Magpie, then go straight into the capital unit
- if(n%5===0&&n>=10&&!st.timed&&!st.mag&&Math.random()<.25){st.mag=1;return evt('The Silent Hulk','A massive wreck drifts in the dark, stitched together from dozens of ships. Something inside is still moving.',[['Board it','Fight The Magpie, then the capital unit. Win: +40 scrap and a random Magpie upgrade (rare).',magpieWave],['Leave it','Fly on to the capital unit.',()=>go('boss')]])}
+ if(n%5===0&&n>=10&&!st.timed&&!st.mag&&Math.random()<.25){st.mag=1;return hulk()}
  // Way 1: 35% of route choices carry one Unknown Signal card. Way 2: if none, 15% for a random-occurrence event
  const sig=n%5!==0&&Math.random()<.35;let opts=['boss'];if(n%5){const need=(n%5===4?2:3)-(sig?1:0),b=shuf(['elite','dock'].filter(k=>!(k==='elite'&&n<3)&&!(k==='dock'&&st.hp>=st.max)));if(b.length<need)b.push('combat');opts=b.slice(0,need);if(sig)opts.push('signal');opts=n%5===4?['yard',...shuf(opts)]:shuf(opts)}
  const show=()=>evt(`Sector ${n} · Choose your route`,n===nb?'The capital unit is waiting.':`Boss at sector ${nb}. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,opts.map(k=>[...NODE[k],()=>go(k)]));
  if(n%5&&!sig&&!st.timed&&Math.random()<.15){const r=RANDEV.filter(e=>e.ok());if(r.length){const e=r[Math.random()*r.length|0];if(e.once)st['ev_'+e.k]=1;return e.run(e.rep?null:show)}}show()}
+function hulk(){return evt('The Silent Hulk','A massive wreck drifts in the dark, stitched together from dozens of ships. Something inside is still moving.',[['Board it','Fight The Magpie, then the capital unit. Win: +40 scrap and a random Magpie upgrade (rare).',magpieWave],['Leave it','Fly on to the capital unit.',()=>go('boss')]])}
 // Way 2 events. once: once per run. rep: replaces the sector (else plays before the route choice)
 const RANDEV=[{k:'altars',once:1,rep:0,ok:()=>LIFE.scion>=1&&!st.ev_altars,run:altars},{k:'station',once:0,rep:0,ok:()=>st.sec>=21&&(st.stN||0)<2,run:station},{k:'naut',once:0,rep:0,ok:()=>!st.post&&!st.won&&!st.naut&&!st.nautF&&!st.nautP&&(st.sec+1)%5!==0&&st.sec<39,run:n=>{st.nautF=1;n()}},{k:'fork',once:0,rep:0,ok:()=>!st.post&&!st.won&&(st.fkN||0)<2,run:fork}];
 // Mysterious Altars (post-game): an in-between sector with three altars; fly into one for its gift
@@ -1845,7 +1861,7 @@ const EVENTS=[
  ()=>evt('Loose Reactor Core','An unshielded reactor core tumbles past, still hot.',[['Strip it for parts','A random upgrade, but the heat costs 2 armor.',()=>{const u=roll(1)[0];u[2](st);gotUp(u[0]);st.hp=Math.max(1,st.hp-2);evDone('Loose Reactor Core',`You salvage ${u[0]}: ${u[1]}. The heat costs 2 armor.`)}],
   ['Sell it','+40 scrap.',()=>{st.scrap+=40;evDone('Loose Reactor Core','A salvage tug pays 40 scrap for it.')}]]),
  ()=>{st.scrap+=16;evDone('Scrap Cloud','Debris from an old battle. Your intakes catch +16 scrap.')}];
-function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);lightsOut(0)}music(null);overJingle();st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=st.scrap>tbest;
+function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);lightsOut(0)}music(null);overJingle();st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=!st.dev&&st.scrap>tbest;
  if(nb){tbest=st.scrap;try{localStorage.setItem('darktimedbest',tbest)}catch(e){}tbestT()}
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'':`Best score: ${tbest} scrap.`}`;$('nbest').hidden=!nb;
@@ -2013,7 +2029,7 @@ function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;s
 function ram(e,n,k){hurtR(st.plate?Math.max(1,n-1):n);if(!BOSSES.has(e.type)||e.inPos)e.hp-=k+3*st.plate}
 // Collision damage: Afterburner adds 1
 const hurtR=n=>hurt(n+(st.pk==='after'?1:0));
-function hurt(n){if(st.inv>0||st.gold>0||st.veng&&st.bt>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}if(st.pk==='scrap')st.scrap=Math.max(0,st.scrap-5);
+function hurt(n){if(st.dvInv||st.inv>0||st.gold>0||st.veng&&st.bt>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}if(st.pk==='scrap')st.scrap=Math.max(0,st.scrap-5);
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
  const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=1;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}st.bhit=1;if(st.kind==='mech')prog('khit');if(st.timed){st.time-=5;n=0}if(n){st.kcs=0;st.zh++;if(st.jet&&st.scrap){st.scrap=Math.max(0,st.scrap-15);popMsg('-15 SCRAP','#ff8a3a')}}if(st.owl&&n){st.ob=3;if(st.owl>=3)st.os=1.2}if(st.bip&&n)n=Math.max(1,n-(st.bip>=3&&n>=3?2:1));if(st.xarm>=3&&n>=2&&st.xaS!==st.sec){st.xaS=st.sec;n--}if(n>=3)buzz(70);st.hp-=n&&n+st.vuln;st.inv=.8;flash();st.ht=.12;boom(player.position,4,0xffd060);shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
@@ -2161,13 +2177,31 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   if(FALL){const k=Math.min(1,FALL.t/2.4),e=k*k*(3-2*k),q=FALL.p;C.position.lerp(T.set(q.x*.6,q.y+6,q.z+16),e*.6);C.lookAt(px*.2*(1-e)+q.x*e,q.y*e,(-9+pz*.5)*(1-e)+q.z*e)}}R.render(S,C)}
 let tHard=0;$('tHard').onclick=()=>{tHard^=1;$('tHard').classList.toggle('on',!!tHard);$('tHard').querySelector('b').textContent='Hard Mode: '+(tHard?'On':'Off')};
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.t,()=>start(b.dataset.t,tHard?2:true)));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift']])$(id).onclick=()=>cpOpen(k,()=>reelOpen(()=>start(k)));
-// Dev zone playtest (title screen): jump into any zone at any of its 10 sectors with that zone's enemies, hazards, music and bosses.
-// Playtest runs are never saved, banked or counted as a best
-{const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
- $('ztGo').onclick=()=>{const z=$('ztZ').value,n=+$('ztS').value;start($('ztC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
-  Object.assign(st,{dev:1,hi:-1,banked:1,area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});hud();wave()};
+// Dev Corner (title screen, password-gated): playtest any zone sector, boss, event, mode or story screen.
+// Playtest runs are never saved, banked or counted as a best (st.dev)
+{let ok=0;const DEVPW='1111';$('devBtn').onclick=()=>{if(ok)return show('devc');$('devP').value='';$('devE').hidden=true;show('devpw');setTimeout(()=>$('devP').focus(),50)};
+ $('devF').onsubmit=e=>{e.preventDefault();if($('devP').value===DEVPW){ok=1;show('devc')}else{$('devE').hidden=false;$('devP').select()}};
+ const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
+ const lo=()=>{st.dev=1;st.hi=-1;st.banked=1;st.scrap=+$('dvS').value;if($('dvI').checked)st.dvInv=1;hud()};
+ // devRun: start a playtest run at zone z, sector n (1-10). wv=false leaves the field empty for a boss or event
+ function devRun(z,n,wv=true){start($('dvC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
+  Object.assign(st,{area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});lo();if(wv)wave()}
+ $('ztGo').onclick=()=>devRun($('ztZ').value,+$('ztS').value);
+ const OZ='The Open Zone',DS='Dark Space',BL=[['Bastion',OZ,5,()=>{const r=Math.random;Math.random=()=>.1;try{bossWave()}finally{Math.random=r}}],['Warden',OZ,5,wardenWave],['Minotaur',OZ,10,minoWave],['The Magpie',OZ,10,magpieWave],
+  ['The Caesar','Legion Space',5,caesarWave],['Onager','Legion Space',10,onagerWave],['The Glacier','The Frost Reach',5,glacierWave],['Dry Ice','The Frost Reach',10,dryWave],['Geode','Red Crystal Asteroid Belt',5,geodeWave],['Refraction','Red Crystal Asteroid Belt',10,refractWave],
+  ['The Crucible','The Alkaline Zone',5,crucibleWave],['Mercury','The Alkaline Zone',10,mercuryWave],['Null Choir',DS,5,choirWave],['The Void Priest',DS,5,priestWave],['The Void Prophet',DS,5,prophetWave],['Scion of the Void Gods',DS,10,scionWave],
+  ['Void God, Nox',DS,10,noxWave,1],['Void Goddess, Umbra',DS,10,umbraWave,1],['Void God, Imago',DS,10,imagoWave,1]].filter(b=>!b[1]||zs.includes(b[1]));
+ $('dvB').innerHTML=BL.map((b,i)=>`<option value="${i}">${b[0]} · ${b[1]}</option>`).join('');
+ $('dvBGo').onclick=()=>{const b=BL[$('dvB').value];devRun(b[1],b[2],false);if(b[4])st.post=1;st.boss=1;b[3]();running=true};
+ const on=()=>go('combat'),EL=[['Signal: Derelict Freighter',()=>EVENTS[0]()],['Signal: Distress Beacon',()=>EVENTS[1]()],['Signal: Stranded Explorer',()=>EVENTS[2]()],['Signal: Loose Reactor Core',()=>EVENTS[3]()],['Signal: Scrap Cloud',()=>EVENTS[4]()],
+  ['Stop: Salvage Yard',()=>go('yard')],['Stop: Repair Dock',()=>{st.hp=Math.ceil(st.max/3);hud();go('dock')}],['Elite sector',()=>go('elite')],['Zone Gate (zone perks)',zoneGate],['The Silent Hulk',hulk],
+  ['Phantom Space Station',()=>station(on)],['The Fork in the Dark',()=>fork(on)],['Stranded Nauts',()=>{st.nautF=1;on()}],['Mysterious Altars (post-game)',()=>{st.post=1;altars(on)}],['Bonus wave',()=>{bonusWave();running=true}]];
+ $('dvE').innerHTML=EL.map((e,i)=>`<option value="${i}">${e[0]}</option>`).join('');
+ $('dvEGo').onclick=()=>{devRun($('ztZ').value,Math.min(9,Math.max(1,+$('ztS').value%5?+$('ztS').value:+$('ztS').value-1)),false);running=false;EL[$('dvE').value][1]()};
+ const tm=h=>{start($('dvC').value,h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
+ $('dvReel').onclick=()=>reelOpen(()=>show('devc'));
  // View ending: drops into Dark Space's final sector and fells the Scion at once
- $('ztEnd').onclick=()=>{$('ztZ').value='Dark Space';$('ztS').value='10';$('ztGo').onclick();setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
+ $('ztEnd').onclick=()=>{devRun(DS,10,false);st.boss=1;scionWave();running=true;setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
 $('again').onclick=async()=>{const d=$('dead');if(d.classList.contains('vout'))return;d.classList.add('vout');await wt(1);await wt(Math.max(0,(overJingle.e||0)-performance.now())/1000);d.classList.remove('vout');toMenu();const m=$('start');m.classList.add('mfi');setTimeout(()=>m.classList.remove('mfi'),1000)};
 // Pause menu: freezes the run, shows a rotatable view of your craft beside the menu
 let paused=false,yaw=.6,pitch=.15,drag=null;
