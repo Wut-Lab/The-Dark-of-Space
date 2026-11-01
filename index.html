@@ -307,8 +307,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="devpw" hidden><div class="card devpw"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
 <p>Playtest tools. Enter the password.</p><form id="devF" class="drow"><input id="devP" type="password" inputmode="numeric" autocomplete="off" placeholder="Password" aria-label="Password"><button type="submit">Enter</button></form><p id="devE" class="dbad" hidden>Wrong password.</p></div></div>
 <div class="ov scr" id="devc" hidden><canvas id="dvbg" aria-hidden="true"></canvas><div class="card devc"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
-<p class="dnote">Playtest runs are never saved, banked or counted toward bests, stats or unlocks. Every upgrade and power-up is unlocked in them.</p>
-<h3>Loadout</h3><div class="dgrid"><label>Craft<select id="dvC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select></label><label>Start scrap<select id="dvS"><option>0</option><option>100</option><option>300</option><option>1000</option></select></label><label class="dchk"><input type="checkbox" id="dvI"> Invulnerable</label></div>
+<p class="dnote">Playtest runs are never saved, banked or counted toward bests, stats or unlocks. Every upgrade, power-up and paint job is unlocked in them.</p>
+<h3>Loadout</h3><div class="dgrid"><label>Craft<select id="dvC"><option value="mech">Kestrel</option><option value="ship">Gale</option><option value="falcon">Falcon</option><option value="swift">Swift</option></select></label><label>Start scrap<select id="dvS"><option>0</option><option>100</option><option>300</option><option>1000</option></select></label><label>Paint job<select id="dvJ"></select></label><label class="dchk"><input type="checkbox" id="dvI"> Invulnerable</label></div>
 <h3>Zones</h3><p class="dnote">Any zone at any sector, with its enemies, hazards, music and bosses.</p><div class="dgrid"><label>Zone<select id="ztZ"></select></label><label>Sector<select id="ztS"></select></label><button id="ztGo">Play sector</button></div>
 <h3>Bosses</h3><p class="dnote">Fight one capital unit in its home zone.</p><div class="dgrid"><label class="dwide">Boss<select id="dvB"></select></label><button id="dvBGo">Fight</button></div>
 <h3>Events</h3><p class="dnote">Trigger a route event, stop or encounter in the zone picked above, then play on from there.</p><div class="dgrid"><label class="dwide">Event<select id="dvE"></select></label><button id="dvEGo">Run event</button></div>
@@ -2203,9 +2203,12 @@ let DG=null;function devGods(){if(!DG){const r=new THREE.WebGLRenderer({canvas:$
 {let ok=0;const DEVPW='1111';$('devBtn').onclick=()=>{if(ok)return show('devc');$('devP').value='';$('devE').hidden=true;show('devpw');setTimeout(()=>$('devP').focus(),50)};
  $('devF').onsubmit=e=>{e.preventDefault();if($('devP').value===DEVPW){ok=1;show('devc')}else{$('devE').hidden=false;$('devP').select()}};
  const zs=['The Open Zone',...Object.keys(ZONES)];$('ztZ').innerHTML=zs.map(z=>`<option>${z}</option>`).join('');$('ztS').innerHTML=[...Array(10)].map((_,i)=>`<option value="${i+1}">Sector ${i+1}${(i+1)%5?'':' (boss)'}</option>`).join('');
+ // dStart: start a run with the picked craft and paint (any paint, owned or not; the hangar's pick is restored)
+ function dStart(h){const k=$('dvC').value,o=PJ[k];PJ[k]=$('dvJ').value;start(k,h);PJ[k]=o}
+ $('dvJ').innerHTML='<option value="">Factory</option>'+Object.entries(PAINTS).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join('');
  const lo=()=>{st.dev=1;st.hi=-1;st.banked=1;st.scrap=+$('dvS').value;if($('dvI').checked)st.dvInv=1;hud()};
  // devRun: start a playtest run at zone z, sector n (1-10). wv=false leaves the field empty for a boss or event
- function devRun(z,n,wv=true){start($('dvC').value);ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
+ function devRun(z,n,wv=true){dStart();ents.forEach(e=>S.remove(e.m));ents=[];BFX.clear();
   Object.assign(st,{area:z,sec:(z==='The Open Zone'?0:ZMIN[z]?20:10)+n,ap:(z==='The Open Zone'?0:ZMIN[z]?20:10),b45:2});lo();if(wv)wave()}
  $('ztGo').onclick=()=>devRun($('ztZ').value,+$('ztS').value);
  const OZ='The Open Zone',DS='Dark Space',BL=[['Bastion',OZ,5,()=>{const r=Math.random;Math.random=()=>.1;try{bossWave()}finally{Math.random=r}}],['Warden',OZ,5,wardenWave],['Minotaur',OZ,10,minoWave],['The Magpie',OZ,10,magpieWave],
@@ -2219,7 +2222,7 @@ let DG=null;function devGods(){if(!DG){const r=new THREE.WebGLRenderer({canvas:$
   ['Phantom Space Station',()=>station(on)],['The Fork in the Dark',()=>fork(on)],['Stranded Nauts',()=>{st.nautF=1;on()}],['Mysterious Altars (post-game)',()=>{st.post=1;altars(on)}],['Bonus wave',()=>{bonusWave();running=true}]];
  $('dvE').innerHTML=EL.map((e,i)=>`<option value="${i}">${e[0]}</option>`).join('');
  $('dvEGo').onclick=()=>{devRun($('ztZ').value,Math.min(9,Math.max(1,+$('ztS').value%5?+$('ztS').value:+$('ztS').value-1)),false);running=false;EL[$('dvE').value][1]()};
- const tm=h=>{start($('dvC').value,h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
+ const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
  // Reset progress: two taps; clears every saved key except settings, then reloads
  $('dvWipe').onclick=()=>{const b=$('dvWipe');if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again to wipe';setTimeout(()=>{delete b.dataset.arm;b.textContent='Reset progress'},3000);return}
   try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
