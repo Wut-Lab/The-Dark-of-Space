@@ -35,7 +35,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .sum{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:14px}.sum dt{color:var(--dim)}.sum dd{margin:0}
 .rar{font:600 11px var(--display);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:#aab1bd}.r-u .rar{color:#4fe08a}.r-r .rar{color:#5ab0ff}.r-x .rar{color:#ff3d6e}
 button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:linear-gradient(#ff3d6e1f,#ff3d6e08)}
-#evt{overflow-y:auto;padding-block:24px}#evO{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}#evO button{padding:10px 12px}
+#evt{overflow-y:auto;padding-block:24px}#evt.fade{animation:evf .7s ease-out}@keyframes evf{from{opacity:0}}#evO{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}#evO button{padding:10px 12px}
 .ss{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;width:100%;text-align:left;margin-top:6px}
 .ss .l,.ss .v{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}.ss .v{color:var(--fg);text-align:right;text-transform:none;font-variant-numeric:tabular-nums}
 .ss .b{height:6px;background:#ffffff1a}.ss .b i{display:block;height:100%;background:var(--accent)}
@@ -258,7 +258,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
 <p>After each upgrade, choose how to reach the next sector. Every choice ends in a fight: stops happen on the way, then the sector's wave arrives.</p>
-<h3>Stops</h3><ul><li><b>Combat</b>: straight into a normal sector (offered when there are few other choices)</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +30 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: only before each boss (sectors 4, 9, 14...). Make one purchase (one of 3 random upgrades or an armor repair), then fight</li><li><b>Repair Dock</b>: restores half your armor, then fight. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event, then fight. Could be salvage, a deal, or an ambush (the ambush is the fight)</li><li><b>Silent Hulk</b> (rare, from sector 10): may appear right before a capital unit. Board it to fight The Magpie first; win for +40 scrap and a random Magpie upgrade (Magpie Claw, Black Market Link, MaG-π or Magpie Nest)</li></ul>
+<h3>Stops</h3><ul><li><b>Combat</b>: straight into a normal sector (offered when there are few other choices)</li><li><b>Elite</b> (from sector 3): tougher units. Clear it for +30 scrap and 2 upgrades</li><li><b>Salvage Yard</b>: only before each boss (sectors 4, 9, 14...). Make one purchase (one of 3 random upgrades or an armor repair), then fight</li><li><b>Repair Dock</b>: restores half your armor, then fight. Only offered when you're damaged</li><li><b>Unknown Signal</b>: a random event, then fight. Could be salvage, a deal, or an ambush (the ambush is the fight)</li><li><b>Zone Gate</b> (sometimes, entering a new zone): pick one of three perks for that zone only, each with a drawback, or choose nothing</li><li><b>Silent Hulk</b> (rare, from sector 10): may appear right before a capital unit. Board it to fight The Magpie first; win for +40 scrap and a random Magpie upgrade (Magpie Claw, Black Market Link, MaG-π or Magpie Nest)</li></ul>
 <h3>Fixed sectors</h3><ul><li>Sectors are grouped into <b>zones</b> of ten. After each zone's second boss you reach a branch and choose which zone to fly into next. Different zones hold different dangers. Watch for a lane glowing red: something is about to come down it</li><li>Every 5th sector is a <b>Capital Unit</b>: a boss with its own attacks to learn. Worth +60 scrap and 1 upgrade</li><li>Sector 40 in Dark Space is the <b>final boss</b>. Bring it down to win the run</li><li>Sector 4.5: sometimes a <b>Bonus Stage</b> opens before the boss</li><li>You can't skip sectors: every step toward the boss is a fight</li><li><b>Save and Quit</b> (pause menu) ends the session; pick <b>Resume saved run</b> under Campaign to restart that sector from its beginning</li></ul></div></div>
 
 <div class="ov scr" id="how-enemies" hidden><div class="card"><div class="hd"><h2>Enemies</h2><button class="back" data-go="how">Back</button></div>
@@ -925,7 +925,7 @@ function wardenCalm(e){const F=e.fx;F.line.visible=F.aim.visible=F.sweep.visible
 function addMob(i){const m=MODELS.chaser();S.add(m);const side=Math.random()<.5?-1:1,p0=V3(side*16,-30);m.position.copy(p0);
  ents.push({m,type:'chaser',add:1,hp:2*hpk(),slot:V3(side*(4+i*2.5),-15),state:'enter',t:-i*.3,p0,p1:V3(side*6,-26),cd:3,r:.6});hud()}
 function wardenUp(e,dt,p){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5)),M=e.m.position,F=e.fx;if(e.t>3)music(bossTrk());M.set(Math.sin(e.t*.3)*3*k,M.y,-55+31*k*(2-k));if(k<1)return;
- MZ.set(M.x+2.4,4,M.z+4.9);e.cdA-=dt*thr();e.cdS-=dt*thr();e.cdM-=dt*thr();F.glw.scale.setScalar(e.atk?1.6+Math.random()*.8:1.2);
+ MZ.set(M.x+2.4,4,M.z+4.9);e.cdA-=dt*thf();e.cdS-=dt*thf();e.cdM-=dt*thf();F.glw.scale.setScalar(e.atk?1.6+Math.random()*.8:1.2);
  if(e.atk==='aim'){e.at-=dt;
   if(e.at>0){beamTo(F.line,MZ,e.tg,.12);F.line.material.opacity=Math.floor(e.at*14)%2?.35:.9}
   else if(e.at>-.3){F.line.visible=false;beamTo(F.aim,MZ,e.tg,.45);if(!e.hit&&st.inv<=0&&segD(MZ.x,MZ.z,e.tg,p)<.75){hurt(2);e.hit=1}}
@@ -958,15 +958,15 @@ function magpieUp(e,dt,p){const M=e.m.position,TB=e.fx.tb,SW=e.fx.sw,f=st.fast||
  M.x+=(Math.sin(e.t*.5)*5-M.x)*Math.min(1,dt);e.t+=dt;
  // Shield hulks: up to 3 in stage 1, one dragged back in every 8 s
  if(e.ph===1&&(e.cdH-=dt)<=0){e.cdH=8;if(ents.filter(x=>x.type==='hulk'&&x.hp>0).length<3)addHulk(e,Math.random()*6)}
- if((e.cdF-=dt*thr())<=0){const o=M.clone().add(V3(0,4));o.y=1;const d=V3(p.x-o.x,p.z-o.z).normalize();
+ if((e.cdF-=dt*thf())<=0){const o=M.clone().add(V3(0,4));o.y=1;const d=V3(p.x-o.x,p.z-o.z).normalize();
   if(half){e.cdF=1.2;for(const a of [-.22,0,.22])fire(o,d.clone().applyAxisAngle(YAX,a),11,1,true,0xff3060,0)}else{e.cdF=1.6;fire(o,d,10,1,true,0xff3060,0)}}
  // Tractor beam: 1 s flashing tell down your lane, then 2 s of beam that pulls you in and steals 5 scrap a second
- if(e.tb==null&&(e.cdT-=dt*thr())<=0){e.tb=0;e.tx=p.x}
+ if(e.tb==null&&(e.cdT-=dt*thf())<=0){e.tb=0;e.tx=p.x}
  if(e.tb!=null){e.tb+=dt;lane(e.tx,TB,2.6);TB.visible=e.tb>1||Math.floor(e.tb*8)%2==0;TB.material.opacity=e.tb>1?.4:.18;
   if(e.tb>1&&Math.abs(p.x-e.tx)<1.5){player.position.x+=Math.sign(e.tx-p.x)*dt*2;e.sc=(e.sc||0)+dt*5;while(e.sc>=1&&st.scrap>0){e.sc--;st.scrap--;st.stole++;if(st.stole%5===0)popMsg('-5 SCRAP','#3affd0')}hud()}
   if(e.tb>3){e.tb=null;TB.visible=false;e.cdT=half?4:6}}
  // Stage 2 sweep: an edge lane flashes for 1 s, then a beam sweeps to the other edge over 2 s (1 damage, once per sweep)
- if(half){if(e.sw==null&&(e.cdS-=dt*thr())<=0){e.sw=0;e.sd=Math.random()<.5?-1:1;e.hit=0}
+ if(half){if(e.sw==null&&(e.cdS-=dt*thf())<=0){e.sw=0;e.sd=Math.random()<.5?-1:1;e.hit=0}
   if(e.sw!=null){e.sw+=dt*f;const x=e.sd*(FX-1)*(e.sw<1?1:1-2*Math.min(1,(e.sw-1)/2));lane(x,SW,e.sw<1?1.8:1.2);SW.visible=e.sw>1||Math.floor(e.sw*8)%2==0;
    if(e.sw>1&&!e.hit&&Math.abs(p.x-x)<1&&st.inv<=0){e.hit=1;hurt(1)}if(e.sw>3){e.sw=null;SW.visible=false;e.cdS=7}}}}
 // Magpie reward: one random upgrade from its own pool (no choice); +30 scrap if you somehow own them all
@@ -979,12 +979,12 @@ function minoWave(){const m=MODELS.mino(),k=hpk();S.add(m);m.position.set(0,0,-5
 function minoUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1;e.m.scale.setScalar(1);
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());M.set(0,M.y,-50+30*k*(2-k));if(k<1)return;e.ph=1}
  if(e.ph===1){M.x+=Math.sign(p.x-M.x)*Math.min(Math.abs(p.x-M.x),4*dt);M.z+=(-20-M.z)*Math.min(1,dt*2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.5;
-  e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=.55;e.side=-e.side;const o=M.clone().add(V3(e.side*2.6,4.1));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xff5a5a,0)}
-  e.cdR-=dt*thr();if(e.cdR<=0){e.ph=2;e.tm=1.1;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}
+  e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=.55;e.side=-e.side;const o=M.clone().add(V3(e.side*2.6,4.1));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xff5a5a,0)}
+  e.cdR-=dt*thf();if(e.cdR<=0){e.ph=2;e.tm=1.1;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}
  else if(e.ph===2){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.06:1);M.x+=(Math.random()-.5)*.15;e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);
   if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
- else if(e.ph===3){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+ else if(e.ph===3){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurtR(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=4;M.set((Math.random()-.5)*10,M.y,-45)}}
  else{M.z+=(-20-M.z)*Math.min(1,dt*2.5);e.m.rotation.y=0;if(M.z>-21){e.ph=1;e.cdR=5+Math.random()*3;e.cdF=.8}}}
 // Scion of the Void Gods (final boss, sector 40 of Dark Space; very hard). 260 hp (scales). A 1 s shudder (invulnerable) marks each stage change.
@@ -1009,10 +1009,10 @@ function scionUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,hp=e.hp/e
  if(e.iv>0){e.iv-=dt;e.inner.scale.x=.78*(Math.floor(e.iv*20)%2?1.06:1);M.x+=(Math.random()-.5)*.2;return}
  if(e.ph===1){M.x+=Math.sign(p.x-M.x)*Math.min(Math.abs(p.x-M.x),3.5*dt);M.z+=(-20-M.z)*Math.min(1,dt*2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.5;
   const fr=e.stg===3?1/1.3:1;
-  e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=.5*fr;e.side=-e.side;for(const dx of [-.35,.35]){const o=M.clone().add(V3(e.side*2.3+dx,1));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xb060ff,0)}}
-  e.cdB-=dt*thr();if(e.cdB<=0){e.cdB=3*fr;const o=M.clone().add(V3(-3.4,0));const s=fire(o,V3(p.x-o.x,p.z-o.z).normalize(),8,1,true,0x8a5aff,0,4);s.m.scale.z=1.6;s.wide=.36;s.home=1.4}
-  if(e.stg===3){e.cdV-=dt*thr();if(e.cdV<=0&&!e.bombs.length){e.cdV=5;scionBomb(e,p)}}
-  else{e.cdR-=dt*thr();if(e.cdR<=0){e.ph=2;e.tm=1.2;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}}
+  e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=.5*fr;e.side=-e.side;for(const dx of [-.35,.35]){const o=M.clone().add(V3(e.side*2.3+dx,1));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xb060ff,0)}}
+  e.cdB-=dt*thf();if(e.cdB<=0){e.cdB=3*fr;const o=M.clone().add(V3(-3.4,0));const s=fire(o,V3(p.x-o.x,p.z-o.z).normalize(),8,1,true,0x8a5aff,0,4);s.m.scale.z=1.6;s.wide=.36;s.home=1.4}
+  if(e.stg===3){e.cdV-=dt*thf();if(e.cdV<=0&&!e.bombs.length){e.cdV=5;scionBomb(e,p)}}
+  else{e.cdR-=dt*thf();if(e.cdR<=0){e.ph=2;e.tm=1.2;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}}
  else if(e.ph===2){e.tm-=dt;e.rg.material.opacity=.35+.3*Math.sin(e.t*25);M.x+=(Math.random()-.5)*.15;e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);
   if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
@@ -1049,9 +1049,9 @@ function godTick(e,dt){const M=e.m.position,W=e.fx.warn,hp=e.hp/e.hp0,am=e.stg==
 function noxUp(e,dt,p){if(godTick(e,dt))return;const M=e.m.position,W=e.fx.warn,f=st.fast||1,red=e.stg===3;
  if(e.q>0&&e.ph===1&&(e.qt-=dt)<=0){e.q--;e.qt=.14;const o=M.clone().add(V3(0,1.5));o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-2;i<=2;i++){const d=a+i*.16;fire(o,V3(Math.sin(d),Math.cos(d)),11,1,true,0xd040ff,0)}}
  if(e.ph===1){e.w+=dt*[0,1,1.6,2.2][e.stg];const k=Math.min(1,dt*3);M.x+=(Math.sin(e.w*.7)*5-M.x)*k;M.z+=(-20+Math.sin(e.w*.5)*3-M.z)*k;e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.4;
-  e.cdF-=dt*thr();if(e.cdF<=0&&e.q<=0){e.cdF=red?1.5:2;e.q=e.stg>=2?3:2;e.qt=0}
-  if(e.stg>=2){e.cdT-=dt*thr();if(e.cdT<=0){e.cdT=red?4.5+Math.random()*2:6+Math.random()*2;noxBlink(e,V3(THREE.MathUtils.clamp(p.x+(Math.random()-.5)*8,-FX+2,FX-2),-8));e.ph=2;e.tm=1;e.q=0;return}}
-  if(red){e.cdD-=dt*thr();if(e.cdD<=0){e.cdD=4+Math.random()*2;noxBlink(e,V3(((Math.random()*3|0)-1)*FX*2/3,-7));e.ph=4;e.tm=.7;e.q=0}}}
+  e.cdF-=dt*thf();if(e.cdF<=0&&e.q<=0){e.cdF=red?1.5:2;e.q=e.stg>=2?3:2;e.qt=0}
+  if(e.stg>=2){e.cdT-=dt*thf();if(e.cdT<=0){e.cdT=red?4.5+Math.random()*2:6+Math.random()*2;noxBlink(e,V3(THREE.MathUtils.clamp(p.x+(Math.random()-.5)*8,-FX+2,FX-2),-8));e.ph=2;e.tm=1;e.q=0;return}}
+  if(red){e.cdD-=dt*thf();if(e.cdD<=0){e.cdD=4+Math.random()*2;noxBlink(e,V3(((Math.random()*3|0)-1)*FX*2/3,-7));e.ph=4;e.tm=.7;e.q=0}}}
  else if(e.ph===2){e.tm-=dt;if(e.tm>.4||!e.dir)e.dir=V3(p.x-M.x,p.z-M.z).normalize();const a=Math.atan2(e.dir.x,e.dir.z);e.m.rotation.y=a;
   W.material.color.setHex(0xd8b84a);W.material.opacity=.25;W.visible=Math.floor(e.tm*10)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(.6,.02,50);W.rotation.set(0,a,0);
   if(e.tm<=0){e.ph=3;e.tm=.35;e.hit=0}}
@@ -1059,7 +1059,7 @@ function noxUp(e,dt,p){if(godTick(e,dt))return;const M=e.m.position,W=e.fx.warn,
   const dx=p.x-M.x,dz=p.z-M.z;if(!e.hit&&st.inv<=0&&dx*e.dir.x+dz*e.dir.z>0&&Math.abs(dx*e.dir.z-dz*e.dir.x)<.8+(st.pr||.6)){e.hit=1;hurt(2);shake=Math.max(shake,.35)}
   if(e.tm<=0){W.visible=false;noxBlink(e,null);e.ph=1;e.cdF=.8}}
  else if(e.ph===4){e.tm-=dt;M.x+=(Math.random()-.5)*.15;e.dir=V3(p.x-M.x,p.z-M.z).normalize();e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);if(e.tm<=0){e.ph=5;e.hit=0}}
- else{M.addScaledVector(e.dir,28*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(4-(st.plate?1:0));shake=Math.max(shake,.45)}
+ else{M.addScaledVector(e.dir,28*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurtR(4-(st.plate?1:0));shake=Math.max(shake,.45)}
   if(M.z>12||Math.abs(M.x)>FX+6){noxBlink(e,null);e.ph=1;e.cdF=.8}}}
 // Void Goddess, Umbra (post-game pool; unlocked by 3 Scion wins or 1 Nox win). Drifts in a slow figure-8. Stage 1: alternating
 // 3-shot volleys from each hand (pink, blue) and a slow orb every few s that bursts into a 6-shot ring. Stage 2 (60%): faster,
@@ -1070,11 +1070,11 @@ function umbraUp(e,dt,p){if(godTick(e,dt))return;const M=e.m.position,W=e.fx.war
  for(const o of e.orbs)if((o.t+=dt)>1.2&&o.s.life>0){o.s.life=0;for(let i=0;i<6;i++){const a=i/6*Math.PI*2;fire(o.s.m.position.clone().setY(1),V3(Math.sin(a),Math.cos(a)),9,1,true,i%2?0x4f9dff:0xff4fc8,0)}}
  e.orbs=e.orbs.filter(o=>o.s.life>0);
  if(e.ph===1){e.w+=dt*[0,1,1.6,2.1][e.stg];const k=Math.min(1,dt*3);M.x+=(Math.sin(e.w*.6)*5-M.x)*k;M.z+=(-20+Math.sin(e.w*1.2)*2.5-M.z)*k;e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.4;
-  e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=e.stg>=2?.8:1;e.side=-e.side;const o=M.clone().add(V3(e.side*2,1.2));o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z),n=e.stg>=2?4:3;
+  e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=e.stg>=2?.8:1;e.side=-e.side;const o=M.clone().add(V3(e.side*2,1.2));o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z),n=e.stg>=2?4:3;
    for(let i=0;i<n;i++){const d=a+(i-(n-1)/2)*.12;fire(o,V3(Math.sin(d),Math.cos(d)),11,1,true,e.side>0?0xff4fc8:0x4f9dff,0)}}
-  e.cdO-=dt*thr();if(e.cdO<=0){e.cdO=e.stg>=2?3.5:4;const o=M.clone().add(V3(0,1.5));o.y=1;e.orbs.push({s:fire(o,V3(p.x-o.x,p.z-o.z).normalize(),5,1,true,0xd040ff,0,2.2),t:0})}
-  if(e.stg>=2){e.cdS-=dt*thr();if(e.cdS<=0){e.cdS=6+Math.random()*1.5;e.sd=Math.random()<.5?-1:1;noxBlink(e,V3(e.sd*(FX-2),-12));e.ph=2;e.tm=1}}
-  if(red&&e.ph===1){e.cdQ-=dt*thr();if(e.cdQ<=0){e.cdQ=4+Math.random()*1.5;const q=Math.PI/4,a=Math.round(Math.atan2(p.x-M.x,p.z-M.z)/q)*q;e.dir=V3(Math.sin(a),Math.cos(a));e.qa=a;e.ph=4;e.tm=.8}}}
+  e.cdO-=dt*thf();if(e.cdO<=0){e.cdO=e.stg>=2?3.5:4;const o=M.clone().add(V3(0,1.5));o.y=1;e.orbs.push({s:fire(o,V3(p.x-o.x,p.z-o.z).normalize(),5,1,true,0xd040ff,0,2.2),t:0})}
+  if(e.stg>=2){e.cdS-=dt*thf();if(e.cdS<=0){e.cdS=6+Math.random()*1.5;e.sd=Math.random()<.5?-1:1;noxBlink(e,V3(e.sd*(FX-2),-12));e.ph=2;e.tm=1}}
+  if(red&&e.ph===1){e.cdQ-=dt*thf();if(e.cdQ<=0){e.cdQ=4+Math.random()*1.5;const q=Math.PI/4,a=Math.round(Math.atan2(p.x-M.x,p.z-M.z)/q)*q;e.dir=V3(Math.sin(a),Math.cos(a));e.qa=a;e.ph=4;e.tm=.8}}}
  else if(e.ph===2){e.tm-=dt;const a0=-e.sd*.12;e.m.rotation.y=a0;W.material.color.setHex(0xff8ae0);W.material.opacity=.25;W.visible=Math.floor(e.tm*10)%2==0;W.scale.set(.6,.02,50);ang(a0);
   if(e.tm<=0){e.ph=3;e.tm=1.3;e.hit=0}}
  else if(e.ph===3){e.tm-=dt;const a=-e.sd*(.12+1.15*(1-e.tm/1.3));e.m.rotation.y=a;W.visible=true;W.material.opacity=.85;W.material.color.setHex(red?0xff3a3a:0x8ac8ff);W.scale.set(1.6,.3,50);ang(a);
@@ -1082,7 +1082,7 @@ function umbraUp(e,dt,p){if(godTick(e,dt))return;const M=e.m.position,W=e.fx.war
   if(e.tm<=0){W.visible=false;noxBlink(e,null);e.ph=1;e.cdF=.8}}
  else if(e.ph===4){e.tm-=dt;M.x+=(Math.random()-.5)*.12;e.m.rotation.y=e.qa;W.material.color.setHex(0xff3a3a);W.material.opacity=.3;W.visible=Math.floor(e.tm*10)%2==0;W.scale.set(e.r*2,.02,50);ang(e.qa);
   if(e.tm<=0){W.visible=false;e.ph=5;e.hit=0}}
- else{M.addScaledVector(e.dir,30*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(4-(st.plate?1:0));shake=Math.max(shake,.45)}
+ else{M.addScaledVector(e.dir,30*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurtR(4-(st.plate?1:0));shake=Math.max(shake,.45)}
   if(M.z>12||M.z<-60||Math.abs(M.x)>FX+4){noxBlink(e,null);e.ph=1;e.cdF=.8}}}
 // Void God, Imago (post-game pool; unlocked by beating Nox and Umbra). A reflection of your last run: that craft in void colors,
 // haloed in that run's paint color (factory: cyan). 300 hp (scales). Tracks your x like a mirror (dash to break the line).
@@ -1100,13 +1100,13 @@ function imagoWave(){const L=lastRun(),g=new THREE.Group(),b=MODELS[L.k](VOIDJ),
 function imagoUp(e,dt,p){if(godTick(e,dt))return;const M=e.m.position,W=e.fx.warn,f=st.fast||1,red=e.stg===3;
  if(red)e.h1.material.opacity=.75+.25*Math.sin(e.t*9);
  if(e.ph===1){const v=[0,6,8,10][e.stg];M.x+=Math.sign(p.x-M.x)*Math.min(Math.abs(p.x-M.x),v*dt);M.z+=(-20+Math.sin(e.t*.9)*1.5-M.z)*Math.min(1,dt*3);e.m.rotation.y=(M.x-p.x)*.04;
-  e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=e.stg>=2?.45:.6;for(let i=0;i<e.nv;i++){const o=M.clone().add(V3((i-(e.nv-1)/2)*.6,1.6));o.y=1;fire(o,V3(0,1),12,1,true,e.col,0)}}
-  if(e.stg>=2){e.cdW-=dt*thr();if(e.cdW<=0){e.cdW=3;e.ph=2;e.tm=.5}}
-  if(red&&e.ph===1){e.cdQ-=dt*thr();if(e.cdQ<=0){e.cdQ=4.5+Math.random()*1.5;noxBlink(e,V3(THREE.MathUtils.clamp(p.x,-FX+1,FX-1),-20));e.ph=3;e.tm=.8}}}
+  e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=e.stg>=2?.45:.6;for(let i=0;i<e.nv;i++){const o=M.clone().add(V3((i-(e.nv-1)/2)*.6,1.6));o.y=1;fire(o,V3(0,1),12,1,true,e.col,0)}}
+  if(e.stg>=2){e.cdW-=dt*thf();if(e.cdW<=0){e.cdW=3;e.ph=2;e.tm=.5}}
+  if(red&&e.ph===1){e.cdQ-=dt*thf();if(e.cdQ<=0){e.cdQ=4.5+Math.random()*1.5;noxBlink(e,V3(THREE.MathUtils.clamp(p.x,-FX+1,FX-1),-20));e.ph=3;e.tm=.8}}}
  else if(e.ph===2){e.tm-=dt;e.h2.scale.setScalar(7+(.5-e.tm)*8);if(e.tm<=0){e.h2.scale.setScalar(7);const o=M.clone().add(V3(0,1.6));o.y=1;const s=fire(o,V3(0,1),10,2,true,e.col,0,3);s.m.scale.z=1.6;e.ph=1}}
  else if(e.ph===3){e.tm-=dt;M.x+=(Math.random()-.5)*.12;W.material.color.setHex(e.col);W.material.opacity=.3;W.visible=Math.floor(e.tm*10)%2==0;W.scale.set(e.r*2,.02,50);W.position.set(M.x,.05,M.z+25);W.rotation.set(0,0,0);
   if(e.tm<=0){W.visible=false;e.ph=4;e.hit=0}}
- else{M.z+=30*dt*f;if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(4-(st.plate?1:0));shake=Math.max(shake,.45)}
+ else{M.z+=30*dt*f;if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurtR(4-(st.plate?1:0));shake=Math.max(shake,.45)}
   if(M.z>12){noxBlink(e,null);e.ph=1;e.cdF=.8}}}
 // Void gods on the Unlocks screen: listed only once unlocked
 const GODS=[{id:'nox',n:'Void God, Nox',how:'Defeat the Scion',ok:()=>LIFE.scion>=1},{id:'umbra',n:'Void Goddess, Umbra',how:'Defeat the Scion 3 times, or Void God, Nox once',ok:()=>LIFE.scion>=3||LIFE.nox>=1},
@@ -1154,8 +1154,8 @@ function caesarWave(){const m=MODELS.caesar(),k=hpk();S.add(m);m.position.set(0,
 function caesarUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,sp=e.sp;e.m.scale.setScalar(1);
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());M.set(0,M.y,-50+30*k*(2-k));if(k<1)return;e.ph=1}
  if(e.ph===1){const tx=p.x*.6;M.x+=Math.sign(tx-M.x)*Math.min(Math.abs(tx-M.x),3*dt);M.z+=(-20-M.z)*Math.min(1,dt*2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.4;
-  e.cdB-=dt*thr();if(e.cdB<=0){const o=e.m.localToWorld(new THREE.Vector3(13*CS,38*CS,13*CS));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),11,1,true,0xff5a5a,0).home=1.1;e.nb=(e.nb+1)%3;e.cdB=e.nb?.18:2.2}
-  e.cdA-=dt*thr();if(e.cdA<=0){e.nb=0;e.cdB=1.5;e.m.rotation.y=0;if(Math.random()<.5){e.ph=2;e.tm=1.6}else{e.ph=5;e.tm=1;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}}
+  e.cdB-=dt*thf();if(e.cdB<=0){const o=e.m.localToWorld(new THREE.Vector3(13*CS,38*CS,13*CS));o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),11,1,true,0xff5a5a,0).home=1.1;e.nb=(e.nb+1)%3;e.cdB=e.nb?.18:2.2}
+  e.cdA-=dt*thf();if(e.cdA<=0){e.nb=0;e.cdB=1.5;e.m.rotation.y=0;if(Math.random()<.5){e.ph=2;e.tm=1.6}else{e.ph=5;e.tm=1;e.dir=V3(p.x-M.x,p.z-M.z).normalize()}}}
  else if(e.ph===2){const tx=Math.max(-FX+2,Math.min(FX-2,p.x+13*CS)),d=Math.hypot(tx-M.x,-7.5-M.z),v=Math.min(d,16*dt*f);e.tm-=dt;
   if(d>.01){M.x+=(tx-M.x)/d*v;M.z+=(-7.5-M.z)/d*v}if(d<.3||e.tm<=0){e.ph=3;e.tm=.9}}
  else if(e.ph===3){e.tm-=dt;const u=Math.min(1,(1-e.tm/.9)*1.6),h=sp.getWorldPosition(new THREE.Vector3());sp.rotation.set(Math.PI/2*u,-1.8*u,0);M.x+=(Math.random()-.5)*.08;
@@ -1163,11 +1163,11 @@ function caesarUp(e,dt,p){const M=e.m.position,W=e.fx.warn,f=st.fast||1,sp=e.sp;
  else if(e.ph===4){e.tm-=dt;const u=1-Math.max(0,e.tm)/.35;sp.rotation.set(Math.PI/2,-1.8+3.2*u*(2-u),0);
   const h=sp.getWorldPosition(new THREE.Vector3()),tip=sp.localToWorld(new THREE.Vector3(0,46*CS,0));
   const a=Math.atan2(tip.x-h.x,tip.z-h.z),b=Math.atan2(p.x-h.x,p.z-h.z),near=hd(h,p)<46*CS+.5&&(b-e.pa)*(b-a)<=0;e.pa=a;
-  if(!e.hit&&(near||segD(h.x,h.z,tip,p)<.9)&&st.inv<=0){e.hit=1;hurt(st.plate?1:2);shake=Math.max(shake,.3)}if(e.tm<=0)e.ph=8}
+  if(!e.hit&&(near||segD(h.x,h.z,tip,p)<.9)&&st.inv<=0){e.hit=1;hurtR(st.plate?1:2);shake=Math.max(shake,.3)}if(e.tm<=0)e.ph=8}
  else if(e.ph===5){e.tm-=dt;e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.06:1);M.x+=(Math.random()-.5)*.15;e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);
   if(e.tm<=0){W.visible=false;e.ph=6;e.hit=0}}
- else if(e.ph===6){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+ else if(e.ph===6){M.addScaledVector(e.dir,26*dt*f);if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurtR(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+6){e.ph=7;M.set(0,M.y,-45);e.m.rotation.y=0}}
  else if(e.ph===7){M.x+=-M.x*Math.min(1,dt*3);M.z+=(-20-M.z)*Math.min(1,dt*2.5);if(M.z>-21){e.ph=1;e.cdA=4+Math.random()*2.5;e.cdB=.8}}
  else{sp.rotation.x*=Math.max(0,1-dt*6);sp.rotation.y*=Math.max(0,1-dt*6);M.z+=(-20-M.z)*Math.min(1,dt*2);
@@ -1185,13 +1185,13 @@ function glacierUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5));if(e.t>2.6)music('frostboss');M.set(0,M.y,-70+40*k*(2-k));if(k<1)return;e.ph=1;e.t=0}
  e.t+=dt;M.x=Math.sin(e.t*.35)*4;M.z=-30+Math.sin(e.t*.5)*1.5;e.m.rotation.y=Math.sin(e.t*.35)*.12;
  if(p2&&e.ice){e.m.remove(e.ice);e.ice=null;boom(M,40,0xcfeeff,true);shake=Math.max(shake,.5);banner('SHELL SHATTERED','The Glacier is exposed and angry')}
- e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=p2?1.6:2.6;const o=e.m.localToWorld(new THREE.Vector3(0,3.7,11)),a=Math.atan2(p.x-o.x,p.z-o.z);
+ e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=p2?1.6:2.6;const o=e.m.localToWorld(new THREE.Vector3(0,3.7,11)),a=Math.atan2(p.x-o.x,p.z-o.z);
   for(let i=-2;i<=2;i++)fire(o,V3(Math.sin(a+i*.22),Math.cos(a+i*.22)),p2?9:7,1,true,0x9fe8ff,0,1.4)}
- e.cdZ-=dt*thr();if(e.cdZ<=0){e.cdZ=p2?4.5:7;const f=new THREE.Mesh(new THREE.CylinderGeometry(2.4,2.4,.05,28),new THREE.MeshBasicMaterial({color:0x9fe8ff,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));
+ e.cdZ-=dt*thf();if(e.cdZ<=0){e.cdZ=p2?4.5:7;const f=new THREE.Mesh(new THREE.CylinderGeometry(2.4,2.4,.05,28),new THREE.MeshBasicMaterial({color:0x9fe8ff,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));
   f.position.set(p.x,.06,p.z);BFX.add(f);e.fields.push({f,t:0})}
  for(const z of e.fields){z.t+=dt;if(z.t<.9){z.f.visible=Math.floor(z.t*10)%2==0;continue}z.f.visible=true;z.f.material.opacity=z.t>4.4?.3*(5-z.t)/.6:.3;if(hd(z.f.position,p)<2.4)st.slow=Math.max(st.slow,.15)}
  for(let i=e.fields.length;i--;)if(e.fields[i].t>5){BFX.remove(e.fields[i].f);e.fields.splice(i,1)}
- e.cdM-=dt*thr();if(e.cdM<=0){e.cdM=p2?7:10;if(ents.filter(x=>x.add&&x.hp>0).length<4)for(let j=0;j<2;j++)addMote(j,1)}}
+ e.cdM-=dt*thf();if(e.cdM<=0){e.cdM=p2?7:10;if(ents.filter(x=>x.add&&x.hp>0).length<4)for(let j=0;j<2;j++)addMote(j,1)}}
 // Dry Ice boss (medium): strafes back and forth inside a cloud of mist, firing straight rounds that loosely home in. Every 7–9 s
 // the mist rolls over your view; it repositions while you can't see, then a wide beam fires straight ahead (the mist is the tell)
 let mistEl;function mist(o){if(!mistEl){mistEl=document.createElement('div');mistEl.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(circle at 50% 45%,#e8f6ffee,#a8dcffcc 55%,#7fb8e0aa)';document.body.append(mistEl)}mistEl.style.opacity=o}
@@ -1203,8 +1203,8 @@ function dryUp(e,dt,p){const M=e.m.position,B=e.fx.beam,W=e.fx.warn;e.cloud.forE
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('frostboss');M.set(0,M.y,-60+36*k*(2-k));if(k<1)return;e.ph=1;e.t=0;e.x0=0}
  e.t+=dt;
  if(e.ph===1){M.x=e.x0+Math.sin(e.t*.9)*(FX-3)*(1-Math.abs(e.x0)/FX);M.z=-24;e.m.rotation.z=-Math.cos(e.t*.9)*.3;
-  e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=.55;const o=M.clone().add(V3(0,4));o.y=1;fire(o,V3(0,1),12,1,true,0xbfe6ff,0).home=.7}
-  e.cdM-=dt*thr();if(e.cdM<=0){e.ph=2;e.tm=0}}
+  e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=.55;const o=M.clone().add(V3(0,4));o.y=1;fire(o,V3(0,1),12,1,true,0xbfe6ff,0).home=.7}
+  e.cdM-=dt*thf();if(e.cdM<=0){e.ph=2;e.tm=0}}
  else if(e.ph===2){e.tm+=dt;mist(Math.min(1,e.tm/.4)*(e.tm<1.2?1:Math.max(0,1-(e.tm-1.2)/.4)));
   if(e.tm>.5&&!e.moved){e.moved=1;M.x=Math.max(-FX+2,Math.min(FX-2,p.x+(Math.random()-.5)*6));e.m.rotation.z=0}
   if(e.tm>1.2){W.visible=Math.floor(e.tm*10)%2==0;W.position.set(M.x,.05,M.z+27);W.scale.set(3.6,.02,50);W.rotation.set(0,0,0)}
@@ -1225,15 +1225,15 @@ function onagerUp(e,dt,p){const M=e.m.position,W=e.fx.warn,cat=ents.find(x=>x.co
  for(let i=e.bombs.length;i--;)if(e.bombs[i].done){BFX.remove(e.bombs[i].m);BFX.remove(e.bombs[i].ring);e.bombs.splice(i,1)}
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music(bossTrk());M.set(0,M.y,-60+32*k*(2-k));if(k<1)return;e.ph=1}
  if(e.ph===1){e.m.rotation.y=.8;M.x+=-M.x*Math.min(1,dt*2);M.z+=(-28-M.z)*Math.min(1,dt*2);
-  if(cat){e.cdB-=dt*thr();if(e.cdB<=0){e.cdB=2.4;cat.m.rotation.x=.9;const bm=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x4fe8ff}));bm.scale.setScalar(.7);BFX.add(bm);
+  if(cat){e.cdB-=dt*thf();if(e.cdB<=0){e.cdB=2.4;cat.m.rotation.x=.9;const bm=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x4fe8ff}));bm.scale.setScalar(.7);BFX.add(bm);
     const ring=new THREE.Mesh(new THREE.CylinderGeometry(2,2,.05,24),new THREE.MeshBasicMaterial({color:0x4fe8ff,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));const tg=V3(p.x,p.z);ring.position.set(tg.x,.06,tg.z);BFX.add(ring);
     e.bombs.push({m:bm,ring,a:cat.m.position.clone(),b:tg,t:0})}cat.m.rotation.x+=(-1.1-cat.m.rotation.x)*Math.min(1,dt*1.2);
-   e.cdL-=dt*thr();if(e.cdL<=0){e.cdL=6;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++){addLancer(j);ents[ents.length-1].add=1}}}
+   e.cdL-=dt*thf();if(e.cdL<=0){e.cdL=6;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++){addLancer(j);ents[ents.length-1].add=1}}}
   else{e.ph=2;e.tm=1.2;banner('CATAPULT DOWN','The Onager is coming for you');shake=Math.max(shake,.4)}}
  else if(e.ph===2){e.tm-=dt;if(e.tm>.9){M.x+=(Math.max(-FX+3,Math.min(FX-3,p.x))-M.x)*Math.min(1,dt*3);return}
   if(!e.dir)e.dir=V3(p.x-M.x,p.z-M.z).normalize();e.m.scale.setScalar(Math.floor(e.tm*16)%2?1.05:1);e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
   W.visible=Math.floor(e.tm*8)%2==0;W.position.set(M.x+e.dir.x*25,.05,M.z+e.dir.z*25);W.scale.set(e.r*2,.02,50);W.rotation.set(0,Math.atan2(e.dir.x,e.dir.z),0);if(e.tm<=0){W.visible=false;e.ph=3;e.hit=0}}
- else if(e.ph===3){M.addScaledVector(e.dir,24*dt*(st.fast||1));if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurt(st.plate?2:3);shake=Math.max(shake,.4)}
+ else if(e.ph===3){M.addScaledVector(e.dir,24*dt*(st.fast||1));if(!e.hit&&hd(M,p)<er(e)+(st.pr||.6)&&st.inv<=0){e.hit=1;hurtR(st.plate?2:3);shake=Math.max(shake,.4)}
   if(M.z>10||Math.abs(M.x)>FX+8){e.ph=4;M.set(0,M.y,-50);e.m.rotation.y=0;e.dir=null}}
  else{M.z+=(-26-M.z)*Math.min(1,dt*2.5);if(M.z>-27){e.ph=2;e.tm=1.2+Math.random()*1.5}}}
 // Praetorian (medium): marches in to the upper-mid field and paces side to side behind its shield. Every 3-4 s its chest cannon
@@ -1245,7 +1245,7 @@ function addGolem(j,n){const m=MODELS.golem();m.visible=false;S.add(m);const b=n
  const x=(j-(n-1)/2)*9;m.position.set(x,0,-45);ents.push({m,ball:b,type:'golem',state:'golem',hp:8*hpk(),slot:V3(x,-20-(j%2)*2),r:.95,t:-2.5-j*.8,cd:2.5+Math.random()*1.5})}
 function golemUp(e,dt,p){const M=e.m.position;e.t+=dt;if(e.t<0)return;e.m.visible=true;const tx=e.slot.x+Math.sin(e.t*.4+e.slot.x)*2;
  M.x+=(tx-M.x)*Math.min(1,dt);M.z+=(e.slot.z-M.z)*Math.min(1,dt);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.5;
- e.cd-=dt*thr();e.ball.visible=e.cd<.7;if(e.ball.visible)e.ball.scale.setScalar(Math.max(.2,(.7-e.cd)/.7));
+ e.cd-=dt*thf();e.ball.visible=e.cd<.7;if(e.ball.visible)e.ball.scale.setScalar(Math.max(.2,(.7-e.cd)/.7));
  if(e.cd<=0){e.cd=3.5+Math.random();const o=e.m.localToWorld(new THREE.Vector3(0,4.3,0)),m=new THREE.Mesh(SNOWG,SNOWM);m.position.copy(o);S.add(m);
   snow.push({m,a:V3(o.x,o.z),b:V3((o.x+p.x)/2,(o.z+p.z)/2),dir:V3(p.x-o.x,p.z-o.z).normalize(),u:0,y0:o.y})}}
 function snowTick(dt){for(const s of snow){s.u+=dt/.9;const u=Math.min(s.u,1);s.m.position.set(s.a.x+(s.b.x-s.a.x)*u,s.y0+(1.1-s.y0)*u+Math.sin(Math.PI*u)*2.5,s.a.z+(s.b.z-s.a.z)*u);s.m.rotation.x+=dt*6;
@@ -1255,12 +1255,12 @@ function addPraet(j,n){const m=MODELS.praet();m.visible=false;S.add(m);const g=n
  const x=(j-(n-1)/2)*8;m.position.set(x,0,-45);ents.push({m,glow:g,type:'praet',state:'praet',hp:7*hpk(),slot:V3(x,-18-(j%2)*2.5),r:.85,t:-2.5-j*.7,cd:2.5+Math.random()*1.5})}
 function praetUp(e,dt,p){const M=e.m.position;e.t+=dt;if(e.t<0)return;e.m.visible=true;const tx=e.slot.x+Math.sin(e.t*.6+e.slot.x)*2.5;
  M.x+=(tx-M.x)*Math.min(1,dt*1.5);M.z+=(e.slot.z-M.z)*Math.min(1,dt*1.2);e.m.rotation.y=Math.atan2(p.x-M.x,p.z-M.z)*.6;
- e.cd-=dt*thr();e.glow.visible=e.cd<.6;if(e.glow.visible)e.glow.scale.setScalar(.15+(.6-e.cd)*.5+(Math.floor(e.cd*20)%2)*.05);
+ e.cd-=dt*thf();e.glow.visible=e.cd<.6;if(e.glow.visible)e.glow.scale.setScalar(.15+(.6-e.cd)*.5+(Math.floor(e.cd*20)%2)*.05);
  if(e.cd<=0){e.cd=3+Math.random();const o=e.m.localToWorld(new THREE.Vector3(0,0,.9));fire(o,V3(p.x-o.x,p.z-o.z).normalize(),8,1,true,0xff8a3a,0,2).wide=.18}}
 function addSplinter(j,add){const m=MODELS.splinter();S.add(m);m.position.set((j-1)*7,0,-45);
  ents.push({m,type:'splinter',state:'splinter',hp:4*hpk(),slot:V3((j-1)*6,-22+(j%2)*3),r:.7,t:-1-j*.5,cd:2+Math.random()*2,add})}
 function splinterUp(e,dt,p){const M=e.m.position;e.t+=dt;e.m.rotation.y+=dt;if(e.t<0)return;const tx=e.slot.x+Math.sin(e.t*.8+e.slot.x)*3;
- M.x+=(tx-M.x)*Math.min(1,dt*2);M.z+=(e.slot.z-M.z)*Math.min(1,dt*1.5);e.cd-=dt*thr();if(e.cd<=0){e.cd=2.5+Math.random();const o=M.clone();o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xff4a5a,0)}}
+ M.x+=(tx-M.x)*Math.min(1,dt*2);M.z+=(e.slot.z-M.z)*Math.min(1,dt*1.5);e.cd-=dt*thf();if(e.cd<=0){e.cd=2.5+Math.random();const o=M.clone();o.y=1;fire(o,V3(p.x-o.x,p.z-o.z).normalize(),10,1,true,0xff4a5a,0)}}
 function splinterBurst(e){const o=e.m.position.clone();o.y=1;const a=Math.atan2(player.position.x-o.x,player.position.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.35),Math.cos(a+i*.35)),9,1,true,0xff7a85,0)}
 // Geode boss (hard): spins in place, firing 16-shard rings with a 3-shard gap to slip through; at half health the rings come faster
 // with an aimed 3-shot from the core between them. Calls in Splinters
@@ -1270,9 +1270,9 @@ function geodeWave(){const m=MODELS.geode(),k=hpk();S.add(m);m.position.set(0,0,
 function geodeUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;e.m.rotation.y+=dt*(p2?.6:.3);
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5));if(e.t>2.6)music('crystalboss');M.set(0,M.y,-65+37*k*(2-k));if(k<1)return;e.ph=1;e.t=0}
  e.t+=dt;M.x=Math.sin(e.t*.3)*5;M.z=-28;
- e.cdR-=dt*thr();if(e.cdR<=0){e.cdR=p2?1.5:2.3;const o=M.clone();o.y=1;const g=Math.random()*16|0;for(let i=0;i<16;i++){if((i-g+16)%16<3)continue;const a=i/16*Math.PI*2;fire(o,V3(Math.sin(a),Math.cos(a)),7,1,true,0xff2a3a,0,1.3)}}
- if(p2){e.cdA-=dt*thr();if(e.cdA<=0){e.cdA=1.1;const o=M.clone();o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.15),Math.cos(a+i*.15)),12,1,true,0xffe0e0,0)}}
- e.cdS-=dt*thr();if(e.cdS<=0){e.cdS=12;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++)addSplinter(j*2,1)}}
+ e.cdR-=dt*thf();if(e.cdR<=0){e.cdR=p2?1.5:2.3;const o=M.clone();o.y=1;const g=Math.random()*16|0;for(let i=0;i<16;i++){if((i-g+16)%16<3)continue;const a=i/16*Math.PI*2;fire(o,V3(Math.sin(a),Math.cos(a)),7,1,true,0xff2a3a,0,1.3)}}
+ if(p2){e.cdA-=dt*thf();if(e.cdA<=0){e.cdA=1.1;const o=M.clone();o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.15),Math.cos(a+i*.15)),12,1,true,0xffe0e0,0)}}
+ e.cdS-=dt*thf();if(e.cdS<=0){e.cdS=12;if(ents.filter(x=>x.add&&x.hp>0).length<3)for(let j=0;j<2;j++)addSplinter(j*2,1)}}
 // Refraction boss (hard): strafes firing 3-shard spreads; every 5 s it stops, charges its prism and splits the beam: thin red guide
 // lines fan out (3, or 5 at half health) for 1.1 s, then lasers fire along them (2 damage)
 function refractWave(){const m=MODELS.refract(),k=hpk();S.add(m);m.position.set(0,0,-60);BFX.clear();
@@ -1282,8 +1282,8 @@ function refractUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('crystalboss');M.set(0,M.y,-60+34*k*(2-k));if(k<1)return;e.ph=1;e.t=0}
  e.t+=dt;
  if(e.ph===1){M.x=Math.sin(e.t*.7)*7;M.z=-26;e.m.rotation.z=-Math.cos(e.t*.7)*.25;
-  e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=p2?1.2:1.8;const o=M.clone();o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.2),Math.cos(a+i*.2)),10,1,true,0xff4a5a,0)}
-  e.cdL-=dt*thr();if(e.cdL<=0){e.ph=2;e.tm=0;e.m.rotation.z=0;const a=Math.atan2(p.x-M.x,p.z-M.z),n=p2?5:3;e.lines=[];
+  e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=p2?1.2:1.8;const o=M.clone();o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.2),Math.cos(a+i*.2)),10,1,true,0xff4a5a,0)}
+  e.cdL-=dt*thf();if(e.cdL<=0){e.ph=2;e.tm=0;e.m.rotation.z=0;const a=Math.atan2(p.x-M.x,p.z-M.z),n=p2?5:3;e.lines=[];
    for(let i=0;i<n;i++){const d=a+(i-(n-1)/2)*.28,o=M.clone().setY(1),end=o.clone().add(V3(Math.sin(d)*60,Math.cos(d)*60)).setY(1);e.lines.push({o,end,g:beamMesh(0xff2a3a,.5),b:beamMesh(0xffb0b0,.8)})}}}
  else{e.tm+=dt;for(const l of e.lines){if(e.tm<1.1){beamTo(l.g,l.o,l.end,.12);l.g.visible=Math.floor(e.tm*10)%2==0}else{l.g.visible=false;beamTo(l.b,l.o,l.end,.9);
    if(!e.hit&&segD(l.o.x,l.o.z,l.end,p)<.8&&st.inv<=0){e.hit=1;hurt(2);shake=Math.max(shake,.3)}}}
@@ -1302,12 +1302,12 @@ function choirWave(){const k=hpk(),ch={list:[],next:1,rate:1,cd:2.5,turn:0,beams
 function choirUp(e,dt,p){const M=e.m.position,ch=e.ch;e.t+=dt;
  if(e.ph===0){const k=Math.max(0,Math.min(1,e.t/3));M.set(e.x,0,-62+36*k*(2-k));if(k>=1)e.ph=1;return}
  M.set(e.x,Math.sin(e.t*1.4+e.rank)*.3,-26);e.m.rotation.y+=dt*.25;e.hum=Math.max(0,e.hum-dt);e.gl.material.opacity=e.hum>0?.35+.35*Math.sin(e.t*30):.06;e.gl.scale.setScalar(1+e.hum);
- e.cdO-=dt*thr()*ch.rate;if(e.cdO<=0){e.cdO=3.2+Math.random();const o=M.clone().setY(1),a=Math.atan2(p.x-o.x,p.z-o.z);fire(o,V3(Math.sin(a),Math.cos(a)),7,1,true,0xd8b0ff,0,1.3)}
+ e.cdO-=dt*thf()*ch.rate;if(e.cdO<=0){e.cdO=3.2+Math.random();const o=M.clone().setY(1),a=Math.atan2(p.x-o.x,p.z-o.z);fire(o,V3(Math.sin(a),Math.cos(a)),7,1,true,0xd8b0ff,0,1.3)}
  const live=ch.list.filter(x=>x.hp>0);if(live[0]!==e)return;
  // choir leader: kill-order check, then the turn-taking beams
  for(const x of ch.list)if(x.hp<=0&&!x.dead){x.dead=1;if(x.rank===ch.next)ch.next=Math.min(...live.map(y=>y.rank),9);else{ch.rate*=1.35;ch.next=Math.min(...live.map(y=>y.rank),9);banner('DISCORD','Wrong voice. The Choir sings faster')}}
  if(ch.list.some(x=>x.ph===0))return;
- ch.cd-=dt*thr()*ch.rate;if(ch.cd<=0){ch.cd=1.3;const v=live[ch.turn++%live.length];v.hum=1;const o=v.m.position.clone().setY(1),a=Math.atan2(p.x-o.x,p.z-o.z),end=o.clone().add(V3(Math.sin(a)*60,Math.cos(a)*60)).setY(1);
+ ch.cd-=dt*thf()*ch.rate;if(ch.cd<=0){ch.cd=1.3;const v=live[ch.turn++%live.length];v.hum=1;const o=v.m.position.clone().setY(1),a=Math.atan2(p.x-o.x,p.z-o.z),end=o.clone().add(V3(Math.sin(a)*60,Math.cos(a)*60)).setY(1);
   ch.beams.push({o,end,tm:0,g:beamMesh(0xb060ff,.5),b:beamMesh(0xe8d0ff,.85)})}
  for(const l of ch.beams){l.tm+=dt*ch.rate;if(l.tm<1){beamTo(l.g,l.o,l.end,.12);l.g.visible=Math.floor(l.tm*10)%2==0}else{l.g.visible=false;beamTo(l.b,l.o,l.end,.8);
   if(!l.hit&&segD(l.o.x,l.o.z,l.end,p)<.75&&st.inv<=0){l.hit=1;hurt(2);shake=Math.max(shake,.3)}}}
@@ -1342,9 +1342,9 @@ function crucibleUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2,am=(c,o)=>new T
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3.5));if(e.t>2.6)music('alkboss');M.set(0,M.y,-70+40*k*(2-k));if(k<1)return;e.ph=1;e.t=0}
  e.t+=dt;M.x=Math.sin(e.t*.25)*4;M.z=-30;e.fg.scale.setScalar((e.door?6:9)+Math.sin(e.t*9)*.6+Math.random()*.5);e.m.rotation.y=Math.sin(e.t*.25)*.08;
  if(p2&&e.door){e.m.remove(e.door);e.door=null;boom(M.clone().add(V3(0,4)),30,0xff7a1a,true);shake=Math.max(shake,.5);banner('FURNACE OPEN','The Crucible is pouring faster')}
- e.cdS-=dt*thr();if(e.cdS<=0){e.cdS=p2?2.2:1.6;const o=e.m.localToWorld(new THREE.Vector3(0,3.6,4.5));o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z),n=p2?5:1;
+ e.cdS-=dt*thf();if(e.cdS<=0){e.cdS=p2?2.2:1.6;const o=e.m.localToWorld(new THREE.Vector3(0,3.6,4.5));o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z),n=p2?5:1;
   for(let i=0;i<n;i++){const d=a+(i-(n-1)/2)*.25;fire(o,V3(Math.sin(d),Math.cos(d)),7.5,1,true,0xff8a2a,0,1.6)}}
- e.cdP-=dt*thr();if(e.cdP<=0){e.cdP=p2?3.6:4.5;const xs=p2?[p.x-3.2-Math.random(),p.x+3.2+Math.random()]:[p.x+(Math.random()-.5)*6];
+ e.cdP-=dt*thf();if(e.cdP<=0){e.cdP=p2?3.6:4.5;const xs=p2?[p.x-3.2-Math.random(),p.x+3.2+Math.random()]:[p.x+(Math.random()-.5)*6];
   for(const x0 of xs){const x=Math.max(-FX+1,Math.min(FX-1,x0)),g=new THREE.Mesh(BOX,am(0xff7a1a,.3));g.position.set(x,.05,-5);g.scale.set(1.6,.02,16);BFX.add(g);e.pours.push({x,g,t:0})}}
  for(const q of e.pours){q.t+=dt;if(q.t<1.2){q.g.visible=Math.floor(q.t*8)%2==0;continue}
   if(q.t<1.7){q.g.visible=true;q.g.material.color.setHex(0xffd060);q.g.material.opacity=.85;q.g.scale.y=.4;q.g.position.y=.3;if(!q.hit&&Math.abs(p.x-q.x)<1&&Math.abs(p.z+5)<8&&st.inv<=0){q.hit=1;hurt(2);shake=Math.max(shake,.3)}continue}
@@ -1368,10 +1368,10 @@ function mercBurst(d){const o=d.m.position.clone();o.y=1;boom(o,30,0xf0f4f8,true
 function mercuryUp(e,dt,p){const M=e.m.position,W=e.fx.warn,L=e.fx.lash;
  if(e.ph===0){e.t+=dt;const k=Math.max(0,Math.min(1,e.t/3));if(e.t>2.6)music('alkboss');M.set(0,M.y,-60+36*k*(2-k));if(k<1)return;e.ph=1;e.t=0;mercSplit(e)}
  e.t+=dt;const D=e.decoy&&e.decoy.hp>0?e.decoy:null,cx=Math.sin(e.t*.4)*1.5,tz=-24+Math.sin(e.t*.7)*1.2;
- if(D){M.x+=(cx+e.side*5.5-M.x)*Math.min(1,dt*3);D.m.position.set(cx-e.side*5.5+(D.m.position.x-(cx-e.side*5.5))*Math.max(0,1-dt*3),0,tz)}else{M.x+=(cx-M.x)*Math.min(1,dt*2);e.cdS-=dt*thr();if(e.cdS<=0)mercSplit(e)}
+ if(D){M.x+=(cx+e.side*5.5-M.x)*Math.min(1,dt*3);D.m.position.set(cx-e.side*5.5+(D.m.position.x-(cx-e.side*5.5))*Math.max(0,1-dt*3),0,tz)}else{M.x+=(cx-M.x)*Math.min(1,dt*2);e.cdS-=dt*thf();if(e.cdS<=0)mercSplit(e)}
  M.z=tz;for(const u of D?[e,D]:[e]){u.m.visible=Math.random()>.04;u.m.scale.y=1+Math.sin(e.t*3+(u===e?0:2))*.05;u.m.rotation.z=Math.sin(e.t*1.7+(u===e?0:1.5))*.06}e.gl.scale.setScalar(5+Math.sin(e.t*4)*.5);
- e.cdF-=dt*thr();if(e.cdF<=0){e.cdF=2.2;for(const u of D?[e,D]:[e]){const o=u.m.position.clone();o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.2),Math.cos(a+i*.2)),9,1,true,0xd8e4f0,0)}}
- if(!e.whip){e.cdW-=dt*thr();if(e.cdW<=0){const qs=[-11,-5.5,0,5.5],pq=Math.max(0,Math.min(3,Math.floor((p.x+11)/5.5))),q=Math.random()<.6?pq:Math.random()*4|0,src=D&&Math.random()<.5?D:e;
+ e.cdF-=dt*thf();if(e.cdF<=0){e.cdF=2.2;for(const u of D?[e,D]:[e]){const o=u.m.position.clone();o.y=1;const a=Math.atan2(p.x-o.x,p.z-o.z);for(let i=-1;i<=1;i++)fire(o,V3(Math.sin(a+i*.2),Math.cos(a+i*.2)),9,1,true,0xd8e4f0,0)}}
+ if(!e.whip){e.cdW-=dt*thf();if(e.cdW<=0){const qs=[-11,-5.5,0,5.5],pq=Math.max(0,Math.min(3,Math.floor((p.x+11)/5.5))),q=Math.random()<.6?pq:Math.random()*4|0,src=D&&Math.random()<.5?D:e;
    e.whip={x0:qs[q],src,t:0,hit:0,px:qs[q]}}}
  else{const w=e.whip;w.t+=dt;const S0=w.src.m.position.clone().add(V3(0,1)).setY(4);
   if(w.t<1.1){W.visible=Math.floor(w.t*8)%2==0;W.position.set(w.x0+2.75,.05,-5);W.scale.set(5.5,.02,18);W.rotation.set(0,0,0)}
@@ -1403,8 +1403,8 @@ function priestUp(e,dt,p){const M=e.m.position,p2=e.hp<e.hp0/2;e.t+=dt;
  if(e.ph===-1){const k=Math.min(1,e.t/3);M.set(0,0,-60+36*k*(2-k));if(e.t>2.6)music(bossTrk());if(k>=1)e.ph=0;return}
  e.mt+=dt*(p2?1.2:.6);M.x=Math.sin(e.mt)*7;M.z=-24;e.m.visible=Math.random()>.02;
  const o=M.clone();o.x+=2.1;
- e.cd-=dt*thr();if(e.cd<=0&&!e.tri){e.cd=1.7;priestBolt(e,o,V3(p.x-o.x,p.z-o.z).normalize(),4,1).home=1.2}
- e.cdT-=dt*thr();e.gl.material.opacity=e.cdT<.8&&!e.tri?.3+.3*Math.sin(e.t*30):e.tri?.5:.08;
+ e.cd-=dt*thf();if(e.cd<=0&&!e.tri){e.cd=1.7;priestBolt(e,o,V3(p.x-o.x,p.z-o.z).normalize(),4,1).home=1.2}
+ e.cdT-=dt*thf();e.gl.material.opacity=e.cdT<.8&&!e.tri?.3+.3*Math.sin(e.t*30):e.tri?.5:.08;
  if(e.cdT<=0&&!e.tri){e.tri=3;e.tt=0}
  if(e.tri){e.tt-=dt;if(e.tt<=0){const x=[-1,0,1][3-e.tri]*FX*2/3,d=V3(x-o.x,p.z-o.z),b=priestBolt(e,o,d.clone().normalize(),5,2);if(p2){b.hd=d.length()/2/8;b.home=1.5}
   e.tri--;e.tt=.3;if(!e.tri)e.cdT=5+Math.random()}}}
@@ -1419,9 +1419,9 @@ function prophetUp(e,dt,p){const M=e.m.position,f=st.fast||1,p2=e.hp<e.hp0/2;e.t
  if(p2&&e.sf){boom(e.sf.getWorldPosition(V3(0,0)),24,0xb060ff,true);e.m.remove(e.sf);e.sf=null;shake=Math.max(shake,.4)}
  e.m.visible=Math.random()>.02;
  if(e.ph===0){M.x+=(Math.sin(e.t*.6)*7-M.x)*Math.min(1,dt*2);M.z+=(e.slot.z-M.z)*Math.min(1,dt*2);e.m.rotation.y=0;
-  e.cd-=dt*thr();if(e.cd<=0){e.cd=p2?1.8:2.1;const o=M.clone();if(e.sf){o.x+=.8;o.y=2;o.z+=.3}else o.y=2.8;const a=Math.atan2(p.x-o.x,p.z-o.z),n=p2?5:3;
+  e.cd-=dt*thf();if(e.cd<=0){e.cd=p2?1.8:2.1;const o=M.clone();if(e.sf){o.x+=.8;o.y=2;o.z+=.3}else o.y=2.8;const a=Math.atan2(p.x-o.x,p.z-o.z),n=p2?5:3;
    for(let i=0;i<n;i++){const d=a+(i-(n-1)/2)*.2;fire(o,V3(Math.sin(d),Math.cos(d)),9,1,true,0xb060ff,0,1.2)}}
-  e.cdD-=dt*thr();if(e.cdD<=0){e.ph=1;e.tm=0;e.side=Math.random()<.5?-1:1;vbZip(e,e.side*(FX-1.5),-15)}}
+  e.cdD-=dt*thf();if(e.cdD<=0){e.ph=1;e.tm=0;e.side=Math.random()<.5?-1:1;vbZip(e,e.side*(FX-1.5),-15)}}
  else if(e.ph===1){e.tm+=dt;if(e.tm>.5){e.ph=2;e.tm=0;vbZip(e,-e.side*(FX-1.5),-15)}}
  else if(e.ph===2){e.tm+=dt;if(e.tm>.45){e.ph=3;e.dir=V3(p.x-M.x,p.z-M.z).normalize();e.hit=0}}
  else if(e.ph===3){if(p2&&M.z<p.z-1)e.dir.lerp(V3(p.x-M.x,p.z+2-M.z).normalize(),Math.min(1,.7*dt)).normalize();M.addScaledVector(e.dir,13*dt*f);e.m.rotation.y=Math.atan2(e.dir.x,e.dir.z);
@@ -1660,7 +1660,7 @@ const RAR={c:'Common',u:'Uncommon',r:'Rare',x:'Contraband',p:'Paint'},ODDS={c:60
 // Weighted draw of n different upgrades; elite and boss rewards use the better odds
 // Story line shown under each upgrade
 const LORE={'Void Draw':'Dark Space has an unmistakable pull that is hard to resist.','Void Graze':'Brush the Dark and it gives a little back.','Event Horizon':'Things that die out here don\'t always leave. Sometimes they just fold inward.','Null Beam':'Some Legion engineer\'s idea of a shield. Nothing gets through. Nothing.','Crucible Slag':'Still warm from the Crucible\'s pour. The yards pay well for the stuff.','Dead Man\'s Switch':'Wired straight into the reactor. When you go, everything goes.','Meteor Pull':'Big space rock. Big space boom.','Cold Steel':'The Glacier is made of some interesting stuff.','Minotaur Horn':'Snapped off the Minotaur mid-charge. It still wants to hit something.','Gravity Sphere':'We came across it in Dark Space. It has a strong gravitational pull. So strong that we can\'t seem to let it go.','Mini Onager':'The Legion is not above trading its weapons. As long as they think it won\'t kill them.','Laser Cannon':'Legion siege tech can be fun to use.','Quicksilver Coil':'Drained from the Mercury\'s coils. It never sits still, and now neither do you.','Trophy Reactor':'Ripped still humming from the chest of something that should have stayed dead. It\'s hungry, and it isn\'t picky about what it eats.','Overcharged Rounds':'Every shell packed past the line on the label. The barrel runs hot enough to cook on.','Second Helping':'You can\'t have too much of a good thing.','Gimbal Shield':'Always ready to protect. A shield of light is perfect for facing the Dark.','Void Bot Blink Tech':'We found it floating in the wreckage of a Void Bot. Its purple glow was hard to miss among all the black scrap. Once we grabbed it, all of the scrap around us slowly faded into the Dark. Ominous.','Apex Lens':'Ground from a sliver of Refraction\'s prism. It only lines up dead center.','Black Ice Plating':'Pried off a smuggler\'s hull out past the Belt. It shrugs off almost anything. Welds barely hold on it.','Extra Armor':'You never know what\'s hiding in the Dark of space. More armor will help.','Low Profile':'Trimmed by a yard mechanic who watched your Kestrel limp in one time too many. "Stop being such a big target." She cut away everything you didn\'t need. Some of it, you did.','Tune-up':'Every 100,000 parsecs.','Salvage claws':'Sometimes they pick up useful scrap. Sometimes they pick up weird glowing things.','Rail barrel':'For when you want things to fly at the bad guys fast.','Hair trigger':'Filed down by a pilot who never came back to complain about the handling.','Enhanced EMPs':'Military-grade capacitors, "liberated" from a derelict picket ship. Hold still.','Overcharged Cells':'The warning label was in a language nobody reads anymore. Probably fine.','Afterimage':'Leaving a bit of yourself behind to get ahead.','Sn-0W':'A beautiful owl-like robot that you found in the Frost Reach. It really likes you... You really like it.','Point Blank':'Range is a suggestion. So is personal space.','Surge Catch':'Someone wired the intake straight to the power-up collector. Don\'t ask what else it eats.','Venom Launcher':'Someone rigged the blasters to make a bigger boom.','Beam Shot':'Partially lost technology, but we can still concentrate our blaster shots into a beam.','Confetti Payload':'Fun is fun.','Kill Chain':'Downing enemies in quick succession seems to yield some good results.','Sensitive Controls':'Breathe on the stick and the ship is already there.','Scrap Weld':'Duct tape, but hotter.','Apex Matrix':'Holding your position can be advantageous, sometimes.','Apex Pull':'It\'s strange. When you do this, things seem to go your way.','Apex EMP Tech':'A bit of technology that\'s made its way all the way from Earth. It\'s old, but it rarely fails us.','Phantom Armor':'A strange chip floated toward us from the darkest reaches we\'ve explored. It wanted to be found.','Scrap Cannon':'Ammo is ammo.','Scrap Jet':'Burn the junk, go faster. Recycling has never been this fun.','Dash Burst':'If you\'re going to run, take a few of them with you.','Ram Plating':'The best defense is a very heavy offense.','Wide Shot':'For those who can\'t aim.','Whip Shot':'We find that shooting away from the target often still hits something.','Tracking Shot':'Some smart weapon technology that has been used for ages. It\'s hard to beat weapons that aim for you.','Magpie Claw':'Pried from The Magpie\'s wreck, the claw still snatches anything that flies too close. Old habits.','Black Market Link':'Somehow, this chip calls members of the black market. The local vendors don\'t like it, but at least they have cool stuff.','MaG-π':'It broke off the Magpie. It seems to like you.','Magpie Nest':'A small nest appears on top of your craft.... You can\'t get it off....','Glass Auto Cannons':'Found in an old Explorer\'s junk bin, he gave it to you, assuming it was useless. It appears to be a strange set of weapons. Dark and purple.','Bootleg Shields':'Almost as good as the real thing. Maybe better. We don\'t know.','Ricochet Shield':'Return to sender.','Chargeable Core':'Patience, pilot. Good things come to those who wait.','Tractor Coils':'Why fly to the scrap when the scrap can fly to you?','Luna-M':'A beautiful space moth, reminiscent of an ancient creature from Earth. They seem to be the only benevolent thing that goes in and out of the Dark.'};
-function roll(n,hi){const w=hi?ODDS_HI:ODDS,out=[];n=Math.min(n,UPG.filter(avail).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
+function roll(n,hi){const w=hi?ODDS_HI:st&&st.pk==='tech'?{c:45,u:45,r:7,x:3}:ODDS,out=[];n=Math.min(n,UPG.filter(avail).length);while(out.length<n){let q=Math.random()*100,r='c';for(const k in w){if((q-=w[k])<0){r=k;break}}
  const pool=UPG.filter(u=>u[3]===r&&!out.includes(u)&&avail(u));if(!pool.length)continue;const u=pool[Math.random()*pool.length|0];
  // Skipped last offer: 60% chance to redraw, so the same few upgrades don't keep coming back
  if(st&&st.skip&&st.skip.includes(u[0])&&Math.random()<.6&&pool.some(x=>!st.skip.includes(x[0])))continue;out.push(u)}return out}
@@ -1696,6 +1696,8 @@ function route(){running=false;st.elite=st.boss=0;shots.forEach(s=>S.remove(s.m)
  // Every 10th sector: branch to the next zone
  if(st.sec%10===0&&st.ap!==st.sec){st.ap=st.sec;return evt(`Sector ${st.sec} cleared · Choose your zone`,`Ten more sectors and two more capital units ahead. ${st.scrap} scrap · armor ${Math.ceil(st.hp)}/${st.max}`,Object.entries(ZONES).filter(([k])=>!(ZMIN[k]>st.sec)).map(([k,d])=>[k,d,()=>{st.area=k;route()}]))}
  if(st.b45===1)st.b45=2;if(st.sec===1)prog('sec1');if(st.sec===5)prog('boss5');if(st.sec%5===0&&st.area==='The Frost Reach')prog('frostboss');st.sec++;st.wN=0;if(st.sec%5===1){st.zh=0;st.b45=0}hud();const n=st.sec,nb=Math.ceil(n/5)*5;
+ // Zone Gate: a zone perk ends when its zone does; 40% chance of a new gate at each new zone (11, 21, 31)
+ if(n%10===1&&n>1&&!st.timed){if(st.gz!==n){if(st.pk){ZPERK[st.pk].off(st);st.pk=0;hud()}st.gz=n;if(Math.random()<.4)return zoneGate()}}
  // The Silent Hulk: once per run, 25% before a capital unit from sector 10 on. Board it to fight The Magpie, then go straight into the capital unit
  if(n%5===0&&n>=10&&!st.timed&&!st.mag&&Math.random()<.25){st.mag=1;return evt('The Silent Hulk','A massive wreck drifts in the dark, stitched together from dozens of ships. Something inside is still moving.',[['Board it','Fight The Magpie, then the capital unit. Win: +40 scrap and a random Magpie upgrade (rare).',magpieWave],['Leave it','Fly on to the capital unit.',()=>go('boss')]])}
  // Way 1: 35% of route choices carry one Unknown Signal card. Way 2: if none, 15% for a random-occurrence event
@@ -1719,6 +1721,25 @@ function altTick(dt){for(const o of st.alt){o.t+=dt;if(o.g.position.z<-1.5)o.g.p
 function altEnd(h,t){st.alt.forEach(o=>S.remove(o.g));st.alt=0;const nx=st.altNext;evt(h,t,[['Continue','On to the route choice.',()=>nx?nx():route()]])}
 function altCard(o){running=false;const a=o.a,u=UPG.find(u=>u[0]===a.n);evt('Mysterious Altar',a.h,[['Accept the Gift',a.ac,()=>{if(!o.i)st.scrap-=Math.min(50,st.scrap);
   evt(a.n,a.yes+' '+u[1],[['Take it and leave','Rare · added to your upgrades.',()=>{u[2](st);gotUp(u[0]);hud();altEnd(a.n,'You fly on.')}]])}],['Leave','',()=>altEnd('Mysterious Altar',a.no)]])}
+// Zone perks: a boost with a drawback, for one zone only
+const ZPERK={fort:{n:'Fortify',d:'+2 max armor, but -15% strafe speed',on:s=>{s.max+=2;s.hp+=2;s.spd*=.85},off:s=>{s.max-=2;s.hp=Math.min(s.hp,s.max);s.spd/=.85}},
+ scrap:{n:'Scrapper',d:'+1 scrap per kill, but each hit loses 5 scrap',on:()=>{},off:()=>{}},
+ heavy:{n:'Heavy Hitter',d:'+30% damage, but -1 max armor',on:s=>{s.dmg*=1.3;s.max=Math.max(1,s.max-1);s.hp=Math.min(s.hp,s.max)},off:s=>{s.dmg/=1.3;s.max++}},
+ live:{n:'Live Dangerously',d:'+10% cycle, but enemies fire 5% faster',on:s=>{s.rate/=1.1},off:s=>{s.rate*=1.1}},
+ tech:{n:'Average Technician',d:'Upgrade odds: Uncommon 45%, but Common 45% and Rare 7%',on:()=>{},off:()=>{}},
+ after:{n:'Afterburner',d:'+20% strafe speed and dashes cost 20% less EN, but collisions cost +1 armor',on:s=>{s.spd*=1.2},off:s=>{s.spd/=1.2}}};
+// Zone Gate model: floating metal ring with fence wings and red chevrons pointing at the center
+function gateModel(){const g=new THREE.Group(),M=(c,e)=>new THREE.MeshStandardMaterial({color:c,emissive:e||0,emissiveIntensity:e?1.2:0,metalness:.6,roughness:.45,transparent:true}),mt=M(0x5a606c),dk=M(0x2a2e36),rd=M(0xff2030,0xff2030),B=(w,h,d,m,x,y,z,rz)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);b.rotation.z=rz||0;g.add(b);return b};
+ g.add(new THREE.Mesh(new THREE.TorusGeometry(5,.5,10,40),mt));const inner=new THREE.Mesh(new THREE.TorusGeometry(4.35,.12,8,40),M(0xff3040,0xff2030));g.add(inner);
+ for(let i=0;i<8;i++){const a=i*Math.PI/4;B(.5,1.3,.9,dk,Math.cos(a)*5,Math.sin(a)*5,0,a)}
+ for(const sx of [-1,1]){for(let k=0;k<4;k++)B(.35,4.2-k*.5,.35,dk,sx*(6+k*2.1),0,0);B(6.6,.22,.2,mt,sx*8.9,1.4,0);B(6.6,.22,.2,mt,sx*8.9,-1.4,0);B(6.6,.18,.2,mt,sx*8.9,0,0);
+  for(let k=0;k<3;k++)B(2.4,.12,.12,mt,sx*(7.05+k*2.1),0,0,sx*.6);
+  for(let k=0;k<3;k++)for(const s2 of [-1,1])B(.9,.2,.2,rd,sx*(9.6-k*1.3)-sx*.3,s2*.3+2.6,0,sx*s2*.75)}
+ const gl=glow(0xff2030,9);gl.material.opacity=.35;g.add(gl);g.userData.inner=inner;g.rotation.x=-.2;return g}
+function gateTick(dt){const g=st&&st.gate;if(!g)return;g.userData.t=(g.userData.t||0)+dt;g.position.y=Math.sin(g.userData.t*1.1)*.35;g.userData.inner.rotation.z+=dt*.6;
+ const o=g.userData.out?Math.max(0,1-(g.userData.t-g.userData.out)/.8):Math.min(1,g.userData.t/.6);g.traverse(m=>{if(m.material)m.material.opacity=m.material.isSpriteMaterial?o*.35:o});if(g.userData.out&&!o){S.remove(g);st.gate=0}}
+function zoneGate(){const ks=shuf(Object.keys(ZPERK)).slice(0,3),done=()=>{$('evt').classList.remove('fade');const g=st.gate;if(g)g.userData.out=g.userData.t;hud();st.sec--;route()};
+ const g=st.gate=gateModel();g.position.set(0,-1.5,-24);S.add(g);$('evt').hidden=true;hud();setTimeout(()=>{$('evt').classList.add('fade');evt('Zone Gate','A checkpoint station guards the way into the next zone. Take one perk for this zone only. Each comes with a drawback.',[...ks.map(k=>[ZPERK[k].n,ZPERK[k].d,()=>{st.pk=k;ZPERK[k].on(st);done()}]),['Choose Nothing','Fly on as you are.',done]])},1600)}
 function go(k){if(k==='yard')return shop();if(k==='dock'){const was=st.hp,a=Math.max(3,Math.ceil(st.max/2));st.hp=Math.min(st.max,st.hp+(st.bip?Math.ceil(a/2):a));st.hl=st.hp;return evDone('Repair Dock',`Dock crews patch your hull: +${Math.ceil(st.hp-was)} armor (${Math.ceil(st.hp)}/${st.max})${st.bip?'. Your Black Ice Plating only takes half the work':''}.`)}
  if(k==='signal')return EVENTS[Math.random()*EVENTS.length|0]();st.elite=k==='elite'?1:0;wave();running=true}
 // Kill scrap pays 90%, randomly rounded so the average holds on small values
@@ -1726,6 +1747,8 @@ const cut=v=>Math.floor(v*.9)+(Math.random()<v*.9%1?1:0);
 // Enemy health: +5% per sector through sector 10, then +6.5% per sector after that
 const hpk=()=>(st.sec<=10?1+st.sec*.05:1.5+(st.sec-10)*.065)*thr();
 // Threat: each upgrade taken this run adds 3% enemy health and fire rate
+// Live Dangerously: enemies fire 5% faster
+const thf=()=>thr()*(st.pk==='live'?1.05:1);
 const thr=()=>1+.03*(st.upgrades?st.upgrades.length:0);
 // Capital units: 1.5 s invulnerable on arrival, then take 25% less damage for the whole fight
 const BOSSES=new Set(['magpie','boss','wp','warden','mino','caesar','glacier','dryice','onager','geode','refract','crucible','mercury','choir','prophet','priest','scion','nox','umbra','imago']);
@@ -1912,8 +1935,10 @@ function bounce(s,p){const n=T.subVectors(s.m.position,p).setY(0).normalize(),sp
 // Venom Launcher grenade: heavy hit on the target, splash on everything within 3.5
 function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;st.dealt+=cd;boom(c.m.position,16,0x7dff3a);shake=Math.max(shake,.12);
  for(const e of ents)if(e!==c&&e.m.visible&&e.hp>0&&!((e.type==='boss'||e.type==='onager')&&armored(e))&&!(BOSSES.has(e.type)&&!e.inPos)&&hd(e.m.position,c.m.position)<3.5){e.hp-=bd;st.dealt+=bd;e.m.scale.setScalar(1.25)}}
-function ram(e,n,k){hurt(st.plate?Math.max(1,n-1):n);if(!BOSSES.has(e.type)||e.inPos)e.hp-=k+3*st.plate}
-function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}
+function ram(e,n,k){hurtR(st.plate?Math.max(1,n-1):n);if(!BOSSES.has(e.type)||e.inPos)e.hp-=k+3*st.plate}
+// Collision damage: Afterburner adds 1
+const hurtR=n=>hurt(n+(st.pk==='after'?1:0));
+function hurt(n){if(st.inv>0||st.gold>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}if(st.pk==='scrap')st.scrap=Math.max(0,st.scrap-5);
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
  const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=1;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}st.bhit=1;if(st.kind==='mech')prog('khit');if(st.timed){st.time-=5;n=0}if(n){st.kcs=0;st.zh++;if(st.jet&&st.scrap){st.scrap=Math.max(0,st.scrap-15);popMsg('-15 SCRAP','#ff8a3a')}}if(st.owl&&n){st.ob=3;if(st.owl>=3)st.os=1.2}if(st.bip&&n)n=Math.max(1,n-(st.bip>=3&&n>=3?2:1));if(st.xarm>=3&&n>=2&&st.xaS!==st.sec){st.xaS=st.sec;n--}if(n>=3)buzz(70);st.hp-=n&&n+st.vuln;st.inv=.8;flash();st.ht=.12;boom(player.position,4,0xffd060);shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
@@ -1935,7 +1960,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  // Black Ice Plating: any armor gained since last frame is halved; half points carry over so small repairs still add up
  if(st&&st.bip){if(st.hp>st.hl){st.hb=(st.hb||0)+(st.hp-st.hl)/2;const w=Math.floor(st.hb);st.hb-=w;st.hp=st.hl+w;if(player)hud()}st.hl=st.hp}
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
- driftTick(dt);reelTick(dt);fallTick(rdt);outTick(dt);thumbTick(dt);
+ driftTick(dt);reelTick(dt);gateTick(dt);fallTick(rdt);outTick(dt);thumbTick(dt);
  const dk=!!st&&!st.timed&&st.area==='Dark Space';for(let i=0;i<stars.length;i++){const s=stars[i];s.position.z+=dt*(running?10:3);if(s.position.z>20)s.position.z-=80;s.visible=!dk||i%30===0}
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
@@ -1943,7 +1968,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  if(running){for(const e of ents)if(!SEEN[e.type])seeIt(e.type);const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),mz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.08?THREE.MathUtils.clamp(want/1.2,-1,1):0;const wz=THREE.MathUtils.clamp(touch.pz+touch.dy/innerHeight*12,-PZF,PZB)-p.z;mz=Math.abs(wz)>.08?THREE.MathUtils.clamp(wz/1.2,-1,1):0}
   if(mx)st.dir=Math.sign(mx);let sp=st.spd*(1+.03*(st.sens||0)+(st.mpi?(st.scrap/25|0)/100:0)+(st.jet?Math.min([8,12,16][st.jet-1],[2,3,4][st.jet-1]*Math.floor(st.scrap/50))/100:0));if(st.slow>0){st.slow-=dt;sp*=.5}if(st.ob>0)sp*=1+[0,.1,.15,.2][st.owl];
-  owl.visible=!!st.owl;if(st.owl){st.oa=(st.oa||0)+dt*1.1;owl.position.set(p.x+Math.cos(-st.oa+Math.PI)*2.6,p.y,p.z+Math.sin(-st.oa+Math.PI)*2.6);owl.rotation.y=.3*Math.sin(st.oa);owlW.forEach(w=>w.scale.x=.55+.45*Math.abs(Math.sin(now*.004)));owlH.material.opacity=.22+.08*Math.sin(now*.003)}st.ob=(st.ob||0)-dt;st.os=(st.os||0)-dt;moth.visible=!!st.moth;if(st.moth){st.ma=(st.ma||0)-dt*[0,1.3,1.7,2.1][st.moth];moth.position.set(p.x+Math.cos(st.ma)*2,p.y,p.z+Math.sin(st.ma)*2);moth.rotation.y=-st.ma;moth.children[1].scale.x=moth.children[2].scale.x=.45*(.7+.3*Math.abs(Math.sin(now*.012)))}st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=(35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0))*(st.blink?st.blink>=3?1.15:1.25:1)*(st.qs>2?.85:1)*(st.met?1.1:1),dcc=st.chg?dc*1.1:dc;if(st.laser)laserIn(p,dc);else if((keys.shift||st.tap)&&st.en>=dcc&&st.bt<=0){
+  owl.visible=!!st.owl;if(st.owl){st.oa=(st.oa||0)+dt*1.1;owl.position.set(p.x+Math.cos(-st.oa+Math.PI)*2.6,p.y,p.z+Math.sin(-st.oa+Math.PI)*2.6);owl.rotation.y=.3*Math.sin(st.oa);owlW.forEach(w=>w.scale.x=.55+.45*Math.abs(Math.sin(now*.004)));owlH.material.opacity=.22+.08*Math.sin(now*.003)}st.ob=(st.ob||0)-dt;st.os=(st.os||0)-dt;moth.visible=!!st.moth;if(st.moth){st.ma=(st.ma||0)-dt*[0,1.3,1.7,2.1][st.moth];moth.position.set(p.x+Math.cos(st.ma)*2,p.y,p.z+Math.sin(st.ma)*2);moth.rotation.y=-st.ma;moth.children[1].scale.x=moth.children[2].scale.x=.45*(.7+.3*Math.abs(Math.sin(now*.012)))}st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=(35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0))*(st.pk==='after'?.8:1)*(st.blink?st.blink>=3?1.15:1.25:1)*(st.qs>2?.85:1)*(st.met?1.1:1),dcc=st.chg?dc*1.1:dc;if(st.laser)laserIn(p,dc);else if((keys.shift||st.tap)&&st.en>=dcc&&st.bt<=0){
    // Dash Burst: one wide shot up the lane if EN was above the tier's threshold
    if(st.dburst&&st.en>[0,50,40,30][st.dburst]&&st.dbcd<=0){st.dbcd=1;fire(p,V3(0,-1).normalize(),st.shot,st.dmg,false,0x6fd3ff,st.pierce,st.wide*1.5)}
    // Afterimage: ghost copy stays at the dash start and fires along for .5 s
@@ -2023,7 +2048,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    if(!e.inPos&&e.v0&&BOSSES.has(e.type)&&e.m.position.z>-34){e.ar=(e.ar||0)+dt;e.st0=Math.abs(e.m.position.z-prev.z)<1.5*dt?(e.st0||0)+dt:0;if(e.st0>.2||e.ar>4)e.inPos=1}
    if(face){T.subVectors(e.m.position,prev);if(T.lengthSq()>1e-6)e.m.rotation.y=Math.atan2(T.x,T.z)}
    e.m.position.y=.2+Math.sin(now/250+e.slot.x)*.15;if(e.off)e.m.position.y=e.core.m.position.y+e.off.y;if(e.hop)e.m.position.y+=e.hop;
-   if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt*thr();if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;if(early())e.cd*=1.1;
+   if(e.state!=='enter'&&e.state!=='fly'&&!NOFIRE[e.type]){e.cd-=dt*thf();if(e.cd<=0){e.cd=(e.type==='boss'?(armored(e)?3:1.2):e.type==='brute'?3:2.2)+Math.random()*2;if(early())e.cd*=1.1;
     eShot(e,p)}}}
   st.inv-=dt;player.visible=st.inv>0&&st.bt<=0?Math.floor(now/60)%2==0:true;
   const far=ents.reduce((a,e)=>e.m.visible&&e.hp>0&&!e.escaped&&(!a||e.m.position.z<a.m.position.z)?e:a,null);
@@ -2037,7 +2062,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   ents=ents.filter(e=>{e.m.scale.lerp(T.set(1,1,1),.2);if(e.hp>0)return true;S.remove(e.m);if(e.type==='scion'){st.won=1;scionFall(e.m);prog('scion')}if(GODN[e.type]){st.won=2;st.godN=GODN[e.type];scionFall(e.m);prog(e.type)}if(BOSSES.has(e.type)&&e.type!=='boss'&&e.type!=='wp'&&!(e.ch&&e.ch.list.some(x=>x.hp>0))){if(!e.escaped)buzz([90,50,160]);if(st.boss&&!st.bhit&&!e.escaped){const d=([...ELOG.b,...ELOG.x].find(q=>q[0]===e.type)||[])[4]||0;if(d>=3)prog('nohit3');if(d>=4)prog('nohit4')}BFX.clear();mist(0);for(const x of ents)if(x.add)x.hp=0}if(!e.escaped){if(st.confetti){for(const c of [0xff4fd8,0x4fe08a,0x5ab0ff,0xffe63a])boom(e.m.position,4,c);if(Math.random()<.1*st.confetti){st.scrap+=2;const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent='+2 SCRAP';pp.style.color='#ff4fd8';pp.classList.add('go')}}
    st.kills++;killIt(e.type);if(st.eh)ehWell(e.m.position);(st.kt=st.kt||{})[e.type]=(st.kt[e.type]||0)+1;boom(e.m.position,BOSSES.has(e.type)&&e.type!=='wp'?60:e.type==='brute'||e.sz===3?22:12,BODY[e.type],e.type==='brute'||BOSSES.has(e.type)&&e.type!=='wp');if(e.type==='mdecoy'&&e.real&&e.real.hp>0)mercBurst(e);if(e.pair)e.pair.arc.visible=false;if(e.type==='splinter'&&!st.bonus&&ents.some(x=>x.hp>0&&x!==e))splinterBurst(e);// Apex EMP Tech: low armor + center band gives an extra EMP roll
    if(st.kc)st.kcs=Math.min((st.kcs||0)+1,st.kc+3);if(st.empT&&st.hp<=Math.floor(st.max/3)&&Math.abs(player.position.x)<FX*.25&&Math.random()<[0,.03,.04,.05][st.empT])spawnDrop(e.m.position,'emp');else if(Math.random()<.04*(1+(st.wg?.5:0)+(st.pg?.3:0)+(st.bg?.3:0))*(e.type==='brute'?2:1)*(e.state==='dive'?1.5:1)){const pool=POOLS[st.timed?'timed':'campaign'].filter(k=>DROP[k].pu&&(!DROP[k].scion||LIFE.scion>=1)&&(!DROP[k].shop||OWNED.includes(DROP[k].shop)));let q=Math.random()*pool.reduce((a,k)=>a+dwt(k),0),pk=pool[0];for(const k of pool)if((q-=dwt(k))<0){pk=k;break}spawnDrop(e.m.position,pk)}else if(st.timed){const r=Math.random()*(e.type==='brute'?.5:1);if(r<.04)spawnDrop(e.m.position,'y');else if(r<.18)spawnDrop(e.m.position,'g')}
-   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut((st.claw?1.08:1)*{magpie:0,hulk:1,chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,nox:80,umbra:80,imago:80,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb+(st.sld>0?1:0)}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
+   if(st.bonus){st.bHit++;st.scrap+=3}else st.scrap+=cut((st.claw?1.08:1)*{magpie:0,hulk:1,chaser:1,shooter:2,brute:5,wp:8,boss:20,mine:3,lancer:2,warden:30,mino:30,caesar:30,glacier:30,mote:1,dryice:30,onager:30,cata:8,slime:1,geode:40,refract:40,choir:15,prophet:45,priest:45,scion:60,nox:80,umbra:80,imago:80,voidbot:5,crucible:40,mercury:40,mdecoy:0,moth:4,splinter:3,praet:4,golem:4}[e.type]*(e.state==='dive'?2:1))+st.sb+(st.sld>0?1:0)+(st.pk==='scrap'?1:0)}if(e.type==='slime'&&e.sz>1&&!e.escaped)oozeSplit(e);hud();return false});if(oozeQ.length){ents.push(...oozeQ);oozeQ.length=0}
   gooTick(dt,p);snowTick(dt);
   for(const f of fx){f.m.position.addScaledVector(f.v,dt);f.v.y-=6*dt;f.life-=dt;f.m.scale.multiplyScalar(.96)}
   for(let i=fx.length;i--;)if(fx[i].life<=0){S.remove(fx[i].m);FXP.push(fx[i].m);fx.splice(i,1)}
@@ -2199,7 +2224,7 @@ function gotUp(n){st.upgrades.push(n);st.hl=st.hp;pickIt('u:'+n)}
 // Remove one tier of an owned upgrade: reset every stat an upgrade can touch to its starting value, then replay the rest in order
 function dropUp(n){const i=st.upgrades.lastIndexOf(n);if(i<0)return;const hp=st.hp;st.upgrades.splice(i,1);const b=BASE[st.kind],f={...b,max:b.hp,enr:b.enr||1,wide:1},K=new Set(),
  p=new Proxy({...f},{set(o,k,v){K.add(k);o[k]=v;return true}});UPG.forEach(u=>u[2](p));K.forEach(k=>st[k]=k in f?f[k]:0);
- st.upgrades.forEach(x=>{const u=UPG.find(u=>u[0]===x);if(u)u[2](st)});st.hp=st.hl=Math.min(hp,st.max)}
+ st.upgrades.forEach(x=>{const u=UPG.find(u=>u[0]===x);if(u)u[2](st)});st.hp=st.hl=Math.min(hp,st.max);if(st.pk)ZPERK[st.pk].on(st)}
 const cap=n=>(n||0)>=9999?'9999+':n||0,rarS=r=>`Rarity: <span style="color:${LRAR[r][2]}">${LRAR[r][0]}</span>`;
 for(const k in DROP)if(!MODELS['cap_'+k])MODELS['cap_'+k]=()=>build('cap_'+k,[[-2,0,-2,4,3,4,'c',0,'cy'],[-2,3,-2,4,1,4,'k',0,'cy'],[-2,4,-2,4,3,4,'c',0,'cy']],{c:DROP[k].c,k:DROP[k].pu?0x141826:0xffffff},.12);
 function elRows(){const t=elTab;
