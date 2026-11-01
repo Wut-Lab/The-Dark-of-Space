@@ -476,6 +476,8 @@ const ICONS={u_tune:[[-1,0,0,2,12,2,'g'],[-1,2,0,2,5,2,'y'],[-3,12,0,6,2,2,'g'],
  u_surge:[[-3,0,-2,6,8,4,'f',0,'r'],[-3,3,-2,6,2,4,'k',0,'r'],[0,8,0,2,2,1,'y'],[-1,10,0,2,2,1,'y'],[0,12,0,2,2,1,'y'],[-4,14,-1,8,2,2,'y'],[-5,14,-1,1,2,2,'d'],[4,14,-1,1,2,2,'d']],
  u_weld:[[-4,1,-1,8,8,2,'n'],[-1,-1,-1,2,12,2,'n'],[-6,4,-1,12,2,2,'n'],[-1,3,1,2,4,1,'f'],[-2,4,1,4,2,1,'f'],[5,9,0,1,1,1,'y'],[6,10,0,1,1,1,'y'],[4,10,0,1,1,1,'h']],
  u_trig:[[-1,0,-1,3,7,3,'d'],[-2,7,-1,12,3,3,'g'],[-2,9,-1,12,1,3,'x'],[2,3,0,1,4,1,'d'],[2,3,0,5,1,1,'d'],[6,3,0,1,4,1,'d'],[4,5,0,1,2,1,'x'],[9,7,0,2,2,1,'k']]};
+// Altar gift icons glow in their altar's color
+const GIFTGLOW={u_gw:0xffffff,u_gp:0xc040ff,u_gb:0x30b8ff};
 const IPAL={...P,n:0x4fe08a,r:0x5ab0ff,x:0xff3d6e,p:0xff4fd8,q:0x3a2258,v:0xb060ff,W:0xffffff,w:0xc8ccd8,U:0xd070ff,u:0x8a20d0,B:0x60d0ff,b:0x1c80d0};
 // Mine: spiked sphere with a rust band and red lights. Lancer: dart-shaped ramming drone
 const MINE=[[-5,0,-5,10,10,10,'v',0,'e'],[-6,4,-6,12,2,12,'o',0,'e'],[-1,10,-1,2,3,2,'d'],[5,4,-1,3,2,2,'d',1],[-1,4,5,2,2,3,'d'],[-1,4,-8,2,2,3,'d'],[-1,7,4,2,1,1,'m'],[-1,7,-5,2,1,1,'m'],[-1,13,-1,2,1,2,'m']];
@@ -616,7 +618,7 @@ const MODELS={
  mine:()=>build('mine',MINE,{...P,v:0x3a3f47,o:0x8a3b32,m:0xff3030},.09),
  lancer:()=>build('lancer',LANCER,{...P,v:0x6b2a3a,o:0x2a2d36,m:0xff3030},.1),
  warden:()=>build('warden',WARDEN,{...P,v:0x55606e,o:0x7a3a2a,m:0xff3030,d:0x22262d,a:0x3f4752,y:0xc9a227,k:0x14171c},.16),
- ...Object.fromEntries(Object.entries(ICONS).map(([k,v])=>[k,()=>build(k,v,IPAL,.1)])),
+ ...Object.fromEntries(Object.entries(ICONS).map(([k,v])=>[k,()=>{const g=build(k,v,IPAL,.1),c=GIFTGLOW[k];if(c){const l=glow(c,2.2);l.position.y=.4;g.add(l);g.traverse(m=>{if(m.material&&m.material.emissive){m.material=m.material.clone();m.material.emissive.setHex(c);m.material.emissiveIntensity=.7}})}return g}])),
  mino:()=>build('mino',[...DRUDGE,...MINO],{...P,v:0x8a3b32,o:0x262a31,m:0xffd030,w:0xd8cfb8},.24),
  scion:()=>build('scion',[...DRUDGE,...MINO,...SCION],SVPAL,.27),umbra:()=>build('umbra',UMBL.flatMap(([k,x,y,z=0])=>UMBP[k].map(q=>[q[0]+x,q[1]+y,q[2]+z,...q.slice(3)])),SVPAL,.22),imago:()=>MODELS[lastRun().k](VOIDJ),nox:()=>build('nox',NOXL.flatMap(([k,x,y,z=0])=>NOXP[k].map(q=>[q[0]+x,q[1]+y,q[2]+z,...q.slice(3)])),SVPAL,.22),sstole:()=>build('sstole',SSTOLE,SVPAL,.27),sstaff:()=>build('sstaff',SSTAFF,SVPAL,.27),
  caesar:()=>build('caesar',CAESAR,{...P,v:0xd4a52a,o:0x8a6a1e,a:0x8a929c,c:0xb0201c,m:0xff3030},CS),
