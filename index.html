@@ -61,7 +61,7 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}.lo{display:block;font-style:italic;color:var(--dim);font-size:12px;opacity:.8;margin-top:4px}
 kbd{font-family:var(--display);font-size:11px;border:1px solid #ffffff33;padding:1px 5px}
-#tot{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));font:400 15px var(--display);letter-spacing:.08em;color:var(--dim)}#tot b{color:var(--accent);font-weight:400}
+#tot{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));font:400 15px var(--display);letter-spacing:.08em;color:var(--dim)}#tot b{color:var(--accent);font-weight:400}#tot{text-align:right}#tot .lc{font-size:13px;margin-top:2px}
 #pauseBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));padding:8px 14px;font-family:var(--display);letter-spacing:.12em;display:block}
 #pause{position:fixed;inset:0;background:#05060a00;opacity:0;transition:opacity .3s,background .3s,backdrop-filter .3s}
 #pause.on{opacity:1;background:#05060ad9;backdrop-filter:blur(4px)}
@@ -117,7 +117,7 @@ button{font:inherit;color:var(--fg);background:linear-gradient(#ffffff17,#ffffff
 box-shadow:0 4px 0 #000000b0,inset 0 1px 0 #ffffff2a;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px;transition:transform .06s,box-shadow .06s}
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #000000b0,inset 0 1px 0 #ffffff1a}
 .scr{display:block;overflow-y:auto;padding-block:24px}.scr>.card{margin:max(16px,6vh) auto}
-#start{background:#05060a40}
+#start{background:#05060a40}#start .title{margin-top:max(5vh,calc(64px + env(safe-area-inset-top,0px)))}
 .title{display:grid;gap:32px;margin:5vh auto 16px;max-width:760px;justify-items:center}
 .logo{font:400 clamp(36px,8vw,72px)/1.05 "Black Ops One","Arial Black",sans-serif;color:var(--accent);text-align:center;letter-spacing:.03em;
 text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
@@ -183,7 +183,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
 <div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button></div><div id="blk" hidden></div>
 <div class="ov" id="reel"><p id="reelP">Tap or press any key</p><button id="reelSkip">Skip</button></div>
-<div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b></div><div class="title">
+<div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
@@ -266,7 +266,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 
 <div class="ov scr" id="how-sectors" hidden><div class="card"><div class="hd"><h2>Sectors</h2><button class="back" data-go="how">Back</button></div>
 <h3>Start</h3><ul><li>A <b>SECTOR</b> banner shows the sector number and how many units to destroy</li><li>You get about 5 seconds of open space before each wave flies in</li><li>Each sector has its own music: <i>Starfall Run</i> in normal sectors and <i>Gold Rush</i> in Bonus Stages. In boss sectors the music cuts out until the boss arrives, then <i>Iron Titan</i> kicks in. Some zones have their own sector and boss themes</li></ul>
-<h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li><li><b>DMG</b> and <b>CYCLE</b> in the top bar show your damage per shot and volleys fired per second, so you can see what upgrades do</li><li><b>CHAIN</b> in the top bar counts quick kills in a row (within 3 s of each other). Taking a hit or waiting too long resets it. At <b>×3</b> you fire 10% faster, at <b>×6</b> you also deal 5% more damage, and at <b>×9</b> your shots also pierce one extra unit</li></ul>
+<h3>During</h3><ul><li>Units fly in two at a time in sweeps, loops and figure-eights, then form up at the top</li><li>From the formation, units break off and dive at you</li><li><b>Units left</b> in the top bar counts down as you destroy them</li><li><b>DMG</b> and <b>CYCLE</b> in the top bar show your damage per shot and volleys fired per second, so you can see what upgrades do</li><li><b>CHAIN</b> in the top bar counts quick kills in a row (within 3 s of each other). Taking a hit or waiting too long resets it. At <b>×3</b> you fire 10% faster, at <b>×6</b> you also deal 5% more damage, and at <b>×9</b> your shots also pierce one extra unit. Your longest chain ever (and the mode you set it in) shows on the main menu</li></ul>
 <h3>Waves</h3><ul><li>Each sector has 2 waves (3 from sector 10). The banner shows which wave you're on</li><li>Clear a wave and <b>WAVE CLEAR</b> flashes; the next wave arrives a moment later</li><li>Boss and Bonus sectors are a single wave</li></ul>
 <h3>End</h3><ul><li>When the last wave's Units left reaches zero, <b>SECTOR CLEAR</b> flashes</li><li>Then you choose an upgrade and pick your next stop on the route</li><li>Each sector brings more units, and they dive more often</li><li>New enemy types join as you go deeper</li></ul></div></div>
 
@@ -360,7 +360,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <li><kbd>Shift</kbd> or the Dash button bursts sideways and makes you briefly invulnerable. It uses EN, which refills.</li>
 <li>Units dive at you. Shoot them mid-dive for double scrap.</li>
 <li>Clear a sector to pick one upgrade (Common, Uncommon, Rare or Contraband; Contraband has a drawback), then choose your next stop: Combat, Elite, Salvage Yard, Repair Dock or Unknown Signal. Every 5th sector is a boss: it can't be hurt for 1.5 s as it arrives and takes 25% less damage. Threat: every upgrade you take gives enemies +3% health and fire rate. Enemies shoot as they start a dive. When armor hits zero, the run ends.</li><li>Save and Quit keeps the run: resume it from Campaign, back at the start of the current sector.</li>
-<li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li><li><b>DMG</b> and <b>CYCLE</b> in the top bar show your damage per shot and volleys fired per second, so you can see what upgrades do</li><li><b>CHAIN</b> in the top bar counts quick kills in a row (within 3 s of each other). Taking a hit or waiting too long resets it. At <b>×3</b> you fire 10% faster, at <b>×6</b> you also deal 5% more damage, and at <b>×9</b> your shots also pierce one extra unit</li>
+<li>Each sector has 2 waves (3 from sector 10). A banner marks each wave: destroy every unit to clear it. <b>Units left</b> in the top bar counts down to zero.</li><li><b>DMG</b> and <b>CYCLE</b> in the top bar show your damage per shot and volleys fired per second, so you can see what upgrades do</li><li><b>CHAIN</b> in the top bar counts quick kills in a row (within 3 s of each other). Taking a hit or waiting too long resets it. At <b>×3</b> you fire 10% faster, at <b>×6</b> you also deal 5% more damage, and at <b>×9</b> your shots also pierce one extra unit. Your longest chain ever (and the mode you set it in) shows on the main menu</li>
 <li>At zero, <b>SECTOR CLEAR</b> flashes and you pick an upgrade before the next sector.</li>
 <li>Every 5th sector is a boss; the final boss waits at sector 40 in Dark Space, and beating it wins the run. Every 10 sectors you choose which zone to fly into next. Sometimes sector 4.5 is a <b>Bonus Stage</b>: units loop past without shooting. Each kill pays 3 scrap; get all 40 for a +20 Perfect bonus.</li>
 <li><b>Power-ups</b> are temporary drops you fly over; <b>upgrades</b> are permanent for the run (see them under Upgrades in this menu). The Log lists every one you've found.</li>
@@ -852,6 +852,9 @@ $('best').textContent=best?`Best run: sector ${best}.`:'';
 // Scrap bank: at the end of every run half the scrap carries over; the other half pays to repair the craft back to 100%
 let bankT=0;try{bankT=+localStorage.getItem('darkbank')||0}catch(e){}
 const totT=()=>$('totN').textContent=bankT;totT();
+// Longest Chain (main menu, for bragging): best chain ever and the mode it was set in. Dev Corner runs don't count
+let LCH={n:0,m:''};try{Object.assign(LCH,JSON.parse(localStorage.getItem('darkchain')||'{}'))}catch(e){}
+function lchT(){$('lcN').textContent=LCH.n;$('lcM').textContent=LCH.m||'None yet'}lchT();
 function bank(){if(!st||st.banked)return 0;st.banked=1;const k=Math.floor(st.scrap/2);st.bk=k;bankT+=k;try{localStorage.setItem('darkbank',bankT)}catch(e){}totT();return k}
 const bankRows=k=>[['Banked (50%)',`+${k} · Total Scrap ${bankT}`],['Repairs (50%)',`${st.scrap-k} scrap · craft back to 100%`]];
 let tbest=0;try{tbest=+localStorage.getItem('darktimedbest')||0}catch(e){}
@@ -2037,10 +2040,11 @@ function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;s
 function ram(e,n,k){hurtR(st.plate?Math.max(1,n-1):n);if(!BOSSES.has(e.type)||e.inPos)e.hp-=k+3*st.plate}
 // Collision damage: Afterburner adds 1
 const hurtR=n=>hurt(n+(st.pk==='after'?1:0));
-// Chain: each kill within 3 s of the last adds 1 (max ×9); a hit or a 3 s gap resets it.
+// Chain: each kill within 3 s of the last adds 1 (no cap; boosts top out at ×9); a hit or a 3 s gap resets it.
 // Run boosts only, no scrap: ×3 fire rate +10%, ×6 damage +5%, ×9 shots pierce +1
 const CHT=[['',''],['CHAIN ×3 · FIRE RATE +10%','#6fd3ff'],['CHAIN ×6 · DAMAGE +5%','#ffd23a'],['CHAIN ×9 · PIERCE +1','#ff4fd8']];
-function chainKill(){st.cht=3;if(st.ch>=9)return;st.ch=(st.ch||0)+1;chainHud();if(st.ch%3===0){const t=CHT[st.ch/3];popMsg(t[0],t[1]);zap()}}
+function chainKill(){st.cht=3;st.ch=(st.ch||0)+1;chainHud();if(st.ch<=9&&st.ch%3===0){const t=CHT[st.ch/3];popMsg(t[0],t[1]);zap()}
+ if(!st.dev&&st.ch>LCH.n){LCH={n:st.ch,m:st.timed?st.hard?'Hard Timed':'Timed Attack':'Campaign'};try{localStorage.setItem('darkchain',JSON.stringify(LCH))}catch(e){}lchT()}}
 function chainBreak(){if(!st.ch)return;if(st.ch>=3)popMsg('CHAIN BROKEN','#8a93a6');st.ch=0;st.cht=0;chainHud()}
 function chainHud(){const c=st.ch||0;$('chR').textContent='×'+c;$('chW').className=c>=9?'t3':c>=6?'t2':c>=3?'t1':''}
 function hurt(n){if(st.dvInv||st.inv>0||st.gold>0||st.veng&&st.bt>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}if(st.pk==='scrap')st.scrap=Math.max(0,st.scrap-5);
@@ -2232,7 +2236,7 @@ let DG=null;function devGods(){if(!DG){const r=new THREE.WebGLRenderer({canvas:$
  const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
  // Reset progress: two taps; clears every saved key except settings, then reloads
  $('dvWipe').onclick=()=>{const b=$('dvWipe');if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again to wipe';setTimeout(()=>{delete b.dataset.arm;b.textContent='Reset progress'},3000);return}
-  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
+  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints','darkchain'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
  $('dvReel').onclick=()=>reelOpen(()=>show('devc'));
  // View ending: drops into Dark Space's final sector and fells the Scion at once
  $('ztEnd').onclick=()=>{devRun(DS,10,false);st.boss=1;scionWave();running=true;setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
