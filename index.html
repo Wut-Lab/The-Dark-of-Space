@@ -1929,7 +1929,7 @@ function sssTick(dt){const o=st.sss,g=o.g,u=g.userData;o.t+=dt;u.tick(dt,g);u.li
 function hangar(){const g=new THREE.Group(),M=(c,r=.8,m=.3)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m}),B=new THREE.BoxGeometry(1,1,1),P=(sx,sy,sz,x,y,z,m)=>{const q=new THREE.Mesh(B,m);q.scale.set(sx,sy,sz);q.position.set(x,y,z);g.add(q);return q};
  P(60,1,90,0,-1.5,-20,M(0x2c2e33,.9,.2));for(let k=-4;k<=4;k++)P(.08,.02,90,k*4,-.98,-20,M(0x3a3d44));for(let k=0;k<12;k++)P(60,.02,.08,0,-.98,-60+k*7,M(0x3a3d44));
  for(const sx of[-1,1])P(.4,.03,60,sx*3,-.96,-15,new THREE.MeshBasicMaterial({color:0xffc020}));
- P(60,40,1,0,15,-58,M(0x3e4148,.8,.4));for(let k=-5;k<=5;k++)P(.8,40,1.2,k*5.5,15,-57.4,M(0x2a2c30,.7,.5));P(60,1.2,1.4,0,6,-57,M(0x5a5e66,.6,.6));
+ P(60,40,1,0,15,-58,M(0x3e4148,.8,.4));for(let k=-5;k<=5;k++)P(.8,40,1.2,k*5.5,15,-57.4,M(0x2a2c30,.7,.5));{const bm=M(0x5a5e66,.6,.6);P(31.4,1.2,1.4,-14.3,6,-57,bm);P(19.4,1.2,1.4,20.3,6,-57,bm);P(1.2,6.6,1.4,1.4,7.7,-57,bm);P(1.2,6.6,1.4,10.6,7.7,-57,bm);P(10.4,1.2,1.4,6,11,-57,bm)}
  // Scaffolding steps up the far wall to a raised platform and a sliding double door
  const sc=M(0x8a8e98,.5,.7),tr=M(0x5a5e66,.6,.6);P(14,.4,4,4,4.2,-55,tr);for(let k=0;k<10;k++){P(3,.25,1.2,-7+k*1.1,-.8+k*.5,-55,tr);P(.15,1.6,.15,-7+k*1.1,.1+k*.5,-53.2,sc)}
  P(12,.15,.15,-2,2.7,-53.2,sc).rotation.z=Math.atan2(.5,1.1);for(const x of[-3,1,5,9,11]){P(.2,5.4,.2,x,1.7,-53,sc);P(.2,5.4,.2,x,1.7,-56.8,sc)}P(14,.15,.15,4,5.8,-53,sc);
