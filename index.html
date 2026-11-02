@@ -2025,11 +2025,11 @@ const SONGS={
   k:'x.x.x.x.x.x.x.x.',s:'rrx.rrx.rrx.rrxx',h:'x.x.x.x.x.x.x.x.',g:'xxX.xxX.xxX.xX.X',
   A:[0,0,1,1,0,0,-1,-1],B:[0,1,3,1,0,1,6,7],
   mel:'7-7-8---7---3---5-5-7---5---1---3-3-5---7---8---7-------7-------c-c-a---8---7---8-8-7---5---3---5-7-8-a-c-a-8-7-7---------------'},
- drift:{name:'Driftlight',bpm:72,root:38,dv:.45,bell:1,
+ drift:{name:'Driftlight',bpm:72,root:38,dv:.45,bell:1,clean:1,
   k:'x.......x.x.....',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X.......X.......',
   A:[0,0,-5,-5,-3,-3,-7,-7],B:[-7,-7,0,0,-5,-5,-3,-5],
   mel:'9-------7---5---7-----------4---4-------7---9---7---------------9-------b---c---b-------9---7---9-------7---4---4-------2-------',
-  parts:[{to:16},{from:16,to:32,A:[-3,-3,-7,-7,0,0,-5,-5],B:[-7,-7,0,0,-5,-5,-7,-5],mel:'c-------e---c---b-------9-------9-------b---c---e---------------c-------b---9---7-------9---b---c-------9---7---4-------7-------'}]},
+  parts:[{to:16},{from:16,to:32,flute:1,A:[-3,-3,-7,-7,0,0,-5,-5],B:[-7,-7,0,0,-5,-5,-7,-5],mel:'c-------e---c---b-------9-------9-------b---c---e---------------c-------b---9---7-------9---b---c-------9---7---4-------7-------'}]},
  dark:{name:'Into the Dark',bpm:132,root:38,intro:4,
   k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X..x..x.X..x..x.',
   A:[0,0,-4,-4,-2,-2,0,0],B:[0,-4,-2,3,0,-4,-2,-2],
@@ -2069,6 +2069,12 @@ function overJingle(){try{if(!AC)return;muInit();overJingle.e=performance.now()+
  for(const [ph,bs] of [[[76,74,72,69],45],[[74,72,69,67],41],[[72,69,67,64],40]]){ph.forEach((m,i)=>brass(t+i*b,[m],b*.85,.11));bass(t,bs-12,b*4);t+=b*4+.1}
  brass(t,[57,45],2.8,.12);bass(t,33,2.8)}catch(e){}}
 // Bell: a frosty chime (sine plus a bright upper partial, long decay) that carries the melody in the Frost Reach tracks
+// Clean guitar: a soft strum of root, fifth, octave and tenth (triangle waves, low-passed), no distortion
+function cgtr(t,m,len){const f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.frequency.value=1700;g.connect(MU.out);f.connect(g);env(g,t,.01,.09,.05,len+1.2);[0,7,12,16].forEach((iv,i)=>{const o=AC.createOscillator(),og=AC.createGain(),q=t+i*.03;o.type='triangle';o.frequency.value=mhz(m+iv);og.gain.setValueAtTime(0,q);og.gain.linearRampToValueAtTime(.5,q+.01);og.gain.exponentialRampToValueAtTime(.05,q+len+1);o.connect(og).connect(f);o.start(q);o.stop(q+len+1.3)})}
+// Flute: sine with a soft attack, gentle vibrato and a little breath noise
+function flute(t,m,len){const g=AC.createGain(),o=AC.createOscillator(),o2=AC.createOscillator(),g2=AC.createGain(),lf=AC.createOscillator(),lg=AC.createGain(),n=AC.createBufferSource(),nf=AC.createBiquadFilter(),ng=AC.createGain();g.connect(MU.out);env(g,t,.08,.11,len,.25);
+ o.type='sine';o.frequency.value=mhz(m);o2.type='triangle';o2.frequency.value=mhz(m+12);g2.gain.value=.12;lf.frequency.value=5;lg.gain.value=mhz(m)*.006;lf.connect(lg);lg.connect(o.frequency);lg.connect(o2.frequency);o.connect(g);o2.connect(g2).connect(g);
+ n.buffer=MU.nz;nf.type='bandpass';nf.frequency.value=mhz(m)*2;nf.Q.value=2;ng.gain.value=.08;n.connect(nf).connect(ng).connect(g);for(const x of[o,o2,lf,n]){x.start(t);x.stop(t+len+.4)}}
 function bell(t,m,len){const g=AC.createGain();g.connect(MU.out);env(g,t,.004,.16,.02,len+.9);for(const [iv,v] of [[0,1],[12,.35],[19,.12]]){const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.value=mhz(m+iv);og.gain.value=v;o.connect(og).connect(g);o.start(t);o.stop(t+len+1)}}
 // Songs with an intro open with S.intro bars of slow, quiet drums (kick, low toms, then soft hats and a snare build) before the full band
 function muStep(S,i,t){if(S.intro){if(i<S.intro*16){const j=i%16,b=i>>4;MU.dv=1;if(j%8===0)DR.kick(t);if(j===4||j===12)DR.tom(t,b<1?.5:.8);if(b>=2&&j%4===2)DR.hat(t);if(b===S.intro-1&&j>=8)DR.snare(t,.25+(j-8)*.09);return}i-=S.intro*16}
@@ -2080,9 +2086,9 @@ function muStep(S,i,t){if(S.intro){if(i<S.intro*16){const j=i%16,b=i>>4;MU.dv=1;
  if(S.riff){const R=S.riff[bar%2],rc=R[j];if(rc!=='.'){let n=1;while(j+n<16&&R[j+n]==='.'&&n<6)n++;guitar(t,ch+parseInt(rc,36),n*sd*.95,n>1)}}
  MU.dv=S.dv||1;if(S.k[j]==='x')DR.kick(t);if(S.c&&S.c[j]==='x')DR.clank(t);if(S.s[j]==='x')DR.snare(t);else if(S.s[j]==='r'){DR.snare(t,.45);DR.snare(t+sd/2,.35)}if(S.h[j]==='x'&&!(j===0&&bar%4===0))DR.hat(t);if(j===0&&bar%4===0)DR.crash(t);
  if(j>=12&&(bar%8===7)&&S===SONGS.boss)DR.snare(t);
- const gc=S.g[j];if(gc!=='.'){let n=1;while(j+n<16&&S.g[j+n]==='.'&&n<4)n++;guitar(t,ch,gc==='X'?n*sd:sd*.7,gc==='X')}
+ const gc=S.g[j];if(gc!=='.'){let n=1;while(j+n<16&&S.g[j+n]==='.'&&n<4)n++;if(S.clean)cgtr(t,ch,gc==='X'?n*sd:sd*.7);else guitar(t,ch,gc==='X'?n*sd:sd*.7,gc==='X')}
  if(j%2===0)bass(t,ch-12,sd*2);
- if(secB){const c=S.mel[(bar-8)*16+j];if(c&&c!=='.'&&c!=='-'){let n=1;while(S.mel[(bar-8)*16+j+n]==='-')n++;const m=S.root+12+parseInt(c,36);if(S.bell)bell(t,m+12,n*sd);else brass(t,[m,m-12],n*sd*.95)}}
+ if(secB){const c=S.mel[(bar-8)*16+j];if(c&&c!=='.'&&c!=='-'){let n=1;while(S.mel[(bar-8)*16+j+n]==='-')n++;const m=S.root+12+parseInt(c,36);if(S.flute)flute(t,m+12,n*sd);else if(S.bell)bell(t,m+12,n*sd);else brass(t,[m,m-12],n*sd*.95)}}
  else if(j===0||j===10)brass(t,[ch+12,ch+19,ch+24],j?sd*1.5:sd*3,S.bell?.05:.1)}
 // Which boss track a zone uses
 const bossTrk=()=>st&&st.area==='Dark Space'?'darkboss':st&&st.area==='The Alkaline Zone'?'alkboss':st&&st.area==='Legion Space'?'legionboss':'boss';
