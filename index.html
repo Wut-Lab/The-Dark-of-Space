@@ -2641,6 +2641,7 @@ function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classLi
 function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}const n=reelNext;reelNext=null;if(n){n();return}show('start');menuReady=1;menuMusic()}
 function reelOpen(next){reelNext=typeof next==='function'?next:null;music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
 $('reel').onclick=()=>reelEnd();$('outro').onclick=e=>{if(e.target.id!=='outEnd')outSkip()};addEventListener('keydown',()=>{if(!$('reel').hidden)reelEnd();else if(!$('outro').hidden)outSkip()});
+setTimeout(()=>{if(!$('reel').hidden&&!reelOn)reelGo()},500);
 
 function reelTick(dt){if($('reel').hidden)return;
  reelMT-=dt;if(!reelM&&reelMT<=0){reelM=moth.clone();reelM.visible=true;reelM.scale.setScalar(2.2);const s=Math.random()<.5?1:-1;reelM.position.set(-s*24,-2-Math.random()*2,-16-Math.random()*10);reelM.rotation.y=-s*Math.PI/2;reelM.userData.v=s*(1.6+Math.random()*.8);S.add(reelM)}
