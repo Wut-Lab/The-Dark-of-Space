@@ -2025,7 +2025,7 @@ const SONGS={
   k:'x.x.x.x.x.x.x.x.',s:'rrx.rrx.rrx.rrxx',h:'x.x.x.x.x.x.x.x.',g:'xxX.xxX.xxX.xX.X',
   A:[0,0,1,1,0,0,-1,-1],B:[0,1,3,1,0,1,6,7],
   mel:'7-7-8---7---3---5-5-7---5---1---3-3-5---7---8---7-------7-------c-c-a---8---7---8-8-7---5---3---5-7-8-a-c-a-8-7-7---------------'},
- drift:{name:'Driftlight',bpm:112,root:38,fn:1},
+ drift:{name:'Driftlight',bpm:124,root:38,fn:1},
  dark:{name:'Into the Dark',bpm:132,root:38,intro:4,
   k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',g:'X..x..x.X..x..x.',
   A:[0,0,-4,-4,-2,-2,0,0],B:[0,-4,-2,3,0,-4,-2,-2],
@@ -2073,14 +2073,14 @@ function flute(t,m,len){const g=AC.createGain(),o=AC.createOscillator(),o2=AC.cr
  n.buffer=MU.nz;nf.type='bandpass';nf.frequency.value=mhz(m)*2;nf.Q.value=2;ng.gain.value=.08;n.connect(nf).connect(ng).connect(g);for(const x of[o,o2,lf,n]){x.start(t);x.stop(t+len+.4)}}
 function bell(t,m,len){const g=AC.createGain();g.connect(MU.out);env(g,t,.004,.16,.02,len+.9);for(const [iv,v] of [[0,1],[12,.35],[19,.12]]){const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.value=mhz(m+iv);og.gain.value=v;o.connect(og).connect(g);o.start(t);o.stop(t+len+1)}}
 // Songs with an intro open with S.intro bars of slow, quiet drums (kick, low toms, then soft hats and a snare build) before the full band
-// Driftlight: piano elevator jazz, swung, built by its own step function. Form A A B A A B (48 bars)
+// Driftlight: upbeat club piano jazz (four-on-the-floor), built by its own step function. Form A A B A A B (48 bars)
 const JZ=(()=>{const Q={m:[0,3,7,10],d:[0,4,7,10],M:[0,4,7,11]},A=[[40,'m'],[45,'d'],[38,'M'],[47,'m'],[40,'m'],[45,'d'],[38,'M'],[38,'M']],B=[[43,'M'],[48,'d'],[42,'m'],[47,'d'],[40,'m'],[45,'d'],[38,'M'],[45,'d']],
  MA=[[[0,78,3],[4,79,2],[6,81,6]],[[0,79,2],[2,78,2],[4,76,8]],[[0,78,3],[4,81,2],[6,85,6]],[[0,83,10]],[[0,78,3],[4,79,2],[6,81,6]],[[0,83,2],[2,81,2],[4,79,4],[8,76,4]],[[0,78,12]],[[8,73,2],[10,74,2],[12,76,2]]],
  MB=[[[0,83,6],[6,81,2],[8,78,6]],[[0,79,4],[4,76,2],[6,79,8]],[[0,81,6],[6,78,2],[8,76,6]],[[0,75,4],[4,78,4],[8,81,6]],[[0,79,4],[4,78,4],[8,76,6]],[[0,73,4],[4,76,4],[8,79,6]],[[0,78,8],[8,81,4],[12,85,4]],[[0,83,4],[4,81,8]]],F='AABAAB';
- return(i,t,sd)=>{const j=i%16,bar=(i>>4)%48,sec=F[bar>>3],b=bar%8,C=(sec==='A'?A:B)[b],nx=(sec==='A'?A:B)[(b+1)%8],q=Q[C[1]],sw=j%4===2?sd*.33:0,T=t+sw;MU.dv=.35;
-  if(j%4===0||j%4===2&&j>>2&1)DR.hat(T);if(j===0||j===8)DR.kick(t);
-  if(j%4===0){const k=j>>2,r=C[0]-12;ubass(t,k===3?nx[0]-12+(Math.random()<.5?1:-1):r+[0,q[1],7,q[2]][k],sd*3.6)}
-  if(j===0||j===6&&b%2===0||j===10&&b%2){for(const iv of[q[1],q[3],14])pno(T,C[0]+12+iv,sd*(j?3:5),.05)}
+ return(i,t,sd)=>{const j=i%16,bar=(i>>4)%48,sec=F[bar>>3],b=bar%8,C=(sec==='A'?A:B)[b],nx=(sec==='A'?A:B)[(b+1)%8],q=Q[C[1]],T=t;MU.dv=.45;
+  if(j%4===0)DR.kick(t);if(j%4===2)DR.hat(t);if(j===4||j===12)DR.snare(t,.35);if(bar%8===0&&j===0)DR.crash(t);
+  if(j%2===0){const r=C[0]-12;ubass(t,j%4===2?r+12:j===14?nx[0]-12:r,sd*1.6)}
+  if(j===3||j===6||j===10||j===13&&b%2){for(const iv of[q[1],q[3],14])pno(T,C[0]+12+iv,sd*1.5,.05)}
   for(const[s,m,n]of(sec==='A'?MA:MB)[b])if(s===j)pno(T,m,n*sd,.11)}})();
 function pno(t,m,len,v){const g=AC.createGain(),f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=2600;g.connect(MU.out);f.connect(g);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.006);g.gain.exponentialRampToValueAtTime(v*.35,t+.25);g.gain.exponentialRampToValueAtTime(.001,t+Math.max(.3,len)+.5);
  for(const[iv,w,ty]of[[0,1,'triangle'],[12,.25,'sine'],[0.06,.4,'sine']]){const o=AC.createOscillator(),og=AC.createGain();o.type=ty;o.frequency.value=mhz(m+iv);og.gain.value=w;o.connect(og).connect(f);o.start(t);o.stop(t+Math.max(.3,len)+.6)}}
