@@ -25,7 +25,7 @@ font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none
 @media (max-width:900px){#hud{gap:6px;font-size:11px;letter-spacing:.02em;padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:4px}#bar,#bar2{width:56px}}
 @media (max-width:480px){#hud{flex-wrap:wrap}}
 #boost{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));pointer-events:auto;padding:16px 22px;font-family:var(--display);letter-spacing:.1em;touch-action:none}
-#reel{z-index:70;background:transparent;cursor:pointer}#reel p,#outro p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on,#outro p.on{opacity:1}
+.skipH{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));font:500 13px "Chakra Petch",sans-serif;letter-spacing:.06em;color:#dfe6f5;opacity:.55;pointer-events:none}#reel{z-index:70;background:transparent;cursor:pointer}#reel p,#outro p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on,#outro p.on{opacity:1}
 
 .ov{position:fixed;inset:0;display:grid;place-items:center;background:#05060acc;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .card{background:var(--panel);border:1px solid #ffffff22;padding:24px;max-width:560px;width:100%;box-sizing:border-box;display:grid;gap:16px}
@@ -181,8 +181,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #outS{position:fixed;right:max(24px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);display:grid;gap:6px;text-align:right;max-width:46vw;font:600 clamp(.85rem,2.4vw,1.1rem) "Chakra Petch",sans-serif;color:#dfe6f5}#outS div{opacity:0;transition:opacity 2.5s}#outS div.on{opacity:1}#outS div.go{transition:opacity 2.5s,transform 1.6s ease-in-out}#outS div b{display:block;font-size:.75em;color:#9aa3b5;letter-spacing:.12em;text-transform:uppercase}
 #outEnd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font:600 1.1rem "Chakra Petch",sans-serif;color:var(--accent);background:#0a0c14cc;border:1px solid #445;padding:12px 34px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
-<div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button></div><div id="blk" hidden></div>
-<div class="ov" id="reel"><p id="reelP">Tap or press any key</p></div>
+<div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button><div class="skipH" id="outSk">Hit Any Key, or Tap to Skip</div></div><div id="blk" hidden></div>
+<div class="ov" id="reel"><p id="reelP"></p><div class="skipH">Hit Any Key, or Tap to Skip</div></div>
 <div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
@@ -1167,16 +1167,18 @@ $('vExp').onclick=()=>{st.boss=1;trophy();if(st.banked){bankT-=st.bk||0;try{loca
 $('vCont').onclick=async()=>{endClean();$('dead').classList.add('vout');await wt(1);$('dead').hidden=true;$('dead').classList.remove('vin','vout');outro()};
 // Clears the craft, units, shots and HUD from the field before the closing lines
 function endClean(){FALL=null;ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;BFX.clear();clearDrops();['hud','timer','pwrap','banner','evt'].forEach(i=>$(i).hidden=true)}
-async function outro(){endClean();
+let OSK=0,OSR=null;const ow=s=>new Promise(r=>{if(OSK)return r();const t=setTimeout(r,s*1000);OSR=()=>{clearTimeout(t);r()}});
+function outSkip(){if(OSK||!$('outEnd').hidden)return;OSK=1;$('outSk').hidden=true;OSR&&OSR()}
+async function outro(){endClean();OSK=0;$('outSk').hidden=false;
  const o=$('outro'),p=$('outP'),sv=$('outS'),e=$('outEnd');o.hidden=false;sv.innerHTML='';$('outT').classList.remove('on');e.hidden=true;e.classList.remove('on');
- for(const l of OUTRO){p.textContent=l;p.classList.add('on');await wt(3.6);p.classList.remove('on');await wt(1.3)}
- await wt(1.2);staticOn(0);music('finale');OUTM={m:null,t:1};
+ for(const l of OUTRO){p.textContent=l;p.classList.add('on');await ow(3.6);p.classList.remove('on');await ow(1.3)}
+ await ow(1.2);staticOn(0);music('finale');OUTM={m:null,t:1};
  const kt=st.kt||{},top=Object.entries(kt).filter(([k])=>!BOSSES.has(k)).sort((a,b)=>b[1]-a[1])[0],nm=k=>{for(const r of [...ELOG.b,...ELOG.x])if(r[0]===k)return r[1];return k};
  sv.innerHTML=[['Craft',st.name],['Units destroyed',cap(st.kills)],['Bosses felled',Object.entries(kt).filter(([k])=>BOSSES.has(k)).reduce((a,[,n])=>a+n,0)],['Damage dealt',Math.round(st.dealt).toLocaleString()],['Most destroyed',top?`${nm(top[0])} ×${top[1]}`:'None'],['Most used power-up',(p=>p?(PLOG.find(r=>r[0]===p[0])||[,p[0]])[1]+` ×${p[1]}`:'None')(Object.entries(st.pu||{}).sort((a,b)=>b[1]-a[1])[0])],['Upgrades installed',st.upgrades.length]].map(([a,b])=>`<div><b>${a}</b>${b}</div>`).join('');
- await wt(3);$('outT').classList.add('on');await wt(5);$('outT').classList.remove('on');await wt(2.5);
+ await ow(3);$('outT').classList.add('on');await ow(5);$('outT').classList.remove('on');await ow(2.5);
  // Each stat fades in slowly at screen center, then slides into its slot in the right-hand column (top first)
- for(const d of sv.children){const b=d.getBoundingClientRect();d.style.transform=`translate(${innerWidth/2-b.left-b.width/2}px,${innerHeight/2-b.top-b.height/2}px)`;d.classList.add('on');await wt(3.5);d.classList.add('go');d.style.transform='';await wt(2.4)}
- await wt(6);e.hidden=false;void e.offsetWidth;e.classList.add('on')}
+ for(const d of sv.children){const b=d.getBoundingClientRect();d.style.transform=`translate(${innerWidth/2-b.left-b.width/2}px,${innerHeight/2-b.top-b.height/2}px)`;d.classList.add('on');await ow(3.5);d.classList.add('go');d.style.transform='';await ow(2.4)}
+ await ow(6);$('outSk').hidden=true;e.hidden=false;void e.offsetWidth;e.classList.add('on')}
 function outTick(dt){if(!OUTM||$('outro').hidden)return;if(!OUTM.m&&(OUTM.t-=dt)<=0){const s=Math.random()<.5?1:-1,m=MODELS[st.kind]();m.scale.setScalar(1.6);m.position.set(-s*24,-1,-12);m.rotation.y=s*Math.PI/2;S.add(m);OUTM.m=m;OUTM.v=s*3.2}
  const m=OUTM.m;if(m){m.position.x+=OUTM.v*dt;m.position.y=-1+Math.sin(performance.now()/600)*.3;if(Math.abs(m.position.x)>26){S.remove(m);OUTM.m=null;OUTM.t=2}}}
 $('outEnd').onclick=async()=>{$('blk').hidden=false;$('outro').hidden=true;if(OUTM&&OUTM.m)S.remove(OUTM.m);OUTM=null;music(null);await wt(.4);toMenu();$('blk').hidden=true};
@@ -2638,7 +2640,7 @@ function staticOn(on){try{AC=AC||new AudioContext();AC.resume()}catch(e){return}
 function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classList.remove('on');staticOn(1)}
 function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}const n=reelNext;reelNext=null;if(n){n();return}show('start');menuReady=1;menuMusic()}
 function reelOpen(next){reelNext=typeof next==='function'?next:null;music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
-$('reel').onclick=e=>{reelGo()};addEventListener('keydown',()=>{if(!$('reel').hidden&&!reelOn)reelGo()});
+$('reel').onclick=()=>reelEnd();$('outro').onclick=e=>{if(e.target.id!=='outEnd')outSkip()};addEventListener('keydown',()=>{if(!$('reel').hidden)reelEnd();else if(!$('outro').hidden)outSkip()});
 
 function reelTick(dt){if($('reel').hidden)return;
  reelMT-=dt;if(!reelM&&reelMT<=0){reelM=moth.clone();reelM.visible=true;reelM.scale.setScalar(2.2);const s=Math.random()<.5?1:-1;reelM.position.set(-s*24,-2-Math.random()*2,-16-Math.random()*10);reelM.rotation.y=-s*Math.PI/2;reelM.userData.v=s*(1.6+Math.random()*.8);S.add(reelM)}
