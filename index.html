@@ -2640,7 +2640,9 @@ function staticOn(on){try{AC=AC||new AudioContext();AC.resume()}catch(e){return}
 function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classList.remove('on');staticOn(1)}
 function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}const n=reelNext;reelNext=null;if(n){n();return}show('start');menuReady=1;menuMusic()}
 function reelOpen(next){reelNext=typeof next==='function'?next:null;music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
-$('reel').onclick=()=>reelEnd();$('outro').onclick=e=>{if(e.target.id!=='outEnd')outSkip()};addEventListener('keydown',()=>{if(!$('reel').hidden)reelEnd();else if(!$('outro').hidden)outSkip()});
+// Opening reel: if sound is still blocked by the browser, the first tap/key only turns it on; the next one skips
+const reelTap=()=>{if(!AC||AC.state!=='running'){try{AC=AC||new AudioContext();AC.resume()}catch(e){}return}reelEnd()};
+$('reel').onclick=reelTap;$('outro').onclick=e=>{if(e.target.id!=='outEnd')outSkip()};addEventListener('keydown',()=>{if(!$('reel').hidden)reelTap();else if(!$('outro').hidden)outSkip()});
 setTimeout(()=>{if(!$('reel').hidden&&!reelOn)reelGo()},500);
 
 function reelTick(dt){if($('reel').hidden)return;
