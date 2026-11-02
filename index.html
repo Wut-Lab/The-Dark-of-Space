@@ -2045,6 +2045,9 @@ const hurtR=n=>hurt(n+(st.pk==='after'?1:0));
 const CHT=[['',''],['CHAIN ×3 · FIRE RATE +10%','#6fd3ff'],['CHAIN ×6 · DAMAGE +5%','#ffd23a'],['CHAIN ×9 · PIERCE +1','#ff4fd8']];
 function chainKill(){st.cht=3;st.ch=(st.ch||0)+1;chainHud();if(st.ch<=9&&st.ch%3===0){const t=CHT[st.ch/3];popMsg(t[0],t[1]);zap()}
  if(!st.dev&&st.ch>LCH.n){LCH={n:st.ch,m:st.timed?st.hard?'Hard Timed':'Timed Attack':'Campaign'};try{localStorage.setItem('darkchain',JSON.stringify(LCH))}catch(e){}lchT()}}
+// The 3 s clock only runs while there's something to shoot: a live, on-screen unit (bosses once they're in position).
+// Gaps between waves, sectors and zones, and the empty lane at a sector's start, pause it
+function chainLive(){for(const e of ents)if(e.hp>0&&e.v0&&e.m.visible&&e.m.position.z>-34&&!(BOSSES.has(e.type)&&!e.inPos))return true;return false}
 function chainBreak(){if(!st.ch)return;if(st.ch>=3)popMsg('CHAIN BROKEN','#8a93a6');st.ch=0;st.cht=0;chainHud()}
 function chainHud(){const c=st.ch||0;$('chR').textContent='×'+c;$('chW').className=c>=9?'t3':c>=6?'t2':c>=3?'t1':''}
 function hurt(n){if(st.dvInv||st.inv>0||st.gold>0||st.veng&&st.bt>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}if(st.pk==='scrap')st.scrap=Math.max(0,st.scrap-5);
@@ -2066,7 +2069,7 @@ const NOFIRE={chaser:1,mine:1,lancer:1,warden:1,mino:1,caesar:1,glacier:1,mote:1
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 // Swept hit test: distance from target c to the segment a shot travelled this frame (o -> p), so low frame rates can't skip past a unit
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
-function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)/1000),dt=rdt*(FALL&&FALL.t<2.4?.3:1);last=now;hintUp(rdt);if(running&&st&&st.ch&&(st.cht-=dt)<=0)chainBreak();
+function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)/1000),dt=rdt*(FALL&&FALL.t<2.4?.3:1);last=now;hintUp(rdt);if(running&&st&&st.ch&&chainLive()&&(st.cht-=dt)<=0)chainBreak();
  // Black Ice Plating: any armor gained since last frame is halved; half points carry over so small repairs still add up
  if(st&&st.bip){if(st.hp>st.hl){st.hb=(st.hb||0)+(st.hp-st.hl)/2;const w=Math.floor(st.hb);st.hb-=w;st.hp=st.hl+w;if(player)hud()}st.hl=st.hp}
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
