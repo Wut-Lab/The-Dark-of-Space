@@ -2080,7 +2080,7 @@ const JZ=(()=>{const Q={m:[0,3,7,10],d:[0,4,7,10],M:[0,4,7,11]},A=[[40,'m'],[45,
  return(i,t,sd)=>{const j=i%16,bar=(i>>4)%48,sec=F[bar>>3],b=bar%8,C=(sec==='A'?A:B)[b],nx=(sec==='A'?A:B)[(b+1)%8],q=Q[C[1]],T=t;MU.dv=.45;
   if(j%4===0)DR.kick(t);if(j%4===2)DR.hat(t);if(j===4||j===12)DR.snare(t,.35);if(bar%8===0&&j===0)DR.crash(t);
   if(j%2===0){const r=C[0]-12;ubass(t,j%4===2?r+12:j===14?nx[0]-12:r,sd*1.6)}
-  if(j===3||j===6||j===10||j===13&&b%2){for(const iv of[q[1],q[3],14])pno(T,C[0]+12+iv,sd*1.5,.08)}
+  if(j===3||j===6||j===10||j===13&&b%2){for(const iv of[q[1],q[3],14])pno(T,C[0]+12+iv,sd*1.5,.105)}
   for(const[s,m,n]of(sec==='A'?MA:MB)[b])if(s===j)pno(T,m,n*sd,.11)}})();
 function pno(t,m,len,v){const g=AC.createGain(),f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=2600;g.connect(MU.out);f.connect(g);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.006);g.gain.exponentialRampToValueAtTime(v*.35,t+.25);g.gain.exponentialRampToValueAtTime(.001,t+Math.max(.3,len)+.5);
  for(const[iv,w,ty]of[[0,1,'triangle'],[12,.25,'sine'],[0.06,.4,'sine']]){const o=AC.createOscillator(),og=AC.createGain();o.type=ty;o.frequency.value=mhz(m+iv);og.gain.value=w;o.connect(og).connect(f);o.start(t);o.stop(t+Math.max(.3,len)+.6)}}
