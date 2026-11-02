@@ -26,7 +26,7 @@ font-size:14px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none
 @media (max-width:480px){#hud{flex-wrap:wrap}}
 #boost{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));pointer-events:auto;padding:16px 22px;font-family:var(--display);letter-spacing:.1em;touch-action:none}
 #reel{z-index:70;background:transparent;cursor:pointer}#reel p,#outro p{max-width:34ch;margin:0;text-align:center;font:600 clamp(1.1rem,3.6vw,1.6rem)/1.5 "Chakra Petch",sans-serif;color:#dfe6f5;letter-spacing:.03em;text-shadow:0 0 12px #7fa8ff55;opacity:0;transition:opacity 1.2s}#reel p.on,#outro p.on{opacity:1}
-#reelSkip{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));font:600 .9rem "Chakra Petch",sans-serif;color:#9aa3b5;background:#0a0c14cc;border:1px solid #445;padding:10px 16px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
+
 .ov{position:fixed;inset:0;display:grid;place-items:center;background:#05060acc;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .card{background:var(--panel);border:1px solid #ffffff22;padding:24px;max-width:560px;width:100%;box-sizing:border-box;display:grid;gap:16px}
 h1,h2{font-family:var(--display);margin:0;font-weight:400;text-wrap:balance}h1{font-size:40px;color:var(--accent)}h2{font-size:22px}
@@ -182,7 +182,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #outEnd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);font:600 1.1rem "Chakra Petch",sans-serif;color:var(--accent);background:#0a0c14cc;border:1px solid #445;padding:12px 34px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
 <div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button></div><div id="blk" hidden></div>
-<div class="ov" id="reel"><p id="reelP">Tap or press any key</p><button id="reelSkip">Skip</button></div>
+<div class="ov" id="reel"><p id="reelP">Tap or press any key</p></div>
 <div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
@@ -2638,8 +2638,8 @@ function staticOn(on){try{AC=AC||new AudioContext();AC.resume()}catch(e){return}
 function reelGo(){if(reelOn)return;reelOn=1;reelI=-1;reelT=.6;$('reelP').classList.remove('on');staticOn(1)}
 function reelEnd(){reelOn=0;reelI=-1;staticOn(0);$('reel').hidden=true;if(reelM){S.remove(reelM);reelM=null}const n=reelNext;reelNext=null;if(n){n();return}show('start');menuReady=1;menuMusic()}
 function reelOpen(next){reelNext=typeof next==='function'?next:null;music(null);show(null);$('reel').hidden=false;$('reelP').textContent='';reelGo()}
-$('reel').onclick=e=>{if(e.target.id!=='reelSkip')reelGo()};addEventListener('keydown',()=>{if(!$('reel').hidden&&!reelOn)reelGo()});
-$('reelSkip').onclick=e=>{e.stopPropagation();reelEnd()};
+$('reel').onclick=e=>{reelGo()};addEventListener('keydown',()=>{if(!$('reel').hidden&&!reelOn)reelGo()});
+
 function reelTick(dt){if($('reel').hidden)return;
  reelMT-=dt;if(!reelM&&reelMT<=0){reelM=moth.clone();reelM.visible=true;reelM.scale.setScalar(2.2);const s=Math.random()<.5?1:-1;reelM.position.set(-s*24,-2-Math.random()*2,-16-Math.random()*10);reelM.rotation.y=-s*Math.PI/2;reelM.userData.v=s*(1.6+Math.random()*.8);S.add(reelM)}
  if(reelM){reelM.position.x+=reelM.userData.v*dt;reelM.position.z+=Math.sin(performance.now()/700)*.01;reelM.children.forEach((c,i)=>{if(i)c.scale.y=.15*(1+.6*Math.sin(performance.now()/90))});if(Math.abs(reelM.position.x)>26){S.remove(reelM);reelM=null;reelMT=4+Math.random()*4}}
