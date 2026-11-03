@@ -687,8 +687,8 @@ const MODELS={
  mech:(p='')=>rig('mech',KESTREL,pp(P,p),.065,9,[32,36],[36,41],[41],1.6,1.95,.7,[.715,.91,1.625]),
  ship:(p='')=>build('ship'+p,GALE,pp(P,p),.07,2),
  falcon:(p='')=>build('falcon'+p,FALCON,pp(P,p),.07,2),
- flock:(p='')=>{const pl=pp({...P,d:0x34383f,a:0x454a52,f:0xb8bdc4,r:0xd0262e,q:0x1c2630},p),g=new THREE.Group(),h=build('flock'+p,FLOCK,pl,.07,2);g.add(h);g.userData.hull=h;
-  g.userData.drones=[-1,1].map(d=>{const m=build('flockd'+p,FDRONE,pl,.07,2);m.position.set(d*1.6,.05,-.1);g.add(m);return m});return g},
+ flock:(p='')=>{const pl=pp({...P,d:0x34383f,a:0x454a52,f:0xb8bdc4,r:0xd0262e,q:0x1c2630},p),g=new THREE.Group(),h=build('flock'+p,FLOCK,pl,.07,2),fg=(o,z)=>{const l=glow(0xffffff,z);l.material.opacity=.16;l.position.y=.15;o.add(l)};g.add(h);g.userData.hull=h;fg(g,2.6);
+  g.userData.drones=[-1,1].map(d=>{const m=build('flockd'+p,FDRONE,pl,.07,2);m.position.set(d*1.6,.05,-.1);fg(m,1.4);g.add(m);return m});return g},
  swift:(p='')=>rig('swift',SWIFT,pp({...P,s:0x2fb6c9},p),.05,4,[16,19],[22,25],[],1,1.55,.45,[.425,.875,.9]),
  chaser:()=>build('chaser',[...DRUDGE,...ARMS.chaser],{...P,v:0xb59a68,o:0xd9dde3,m:0xff3030},.08),
  shooter:()=>build('shooter',[...DRUDGE,...ARMS.shooter],{...P,v:0x7f8c96,o:0x262a31,m:0xff3030},.08),
@@ -2432,7 +2432,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    const lx=Math.max(-.5,Math.min(.5,p.x-st.fdx)),lz=Math.max(-.4,Math.min(.4,p.z-st.fdz));dr.forEach((m,j)=>{m.position.set((j?1:-1)*1.6+lx,.05+Math.sin(now/260+j*2)*.08,-.1+lz)})}}
   // Magpie Nest sits on top of the craft
   if(st.nest&&!player.userData.nest){const n=MODELS.nest();n.position.y=new THREE.Box3().setFromObject(player.userData.body.userData.hull||player.userData.body).max.y-.1;player.add(player.userData.nest=n)}if(player.userData.nest)player.userData.nest.visible=!!st.nest;
-  st.cd-=dt;if(!FALL&&!st.sss&&st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1)/(1+.03*(st.kcs||0))/(st.ch>=5?1+.1*chm():1);muzzleT=.05;blaster();st.rk=Math.min(.5,.1+.04*st.dmg);const mo=muz(p),n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[],dr=player.userData.body.userData.drones,dk=dr?Math.ceil(n/2):n,dw=dr&&n>1&&n%2===0?1.3:1,dd=dr?BASE.flock.dmg+(st.dmg-BASE.flock.dmg)*.7:st.dmg;if(dr)player.updateMatrixWorld();
+  st.cd-=dt;if(!FALL&&!st.sss&&st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1)/(1+.03*(st.kcs||0))/(st.ch>=5?1+.1*chm():1);if(!player.userData.body.userData.drones)muzzleT=.05;blaster();st.rk=Math.min(.5,.1+.04*st.dmg);const mo=muz(p),n=st.multi+(st.spr>0?4:0),w=st.spr>0?.16:.12;const vs=[],dr=player.userData.body.userData.drones,dk=dr?Math.ceil(n/2):n,dw=dr&&n>1&&n%2===0?1.3:1,dd=dr?BASE.flock.dmg+(st.dmg-BASE.flock.dmg)*.7:st.dmg;if(dr)player.updateMatrixWorld();
    for(let j=0;j<(dr?2:1);j++){const o=dr?dr[j].getWorldPosition(new THREE.Vector3()):mo;for(let i=0;i<dk;i++,st.fired++){const s=fire(o,V3((i-(dk-1)/2)*w,-1).normalize(),st.shot*(ap?st.apex>1?1.15:1.1:1),dd*(st.chg&&st.still>=2?[1,1.15,1.2,1.25][st.chg]:1)*(ap&&st.alens?[1,1.15,1.2,1.25][st.alens]:1)*(st.ch>=10?1+.05*chm():1),false,st.kind==='mech'?0xf2c230:0x6fd3ff,st.pierce+(ap&&st.alens>=3?1:0)+(st.ch>=15?1:0),st.wide*dw);s.ox=dr?0:o.x-p.x;if(st.beam){s.tail=2.6;s.m.scale.z=2.6}vs.push(s)}}if(st.glass>1)for(const d of st.glass>2?[V3(-1,0),V3(1,0),V3(0,1)]:[V3(-1,0),V3(1,0)]){st.fired++;vs.push(fire(p,d,st.shot,st.dmg,false,0xb060ff,st.pierce,st.wide))}
    if(st.ai>0)for(let i=0;i<n;i++)fire(st.aip,V3((i-(n-1)/2)*w,-1).normalize(),st.shot,st.dmg*[0,.3,.4,.5][st.aft],false,0x9fe8ff,st.pierce,st.wide);
    // Whip / Tracking: the volley's middle shot becomes special on every 3rd / 5th volley (extra copies add damage)
