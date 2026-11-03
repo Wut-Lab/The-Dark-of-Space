@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style>[hidden]{display:none!important}body{margin:0}</style>
+<style>[hidden]{display:none!important}body{margin:0}.ug.dz{opacity:.5;filter:grayscale(.8)}.dzt{display:block;color:#ff9a3a;font-style:normal;font-size:.8em}
+</style>
 </head>
 <body>
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
@@ -2669,7 +2670,7 @@ function snap(k,yaw,cv,z=1){for(const q in TM)TM[q].g.visible=q===k;const t=thum
 // Pause > Upgrades: one row per upgrade (stacked copies counted), each with its spinning voxel icon
 const RCOL={c:'#aab1bd',u:'#4fe08a',r:'#5ab0ff',x:'#ff3d6e',p:'#b026ff',k:'#e8742a'};let upYaw=0;
 function showUpg(){const n={};st.upgrades.forEach(t=>n[t]=(n[t]||0)+1);const L=$('upgL');
- L.innerHTML=Object.keys(n).length?Object.entries(n).map(([t,c])=>{const u=UPG.find(x=>x[0]===t)||[t,'',0,'c'];return `<div class="ug" style="--c:${RCOL[u[3]]}"><canvas width="112" height="112" data-k="${u[4]||''}"></canvas><b>${t} <em class="rar">${RAR[u[3]]} · Tier ${c} of 3</em></b><span>${u[1]}</span><i>${TN[c-1]}</i></div>`}).join(''):'<p>No upgrades yet. Earn them by clearing sectors, shopping at Salvage Yards and answering signals.</p>';
+ L.innerHTML=Object.keys(n).length?Object.entries(n).map(([t,c])=>{const u=UPG.find(x=>x[0]===t)||[t,'',0,'c'];const dz=u[10]&&st.kind!==u[10];return `<div class="ug${dz?' dz':''}" style="--c:${RCOL[u[3]]}"><canvas width="112" height="112" data-k="${u[4]||''}"></canvas><b>${t} <em class="rar">${RAR[u[3]]} · Tier ${c} of 3</em>${dz?`<em class="dzt">Inactive · ${BASE[u[10]].name} only</em>`:''}</b><span>${u[1]}</span><i>${TN[c-1]}</i></div>`}).join(''):'<p>No upgrades yet. Earn them by clearing sectors, shopping at Salvage Yards and answering signals.</p>';
  $('pzMenu').hidden=true;$('pzUpg').hidden=false}
 function upgTick(dt){if($('pzUpg').hidden)return;upYaw+=dt*.9;$('upgL').querySelectorAll('canvas[data-k^=u_]').forEach(c=>snap(c.dataset.k,upYaw,c,.75))}
 $('pzUp').onclick=showUpg;$('pzUBack').onclick=()=>{$('pzUpg').hidden=true;$('pzMenu').hidden=false};
