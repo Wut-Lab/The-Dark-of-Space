@@ -431,10 +431,10 @@ const KESTREL=[[4,0,-3,6,3,12,'d',1,'r'],[4,0,6,6,3,4,'a',1,'e'],[5,0,-6,4,2,3,'
  [9,22,-2,4,8,4,'d',1,'cy'],[8,20,-3,6,4,6,'d',1,'e'],[8,13,-3,6,8,7,'a',1,'r'],[9,11,0,4,3,4,'d',1,'r'],
  [9,12,2,4,5,10,'d',0,'r'],[10,13,12,2,2,12,'a',0,'cz'],[9,12,23,4,4,2,'d',0,'cz'],[10,9,5,2,4,3,'b'],[10,17,4,2,2,4,'l'],[-16,7,-4,2,19,15,'b',0,'kite'],
  [-5,28,-10,10,9,6,'a',0,'e'],[-1,30,-11,2,6,1,'d'],[3,26,-13,4,9,5,'d',1,'r'],[3,23,-12,4,3,4,'a',1,'cz'],[4,24,-13,2,1,1,'h',1],[-8,35,-8,16,2,4,'b',0,'e']];
-// Unlockable heavy mech "Emu": bulky torso on long legs, bulky arms; cannon rising over the left shoulder, heavier right gun arm (as seen in play: model -x is the craft's right) for balance
+// Unlockable heavy mech "Emu": bulky torso on long legs, white snouted head with an eye slit and red mono eye, bulky arms; cannon rising over the left shoulder, heavier right gun arm (as seen in play: model -x is the craft's right) for balance
 const EMU=[[3,0,-4,7,3,12,'d',1,'r'],[4,0,8,5,2,3,'a',1],[5,0,-7,3,2,3,'a',1],[5,3,-2,3,4,3,'a',1,'cy'],[4,6,-3,5,12,6,'b',1,'r'],[4,9,2,5,7,2,'f',1],
  [3,18,-3,7,5,7,'a',1,'e'],[4,22,-4,6,9,7,'d',1,'r'],[3,29,-3,7,4,6,'a',1,'cx'],
- [-5,29,-4,10,5,8,'d',0,'r'],[-9,33,-7,18,12,14,'b',0,'r'],[-7,35,6,14,8,2,'f',0,'r'],[-4,36,8,8,2,1,'d'],[-3,40,8,6,1,1,'l'],[-3,45,-1,6,4,6,'a',0,'r'],[-2,46,5,4,2,1,'l'],
+ [-5,29,-4,10,5,8,'d',0,'r'],[-9,33,-7,18,12,14,'b',0,'r'],[-7,35,6,14,8,2,'f',0,'r'],[-4,36,8,8,2,1,'d'],[-3,40,8,6,1,1,'l'],[-3,45,-2,6,5,7,'f',0,'r'],[-3,45,3,6,5,7,'f',0,'e'],[-3.5,47,2.5,7,1,8,'k',0,'e'],[-1,47,9.5,2,1,.5,'r'],
  [-7,34,-11,14,10,5,'a',0,'r'],[2,36,-12,3,4,1,'d',1],[9,41,-5,6,5,10,'f',1,'r'],
  [9,46,-8,5,4,6,'d',0,'r'],[8,49,-9,7,6,12,'b',0,'r'],[10,50,3,3,3,14,'a',0,'cz'],[9,49,15,5,5,3,'d',0,'cz'],[11,51,18,1,1,1,'l'],[8,55,-8,7,1,8,'f'],
  [11,32,-3,6,9,6,'d',0,'r'],[11,29,-3,6,4,6,'a',0,'e'],[10,21,-4,8,9,8,'b',0,'r'],[10,24,4,8,5,1,'f'],[11,18,-3,6,4,6,'a',0,'r'],
@@ -699,7 +699,7 @@ const MODELS={
  mech:(p='')=>rig('mech',KESTREL,pp(P,p),.065,9,[32,36],[36,41],[41],1.6,1.95,.7,[.715,.91,1.625]),
  ship:(p='')=>build('ship'+p,GALE,pp(P,p),.07,2),
  falcon:(p='')=>build('falcon'+p,FALCON,pp(P,p),.07,2),
- emu:(p='')=>{const g=rig('emu',EMU,pp({...P,b:0x7a5234,d:0x3b2e26,a:0x80868e,f:0xe4e6e8},p),.058,9,[25,30],[30,35],[35,36],1.74,2.38,.81,[-.81,1.39,1.04],-1);g.add(g.userData.ctip=new THREE.Object3D());g.userData.ctip.position.set(.72,2.98,1.07);return g},
+ emu:(p='')=>{const g=rig('emu',EMU,pp({...P,b:0x7a5234,d:0x3b2e26,a:0x80868e,f:0xe4e6e8,r:0xff2030},p),.058,9,[27,32],[32,37],[37,38],1.74,2.38,.81,[-.81,1.39,1.04],-1);g.add(g.userData.ctip=new THREE.Object3D());g.userData.ctip.position.set(.72,2.98,1.07);return g},
  flock:(p='')=>{const pl=pp({...P,d:0x34383f,a:0x454a52,f:0xb8bdc4,r:0xd0262e,q:0x1c2630},p),g=new THREE.Group(),h=build('flock'+p,FLOCK,pl,.07,2),fg=(o,z)=>{const l=glow(0xffffff,z);l.material.opacity=.16;l.position.y=.15;o.add(l)};g.add(h);g.userData.hull=h;fg(g,2.6);
   g.userData.drones=[-1,1].map(d=>{const m=build('flockd'+p,FDRONE,pl,.07,2);m.position.set(d*1.6,.05,-.1);fg(m,1.4);g.add(m);return m});return g},
  swift:(p='')=>rig('swift',SWIFT,pp({...P,s:0x2fb6c9},p),.05,4,[16,19],[22,25],[],1,1.55,.45,[.425,.875,.9]),
