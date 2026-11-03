@@ -1539,7 +1539,7 @@ function buTick(dt,p){
    BU.lobs.push({m,a:M.position.clone().setY(1.2),b:e.m.position.clone().setY(0).add(V3((Math.random()-.5)*2*er,(Math.random()-.5)*2*er)),t:0})}}}
  for(const l of BU.lobs){l.t+=dt/(l.sp||1.1);const f=Math.min(1,l.t);l.m.position.lerpVectors(l.a,l.b,f).setY(1.2+7*Math.sin(Math.PI*f));l.m.rotation.x+=dt*8;
   if(f>=1){l.gone=1;S.remove(l.m);if(nzOn()&&nzIn(l.b.x))continue;boom(l.b,l.r?6+4*l.r:10,0xffb040);const d=l.d??st.dmg*.75+(st.mon>2?2:0);for(const e of ents)if(buHit(e)&&hd(e.m.position,l.b)<(l.r||2)+e.r*.5)buDmg(e,d)}}BU.lobs=BU.lobs.filter(l=>!l.gone);
- bettyTick(dt,p);kinTick(dt,p);
+ bettyTick(dt,p);kinTick(dt,p);if(KARCS.length)arcTick(dt);
  // Laser Cannon sweep
  const L=st.lz;BU.lz.visible=!!L&&L.t>0;if(L){L.cd-=dt;L.ss-=dt;if(L.t>0){L.t-=dt;const f=1-Math.max(0,L.t)/L.d,x=THREE.MathUtils.clamp(p.x+L.dir*(-2.75+5.5*f),-FX,FX),w=st.laser>1?1.5:.9;
   BU.lz.scale.set(w*(.85+.15*Math.sin(performance.now()/30)),.35,40);BU.lz.position.set(x,1,p.z-21);if((L.tk-=dt)<=0){L.tk=.2;const d=st.dmg*Math.max(1,st.multi)*1.2+(st.laser>2?2:0);for(const e of ents)if(buHit(e)&&e.m.position.z<p.z&&Math.abs(e.m.position.x-x)<w/2+e.r)buDmg(e,d)}}}}
@@ -1587,7 +1587,15 @@ const pssK=()=>st.kind==='falcon'&&st.pss&&(st.emp>0||st.spr>0||st.sta>0||st.sld
 // Swift's Kinetic Charge (shared by all three Swift upgrades): distance moved fills the charge; a full charge readies a kinetic bolt
 const kinCap=()=>[0,2,3,4][Math.min(3,st.kcap||0)],kinOn=()=>!!st&&st.kind==='swift'&&!!(st.kin||st.kcap||st.kme),kinGap=()=>[24,20,16,13][Math.min(3,st.kin||0)];
 // Kinetic bolts: neon yellow with flickering white arcs; Momentum Engine III adds a pierce
-const KARC=new THREE.MeshBasicMaterial({color:0xffffff});function kbolt(k){k.kb=1;rc(k,0xeaff3a);if(st.kme>2)k.pierce++;const g=new THREE.Group();for(let i=0;i<3;i++){const a=new THREE.Mesh(BOX,KARC);a.scale.set(.5,.3,.3);g.add(a)}k.m.add(g);k.arcs=g}
+// Arcs are jagged lightning lines (white core, pale yellow glow) redrawn every frame around the bolt
+const KARC=[new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.95}),new THREE.LineBasicMaterial({color:0xf6ff9a,transparent:true,opacity:.45,blending:THREE.AdditiveBlending})],KARCS=[];
+function kbolt(k){k.kb=1;rc(k,0xeaff3a);if(st.kme>2)k.pierce++;const g=new THREE.Group();for(let i=0;i<6;i++){const ge=new THREE.BufferGeometry();ge.setAttribute('position',new THREE.BufferAttribute(new Float32Array(18),3));g.add(new THREE.Line(ge,KARC[i%2]))}S.add(g);KARCS.push({s:k,g})}
+function arcTick(dt){for(const a of KARCS){const k=a.s;if(k.life<=0||!shots.includes(k)){S.remove(a.g);a.g.children.forEach(l=>l.geometry.dispose());a.gone=1;continue}
+ a.g.position.copy(k.m.position).addScaledVector(k.v,dt);const dir=T.copy(k.v).setY(0).normalize(),px=-dir.z,pz=dir.x,L=k.m.scale.z;
+ for(let i=0;i<a.g.children.length;i+=2){const on=Math.random()<.75,P=a.g.children[i].geometry.attributes.position,Q=a.g.children[i+1].geometry.attributes.position;a.g.children[i].visible=a.g.children[i+1].visible=on;if(!on)continue;
+  const sd=Math.random()<.5?-1:1;let t=(Math.random()-.5)*L,o=.04,y=(Math.random()-.5)*.1;for(let j=0;j<6;j++){const x=dir.x*t+px*sd*o,z=dir.z*t+pz*sd*o;P.setXYZ(j,x,y,z);Q.setXYZ(j,x+(Math.random()-.5)*.04,y+.02,z+(Math.random()-.5)*.04);t+=(Math.random()-.5)*.22;o+=.05+Math.random()*.09;y+=(Math.random()-.5)*.12}
+  P.needsUpdate=Q.needsUpdate=true}}
+ for(let i=KARCS.length-1;i>=0;i--)if(KARCS[i].gone)KARCS.splice(i,1)}
 // Momentum Engine: a bolt hit adds a speed/fire-rate stack; at III the bolt turns toward the nearest unhit enemy
 function kinHit(s,e){if(!st.kme)return;st.kms=Math.min(3,(st.kms||0)+1);st.kmt=st.kme>1?3:2;
  if(st.kme>2&&s.pierce>0){let b=null,bd=12;for(const x of ents)if(x!==e&&x.hp>0&&x.m.visible&&!s.hit.has(x)){const d=hd(x.m.position,e.m.position);if(d<bd){bd=d;b=x}}
@@ -1596,7 +1604,6 @@ const kmK=()=>st.kind==='swift'&&st.kmt>0?1+.04*(st.kms||0):1;
 // Charge Capacitor: a dash releases every stored bolt in a fan
 function kinDash(p){const n=st.kst||0;if(!n)return;st.kst=0;const mo=muz(p);boom(mo,6,0xeaff3a);for(let i=0;i<n;i++){const a=(i-(n-1)/2)*.12;st.fired++;const k=fire(mo,V3(a,-1).normalize(),st.shot,st.dmg+(st.kin>2?1.5:1),false,0xeaff3a,st.pierce+1,st.wide*1.4);k.ox=0;k.m.scale.z*=1.8;kbolt(k)}}
 function kinTick(dt,p){const B=player.userData.body;if(!kinOn()){st.kl=null;return}st.kmt=(st.kmt||0)-dt;if(st.kmt<=0)st.kms=0;
- for(const s of shots)if(s.arcs&&s.life>0)s.arcs.children.forEach(a=>{a.visible=Math.random()<.7;a.position.set((Math.random()<.5?-1:1)*(.6+Math.random()*.5),(Math.random()-.5)*.8,(Math.random()-.5)*.9);a.rotation.set(0,Math.random()*3,Math.random()*3)});
  if(st.kl){const d=Math.hypot(p.x-st.kl.x,p.z-st.kl.z);if(!st.kbolt){st.kd=(st.kd||0)+d;if(st.kd>=kinGap()){st.kd=0;if(st.kcap&&(st.kst||0)<kinCap())st.kst=(st.kst||0)+1;else st.kbolt=1}}}st.kl={x:p.x,z:p.z};
  // Kinetic coil clamped to Swift's rifle: its rings light up as the charge fills and pulse when a bolt is ready
  if(!B.userData.kg&&B.userData.tip){const g=new THREE.Group(),t=B.userData.tip;g.position.set(t.position.x,t.position.y+.22,t.position.z-.25);
