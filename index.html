@@ -139,7 +139,7 @@ text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
 @media (max-width:420px){.dgrid .dwide{grid-column:1/-1}}
 .card h3{margin:4px 0 -8px;font:700 15px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
 .card ul{margin:0;padding-left:20px;color:var(--dim);line-height:1.6;display:grid;gap:2px}.card ul b{color:var(--fg)}
-.topics{display:grid;gap:12px}
+.topics{display:grid;gap:12px}.hp .scr{z-index:61}
 .elsort{display:flex;gap:6px;align-items:center;color:var(--dim);font-size:13px}.elsort button{padding:5px 10px;font:400 14px var(--display);box-shadow:0 2px 0 #000000b0}.elsort button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
 #elSeen{font:400 15px var(--display);letter-spacing:.06em;color:var(--dim)}#elSeen b{color:var(--accent);font-weight:400}
 #elL{display:grid;gap:8px}.el{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start;border:1px solid #ffffff26;padding:6px;background:#ffffff08}
@@ -234,48 +234,26 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
 <p>Earn these by reaching goals across your runs. Unlocked upgrades join the Campaign pool.</p><div id="unlL"></div></div></div>
 
-<div class="ov scr" id="how" hidden><div class="card"><div class="hd"><h2>How to Play</h2><button class="back" data-go="start">Back</button></div>
-<h3>The goal</h3>
-<p>Clear sector after sector of enemy units. After each one, pick an upgrade and choose your next stop. When your armor runs out, the run is over.</p>
-<h3>Topics</h3>
+<div class="ov scr" id="how" hidden><div class="card"><div class="hd"><h2>How to Play</h2><button class="back" data-go="howback">Back</button></div>
+<p>Destroy every enemy unit to clear a sector, pick an upgrade, and fly on. When your armor runs out, the run is over.</p>
 <div class="topics">
 <button data-go="how-controls"><b>Controls</b><span>Moving, dashing, pausing</span></button>
-<button data-go="how-crafts"><b>Your Machines</b><span>Crafts and paint jobs</span></button>
-<button data-go="how-sectors"><b>Sectors &amp; Armor</b><span>Fighting and staying alive</span></button>
-<button data-go="how-route"><b>The Route</b><span>Choosing where to go next</span></button>
-<button data-go="how-upgrades"><b>Upgrades &amp; Scrap</b><span>Getting stronger</span></button>
+<button data-go="how-run"><b>The Run</b><span>Sectors, upgrades and scrap</span></button>
 <button data-go="how-timed"><b>Timed Attack</b><span>Racing the clock</span></button>
-</div><div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
+<button data-go="how-hard" id="howHard"><b>Hard Mode</b><span>Timed Attack in the dark</span></button>
+</div><div class="ft"><button class="back bot" data-go="howback">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
-<h3>Keyboard</h3><ul><li><kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd>: strafe</li><li><kbd>W</kbd> <kbd>S</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>: move forward and back</li><li><kbd>Shift</kbd>: dash</li><li><kbd>Esc</kbd> or <kbd>P</kbd>: pause</li></ul>
-<h3>Touch</h3><ul><li>Play in landscape</li><li>Drag anywhere to move</li><li>Tap <b>Dash</b> (bottom right) or <b>Pause</b> (top right)</li></ul>
-<h3>Good to know</h3><ul><li>Your guns fire on their own</li><li>You can't be hurt during a dash. Each dash uses EN (the yellow bar), which refills over time</li></ul></div></div>
+<ul><li><kbd>WASD</kbd> or arrows to move. On touch, drag (in landscape)</li><li>Your guns fire on their own</li><li><kbd>Shift</kbd> or <b>Dash</b>: a quick dodge that uses EN</li><li><kbd>Esc</kbd>, <kbd>P</kbd> or <b>Pause</b> to pause</li></ul></div></div>
 
-<div class="ov scr" id="how-crafts" hidden><div class="card"><div class="hd"><h2>Your Machines</h2><button class="back" data-go="how">Back</button></div>
-<h3>Kestrel</h3><ul><li>12 armor, heavy slow rifle, slow strafe</li></ul><div class="ss" data-ss="mech"></div>
-<h3>Gale</h3><ul><li>6 armor, rapid light lasers, fastest strafe</li></ul><div class="ss" data-ss="ship"></div>
-<h3>Falcon</h3><ul><li>9 armor, twin cannons, medium strafe</li></ul><div class="ss" data-ss="falcon"></div>
-<h3>Swift <small>(Shop)</small></h3><ul><li>8 armor, light rifle, fastest strafe, extra dashes</li></ul><div class="ss" data-ss="swift"></div>
-<h3>Flock <small>(Shop)</small></h3><ul><li>9 armor. Two drones fire from the wings, leaving a gap in the middle</li></ul><div class="ss" data-ss="flock"></div>
-<h3>Emu <small>(Unlock)</small></h3><ul><li>13 armor, the hardest-hitting and slowest craft</li></ul><div class="ss" data-ss="emu"></div>
-<h3>Paint jobs</h3><ul><li>Buy them in the Shop, or earn special ones (the <b>Unlocks</b> screen has hints)</li><li>Equip one after picking your craft</li></ul></div></div>
-
-<div class="ov scr" id="how-sectors" hidden><div class="card"><div class="hd"><h2>Sectors &amp; Armor</h2><button class="back" data-go="how">Back</button></div>
-<h3>Sectors</h3><ul><li>Units fly in, form up at the top and dive at you</li><li>Destroy every wave to clear the sector</li><li>Every 5th sector is a boss</li><li><b>CHAIN</b> counts quick kills in a row; long chains boost your fire</li></ul>
-<h3>Armor</h3><ul><li>Enemy shots and divers cost armor</li><li>The bar turns red and beeps when you're low</li><li>At zero, the run ends</li></ul>
-<h3>Learning more</h3><ul><li>The <b>Log</b> (main or pause menu) fills in with every enemy, upgrade and power-up you meet</li></ul></div></div>
-
-<div class="ov scr" id="how-route" hidden><div class="card"><div class="hd"><h2>The Route</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>After each sector, pick your next stop. Every stop ends in a fight</li><li><b>Combat</b>: a normal sector</li><li><b>Elite</b>: tougher units, bigger rewards</li><li><b>Repair Dock</b>: restore some armor</li><li><b>Salvage Yard</b>: buy an upgrade before a boss</li><li><b>Unknown Signal</b>: a random event</li><li>Other strange stops turn up the deeper you go</li><li>Every ten sectors you choose which zone to enter next</li><li><b>Save and Quit</b> (pause menu) lets you resume later</li></ul></div></div>
-
-<div class="ov scr" id="how-upgrades" hidden><div class="card"><div class="hd"><h2>Upgrades &amp; Scrap</h2><button class="back" data-go="how">Back</button></div>
-<h3>Upgrades</h3><ul><li>Pick one of three after each sector. They last the whole run</li><li>Rarer upgrades are stronger; <b style="color:#ff3d6e">Contraband</b> ones have a drawback</li></ul>
-<h3>Power-ups</h3><ul><li>Destroyed units sometimes drop a glowing capsule. Fly over it for a short boost</li></ul>
-<h3>Scrap</h3><ul><li>Units pay scrap; it's your score</li><li>When a run ends, half is banked as <b>Total Scrap</b> to spend in the Shop</li></ul></div></div>
+<div class="ov scr" id="how-run" hidden><div class="card"><div class="hd"><h2>The Run</h2><button class="back" data-go="how">Back</button></div>
+<ul><li>After each sector, pick an upgrade and choose where to go next</li><li>Every 5th sector is a boss</li><li>Enemies drop scrap and sometimes power-ups</li><li>Spend scrap you bank in the Shop. Play well and new crafts, upgrades and paint jobs unlock</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>You start with 3:00 on the clock and no armor bar</li><li>Each hit costs 5 seconds</li><li>Grab time capsules for extra time</li><li>Waves never stop and get faster every 30 seconds</li><li><b>Hard Mode</b> unlocks after defeating the Scion</li></ul></div></div>
+<ul><li>Score as much scrap as you can before the clock runs out</li><li>Each hit costs time; time capsules add it back</li></ul></div></div>
+
+<div class="ov scr" id="how-hard" hidden><div class="card"><div class="hd"><h2>Hard Mode</h2><button class="back" data-go="how">Back</button></div>
+<ul><li>Timed Attack with the lights out: you only see what's ahead of you</li><li>Tougher enemies, a random starting loadout, and a bigger score</li></ul></div></div>
 
 <div class="ov scr" id="devpw" hidden><div class="card devpw"><div class="hd"><h2>Dev Corner</h2><button class="back" data-go="start">Back</button></div>
 <p>Playtest tools. Enter the password.</p><form id="devF" class="drow"><input id="devP" type="password" inputmode="numeric" autocomplete="off" placeholder="Password" aria-label="Password"><button type="submit">Enter</button></form><p id="devE" class="dbad" hidden>Wrong password.</p></div></div>
@@ -327,13 +305,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="pzSave"><b>Save and Quit</b><span>Next time, pick up at the start of this sector.</span></button>
 <button id="pzQuit"><b>Back to Main Menu</b><span>Ends this run.</span></button></div>
 <div id="pzUpg" hidden style="display:grid;gap:12px"><h2>UPGRADES</h2><div id="upgL"></div><button id="pzUBack"><b>Back</b><span>Return to the pause menu.</span></button></div>
-<div id="pzHelp" hidden style="display:grid;gap:12px"><h2>HOW TO PLAY</h2><ul>
-<li><kbd>A</kbd>/<kbd>D</kbd>/<kbd>W</kbd>/<kbd>S</kbd> or arrows move; on touch, drag. Your guns fire on their own.</li>
-<li><kbd>Shift</kbd> or Dash: a quick invulnerable burst that uses EN. <kbd>Esc</kbd> or <kbd>P</kbd> pauses.</li>
-<li>Clear each sector's waves, pick an upgrade, then choose your next stop. Every 5th sector is a boss.</li>
-<li>Upgrades last the run; power-ups are short boosts you fly over. Scrap is your score.</li>
-<li><b>Timed Attack</b>: each hit costs 5 seconds; grab time capsules for more.</li></ul>
-<button id="pzBack"><b>Back</b><span>Return to the pause menu.</span></button></div></div>
+</div>
 </div></div>
 <div class="ov" id="dead" hidden><div class="card"><h2 id="deadH" style="color:var(--danger)">Destroyed</h2><div id="sweep"></div><div id="nbest" hidden>NEW BEST</div><p id="deadT"></p><dl class="sum" id="sum"></dl><button id="vExp" hidden><b>Continue Exploration</b><span>Take a boss upgrade, then face what waits beyond the Dark.</span></button><button id="vCont" hidden><b>Go Back and Regroup</b><span>End the run.</span></button><button id="again"><b>Main menu</b><span>Pick a mode and a machine.</span></button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -868,7 +840,7 @@ const STATS=[['Armor',s=>s.max,20,v=>v],['Firepower',s=>s.dmg*s.multi*(s.drones|
  ['Mobility',s=>s.spd,16,v=>+v.toFixed(1)],['Reactor',s=>30*(s.enr||1),60,v=>Math.round(v)+'/s'],['Salvage',s=>s.sb||0,5,v=>'+'+v]];
 const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,fmt])=>{const v=f({max:s.hp,...s});return `<span class="l">${n}</span><span class="b"><i style="width:${Math.min(100,v/cap*100)}%"></i></span><span class="v">${fmt(v)}</span>`}).join('');
 {const ids={mech:'pMech',ship:'pShip',falcon:'pFalcon',swift:'pSwift',flock:'pFlock',emu:'pEmu'};for(const k in ids){$(ids[k]).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k])}</span>`);
- document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);document.querySelector(`[data-ss=${k}]`).innerHTML=sheet(BASE[k])}}
+ document.querySelector(`[data-t=${k}]`).insertAdjacentHTML('beforeend',`<span class="ss">${sheet(BASE[k],true)}</span>`);{const e=document.querySelector(`[data-ss=${k}]`);if(e)e.innerHTML=sheet(BASE[k])}}}
 const V3=(x,z)=>new THREE.Vector3(x,0,z),BZ=new THREE.Vector3(),bez=(a,b,c,t)=>BZ.copy(a).multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
 // Save and Quit: a snapshot of the run taken as each campaign sector begins; resuming replays that sector from its start
 let runSave=null;try{runSave=JSON.parse(localStorage.getItem('darksave'))}catch(e){}
@@ -2731,7 +2703,7 @@ function thumbTick(dt){shopTick(dt);if(!PHONE.matches)return;thYaw+=dt*.9;
  if(!$('cdet').hidden){if(cdDrag==null)cdYaw+=dt*.4;snap(cdK,cdYaw,$('cdv'));return}
  for(const id of ['crafts','timed'])if(!$(id).hidden)$(id).querySelectorAll('.th').forEach(c=>snap(c.dataset.k,thYaw,c,.72))}
 function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;running=!on;musicPause(on);const el=$('pause');$('pzSave').hidden=st.timed||!secSnap;
- if(on){el.hidden=false;$('pzMenu').hidden=false;$('pzHelp').hidden=true;$('pzUpg').hidden=true;$('pzUp').hidden=st.timed;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
+ if(on){el.hidden=false;$('pzMenu').hidden=false;if(HP)show('howback');$('pzUpg').hidden=true;$('pzUp').hidden=st.timed;VG.clear();const m=MODELS[st.kind](),im=m.children[0],b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();
   if(!im.isInstancedMesh)b.setFromObject(m);else for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}const c=b.getCenter(new THREE.Vector3());
   m.position.sub(c);VG.add(m);VC.position.z=b.getSize(v).length()*1.9;
   $('pzName').textContent=st.name;$('pzSS').innerHTML=sheet(st,st.timed);
@@ -2791,7 +2763,7 @@ function elOpen(){elDraw();$('elog').hidden=false;$('elog').scrollTop=0;elT=0;if
 document.querySelectorAll('[data-el]').forEach(b=>b.onclick=()=>{elTab=b.dataset.el;elDraw()});document.querySelectorAll('[data-es]').forEach(b=>b.onclick=()=>{elSort=b.dataset.es;elDraw()});
 $('logBtn').onclick=$('pzLog').onclick=elOpen;$('elBack').onclick=()=>$('elog').hidden=true;
 $('setBtn').onclick=$('pzSet').onclick=()=>$('settings').hidden=false;$('setBack').onclick=()=>$('settings').hidden=true;
-$('pzHow').onclick=()=>{$('pzMenu').hidden=true;$('pzHelp').hidden=false};$('pzBack').onclick=()=>{$('pzHelp').hidden=true;$('pzMenu').hidden=false};
+$('pzHow').onclick=()=>{HP=1;document.body.classList.add('hp');show('how')};
 addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
 // Phones can kill a backgrounded tab: auto-save the campaign run (from the start of the current sector) while hidden, and drop
 // that save again on return so a live run never leaves a stale Resume behind
@@ -2802,7 +2774,7 @@ $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-d
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
-function show(id){if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how')$('howHard').hidden=!(LIFE.scion>=1);if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
