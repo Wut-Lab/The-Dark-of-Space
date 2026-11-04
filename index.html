@@ -718,7 +718,7 @@ const PAINTS={rwb:{n:'Red, White & Black',c:'#e8303a',acc:0xc8141e,t:[0x121316,0
  sterling:{n:'Sterling Coat',c:'#c9d2dc',acc:0x2a9bff,t:[0x2a9bff,0xaeb6c0,0xf4f6f8,0xc4cad3],lock:'Face a worthy foe and leave without a scratch.',d:'polished silver with white panels and neon blue trim'},
  gilded:{n:'Gilded Coat',c:'#e6bf45',acc:0xa324ff,t:[0xa324ff,0xc9971f,0xf6f2e6,0xe2b93f],lock:'Humble a mighty foe without a single scratch.',d:'gold leaf with white panels and neon purple trim'},
  plasma:{n:'Plasma Blend',c:'#39ff7a',acc:0x8d939b,t:[0x9d24ff,0x39ff7a,0xff3fb4,0x39ff7a],lock:'Race the clock, and never pass up a gift.',d:'neon green, pink and purple with a touch of dull silver'},
- overtime:{n:'Overtime',c:'#7dff2a',acc:0x7dff2a,li:0xffd23a,rim:0x050605,t:[0x0a0b0a,0x16181a,0x7dff2a],lock:'Keep the clock alive for two full minutes.',d:'lime green and black, with gold eyes rimmed in black'}},CRAFTS=['mech','ship','falcon','swift','flock','emu'];
+ overtime:{n:'Overtime',c:'#7dff2a',acc:0x7dff2a,li:0xffd23a,rim:0x050605,glow:0xc8ffb0,t:[0x0a0b0a,0x16181a,0x7dff2a],lock:'Keep the clock alive for two full minutes.',d:'lime green and black, with gold eyes rimmed in black'}},CRAFTS=['mech','ship','falcon','swift','flock','emu'];
 const PJ={};
 function pp(pal,p){const J=p&&p.acc?p:PAINTS[p];if(!J)return pal;const c=new THREE.Color(),h={};
  return Object.fromEntries(Object.entries(pal).map(([k,v])=>{c.setHex(v).getHSL(h);const L=.3*c.r+.59*c.g+.11*c.b;
@@ -740,7 +740,12 @@ function rimEyes(g,J){g.updateMatrixWorld(true);const M=new THREE.Matrix4(),c=ne
  g.traverse(o=>{if(!o.isInstancedMesh||!o.instanceColor)return;o.geometry.computeBoundingBox();const gs=o.geometry.boundingBox.getSize(new THREE.Vector3()).x,ws=o.getWorldScale(new THREE.Vector3()).x;
   for(let i=0;i<o.count;i++){o.getMatrixAt(i,M);M.decompose(v,q,sc);const w=v.clone().applyMatrix4(o.matrixWorld),r=gs*sc.x*ws;o.getColorAt(i,c);(Math.abs(c.r-E.r)+Math.abs(c.g-E.g)+Math.abs(c.b-E.b)<.02?P:Q).push([o,i,w,r])}});
  for(const [o,i,w,r] of Q)if(P.some(([,,e,re])=>Math.abs(e.x-w.x)<(r+re)*.75&&Math.abs(e.y-w.y)<(r+re)*.75&&Math.abs(e.z-w.z)<(r+re)*.75)){o.setColorAt(i,c.setHex(J.rim));o.instanceColor.needsUpdate=true}return g}
-for(const k of CRAFTS){const f=MODELS[k];MODELS[k]=(p=PJ[k]||'')=>{let g=f(p);const J=PAINTS[p];if(J&&J.fx)g=finish(g,J.fx);return J&&J.rim?rimEyes(g,J):g}}
+// Glow: paints with glow get a faint shell (each voxel's box grown 2.6x, back faces, additive) so dark plating stands off the background
+function glowShell(g,J){const ms=[],M=new THREE.Matrix4(),v=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3(),mat=new THREE.MeshBasicMaterial({color:J.glow,transparent:true,opacity:.1,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,polygonOffset:true,polygonOffsetFactor:8,polygonOffsetUnits:400});
+ g.traverse(o=>{if(o.isInstancedMesh&&o.count)ms.push(o)});
+ for(const o of ms){const h=new THREE.InstancedMesh(o.geometry,mat,o.count);for(let i=0;i<o.count;i++){o.getMatrixAt(i,M);M.decompose(v,q,sc);h.setMatrixAt(i,M.compose(v,q,sc.multiplyScalar(2.6)))}
+  h.position.copy(o.position);h.quaternion.copy(o.quaternion);h.scale.copy(o.scale);h.renderOrder=-1;o.parent.add(h)}return g}
+for(const k of CRAFTS){const f=MODELS[k];MODELS[k]=(p=PJ[k]||'')=>{let g=f(p);const J=PAINTS[p];if(J&&J.fx)g=finish(g,J.fx);if(J&&J.rim)rimEyes(g,J);return J&&J.glow?glowShell(g,J):g}}
 for(const p in PAINTS)MODELS['paint_'+p]=()=>MODELS.mech(p);
 // Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
 let world=new THREE.Group();S.add(world);const stars=[];
