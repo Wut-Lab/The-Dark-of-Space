@@ -257,7 +257,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li></ul></div></div>
 
 <div class="ov scr" id="how-daily" hidden><div class="card"><div class="hd"><h2>Daily Run</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>A Campaign run that changes each day. Everyone gets the same craft, routes and upgrade offers.</li><li>Try as often as you like. Your best of the day is kept.</li></ul></div></div>
+<ul><li>A Campaign run that changes each day. Everyone gets the same craft, routes and upgrade offers.</li><li>On <b>Pilot's Choice</b> days, fly any craft you own.</li><li>Try as often as you like. Your best of the day is kept.</li></ul></div></div>
 
 <div class="ov scr" id="how-hard" hidden><div class="card"><div class="hd"><h2>Hard Mode</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>Play Timed Attack with the lights out: you only see what's ahead of you.</li><li>Enemies are tougher, your starting loadout is random, and your score is bigger.</li></ul></div></div>
@@ -270,7 +270,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Zones</h3><p class="dnote">Any zone at any sector, with its enemies, hazards, music and bosses.</p><div class="dgrid"><label>Zone<select id="ztZ"></select></label><label>Sector<select id="ztS"></select></label><button id="ztGo">Play sector</button></div>
 <h3>Bosses</h3><p class="dnote">Fight one capital unit in its home zone.</p><div class="dgrid"><label class="dwide">Boss<select id="dvB"></select></label><button id="dvBGo">Fight</button></div>
 <h3>Events</h3><p class="dnote">Trigger a route event, stop or encounter in the zone picked above, then play on from there.</p><div class="dgrid"><label class="dwide">Event<select id="dvE"></select></label><button id="dvEGo">Run event</button></div>
-<h3>Modes</h3><div class="dgrid"><button id="dvT1">Timed Attack</button><button id="dvT2">Hard Timed</button></div>
+<h3>Modes</h3><div class="dgrid"><button id="dvT1">Timed Attack</button><button id="dvT2">Hard Timed</button><button id="dvDaily">Daily Run</button></div>
 <h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div>
 <h3>Progress</h3><p class="dnote">Wipe all progress on this device: scrap, shop items, unlocks, stats, Log, bests and saved runs. Settings are kept.</p><div class="dgrid"><button id="dvWipe">Reset progress</button></div></div></div>
 <button id="ivBack" hidden style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:10px 26px">Back to the Bay</button>
@@ -861,7 +861,7 @@ function resume(){const sv=runSave;keepSave(null);PJ[sv.kind]=sv.paint||'';start
 // meshes and removes anything a run added to the scene (SCN0 = the scene before the first run), so nothing carries into the menu
 let SCN0=null;function fieldClear(sweep){if(st&&st.bb){st.bb.list.forEach(l=>S.remove(l.m));st.bb.list.length=0}fx.forEach(f=>{S.remove(f.m);FXP.push(f.m)});fx.length=0;pfx.forEach(q=>{S.remove(q.m);PFP.push(q.m)});pfx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;BU.lobs.forEach(l=>S.remove(l.m));BU.lobs.length=0;BU.mets.forEach(o=>S.remove(o.m));BU.mets.length=0;BU.wells.forEach(w=>S.remove(w.g));BU.wells.length=0;
  if(!sweep)return;mist(0);shimmer(0);for(const o of [muzzle,moth,magpi,owl,ghost,gimbal,apexG,eliteG,plzM,RSH,BU.vd,BU.gs,BU.mon,BU.lz,BU.ice,NZ.fill,...NZ.e])if(o)o.visible=false;if(SCN0)for(const o of [...S.children])if(!SCN0.has(o)&&o!==RSH)S.remove(o)}
-function start(kind,timed){tcClear();if(timed)DAILY='';if(st&&st.nauts)st.nauts.forEach(g=>S.remove(g));secSnap=null;if(!timed)keepSave(null);if(!SCN0)SCN0=new Set(S.children);fieldClear();try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],daily:DAILY,kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,hard:timed===2?1:0,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,ch:0,cht:0,hi:HINTD?-1:0,ht:0,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
+function start(kind,timed){tcClear();const dly=timed?'':DAILY;DAILY='';if(st&&st.nauts)st.nauts.forEach(g=>S.remove(g));secSnap=null;if(!timed)keepSave(null);if(!SCN0)SCN0=new Set(S.children);fieldClear();try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],daily:dly,kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,hard:timed===2?1:0,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,ch:0,cht:0,hi:HINTD?-1:0,ht:0,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());if(!player.userData.body.userData.legs){const bb=new THREE.Box3().setFromObject(player.userData.body.userData.hull||player.userData.body),eg=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));eg.position.set(0,(bb.min.y+bb.max.y)/2,bb.min.z);player.userData.body.add(player.userData.eg=eg)}player.add(aura,shield);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);{const z=new THREE.Box3().setFromObject(player.userData.body.userData.hull||player.userData.body).getSize(new THREE.Vector3());st.pr=st.pr0=Math.max(.6,(z.x+z.z)/4*.9)}
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -2383,12 +2383,12 @@ function bounce(s,p){const n=T.subVectors(s.m.position,p).setY(0).normalize(),sp
 // Shrapnel Shells (Kestrel): a hit splashes part of its damage onto nearby units
 // Daily Run: post-game, appears quietly in Play once the Scion falls. One seed per UTC day, the same for everyone.
 // The seed picks the craft and reseeds route choices, events, waves and upgrade offers per sector (combat stays live)
-let DAILY='';const dKey=()=>new Date().toISOString().slice(0,10),dHash=k=>{let h=2166136261;for(const c of k)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0},
+let DAILY='',DPK=0;const dKey=()=>new Date().toISOString().slice(0,10),dHash=k=>{let h=2166136261;for(const c of k)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0},
  mb32=a=>()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},
- dCraft=d=>['mech','ship','falcon'][dHash(d)%3];
+ dCraft=d=>['mech','ship','falcon','choice'][dHash(d)%4],dName=k=>k==='choice'?'Pilot\'s Choice':BASE[k].name;
 function seeded(tag,f){return function(...a){if(!st||!st.daily)return f.apply(this,a);const R=Math.random;Math.random=mb32(dHash(st.daily+tag+st.sec+':'+(st.wN||0)));try{return f.apply(this,a)}finally{Math.random=R}}}
 function dailyGet(){try{return JSON.parse(localStorage.getItem('darkdaily'))||{}}catch(e){return {}}}
-function dailyUI(){const b=$('pDaily');b.hidden=!(LIFE.scion>=1);if(b.hidden)return;const d=dKey(),r=dailyGet();$('dailyS').textContent=`${d} · ${BASE[dCraft(d)].name}`+(r.d===d?` · Today's best: sector ${r.s}, ${r.sc} scrap`:' · One shared run a day.')}
+function dailyUI(){const b=$('pDaily');b.hidden=!(LIFE.scion>=1);if(b.hidden)return;const d=dKey(),r=dailyGet();$('dailyS').textContent=`${d} · ${dName(dCraft(d))}`+(r.d===d?` · Today's best: sector ${r.s}, ${r.sc} scrap`:' · One shared run a day.')}
 function dailyRec(){const r=dailyGet();if(r.d!==st.daily||st.sec>r.s||st.sec===r.s&&st.scrap>r.sc)try{localStorage.setItem('darkdaily',JSON.stringify({d:st.daily,s:st.sec,sc:st.scrap}))}catch(e){}}
 // Turncoat Beacon: a unit that would be destroyed defects instead. It rides beside you firing up the field, then crashes
 // into the nearest enemy. No scrap, no kill; enemies fire 15% faster while one is with you (thf)
@@ -2606,7 +2606,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   if(INV&&INV.visible){if(!IVD.on){IVD.yaw*=Math.pow(.15,dt);IVD.pit*=Math.pow(.15,dt)}C.position.set(0,3.4,10);C.lookAt(Math.sin(IVD.yaw)*18,.4+Math.sin(IVD.pit)*18,10-Math.cos(IVD.yaw)*18)}}R.render(S,C)}
 let tHard=0;$('tHard').onclick=()=>{tHard^=1;$('tHard').classList.toggle('on',!!tHard);$('tHard').querySelector('b').textContent='Hard Mode: '+(tHard?'On':'Off')};
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.t,()=>start(b.dataset.t,tHard?2:true)));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift'],['pFlock','flock'],['pEmu','emu']])$(id).onclick=()=>cpOpen(k,()=>reelOpen(()=>start(k)));
-route=seeded('r',route);offer=seeded('o',offer);shop=seeded('y',shop);wave=seeded('w',wave);$('pDaily').onclick=()=>{const d=dKey(),k=dCraft(d);reelOpen(()=>{DAILY=d;start(k);DAILY=''})};
+route=seeded('r',route);offer=seeded('o',offer);shop=seeded('y',shop);wave=seeded('w',wave);$('pDaily').onclick=()=>{const d=dKey(),k=dCraft(d);DAILY=d;if(k==='choice'){DPK=1;show('crafts')}else reelOpen(()=>start(k))};
 // Dev Corner (title screen, password-gated): playtest any zone sector, boss, event, mode or story screen.
 // Playtest runs are never saved, banked or counted as a best (st.dev)
 // Backdrop: Nox and Umbra float behind the Dev Corner menu (own renderer, runs only while it's open)
@@ -2645,7 +2645,7 @@ let DG=null;function devGods(){if(!DG){const r=new THREE.WebGLRenderer({canvas:$
   ['Phantom Space Station',()=>station(on)],['Scrap Sphere Station',()=>scrapSt(on)],['The Fork in the Dark',()=>fork(on)],['Stranded Nauts',()=>{st.nautF=1;on()}],['Mysterious Altars (post-game)',()=>{st.post=1;altars(on)}],['Bonus wave',()=>{bonusWave();running=true}]];
  $('dvE').innerHTML=EL.map((e,i)=>`<option value="${i}">${e[0]}</option>`).join('');
  $('dvEGo').onclick=()=>{devRun($('ztZ').value,Math.min(9,Math.max(1,+$('ztS').value%5?+$('ztS').value:+$('ztS').value-1)),false);running=false;EL[$('dvE').value][1]()};
- const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);
+ const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);$('dvDaily').onclick=()=>{const c=dCraft(dKey()),k=c==='choice'?$('dvC').value:c,o=PJ[k];PJ[k]=$('dvJ').value;DAILY=dKey();start(k);PJ[k]=o;lo()};
  // Reset progress: two taps; clears every saved key except settings, then reloads
  $('dvWipe').onclick=()=>{const b=$('dvWipe');if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again to wipe';setTimeout(()=>{delete b.dataset.arm;b.textContent='Reset progress'},3000);return}
   try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints','darkchain'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
@@ -2817,7 +2817,7 @@ $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-d
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
-let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts')DAILY='';if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
