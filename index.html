@@ -187,7 +187,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
 <div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button><div class="skipH" id="outSk">Hit Any Key, or Tap to Skip</div></div><div id="blk" hidden></div>
 <div class="ov" id="reel"><p id="reelP"></p><div class="skipH">Hit Any Key, or Tap to Skip</div></div>
-<div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div></div><div class="title">
+<div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div><div class="lc" id="dwL" hidden>Daily Run Wins: <b id="dwN">0</b></div></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
@@ -2217,7 +2217,7 @@ function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);li
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Victory card: first three upgrades taken, with their level (I-III), then "and more."
 function upShort(){const u=[...new Set(st.upgrades)],l=u.slice(0,3).map(n=>n+' '+['I','II','III'][Math.min(2,st.upgrades.filter(x=>x===n).length-1)]).join(', ');return u.length>3?l+', and more.':l}
-function die(won){if(st.daily&&!st.dev)dailyRec();if(!won&&!st.timed&&!st.dev&&['mech','ship','falcon'].includes(st.kind)){prog('loss_'+st.kind);if(LIFE.loss_mech&&LIFE.loss_ship&&LIFE.loss_falcon&&!LIFE.lossAll)prog('lossAll')}running=false;if(!won)secSnap=null;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
+function die(won){if(st.daily&&!st.dev){dailyRec();if(won)prog('dailywin')}if(!won&&!st.timed&&!st.dev&&['mech','ship','falcon'].includes(st.kind)){prog('loss_'+st.kind);if(LIFE.loss_mech&&LIFE.loss_ship&&LIFE.loss_falcon&&!LIFE.lossAll)prog('lossAll')}running=false;if(!won)secSnap=null;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?won?upShort():st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
@@ -2406,6 +2406,8 @@ function dailyPick(){running=false;const ok=u=>!u[5]&&!u[6]&&!u[8]&&(!u[10]||u[1
  const o=$('opts');o.innerHTML='';$('pickT').textContent=`Daily Run · ${DMODS[st.dmod][0]}`;$('pickS').textContent='Choose one upgrade to start with.';
  sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
   b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}hud();$('pick').hidden=true;running=true};o.append(b)});$('pick').hidden=false}
+// Daily Run Wins (main menu, top right): shown once the Daily Run is unlocked
+function dwT(){$('dwL').hidden=!(LIFE.scion>=1);$('dwN').textContent=LIFE.dailywin||0}
 function dailyRec(){const r=dailyGet();if(r.d!==st.daily||st.sec>r.s||st.sec===r.s&&st.scrap>r.sc)try{localStorage.setItem('darkdaily',JSON.stringify({d:st.daily,s:st.sec,sc:st.scrap}))}catch(e){}}
 // Picket Drone: rides behind you and zaps the nearest incoming enemy shot within 6 every 3/2/1.5 s; tier III also hits mines
 // Burn Rate III raises max EN by 10%; everything that caps or reads full EN uses enMax()
@@ -2866,7 +2868,7 @@ $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-d
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
-let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='start')dwT();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
