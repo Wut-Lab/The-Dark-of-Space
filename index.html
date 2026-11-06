@@ -121,7 +121,7 @@ button{font:inherit;color:var(--fg);background:linear-gradient(#ffffff17,#ffffff
 box-shadow:0 4px 0 #000000b0,inset 0 1px 0 #ffffff2a;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px;transition:transform .06s,box-shadow .06s}
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #000000b0,inset 0 1px 0 #ffffff1a}
 .scr{display:block;overflow-y:auto;padding-block:24px}.scr>.card{margin:max(16px,6vh) auto}
-#start{background:#05060a40}#start .title{margin-top:max(5vh,calc(64px + env(safe-area-inset-top,0px)))}
+#start,#hangar,#opts{background:#05060a40}#start .title{margin-top:max(5vh,calc(64px + env(safe-area-inset-top,0px)))}
 .title{display:grid;gap:32px;margin:5vh auto 16px;max-width:760px;justify-items:center}
 .logo{font:400 clamp(36px,8vw,72px)/1.05 "Black Ops One","Arial Black",sans-serif;color:var(--accent);text-align:center;letter-spacing:.03em;
 text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
@@ -191,15 +191,28 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
-<button id="logBtn"><b>Log</b></button>
-<button data-go="store"><b>Shop</b></button>
-<button data-go="unlocks"><b>Unlocks</b></button>
-<button data-go="how"><b>How to Play</b></button>
-<button id="setBtn"><b>Settings</b></button>
-<button data-go="credits"><b>Credits</b></button>
+<button data-go="hangar"><b>Hangar</b></button>
+<button data-go="opts"><b>Options</b></button>
 <button id="devBtn"><b>Dev Corner</b></button>
 </nav></div></div>
 
+<div class="ov scr" id="hangar" hidden><div class="title">
+<h1 class="logo">Hangar</h1>
+<nav class="menu" aria-label="Hangar">
+<button id="logBtn"><b>Log</b></button>
+<button data-go="store"><b>Shop</b></button>
+<button data-go="unlocks"><b>Unlocks</b></button>
+<button data-go="yard"><b>Trophy Yard</b></button>
+<button class="back" data-go="start"><b>Back</b></button>
+</nav></div></div>
+<div class="ov scr" id="opts" hidden><div class="title">
+<h1 class="logo">Options</h1>
+<nav class="menu" aria-label="Options">
+<button id="setBtn"><b>Settings</b></button>
+<button data-go="how"><b>How to Play</b></button>
+<button data-go="credits"><b>Credits</b></button>
+<button class="back" data-go="start"><b>Back</b></button>
+</nav></div></div>
 <div class="ov scr" id="modes" hidden><div class="card"><div class="hd"><h2>Play</h2><button class="back" data-go="start">Back</button></div>
 <button data-go="crafts"><b>Campaign</b><span>Clear sector after sector, upgrading as you go.</span></button>
 <button data-go="timed"><b>Timed Attack</b><span>Three minutes, endless waves, score scrap.</span></button>
@@ -230,12 +243,17 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-t="emu" data-own="craft:emu"><b>Emu</b><span>Hardest hitter with a shoulder cannon.</span></button>
 </div><button id="tHard" hidden><b>Hard Mode: Off</b><span>Lights Out, 3 of 6 random upgrades, +1 enemy armor, score ×1.5</span></button><p id="tbest"></p></div></div>
 
-<div class="ov scr" id="store" hidden><div class="card"><div class="hd"><h2>Shop</h2><button class="back" data-go="start">Back</button></div>
+<div class="ov scr" id="store" hidden><div class="card"><div class="hd"><h2>Shop</h2><button class="back" data-go="hangar">Back</button></div>
 <p class="bank">Total Scrap: <b id="shopBank">0</b></p>
 <div class="stabs" role="tablist" aria-label="Shop sections"><button role="tab" data-tab="upgrades" aria-selected="true">Upgrades</button><button role="tab" data-tab="powerups" aria-selected="false">Power-ups</button><button role="tab" data-tab="crafts" aria-selected="false">Crafts</button><button role="tab" data-tab="paint" aria-selected="false">Paint Jobs</button></div>
 <p id="shopIntro"></p><div id="shopL" role="tabpanel"></div></div></div>
 
-<div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="start">Back</button></div>
+<div class="ov scr" id="yard" hidden><div class="card"><div class="hd"><h2>Trophy Yard</h2><button class="back" data-go="hangar">Back</button></div>
+<p><b>Coming soon.</b></p>
+<p>Every boss you bring down leaves a wreck behind. In the Trophy Yard you will spend Total Scrap to rebuild those wrecks into voxel trophies you can spin and admire.</p>
+<p>Finish a set, such as every zone boss or every Void God, to unlock a reward like a paint job or an Enemy Log extra.</p>
+<p>Trophies are for show. They never make your ship stronger. Your power still comes from the run.</p></div></div>
+<div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="hangar">Back</button></div>
 <p>Earn these by reaching goals across your runs. Unlocked upgrades join the Campaign pool.</p><div id="unlL"></div></div></div>
 
 <div class="ov scr" id="how" hidden><div class="card"><div class="hd"><h2>How to Play</h2><button class="back" data-go="howback">Back</button></div>
@@ -252,7 +270,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <ul><li>Move with <kbd>WASD</kbd> or the arrow keys. On touch, drag anywhere (play in landscape).</li><li>Your guns fire on their own.</li><li>Dash with <kbd>Shift</kbd> or the <b>Dash</b> button. Each dash uses EN.</li><li>Pause with <kbd>Esc</kbd>, <kbd>P</kbd> or the <b>Pause</b> button.</li><li>On a gamepad, move with the left stick or D-pad, dash with A or the right bumper or trigger, and pause with Start. In menus, A selects and B goes back.</li></ul></div></div>
 
 <div class="ov scr" id="how-run" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop.</li><li>Play well to unlock new crafts, upgrades and paint jobs.</li></ul></div></div>
+<ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop, found in the Hangar.</li><li>Play well to unlock new crafts, upgrades and paint jobs.</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li></ul></div></div>
@@ -275,15 +293,15 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div>
 <h3>Progress</h3><p class="dnote">Wipe all progress on this device: scrap, shop items, unlocks, stats, Log, bests and saved runs. Settings are kept.</p><div class="dgrid"><button id="dvWipe">Reset progress</button></div></div></div>
 <button id="ivBack" hidden style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:10px 26px">Back to the Bay</button>
-<div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="start">Back</button></div>
+<div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="opts">Back</button></div>
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
 <h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Driftlight</i> (Scrap Sphere Station), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Afterglow</i>, a take on Gold Rush that builds from slow and grand into epic metal, and the Scion's dying metallic roar (also Nox's scream), synthesized in code with the Web Audio API by Claude</li></ul>
-<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li><li>Installable web app with offline play (web app manifest and service worker)</li><li>Gamepad support (Gamepad API)</li></ul>
+<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li><li>Installable web app with offline play (web app manifest and service worker)</li><li>Gamepad support (Gamepad API)</li><li>Hangar menu backdrop and Trophy Yard (coming soon)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
-<div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
+<div class="ft"><button class="back bot" data-go="opts">Back</button></div></div></div>
 <div class="ov" id="settings" hidden style="z-index:60"><div class="card"><div class="hd"><h2>Settings</h2><button class="back" id="setBack">Back</button></div>
 <label class="srow"><span>Sound</span><input type="checkbox" id="sOn"></label>
 <label class="srow"><span>Music</span><span class="sv"><input type="range" id="sMus" min="0" max="100"><small id="sMusV"></small></span></label>
@@ -2230,7 +2248,7 @@ function sssInside(ff){const g=new THREE.Group(),M=(c,r=.7,m=.4,e=0)=>new THREE.
  for(let k=-2;k<=2;k++){P(2,.08,1.4,k*2.2,-.86,-7.4,gm);for(let j=0;j<6;j++)P(.08,.12,1.4,k*2.2-.8+j*.32,-.8,-7.4,pm)}
  for(const cx of[-2.8,0,2.8])for(const sd of[-1,1]){const x0=cx+sd*.95,pts=[new THREE.Vector3(x0,1.6,-10.2),new THREE.Vector3(x0+sd*.15,.6,-10.1),new THREE.Vector3(x0,-.8,-9.6),new THREE.Vector3((x0+sd*.3)*.4,-.84,-8.4),new THREE.Vector3(sd*.15+cx*.05,-.9,-7.6)];g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),20,.06,5),sd>0?cm:M(0x203a80,.6,.3)))}
  g.add(new THREE.HemisphereLight(0xfff0d8,0x302820,1));g.userData.t=0;S.add(g);INV=g;return g}
-function hangar(){const g=new THREE.Group(),M=(c,r=.8,m=.3)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m}),B=new THREE.BoxGeometry(1,1,1),P=(sx,sy,sz,x,y,z,m)=>{const q=new THREE.Mesh(B,m);q.scale.set(sx,sy,sz);q.position.set(x,y,z);g.add(q);return q};
+function hangar(xtra){const g=new THREE.Group(),M=(c,r=.8,m=.3)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m}),B=new THREE.BoxGeometry(1,1,1),P=(sx,sy,sz,x,y,z,m)=>{const q=new THREE.Mesh(B,m);q.scale.set(sx,sy,sz);q.position.set(x,y,z);g.add(q);return q};
  P(60,1,90,0,-1.5,-20,M(0x2c2e33,.9,.2));for(let k=-4;k<=4;k++)P(.08,.02,90,k*4,-.98,-20,M(0x3a3d44));for(let k=0;k<12;k++)P(60,.02,.08,0,-.98,-60+k*7,M(0x3a3d44));
  for(const sx of[-1,1])P(.4,.03,60,sx*3,-.96,-15,new THREE.MeshBasicMaterial({color:0xffc020}));
  P(60,40,1,0,15,-58,M(0x3e4148,.8,.4));for(let k=-5;k<=5;k++)P(.8,40,1.2,k*5.5,15,-57.4,M(0x2a2c30,.7,.5));{const bm=M(0x5a5e66,.6,.6);P(31.4,1.2,1.4,-14.3,6,-57,bm);P(19.4,1.2,1.4,20.3,6,-57,bm);P(1.2,6.6,1.4,1.4,7.7,-57,bm);P(1.2,6.6,1.4,10.6,7.7,-57,bm);P(10.4,1.2,1.4,6,11,-57,bm)}
@@ -2244,7 +2262,7 @@ function hangar(){const g=new THREE.Group(),M=(c,r=.8,m=.3)=>new THREE.MeshStand
  // Wooden crates (slats and corner posts), red tool boxes, and a wrench left on top of one crate
  const wd=[M(0x9a6a36),M(0x7a5228)],dk=M(0x4a3218),crate=(x,z,k,i)=>{P(k,k,k,x,-1+k/2,z,wd[i%2]);for(const a of[-1,1])for(const b of[-1,1])P(k*.12,k*1.02,k*.12,x+a*k*.45,-1+k/2,z+b*k*.45,dk);for(let q=1;q<3;q++)P(k*1.02,k*.06,k*1.02,x,-1+q*k/3,z,dk);P(k*1.02,k*.08,k*1.02,x,-1+k,z,dk)};
  [[-15,-30,3],[-12,-32,2],[-15,-27,2],[14,-40,3],[17,-38,2.4]].forEach(([x,z,k],i)=>crate(x,z,k,i));
- const rb=M(0xb02a24,.5,.4),hd=M(0x2a2c30,.5,.6);for(const[x,z,r]of[[12,-20,.3],[-11,-22,-.4],[16,-34,0]]){const t=new THREE.Group();[[2.2,1,1.1,0,.5,0,rb],[2.25,.08,1.15,0,.75,0,hd],[2.25,.08,1.15,0,.3,0,hd],[.9,.12,.15,0,1.15,0,hd],[.12,.25,.12,-.4,1.05,0,hd],[.12,.25,.12,.4,1.05,0,hd]].forEach(([a,b,c,x2,y2,z2,m])=>{const q=new THREE.Mesh(B,m);q.scale.set(a,b,c);q.position.set(x2,y2,z2);t.add(q)});t.position.set(x,-1,z);t.rotation.y=r;g.add(t)}
+ const hd=M(0x2a2c30,.5,.6);for(const[x,z,r,c]of[[12,-20,.3,0xb02a24],[-11,-22,-.4,0xb02a24],[16,-34,0,0xb02a24],...(xtra?[[-7,-18,.2,0xffc21a],[7,-26,-.5,0x1ec8ff],[-17,-38,.9,0x5be33a],[19,-24,-.2,0xff4fd0],[-9,-44,.4,0xff7a1a],[3,-50,-.3,0x4a6bff]]:[])]){const rb=M(c,.5,.4),t=new THREE.Group();[[2.2,1,1.1,0,.5,0,rb],[2.25,.08,1.15,0,.75,0,hd],[2.25,.08,1.15,0,.3,0,hd],[.9,.12,.15,0,1.15,0,hd],[.12,.25,.12,-.4,1.05,0,hd],[.12,.25,.12,.4,1.05,0,hd]].forEach(([a,b,c,x2,y2,z2,m])=>{const q=new THREE.Mesh(B,m);q.scale.set(a,b,c);q.position.set(x2,y2,z2);t.add(q)});t.position.set(x,-1,z);t.rotation.y=r;g.add(t)}
  {const w=new THREE.Group(),wm=M(0xc0c4cc,.3,.9);[[2,.18,.3,0,0],[.25,.18,.7,1.05,0],[.25,.18,.25,1.25,.25],[.25,.18,.25,1.25,-.25]].forEach(([a,b,c,x2,z2])=>{const q=new THREE.Mesh(B,wm);q.scale.set(a,b,c);q.position.set(x2,0,z2);w.add(q)});w.position.set(-15,2.1,-30);w.rotation.y=.6;g.add(w)}
  const sh=P(4,1.2,6,9,-.4,-46,M(0xc9a227,.5,.5));P(7,.3,2.2,9,-.2,-45,M(0x5a5e66,.6,.5));P(1.4,.6,1.8,9,.5,-48,new THREE.MeshBasicMaterial({color:0x80e0ff}));
  const am=new THREE.HemisphereLight(0xfff0d8,0x202028,.9);g.add(am);g.scale.setScalar(.55);g.position.z=10;S.add(g);return g}
@@ -2925,7 +2943,9 @@ $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-d
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
-let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+// Main-menu Hangar backdrop: the Scrap Sphere bay plus bright tool boxes, behind the Hangar submenu and its screens
+let MH=null,MHv=1;function hangBg(on){if(on&&!MH){MH=hangar(1);if(player){MHv=player.visible;player.visible=false}}else if(!on&&MH){S.remove(MH);MH=null;if(player)player.visible=MHv}}
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'opts';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);hangBg(['hangar','store','unlocks','yard'].includes(id));document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
