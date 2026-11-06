@@ -679,6 +679,8 @@ PAINTS.sterling.fx=(c,h,q)=>{if(h.s>.35)return;const g=Math.pow(.5+.5*Math.sin((
  c.setHSL(.6,.1,THREE.MathUtils.clamp(.16+.3*q.y+.12*h.l+.06*Math.sin(q.y*70)+.38*g,.14,.82))};
 const CHN=[0x22e4ff,0xff3fb4,0xffd23a].map(x=>new THREE.Color(x));
 PAINTS.unbroken.fx=(c,h,q)=>{if(h.s<=.35){PAINTS.sterling.fx(c,h,q);return}if(h.h>.42&&h.h<.6&&h.l>.9)return;const t=((q.x*.9+q.y*1.3+q.z*.4)*3.2%3+3)%3,i=Math.floor(t),w=t-i;c.copy(CHN[i]).lerp(CHN[(i+1)%3],w*w*(3-2*w))};
+// Kestrel and Emu are mostly bare plating, so Unbroken also runs its color bands across their gray panels
+PAINTS.unbroken.fxH=(c,h,q)=>{if(h.s<=.35&&h.l>.12&&Math.sin(q.y*26+q.x*5)>.75){const t=((q.x*.9+q.y*1.3+q.z*.4)*3.2%3+3)%3,i=Math.floor(t),w=t-i;c.copy(CHN[i]).lerp(CHN[(i+1)%3],w*w*(3-2*w));return}PAINTS.unbroken.fx(c,h,q)};
 PAINTS.plasma.fx=(c,h,q)=>{if(h.s<.5||h.h>.45&&h.h<.6)return;const t=((q.x*.8+q.y*1.2+q.z*.5)*3.2%3+3)%3,i=Math.floor(t),w=t-i;
  c.lerp(NEON[i].clone().lerp(NEON[(i+1)%3],w*w*(3-2*w)),.85)};
 // Rim: paints with rim get a thin ring of that color on the voxels touching their eye (li) voxels, for definition
@@ -691,7 +693,7 @@ function glowShell(g,J){const ms=[],M=new THREE.Matrix4(),v=new THREE.Vector3(),
  g.traverse(o=>{if(o.isInstancedMesh&&o.count)ms.push(o)});
  for(const o of ms){const h=new THREE.InstancedMesh(o.geometry,mat,o.count);for(let i=0;i<o.count;i++){o.getMatrixAt(i,M);M.decompose(v,q,sc);h.setMatrixAt(i,M.compose(v,q,sc.multiplyScalar(2.6)))}
   h.position.copy(o.position);h.quaternion.copy(o.quaternion);h.scale.copy(o.scale);h.renderOrder=-1;o.parent.add(h)}return g}
-for(const k of CRAFTS){const f=MODELS[k];MODELS[k]=(p=PJ[k]||'')=>{let g=f(p);const J=PAINTS[p];if(J&&J.fx)g=finish(g,J.fx);if(J&&J.rim)rimEyes(g,J);return J&&J.glow?glowShell(g,J):g}}
+for(const k of CRAFTS){const f=MODELS[k];MODELS[k]=(p=PJ[k]||'')=>{let g=f(p);const J=PAINTS[p];if(J&&J.fx)g=finish(g,J.fxH&&(k==='mech'||k==='emu')?J.fxH:J.fx);if(J&&J.rim)rimEyes(g,J);return J&&J.glow?glowShell(g,J):g}}
 for(const p in PAINTS)MODELS['paint_'+p]=()=>MODELS.mech(p);
 // Galaga-style field: player holds the line at z=0 and fires up-field (-z); enemies hold a swaying formation and dive
 let world=new THREE.Group();S.add(world);const stars=[];
