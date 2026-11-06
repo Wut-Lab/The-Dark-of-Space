@@ -62,7 +62,7 @@ button.r-r{border-color:#5ab0ff80}button.r-x{border-color:#ff3d6e99;background:l
 button:hover,button:focus-visible{border-color:var(--accent);outline:none;background:#ffb43c1a}
 button b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--accent)}button span{color:var(--dim);font-size:13px}.lo{display:block;font-style:italic;color:var(--dim);font-size:12px;opacity:.8;margin-top:4px}
 kbd{font-family:var(--display);font-size:11px;border:1px solid #ffffff33;padding:1px 5px}
-#tot{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));font:400 15px var(--display);letter-spacing:.08em;color:var(--dim)}#tot b{color:var(--accent);font-weight:400}#tot{text-align:right}#tot .lc{font-size:13px;margin-top:2px}
+#tot{margin:-6px 0 10px;font:400 15px var(--display);letter-spacing:.08em;color:var(--dim)}#tot b{color:var(--accent);font-weight:400}#tot{text-align:right}#tot .lc{font-size:13px;margin-top:2px}
 #pauseBtn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));padding:8px 14px;font-family:var(--display);letter-spacing:.12em;display:block}
 #pause{position:fixed;inset:0;background:#05060a00;opacity:0;transition:opacity .3s,background .3s,backdrop-filter .3s}
 #pause.on{opacity:1;background:#05060ad9;backdrop-filter:blur(4px)}
@@ -187,7 +187,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
 <div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button><div class="skipH" id="outSk">Hit Any Key, or Tap to Skip</div></div><div id="blk" hidden></div>
 <div class="ov" id="reel"><p id="reelP"></p><div class="skipH">Hit Any Key, or Tap to Skip</div></div>
-<div class="ov scr" id="start" hidden><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div><div class="lc" id="dwL" hidden>Daily Run Wins: <b id="dwN">0</b></div></div><div class="title">
+<div class="ov scr" id="start" hidden><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
@@ -289,7 +289,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <label class="srow"><span>Music</span><span class="sv"><input type="range" id="sMus" min="0" max="100"><small id="sMusV"></small></span></label>
 <label class="srow"><span>Sound effects</span><span class="sv"><input type="range" id="sSfx" min="0" max="100"><small id="sSfxV"></small></span></label>
 <label class="srow"><span>Vibration</span><input type="checkbox" id="sVib"></label></div></div>
-<div class="ov" id="elog" hidden style="z-index:60;display:block;overflow-y:auto;padding-block:24px"><div class="card" style="margin:0 auto"><div class="hd"><h2>Log</h2><button class="back" id="elBack">Back</button></div>
+<div class="ov" id="elog" hidden style="z-index:60;display:block;overflow-y:auto;padding-block:24px"><div class="card" style="margin:0 auto"><div class="hd"><h2>Log</h2><button class="back" id="elBack">Back</button></div><div id="tot">Total Scrap: <b id="totN">0</b><div class="lc">Longest Chain: <b id="lcN">0</b></div><div class="lc">Game Mode: <b id="lcM">None yet</b></div><div class="lc" id="dwL" hidden>Daily Run Wins: <b id="dwN">0</b></div></div>
 <div class="stabs" role="tablist" aria-label="Log sections"><button role="tab" data-el="b" aria-selected="true">Basic</button><button role="tab" data-el="x" aria-selected="false">Bosses</button><button role="tab" data-el="u" aria-selected="false">Upgrades</button><button role="tab" data-el="p" aria-selected="false">Power-ups</button></div>
 <div class="hd"><div class="elsort">Sort: <button data-es="a" aria-pressed="true">A–Z</button><button data-es="d" aria-pressed="false" id="esD">Difficulty</button></div><span id="elSeen"></span></div>
 <div id="elL"></div></div></div>
@@ -2853,7 +2853,7 @@ function elDraw(){const L=elRows().sort((a,b)=>elSort==='d'?a.d-b.d||a.n.localeC
   :`<div class="el un"><div class="ph">?</div><details><summary onclick="return false">??????</summary></details></div>`).join('');
  document.querySelectorAll('[data-el]').forEach(b=>b.setAttribute('aria-selected',b.dataset.el===elTab));document.querySelectorAll('[data-es]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.es===elSort))}
 function elSpin(t){if($('elog').hidden){elRaf=0;return}elYaw+=Math.min(.05,(t-(elT||t))/1000)*.6;elT=t;document.querySelectorAll('#elL canvas').forEach(c=>snap(c.dataset.k,elYaw,c));elRaf=requestAnimationFrame(elSpin)}
-function elOpen(){elDraw();$('elog').hidden=false;$('elog').scrollTop=0;elT=0;if(!elRaf)elRaf=requestAnimationFrame(elSpin)}
+function elOpen(){dwT();elDraw();$('elog').hidden=false;$('elog').scrollTop=0;elT=0;if(!elRaf)elRaf=requestAnimationFrame(elSpin)}
 document.querySelectorAll('[data-el]').forEach(b=>b.onclick=()=>{elTab=b.dataset.el;elDraw()});document.querySelectorAll('[data-es]').forEach(b=>b.onclick=()=>{elSort=b.dataset.es;elDraw()});
 $('logBtn').onclick=$('pzLog').onclick=elOpen;$('elBack').onclick=()=>$('elog').hidden=true;
 $('setBtn').onclick=$('pzSet').onclick=()=>$('settings').hidden=false;$('setBack').onclick=()=>$('settings').hidden=true;
@@ -2868,7 +2868,7 @@ $('viewer').addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-d
 $('viewer').addEventListener('pointerup',()=>drag=null);
 function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.render(VS,VC)}
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
-let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='start')dwT();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'start';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
