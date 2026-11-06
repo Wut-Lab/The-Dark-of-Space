@@ -2411,7 +2411,7 @@ let PD=null;function pdTick(dt){const p=player.position;if(!PD){PD=new THREE.Mes
  let tg=null,bd=6;for(const s of shots)if(s.enemy&&s.life>0&&s.m.visible){const d=hd(s.m.position,p);if(d<bd&&s.v.z>-.01){bd=d;tg=s}}
  let e=null;if(!tg&&st.pkd>2){bd=7;for(const x of ents)if(x.type==='mine'&&x.hp>0&&x.m.visible){const d=hd(x.m.position,p);if(d<bd){bd=d;e=x}}}
  const at=tg?tg.m.position:e?e.m.position:null;if(!at)return;st.pkc=cd;if(tg)tg.life=0;else{const k=st.dmg*2;st.dealt+=Math.min(k,e.hp);e.hp-=k;hitFlash(e)}
- const L=new THREE.Line(new THREE.BufferGeometry().setFromPoints([PD.position.clone(),at.clone()]),new THREE.LineBasicMaterial({color:0x8fe8ff,transparent:true,blending:THREE.AdditiveBlending}));S.add(L);boom(at,4,0x8fe8ff);setTimeout(()=>{S.remove(L);L.geometry.dispose();L.material.dispose()},90)}
+ zapLine(PD.position,at,90);boom(at,4,0x8fe8ff)}
 // Turncoat Beacon: a unit that would be destroyed defects instead. It rides beside you firing up the field, then crashes
 // into the nearest enemy. No scrap, no kill; enemies fire 15% faster while one is with you (thf)
 let TCA=[];const TCNO=new Set(['mcube','vcube','mdecoy','slime','magpie','hulk','mine','vspirit']);
@@ -2425,7 +2425,10 @@ function tcTick(dt){const p=player.position;if(!ents.some(e=>e.hp>0)){tcClear();
  for(const a of TCA)if(a.gone){boom(a.m.position,14,0x7dffb0);S.remove(a.m)}TCA=TCA.filter(a=>!a.gone)}
 // Arc Rounds: a hit may arc once to the nearest unit within 6; arcs never arc again. Kills count normally
 function arcHit(c,dm){const t=Math.min(3,st.arcR);if(Math.random()>=(t>2?.4:.33))return;let b=null,bd=6;for(const e of ents)if(e!==c&&e.hp>0&&e.m.visible&&!((e.type==='boss'||e.type==='onager')&&armored(e))&&!(BOSSES.has(e.type)&&!e.inPos)){const d=hd(e.m.position,c.m.position);if(d<bd){bd=d;b=e}}if(!b)return;const d=dm*[0,.5,.75,1][t];st.dealt+=Math.min(d,b.hp);b.hp-=d;hitFlash(b);
- const L=new THREE.Line(new THREE.BufferGeometry().setFromPoints([c.m.position.clone(),b.m.position.clone()]),new THREE.LineBasicMaterial({color:0x8fe8ff,transparent:true,blending:THREE.AdditiveBlending}));S.add(L);boom(b.m.position,4,0x8fe8ff);setTimeout(()=>{S.remove(L);L.geometry.dispose();L.material.dispose()},110)}
+ zapLine(c.m.position,b.m.position,110);boom(b.m.position,4,0x8fe8ff)}
+// Short cyan zap lines (Arc Rounds, Picket Drone) come from a small reused pool instead of new geometry per zap
+const ZAPS=[],ZAPM=new THREE.LineBasicMaterial({color:0x8fe8ff,transparent:true,blending:THREE.AdditiveBlending});
+function zapLine(a,b,ms){let L=ZAPS.find(z=>!z.visible);if(!L){L=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),ZAPM);L.frustumCulled=false;ZAPS.push(L);S.add(L)}const P=L.geometry.attributes.position;P.setXYZ(0,a.x,a.y,a.z);P.setXYZ(1,b.x,b.y,b.z);P.needsUpdate=true;L.visible=true;setTimeout(()=>L.visible=false,ms)}
 function shrap(c,dm){const t=Math.min(3,st.shrp),R=t>2?2:1.6,d=dm*[0,.25,.35,.45][t];boom(c.m.position,5,0xe8742a);for(const e of ents)if(e!==c&&e.hp>0&&e.m.visible&&!BOSSES.has(e.type)&&hd(e.m.position,c.m.position)<R+e.r){st.dealt+=Math.min(d,e.hp);e.hp-=d;hitFlash(e)}}
 function venom(c){const cd=2+(st.venom>=2?1:0),bd=2+(st.venom>=3?1:0);c.hp-=cd;st.dealt+=cd;boom(c.m.position,16,0x7dff3a);shake=Math.max(shake,.12);
  for(const e of ents)if(e!==c&&e.m.visible&&e.hp>0&&!((e.type==='boss'||e.type==='onager')&&armored(e))&&!(BOSSES.has(e.type)&&!e.inPos)&&hd(e.m.position,c.m.position)<3.5){e.hp-=bd;st.dealt+=bd;e.m.scale.setScalar(1.25)}}
@@ -2472,7 +2475,7 @@ function gpPoll(dt){const g=[...(navigator.getGamepads?navigator.getGamepads():[
  if(hit(9)&&st&&(running||paused))showPause(!paused);
  else if(!inRun){if(!$('reel').hidden||!$('outro').hidden){if(hit(0))!$('reel').hidden?reelTap():outSkip()}
   else{const mx=Math.abs(hx)>.5?Math.sign(hx):0,my=Math.abs(hy)>.5?Math.sign(hy):0;if(mx||my){if((GP.rep-=dt)<=0){gpMove(mx,my);GP.rep=GP.held?.15:.35;GP.held=1}}else{GP.rep=0;GP.held=0}
-   if(GP.f&&!gpTop().includes(GP.f))gpMark(null);if(hit(0)){if(GP.f)GP.f.click();else gpMove(0,1)}
+   if(GP.f&&(GP.chk=(GP.chk||0)-dt)<=0){GP.chk=.25;if(!gpTop().includes(GP.f))gpMark(null)}if(hit(0)){if(GP.f)GP.f.click();else gpMove(0,1)}
    if(hit(1)){if(paused&&!$('pzMenu').hidden)showPause(false);else{const k=gpTop().find(b=>b.classList.contains('back')||/^(pzBack|pzUBack|setBack|elBack)$/.test(b.id));if(k)k.click()}}}}
  else if(GP.f)gpMark(null);
  GP.prev=g.buttons.map((_,i)=>B(i))}addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
@@ -2524,7 +2527,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    // Kestrel legs hang weightless, trailing opposite the strafe
    const L=b.userData.legs;if(L){const w=.18-mz*(mz<0?.55:.6)+Math.sin(now/260)*.05;L.rotation.x+=(w-b.rotation.x-L.rotation.x)*.08}
    if(b.userData.arms)b.userData.arms.forEach((A,i)=>{if(!i){A.rotation.set(-b.rotation.x,0,0);return}A.rotation.x+=(-mz*(mz<0?.3:.25)+Math.sin(now/300+i*1.7)*.04-A.rotation.x)*.06;A.rotation.z+=(mx*.3-A.rotation.z)*.06})}
-    {const b=player.userData.body,lg=!!b.userData.legs;if(!lg)b.rotation.x+=(-mz*.18-b.rotation.x)*.1;player.rotation.z+=(-mx*(lg?.25:.45)-player.rotation.z)*(lg?1:.15);
+    {const b=player.userData.body,lg=!!b.userData.legs;if(!lg)b.rotation.x+=(-mz*.18-b.rotation.x)*.1;player.rotation.z+=(-mx*(lg?.25:.45)-player.rotation.z)*(1-Math.exp(-dt*(lg?16:9)));
    // Recoil kicks the gun arm back, harder with more damage
    st.rk=(st.rk||0)*Math.exp(-dt*14);const ga=lg&&!b.userData.norc&&b.userData.arms[0];if(ga){ga.rotation.x-=st.rk;ga.position.z=-st.rk*.5}
    st.ht=(st.ht||0)-dt;const ht=Math.max(0,st.ht)/.12,j=ht*.08;b.position.set((Math.random()-.5)*j,(Math.random()-.5)*j,0);
@@ -2546,7 +2549,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    const lx=Math.max(-.5,Math.min(.5,p.x-st.fdx)),lz=Math.max(-.4,Math.min(.4,p.z-st.fdz));dr.forEach((m,j)=>{m.position.set((j?1:-1)*1.6+lx,.05+Math.sin(now/260+j*2)*.08,-.1+lz)})}}
   // Magpie Nest sits on top of the craft
   if(st.nest&&!player.userData.nest){const n=MODELS.nest();n.position.y=new THREE.Box3().setFromObject(player.userData.body.userData.hull||player.userData.body).max.y-.1;player.add(player.userData.nest=n)}if(player.userData.nest)player.userData.nest.visible=!!st.nest;
-  st.cd-=dt;if(!FALL&&!st.sss&&st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1)/pssK()/kmK()/(st.kind==='falcon'&&st.ftr&&st.mov?1+[0,.06,.09,.12][Math.min(3,st.ftr)]:1)/(st.kind==='ship'?(st.stf&&st.slip?1+[0,.08,.12,.16][Math.min(3,st.slip)]:1)*(st.stf&&st.ist>1?1.25:1)*(st.cwt>0?1.15:1):1)/(1+.03*(st.kcs||0))/(st.ch>=chN(1)?1+.1*chm():1)/(st.brT>0?1+[0,.05,.1,.15][Math.min(3,st.brn)]:1)/(st.arcR&&st.ch>=chN(2)?st.arcR>1?1.12:1.1:1);if(!player.userData.body.userData.drones||st.spr>0)muzzleT=.05;blaster();st.rk=Math.min(.5,.1+.04*st.dmg);const mo=muz(p),n=st.multi+(st.spr>0?st.kind==='falcon'&&st.pss>2?5:4:0),w=st.spr>0?.16:.12;const vs=[],dr=player.userData.body.userData.drones,dd=dr?BASE.flock.dmg+(st.dmg-BASE.flock.dmg)*.7:st.dmg;const E=[];if(!dr)E.push([mo,[...Array(n)].map((_,i)=>(i-(n-1)/2)*w)]);else{
+  st.cd-=dt;if(!FALL&&!st.sss&&st.cd<=0){st.cd=st.rate/(ap&&st.apex>2?1.08:1)/pssK()/kmK()/(st.kind==='falcon'&&st.ftr&&st.mov?1+[0,.06,.09,.12][Math.min(3,st.ftr)]:1)/(st.kind==='ship'?(st.stf&&st.slip?1+[0,.08,.12,.16][Math.min(3,st.slip)]:1)*(st.stf&&st.ist>1?1.25:1)*(st.cwt>0?1.15:1):1)/(1+.03*(st.kcs||0))/(st.ch>=chN(1)?1+.1*chm():1)/(st.brT>0?1+[0,.05,.1,.15][Math.min(3,st.brn)]:1)/(st.arcR&&st.ch>=chN(2)?st.arcR>1?1.12:1.1:1);if(!player.userData.body.userData.drones||st.spr>0)muzzleT=.05;blaster();st.rk=Math.min(.22,.08+.02*st.dmg)*Math.min(1,st.rate/.45);const mo=muz(p),n=st.multi+(st.spr>0?st.kind==='falcon'&&st.pss>2?5:4:0),w=st.spr>0?.16:.12;const vs=[],dr=player.userData.body.userData.drones,dd=dr?BASE.flock.dmg+(st.dmg-BASE.flock.dmg)*.7:st.dmg;const E=[];if(!dr)E.push([mo,[...Array(n)].map((_,i)=>(i-(n-1)/2)*w)]);else{
     // Flock: each drone fires 1 (2 angled outward during Spread Shot, with the jet firing the middle one); extra shots alternate between drones
     player.updateMatrixWorld();const sp=st.spr>0,ex=st.multi-1,a=st.vol%2;if(sp)E.push([mo,[0]]);else if(st.cat&&st.ch>=5)E.push([mo,[0],1,0,1]);
     dr.forEach((m,j)=>{const o=m.getWorldPosition(new THREE.Vector3()),k=(sp?2:1)+(j===a?Math.ceil(ex/2):Math.floor(ex/2)),g=Math.sign(o.x-p.x)||1;const ti=st.cxw||st.cfr?-(o.x-p.x)/12:0;E.push([o,[...Array(k)].map((_,i)=>ti+(sp?g*(i+1)*w:(i-(k-1)/2)*w)),1,g])})}
