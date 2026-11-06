@@ -102,6 +102,7 @@ padding-block:calc(56px + env(safe-area-inset-top,0px)) 24px;padding-left:max(16
  #opts button>*,#evO button>*{grid-column:2;margin:0}#opts button>.rar,#opts button>b,#evO button>.rar,#evO button>b{grid-column:1}#opts button>b,#evO .rar~b{grid-row:2}#opts button>span,#evO .rar~span{grid-row:1/3}#opts button>.lo{margin-top:2px}
  #pick .card{display:block;width:min(100%,960px);padding:6px 14px 8px;text-align:center}#pick .card>h2,#pick .card>p{display:inline-block;margin:0 6px}#pick .card>p{font-size:13px}#opts{margin-top:6px;gap:4px;text-align:left}#opts button{grid-template-columns:160px 1fr;padding:5px 10px;line-height:1.3}#opts button>.lo{grid-column:1/-1;margin-top:1px}}
 @media (max-height:520px) and (max-width:740px){#opts button{grid-template-columns:140px 1fr;font-size:13px}#opts button>.lo{font-size:11px}}
+button.gpf{outline:2px solid var(--accent);outline-offset:3px}
 #banner{position:fixed;left:0;right:0;top:24%;text-align:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #bar.crit i{animation:crit .5s infinite alternate}@keyframes crit{to{opacity:.35}}
 #banner::before{content:"// FLEET COMMAND //";display:block;font:600 12px var(--body);letter-spacing:.35em;color:#fff;margin-bottom:10px;text-shadow:0 2px 6px #000}
@@ -248,7 +249,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><div class="ft"><button class="back bot" data-go="howback">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Move with <kbd>WASD</kbd> or the arrow keys. On touch, drag anywhere (play in landscape).</li><li>Your guns fire on their own.</li><li>Dash with <kbd>Shift</kbd> or the <b>Dash</b> button. Each dash uses EN.</li><li>Pause with <kbd>Esc</kbd>, <kbd>P</kbd> or the <b>Pause</b> button.</li></ul></div></div>
+<ul><li>Move with <kbd>WASD</kbd> or the arrow keys. On touch, drag anywhere (play in landscape).</li><li>Your guns fire on their own.</li><li>Dash with <kbd>Shift</kbd> or the <b>Dash</b> button. Each dash uses EN.</li><li>Pause with <kbd>Esc</kbd>, <kbd>P</kbd> or the <b>Pause</b> button.</li><li>On a gamepad, move with the left stick or D-pad, dash with A or the right bumper or trigger, and pause with Start. In menus, A selects and B goes back.</li></ul></div></div>
 
 <div class="ov scr" id="how-run" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop.</li><li>Play well to unlock new crafts, upgrades and paint jobs.</li></ul></div></div>
@@ -279,7 +280,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
 <h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Driftlight</i> (Scrap Sphere Station), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Afterglow</i>, a take on Gold Rush that builds from slow and grand into epic metal, and the Scion's dying metallic roar (also Nox's scream), synthesized in code with the Web Audio API by Claude</li></ul>
-<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li><li>Installable web app with offline play (web app manifest and service worker)</li></ul>
+<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li><li>Installable web app with offline play (web app manifest and service worker)</li><li>Gamepad support (Gamepad API)</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
 <div class="ft"><button class="back bot" data-go="start">Back</button></div></div></div>
@@ -1521,7 +1522,7 @@ function voidTick2(dt,p){drawTick(dt,p);if(st.gz){const pr=(st.pr||.6)+1;for(con
   if(w.t<=0){S.remove(w.g);w.r.material.dispose();w.gone=1}}BU.wells=BU.wells.filter(w=>!w.gone)}
 function monHit(){if(BU.iv>0)return;BU.iv=.5;st.monH--;boom(BU.mon.position,st.monH>0?8:30,0xffb040,st.monH<=0)}
 // Bouncing Betty (Kestrel): the dash button lobs a mine halfway up the lane; with it cooling down, the button sidesteps
-function bettyIn(p,dc){const B=st.bb||(st.bb={cd:0,ss:0,list:[]}),want=keys.shift||st.tap;if(!want)return;
+function bettyIn(p,dc){const B=st.bb||(st.bb={cd:0,ss:0,list:[]}),want=keys.shift||st.tap||GP.b;if(!want)return;
  if(B.cd<=0&&st.en>=dc){st.en-=dc;B.cd=3;const top=Math.min(-18,...ents.filter(e=>e.m.visible&&e.hp>0).map(e=>e.m.position.z)),m=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xffb040}));m.scale.setScalar(.5);S.add(m);
   B.list.push({m,a:p.clone().setY(1.2),b:V3(p.x,(p.z+top)/2),t:0,life:5});blaster()}else if(st.bt<=0&&B.ss<=0){st.bt=.11;B.ss=.8}}
 function bettyTick(dt,p){const B=st.bb;if(!B)return;B.cd-=dt;B.ss-=dt;
@@ -1562,7 +1563,7 @@ function kinTick(dt,p){const B=player.userData.body;if(!kinOn()){st.kl=null;retu
   for(let i=0;i<3;i++){const m=new THREE.Mesh(new THREE.BoxGeometry(.28,.28,.1),new THREE.MeshBasicMaterial({color:0xeaff3a,transparent:true,opacity:.2}));m.position.z=-.17+i*.17;g.add(m);g.userData.r.push(m)}
   t.parent.add(g);B.userData.kg=g}
  const g=B.userData.kg;if(g){const f=st.kbolt?1:(st.kd||0)/kinGap(),pu=st.kbolt?.6+.4*Math.sin(performance.now()/70):0;g.userData.r.forEach((m,i)=>m.material.opacity=st.kbolt?.55+.45*pu:f>(i+1)/3?.95:f>i/3?.25+.7*(f*3-i):.15)}}
-function laserIn(p,dc){const L=st.lz||(st.lz={t:0,cd:0,ss:0,tk:0,d:1,dir:1}),want=keys.shift||st.tap,cost=Math.min(100,dc*2);if(!want||L.t>0)return;
+function laserIn(p,dc){const L=st.lz||(st.lz={t:0,cd:0,ss:0,tk:0,d:1,dir:1}),want=keys.shift||st.tap||GP.b,cost=Math.min(100,dc*2);if(!want||L.t>0)return;
  if(L.cd<=0&&st.en>=cost){st.en-=cost;L.t=L.d=st.laser>1?1.5:1.2;L.dir=st.dir||1;L.cd=3;L.tk=0;blaster()}else if(st.bt<=0&&L.ss<=0){st.bt=.11;L.ss=.8}}
 function lightsOut(on){hemi.intensity=on?.18:.9;sun.intensity=on?.05:.8;LO.beam.visible=!!on;if(!on)LO.cone.intensity=LO.flash.intensity=0}
 const muzzle=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0xfff2b0}));muzzle.visible=false;S.add(muzzle);
@@ -2442,7 +2443,25 @@ function chainHud(){const c=st.ch||0;$('chR').textContent='×'+c;$('chW').classN
 function hurt(n){if(st.dvInv||st.inv>0||st.gold>0||st.veng&&st.bt>0)return;if(st.bar>0){st.bar--;st.inv=.5;boom(player.position,8,0xb47cff);shake=Math.max(shake,.15);prog('barrier');return}if(st.pk==='scrap')st.scrap=Math.max(0,st.scrap-5);
  // Bootleg Shields: every 5th hit may be blocked; the absorbed energy charges the next shot, but the overload slows you briefly
  const bt=Math.min(st.boot,3)-1;if(st.boot&&++st.hitN%[5,4,3][bt]===0&&Math.random()<[.5,.75,1][bt]){st.bchg=[2,3,4][bt];st.slow=1;st.inv=.4;boom(player.position,8,0xff3d6e);popMsg('BLOCKED','#ff3d6e');return}st.bhit=1;if(st.sth>2&&st.shS!==st.sec)st.shS=st.sec;else chainBreak();if(st.kind==='mech')prog('khit');if(st.timed){st.time-=5;n=0}if(n){st.kcs=0;st.zh++;if(st.jet&&st.scrap){st.scrap=Math.max(0,st.scrap-15);popMsg('-15 SCRAP','#ff8a3a')}}if(st.owl&&n){st.ob=3;if(st.owl>=3)st.os=1.2}if(st.bip&&n)n=Math.max(1,n-(st.bip>=3&&n>=3?2:1));if(st.xarm>=3&&n>=2&&st.xaS!==st.sec){st.xaS=st.sec;n--}if(n>=3)buzz(70);st.hp-=n&&n+st.vuln;if(n)emuHit();st.inv=.8;flash();st.ht=.12;boom(player.position,4,0xffd060);shake=Math.max(shake,.3);boom(player.position,6,0xff5a5a);hud()}
-addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
+addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);
+// Gamepad (standard mapping): left stick or D-pad moves, A / RB / RT dash, Start pauses. In menus the stick or D-pad
+// moves a highlight between the buttons on top, A presses it and B goes back (or resumes from the pause menu)
+const GP={x:0,z:0,b:0,prev:[],rep:0,f:null};
+function gpTop(){return [...document.querySelectorAll('button')].filter(b=>{if(b.disabled||!b.getClientRects().length)return false;const r=b.getBoundingClientRect();if(r.width<2||r.bottom<0||r.top>innerHeight)return false;const t=document.elementFromPoint(r.left+r.width/2,Math.min(innerHeight-1,Math.max(0,r.top+r.height/2)));return t&&(t===b||b.contains(t))})}
+function gpMark(b){if(GP.f)GP.f.classList.remove('gpf');GP.f=b;if(b){b.classList.add('gpf');b.scrollIntoView({block:'nearest'})}}
+function gpMove(dx,dy){const L=gpTop();if(!L.length)return;if(!GP.f||!L.includes(GP.f))return gpMark(L[0]);const a=GP.f.getBoundingClientRect(),ax=a.left+a.width/2,ay=a.top+a.height/2;let best=null,bs=1e9;
+ for(const b of L){if(b===GP.f)continue;const r=b.getBoundingClientRect(),vx=r.left+r.width/2-ax,vy=r.top+r.height/2-ay,along=vx*dx+vy*dy;if(along<=4)continue;const sc=along+Math.abs(vx*dy-vy*dx)*2;if(sc<bs){bs=sc;best=b}}if(best)gpMark(best)}
+function gpPoll(dt){const g=[...(navigator.getGamepads?navigator.getGamepads():[])].find(x=>x&&x.connected);if(!g){GP.x=GP.z=GP.b=0;return}
+ const B=i=>!!(g.buttons[i]&&(g.buttons[i].pressed||g.buttons[i].value>.5)),hit=i=>B(i)&&!GP.prev[i],dz=v=>Math.abs(v)<.2?0:v,ax=dz(g.axes[0]||0),ay=dz(g.axes[1]||0);
+ const hx=(B(15)?1:0)-(B(14)?1:0)||ax,hy=(B(13)?1:0)-(B(12)?1:0)||ay,inRun=running&&!paused;
+ GP.x=inRun?hx:0;GP.z=inRun?hy:0;GP.b=inRun&&(B(0)||B(5)||B(7))?1:0;
+ if(hit(9)&&st&&(running||paused))showPause(!paused);
+ else if(!inRun){if(!$('reel').hidden||!$('outro').hidden){if(hit(0))!$('reel').hidden?reelTap():outSkip()}
+  else{const mx=Math.abs(hx)>.5?Math.sign(hx):0,my=Math.abs(hy)>.5?Math.sign(hy):0;if(mx||my){if((GP.rep-=dt)<=0){gpMove(mx,my);GP.rep=GP.held?.15:.35;GP.held=1}}else{GP.rep=0;GP.held=0}
+   if(GP.f&&!gpTop().includes(GP.f))gpMark(null);if(hit(0)){if(GP.f)GP.f.click();else gpMove(0,1)}
+   if(hit(1)){if(paused&&!$('pzMenu').hidden)showPause(false);else{const k=gpTop().find(b=>b.classList.contains('back')||/^(pzBack|pzUBack|setBack|elBack)$/.test(b.id));if(k)k.click()}}}}
+ else if(GP.f)gpMark(null);
+ GP.prev=g.buttons.map((_,i)=>B(i))}addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
 R.domElement.addEventListener('pointerdown',e=>touch={id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,dy:0,px:player?player.position.x:0,pz:player?player.position.z:0});
 addEventListener('pointermove',e=>{if(touch&&e.pointerId===touch.id){touch.dx=e.clientX-touch.x;touch.dy=e.clientY-touch.y}});addEventListener('pointerup',e=>{if(touch&&e.pointerId===touch.id)touch=null});
 $('boost').addEventListener('pointerdown',e=>{e.preventDefault();if(st)st.tap=1});
@@ -2458,7 +2477,7 @@ const NOFIRE={chaser:1,mine:1,lancer:1,warden:1,mino:1,caesar:1,glacier:1,mote:1
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 // Swept hit test: distance from target c to the segment a shot travelled this frame (o -> p), so low frame rates can't skip past a unit
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
-function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)/1000),dt=rdt*(FALL&&FALL.t<2.4?.3:1);last=now;hintUp(rdt);if(running&&st&&!st.timed)bossAdds(dt);if(running&&st&&TCA.length)tcTick(dt);if(running&&st&&st.ch&&chainLive()&&(st.cht-=dt)<=0)chainBreak();
+function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)/1000),dt=rdt*(FALL&&FALL.t<2.4?.3:1);last=now;hintUp(rdt);gpPoll(rdt);if(running&&st&&!st.timed)bossAdds(dt);if(running&&st&&TCA.length)tcTick(dt);if(running&&st&&st.ch&&chainLive()&&(st.cht-=dt)<=0)chainBreak();
  // Black Ice Plating: any armor gained since last frame is halved; half points carry over so small repairs still add up
  if(st&&st.bip){if(st.hp>st.hl){st.hb=(st.hb||0)+(st.hp-st.hl)/2;const w=Math.floor(st.hb);st.hb-=w;st.hp=st.hl+w;if(player)hud()}st.hl=st.hp}
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
@@ -2467,10 +2486,10 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
  DRK.visible=dk;if(dk)darkTick(dt,running?10:3);
  LEG.visible=!!st&&!st.timed&&st.area==='Legion Space';if(LEG.visible)legionTick(dt,running?10:3);
  FRO.visible=!!st&&!st.timed&&st.area==='The Frost Reach';if(FRO.visible)frostTick(dt,running?8:2.5,now);CRY.visible=!!st&&!st.timed&&st.area==='Red Crystal Asteroid Belt';if(CRY.visible)crystalTick(dt,running?10:3);ALK.visible=!!st&&!st.timed&&st.area==='The Alkaline Zone';if(ALK.visible)alkalineTick(dt,running?9:3,now);S.background.setHex(FRO.visible?0x040a16:CRY.visible?0x140506:ALK.visible?0x24272c:st&&!st.timed&&st.area==='Dark Space'?0x000001:0x05060c);if(running&&player&&!st.sss){alkTick(dt,player.position);voidTick(dt,player.position);colTick(dt,player.position)}
- if(running){for(const e of ents)if(!SEEN[e.type])seeIt(e.type);const p=player.position;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),mz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
+ if(running){for(const e of ents)if(!SEEN[e.type])seeIt(e.type);const p=player.position;let mx=THREE.MathUtils.clamp((keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+GP.x,-1,1),mz=THREE.MathUtils.clamp((keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0)+GP.z,-1,1);
   if(touch){const want=touch.px+touch.dx/innerWidth*FX*2.5-p.x;mx=Math.abs(want)>.08?THREE.MathUtils.clamp(want/1.2,-1,1):0;const wz=THREE.MathUtils.clamp(touch.pz+touch.dy/innerHeight*12,-PZF,PZB)-p.z;mz=Math.abs(wz)>.08?THREE.MathUtils.clamp(wz/1.2,-1,1):0}
   if(mx)st.dir=Math.sign(mx);let sp=st.spd*(1+.03*(st.sens||0)+(st.mpi?(st.scrap/25|0)/100:0)+(st.jet?Math.min([8,12,16][st.jet-1],[2,3,4][st.jet-1]*Math.floor(st.scrap/50))/100:0));if(st.slow>0){st.slow-=dt;sp*=.5}if(st.ob>0)sp*=1+[0,.1,.15,.2][st.owl];
-  owl.visible=!!st.owl;if(st.owl){st.oa=(st.oa||0)+dt*1.1;owl.position.set(p.x+Math.cos(-st.oa+Math.PI)*2.6,p.y,p.z+Math.sin(-st.oa+Math.PI)*2.6);owl.rotation.y=.3*Math.sin(st.oa);owlW.forEach(w=>w.scale.x=.55+.45*Math.abs(Math.sin(now*.004)));owlH.material.opacity=.22+.08*Math.sin(now*.003)}st.ob=(st.ob||0)-dt;st.os=(st.os||0)-dt;moth.visible=!!st.moth;if(st.moth){st.ma=(st.ma||0)-dt*[0,1.3,1.7,2.1][st.moth];moth.position.set(p.x+Math.cos(st.ma)*2,p.y,p.z+Math.sin(st.ma)*2);moth.rotation.y=-st.ma;moth.children[1].scale.x=moth.children[2].scale.x=.45*(.7+.3*Math.abs(Math.sin(now*.012)))}st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=(35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0))*(st.pk==='after'?.8:1)*(st.blink?st.blink>=3?1.15:1.25:1)*(st.qs>2?.85:1)*(st.met?1.1:1)*(st.veng?.9:1),dcc=st.chg?dc*1.1:dc;if(st.betty&&st.kind==='mech')bettyIn(p,dc);else if(st.laser)laserIn(p,dc);else if((keys.shift||st.tap)&&st.en>=dcc&&st.bt<=0&&!(st.veng&&st.vcd>0)){if(st.veng){st.vcd=1.5;st.vdh=new Set()}
+  owl.visible=!!st.owl;if(st.owl){st.oa=(st.oa||0)+dt*1.1;owl.position.set(p.x+Math.cos(-st.oa+Math.PI)*2.6,p.y,p.z+Math.sin(-st.oa+Math.PI)*2.6);owl.rotation.y=.3*Math.sin(st.oa);owlW.forEach(w=>w.scale.x=.55+.45*Math.abs(Math.sin(now*.004)));owlH.material.opacity=.22+.08*Math.sin(now*.003)}st.ob=(st.ob||0)-dt;st.os=(st.os||0)-dt;moth.visible=!!st.moth;if(st.moth){st.ma=(st.ma||0)-dt*[0,1.3,1.7,2.1][st.moth];moth.position.set(p.x+Math.cos(st.ma)*2,p.y,p.z+Math.sin(st.ma)*2);moth.rotation.y=-st.ma;moth.children[1].scale.x=moth.children[2].scale.x=.45*(.7+.3*Math.abs(Math.sin(now*.012)))}st.dbcd=(st.dbcd||0)-dt;st.aicd=(st.aicd||0)-dt;st.ai=(st.ai||0)-dt;ghost.visible=st.ai>0;const dc=(35+(st.rico&&st.rico<3?15:0)+(st.dburst?5:0))*(st.pk==='after'?.8:1)*(st.blink?st.blink>=3?1.15:1.25:1)*(st.qs>2?.85:1)*(st.met?1.1:1)*(st.veng?.9:1),dcc=st.chg?dc*1.1:dc;if(st.betty&&st.kind==='mech')bettyIn(p,dc);else if(st.laser)laserIn(p,dc);else if((keys.shift||st.tap||GP.b)&&st.en>=dcc&&st.bt<=0&&!(st.veng&&st.vcd>0)){if(st.veng){st.vcd=1.5;st.vdh=new Set()}
    // Dash Burst: one wide shot up the lane if EN was above the tier's threshold
    if(st.dburst&&st.en>[0,50,40,30][st.dburst]&&st.dbcd<=0){st.dbcd=1;fire(p,V3(0,-1).normalize(),st.shot,st.dmg,false,0x6fd3ff,st.pierce,st.wide*1.5)}
    if(st.kcap&&st.kind==='swift')kinDash(p);
