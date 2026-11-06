@@ -266,7 +266,10 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 </div>
 <div class="pane" id="p-df" role="tabpanel" aria-labelledby="t-df" hidden>
 <style>
-#p-df{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300}
+#p-df{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9}
+.dtab input{width:5.2em;font:13px var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:4px 6px;text-align:right}.dtab input:focus{outline:none;border-color:var(--pink)}
+.dk{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.85rem;color:var(--mute)}.dk input[type=range]{flex:1;min-width:140px;accent-color:var(--pink)}.dk b{color:var(--fg)}
+.dbtn{font:600 .8rem var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:8px 12px;cursor:pointer;min-height:36px}.dst{font-size:.8rem;color:var(--mute)}
 .dfc svg{width:100%;height:auto;display:block;overflow:visible}.dfc .ax{stroke:var(--line)}.dfc .gr{stroke:#ffffff10}.dfc text{font:11px var(--mono);fill:var(--mute)}
 .dfc .ln{fill:none;stroke-width:2;stroke-linejoin:round}.dfc .hv{stroke:#ffffff55;stroke-dasharray:3 3}
 .dleg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--mute)}.dleg span{display:flex;align-items:center;gap:6px}.dleg i{display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--c)}
@@ -277,9 +280,12 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <section class="list"><h2>Ramp by sector <small>% of each lever's full range</small></h2>
 <div class="dleg" id="dleg"></div>
 <div class="dfc" style="position:relative"><svg id="dsvg" viewBox="0 0 420 240" role="img" aria-label="Each difficulty lever's progress from sector 1 to 40"></svg><div class="dtip" id="dtip" hidden></div></div>
-<p class="sub">Hover or tap the chart to read each lever at a sector. Dive interval is drawn as progress toward its fastest value. Baseline: every lever ramps evenly to sector 40, so all six lines overlap for now. They separate as levers get tuned.</p></section>
-<section class="list"><h2>The table <small>edit DIFF in index.html</small></h2>
-<table class="dtab"><thead><tr><th>Lever</th><th class="dn">Sector 1</th><th class="dn">Sector 40</th><th class="dn">Full at</th></tr></thead><tbody id="dtb"></tbody></table></section>
+<p class="sub">Hover or tap the chart to read each lever at a sector. Each line shows how far that lever is through its range; dive interval counts down toward its fastest value. Lines that share a full-at sector overlap.</p></section>
+<section class="list"><h2>Tune it <small>edits save to this page</small></h2>
+<div class="dk"><span>Curve shape k</span><input type="range" id="dK" min="0.5" max="2.5" step="0.05" aria-label="Curve shape k"><b id="dKv"></b><span id="dKh"></span></div>
+<table class="dtab"><thead><tr><th>Lever</th><th class="dn">Sector 1</th><th class="dn">Sector 40</th><th class="dn">Full at sector</th></tr></thead><tbody id="dtb"></tbody></table>
+<div class="dk"><button class="dbtn" id="dReset">Reset to game values</button><span class="dst" id="dSt"></span></div>
+<p class="sub">Tune the numbers and watch the chart. When it feels right, tell Claude to apply the blueprint's difficulty tuning: your values are saved here and read straight into the game.</p></section>
 <section class="list"><h2>Add-ons on top <small>kept separate</small></h2><ul>
 <li><b>Threat:</b> each upgrade taken adds enemy health and fire rate: Common +2%, Uncommon +3%, Rare and Contraband +4%.</li>
 <li><b>Elites:</b> +50% health, plus their twists. <b>Daily Run:</b> the day's enemy twist.</li>
@@ -389,21 +395,35 @@ function renderPU(){const q=document.getElementById('q').value.trim().toLowerCas
  document.querySelectorAll('.fl').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===F[g.dataset.f])))}
 document.getElementById('q').addEventListener('input',renderPU);document.getElementById('uq').addEventListener('input',renderUP);
 document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F[g.dataset.f]=b.dataset.v;renderPU();renderUP()}));
-// Difficulty tab: mirrors DIFF in index.html. Each row: [label, start, end, full-at D, unit/format, invert]
-{const DF=[['Enemy health',1,3.45,1,v=>v.toFixed(2)+'×'],['Dive interval',2.6,.6,1,v=>v.toFixed(2)+' s'],['Dive speed',.47,1.25,1,v=>v.toFixed(2)],['Wave columns',3,9,1,v=>Math.floor(v)],['Wave rows',2,4,1,v=>Math.floor(v)],['Waves per sector',2,3,1,v=>Math.round(v)]];
- const val=(r,s)=>{const D=(s-1)/39;return r[1]+(r[2]-r[1])*Math.min(1,D/r[3])},pr=(r,s)=>Math.min(1,((s-1)/39)/r[3]);
- const W=420,H=240,L=34,R=12,T=10,B=28,X=s=>L+(s-1)/39*(W-L-R),Y=v=>T+(1-v)*(H-T-B),svg=document.getElementById('dsvg'),ns='http://www.w3.org/2000/svg';
+// Difficulty tab: an editable copy of DIFF in index.html. Edits redraw the chart and save to db doc tuning/difficulty,
+// which Claude reads to apply them to the game. GAME holds the values currently in the game (keep in step with DIFF).
+{const GAME={k:1,rows:{hp:[1,3.45,40],fire:[1,1,40],dive:[2.6,.6,40],dspd:[.47,1.25,40],cols:[3,9,40],rows:[2,4,40],waves:[2,3,40]}};
+ const META=[['hp','Enemy health',v=>v.toFixed(2)+'×',.05],['fire','Enemy fire rate',v=>v.toFixed(2)+'×',.05],['dive','Dive interval',v=>v.toFixed(2)+' s',.05],['dspd','Dive speed',v=>v.toFixed(2),.01],['cols','Wave columns',v=>Math.floor(v),1],['rows','Wave rows',v=>Math.floor(v),1],['waves','Waves per sector',v=>Math.round(v),1]];
+ let T=JSON.parse(JSON.stringify(GAME));
+ const Dk=s=>((s-1)/39)**T.k,fullD=f=>Dk(Math.max(2,f)),pr=(key,s)=>Math.min(1,Dk(s)/fullD(T.rows[key][2])),val=(key,s)=>{const [a,b]=T.rows[key];return a+(b-a)*pr(key,s)};
+ const W=420,H=240,L=34,R=12,Tp=10,B=28,X=s=>L+(s-1)/39*(W-L-R),Y=v=>Tp+(1-v)*(H-Tp-B),svg=document.getElementById('dsvg'),ns='http://www.w3.org/2000/svg';
  const el=(t,a,p=svg)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
  for(const v of [0,.25,.5,.75,1]){el('line',{x1:L,x2:W-R,y1:Y(v),y2:Y(v),class:v?'gr':'ax'});el('text',{x:L-6,y:Y(v)+4,'text-anchor':'end'}).textContent=v*100+'%'}
  for(const s of [1,10,20,30,40]){el('text',{x:X(s),y:H-8,'text-anchor':'middle'}).textContent='S'+s}
- DF.forEach((r,i)=>{const d=[...Array(40)].map((_,j)=>(j?'L':'M')+X(j+1).toFixed(1)+','+Y(pr(r,j+1)).toFixed(1)).join('');el('path',{d,class:'ln',stroke:'var(--s'+(i+1)+')'})});
- document.getElementById('dleg').innerHTML=DF.map((r,i)=>`<span><b style="display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--s${i+1})"></b>${r[0]}</span>`).join('');
- document.getElementById('dtb').innerHTML=DF.map(r=>`<tr><td>${r[0]}</td><td class="dn">${r[4](r[1])}</td><td class="dn">${r[4](r[2])}</td><td class="dn">sector ${Math.round(r[3]*39+1)}</td></tr>`).join('');
- const hv=el('line',{y1:T,y2:H-B,class:'hv',visibility:'hidden'}),tip=document.getElementById('dtip');
+ const paths=META.map((m,i)=>el('path',{class:'ln',stroke:'var(--s'+(i+1)+')'})),hv=el('line',{y1:Tp,y2:H-B,class:'hv',visibility:'hidden'}),tip=document.getElementById('dtip');
+ document.getElementById('dleg').innerHTML=META.map((m,i)=>`<span><b style="display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--s${i+1})"></b>${m[1]}</span>`).join('');
+ const draw=()=>{META.forEach(([k],i)=>paths[i].setAttribute('d',[...Array(40)].map((_,j)=>(j?'L':'M')+X(j+1).toFixed(1)+','+Y(pr(k,j+1)).toFixed(1)).join('')));
+  document.getElementById('dKv').textContent=T.k.toFixed(2);document.getElementById('dKh').textContent=T.k<.95?'(fast start, flat end)':T.k>1.05?'(gentle start, steep end)':'(straight line)';document.getElementById('dK').value=T.k};
+ const tb=document.getElementById('dtb');tb.innerHTML=META.map(([k,n,f,st])=>`<tr><td>${n}</td>${[0,1,2].map(j=>`<td class="dn"><input type="number" inputmode="decimal" data-k="${k}" data-j="${j}" step="${j==2?1:st}" ${j==2?'min="2" max="40"':''} aria-label="${n} ${['at sector 1','at sector 40','full at sector'][j]}"></td>`).join('')}</tr>`).join('');
+ const fill=()=>tb.querySelectorAll('input').forEach(i=>i.value=T.rows[i.dataset.k][+i.dataset.j]);
+ let db=null,ref=null,tm;const st=document.getElementById('dSt');
+ const save=()=>{if(!ref){st.textContent='Saving unavailable here';return}clearTimeout(tm);st.textContent='Editing…';tm=setTimeout(async()=>{try{await ref.set({k:T.k,rows:T.rows,at:Date.now()});st.textContent='Saved'}catch(e){st.textContent='Not saved: '+(e.message||'no write access')}},700)};
+ tb.addEventListener('input',e=>{const i=e.target;if(!i.dataset.k)return;const v=parseFloat(i.value);if(!isFinite(v))return;T.rows[i.dataset.k][+i.dataset.j]=+i.dataset.j===2?Math.max(2,Math.min(40,Math.round(v))):v;draw();save()});
+ document.getElementById('dK').addEventListener('input',e=>{T.k=+e.target.value;draw();save()});
+ document.getElementById('dReset').onclick=()=>{T=JSON.parse(JSON.stringify(GAME));fill();draw();save()};
  const show=e=>{const b=svg.getBoundingClientRect(),x=(e.clientX-b.left)/b.width*W,s=Math.max(1,Math.min(40,Math.round((x-L)/(W-L-R)*39+1)));hv.setAttribute('x1',X(s));hv.setAttribute('x2',X(s));hv.setAttribute('visibility','visible');
-  tip.hidden=false;tip.innerHTML=`<b>Sector ${s}</b> · D ${((s-1)/39).toFixed(2)}<br>`+DF.map((r,i)=>`<b style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--s${i+1})"></b>${r[0]}: ${r[4](val(r,s))}`).join('<br>');
+  const c=Math.min(Math.floor(val('cols',s)),9),rw=Math.min(Math.floor(val('rows',s)),4);
+  tip.hidden=false;tip.innerHTML=`<b>Sector ${s}</b> · D ${Dk(s).toFixed(2)}<br>`+META.map(([k,n,f],i)=>`<b style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--s${i+1})"></b>${n}: ${f(val(k,s))}`).join('<br>')+`<br>Units per wave: ${c*rw}–${Math.min(c+1,9)*rw}`;
   const px=X(s)/W*b.width;tip.style.left=Math.min(b.width-tip.offsetWidth,Math.max(0,px+(px>b.width/2?-tip.offsetWidth-10:10)))+'px';tip.style.top='8px'};
- svg.addEventListener('pointermove',show);svg.addEventListener('pointerdown',show);svg.addEventListener('pointerleave',()=>{tip.hidden=true;hv.setAttribute('visibility','hidden')})}
+ svg.addEventListener('pointermove',show);svg.addEventListener('pointerdown',show);svg.addEventListener('pointerleave',()=>{tip.hidden=true;hv.setAttribute('visibility','hidden')});
+ fill();draw();
+ (async()=>{try{db=await claude.use('db')}catch(e){}if(!db){st.textContent='Saving unavailable here';return}ref=db.doc('tuning/difficulty');
+  ref.onSnapshot(x=>{const v=x.data();if(!v||!v.rows)return;if(tb.contains(document.activeElement))return;T={k:v.k||1,rows:{...JSON.parse(JSON.stringify(GAME.rows)),...v.rows}};fill();draw();st.textContent='Saved values loaded'})})()}
 const tabs=[...document.querySelectorAll('[role=tab]')];
 function tab(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on});try{localStorage.setItem('bpTab',id)}catch(e){}}
 tabs.forEach((t,i)=>{t.onclick=()=>tab(t.id);t.onkeydown=e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){const n=tabs[(i+d+tabs.length)%tabs.length];tab(n.id);n.focus()}}});
