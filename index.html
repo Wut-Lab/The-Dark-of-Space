@@ -1509,17 +1509,17 @@ function mercuryUp(e,dt,p){const M=e.m.position,W=e.fx.warn,L=e.fx.lash;
 function addVoidBot(j){const m=MODELS.voidbot();S.add(m);m.position.set((j-1)*6,0,-50);
  ents.push({m,type:'voidbot',state:'voidbot',hp:6*(1+st.sec*.08),slot:V3((j-1)*6,-22-(j%2)*3),r:.7,ph:0,t:-.8*j,cd:2+Math.random()*2,cdD:4+j*2.5+Math.random()*2,hit:0})}
 function vbZip(e,x,z){boom(e.m.position,6,0xb060ff);e.m.position.set(x,0,z);boom(e.m.position,6,0xb060ff)}
-// The Full Choir Sings (unlocked by the full Null Choir trophy): 12% of sector waves, once the first unit settles into formation one basic unit converts:
+// The Full Choir Sings (unlocked by the full Null Choir trophy): 12% of sector waves, 3 s after the first unit flies in one basic unit (Chaser, Sniper, Brute) converts:
 // black and neon purple, +5% HP (min 1), Void Bot movement and purple shots. Kill it within 30 s for +25 scrap and Choir's Echo (+25% damage next wave); else it fires a ring and escapes
-function cvTick(dt,p){if(!st.cvW)return;if(st.cvW===1){if(ents.some(e=>e.state==='form')){st.cvW=2;st.cvD=1.2}return}
- if(st.cvW===2){if((st.cvD-=dt)>0)return;st.cvW=3;const L=ents.filter(e=>e.state==='form'&&e.hp>0&&['chaser','shooter','brute'].includes(e.type)&&!e.gold&&!e.add);if(L.length)cvMake(L[Math.random()*L.length|0]);return}
+function cvTick(dt,p){if(!st.cvW)return;if(st.cvW===1){if(ents.some(e=>e.m.visible&&(e.state==='enter'||e.state==='form'))){st.cvW=2;st.cvD=3}return}
+ if(st.cvW===2){if((st.cvD-=dt)>0)return;st.cvW=3;const L=ents.filter(e=>e.m.visible&&(e.state==='form'||e.state==='enter')&&e.hp>0&&['chaser','shooter','brute'].includes(e.type)&&!e.gold&&!e.add);if(L.length)cvMake(L[Math.random()*L.length|0]);return}
  const e=st.cvE;if(!e)return;if(e.hp<=0){st.cvE=null;return}
  if((e.cvT-=dt)<=0){const o=e.m.position.clone();o.y=1;for(let i=0;i<16;i++){const a=i/16*Math.PI*2;fire(o,V3(Math.sin(a),Math.cos(a)),8,1,true,0xb060ff,0)}boom(e.m.position,14,0xb060ff);e.escaped=1;e.hp=0;st.cvE=null;popMsg('THE CONVERT ESCAPED','#b060ff')}}
 function cvMake(e){const x=Math.max(1,Math.floor(e.hp*.05));e.hp+=x;if(e.hp0)e.hp0+=x;
  Object.assign(e,{cv:1,cvT:30,state:'cv',ph:0,t:0,cd:1.5,cdD:3+Math.random()*2,slot:slotPos(e)});
  const c=new THREE.Color(),P=new THREE.Color(0xb060ff),K=new THREE.Color(0x0c0a12);
  e.m.traverse(o=>{if(o.isInstancedMesh&&o.instanceColor){o.instanceColor=o.instanceColor.clone();o.material=new THREE.MeshStandardMaterial({metalness:.4,roughness:.4,emissive:0x8020ff,emissiveIntensity:.3});for(let i=0;i<o.count;i++){o.getColorAt(i,c);o.setColorAt(i,.3*c.r+.59*c.g+.11*c.b>.45?P:K)}o.instanceColor.needsUpdate=true}else if(o.isMesh)o.material=new THREE.MeshStandardMaterial({color:0x0c0a12,emissive:0x8020ff,emissiveIntensity:.4})});
- const g=glow(0xb060ff,3);g.material.opacity=.5;e.m.add(g);st.cvE=e;boom(e.m.position,10,0xb060ff);banner('THE FULL CHOIR SINGS','One unit converts. Destroy it within 30 s')}
+ const g=glow(0xb060ff,3);g.material.opacity=.5;e.m.add(g);st.cvE=e;boom(e.m.position,10,0xb060ff);popMsg('THE FULL CHOIR SINGS · DESTROY THE CONVERT IN 30 S','#b060ff')}
 function cvKill(){st.scrap+=25;st.cvB=1;st.cvE=null;popMsg("+25 SCRAP · CHOIR'S ECHO NEXT WAVE",'#b060ff')}
 function cvBuff(){st.cvW=0;if(st.cvA){st.dmg-=st.cvA;st.cvA=0}if(st.cvB){st.cvB=0;st.cvA=st.dmg*.25;st.dmg+=st.cvA;setTimeout(()=>popMsg("CHOIR'S ECHO: +25% DAMAGE",'#b060ff'),900)}}
 function voidbotUp(e,dt,p){const M=e.m.position,f=st.fast||1;e.t+=dt;if(e.t<0)return;e.m.visible=Math.random()>.03;
