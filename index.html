@@ -1004,7 +1004,7 @@ function magpieUp(e,dt,p){const M=e.m.position,TB=e.fx.tb,SW=e.fx.sw,f=st.fast||
  // Tractor beam: 1 s flashing tell down your lane, then 2 s of beam that pulls you in and steals 5 scrap a second
  if(e.tb==null&&(e.cdT-=dt*thf())<=0){e.tb=0;e.tx=p.x}
  if(e.tb!=null){e.tb+=dt;lane(e.tx,TB,2.6);TB.visible=e.tb>1||Math.floor(e.tb*8)%2==0;TB.material.opacity=e.tb>1?.4:.18;
-  if(e.tb>1&&Math.abs(p.x-e.tx)<1.5){player.position.x+=Math.sign(e.tx-p.x)*Math.min(Math.abs(e.tx-p.x),dt*2);e.sc=(e.sc||0)+dt*5;while(e.sc>=1&&st.scrap>0){e.sc--;st.scrap--;st.stole++;if(st.stole%5===0)popMsg('-5 SCRAP','#3affd0')}hud()}
+  if(e.tb>1&&Math.abs(p.x-e.tx)<1.5){player.position.x+=Math.sign(e.tx-p.x)*dt*2;e.sc=(e.sc||0)+dt*5;while(e.sc>=1&&st.scrap>0){e.sc--;st.scrap--;st.stole++;if(st.stole%5===0)popMsg('-5 SCRAP','#3affd0')}hud()}
   if(e.tb>3){e.tb=null;TB.visible=false;e.cdT=half?4:6}}
  // Stage 2 sweep: an edge lane flashes for 1 s, then a beam sweeps to the other edge over 2 s (1 damage, once per sweep)
  if(half){if(e.sw==null&&(e.cdS-=dt*thf())<=0){e.sw=0;e.sd=Math.random()<.5?-1:1;e.hit=0}
