@@ -910,7 +910,7 @@ const sheet=(s,timed)=>STATS.filter(x=>!(timed&&x[0]==='Armor')).map(([n,f,cap,f
 const V3=(x,z)=>new THREE.Vector3(x,0,z),BZ=new THREE.Vector3(),bez=(a,b,c,t)=>BZ.copy(a).multiplyScalar((1-t)**2).addScaledVector(b,2*(1-t)*t).addScaledVector(c,t*t);
 // Save and Quit: a snapshot of the run taken as each campaign sector begins; resuming replays that sector from its start
 let runSave=null;try{runSave=JSON.parse(localStorage.getItem('darksave'))}catch(e){}
-let secSnap=null;function saveRun(){const o={...st};delete o.rsHit;secSnap=JSON.stringify(o)}
+let secSnap=null;function saveRun(){const o={...st};delete o.rsHit;delete o.cvE;secSnap=JSON.stringify(o)}
 function keepSave(v){try{v?localStorage.setItem('darksave',v):localStorage.removeItem('darksave')}catch(e){}runSave=v?JSON.parse(v):null;resumeBtn()}
 function resumeBtn(){const b=$('pResume');b.hidden=!runSave;if(runSave)$('resumeS').textContent=`${BASE[runSave.kind].name} · Sector ${runSave.sec}${runSave.b45===1||runSave.tawP?'.5':''} · ${runSave.scrap} scrap`}
 // Low Profile: shrink the craft and its hit radius (I 10%, II 15%, III 20%)
