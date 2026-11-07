@@ -121,7 +121,7 @@ button{font:inherit;color:var(--fg);background:linear-gradient(#ffffff17,#ffffff
 box-shadow:0 4px 0 #000000b0,inset 0 1px 0 #ffffff2a;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px;transition:transform .06s,box-shadow .06s}
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #000000b0,inset 0 1px 0 #ffffff1a}
 .scr{display:block;overflow-y:auto;padding-block:24px}.scr>.card{margin:max(16px,6vh) auto}
-#start,#hangar,#opts{background:#05060a40}#start .title{margin-top:max(5vh,calc(64px + env(safe-area-inset-top,0px)))}
+#start,#hangar,#optm{background:#05060a40}.tro{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;padding:12px;margin-top:12px;border:1px solid #2a3040;border-radius:10px;background:#0b0e16cc}.tro canvas{width:120px;height:120px}.tro canvas.wreck{filter:grayscale(1) brightness(.45)}.tro p{margin:6px 0}.tro .cnt{color:#ffd23a}.ybank b{color:#ffd23a}#start .title{margin-top:max(5vh,calc(64px + env(safe-area-inset-top,0px)))}
 .title{display:grid;gap:32px;margin:5vh auto 16px;max-width:760px;justify-items:center}
 .logo{font:400 clamp(36px,8vw,72px)/1.05 "Black Ops One","Arial Black",sans-serif;color:var(--accent);text-align:center;letter-spacing:.03em;
 text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
@@ -192,7 +192,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
 <button data-go="hangar"><b>Hangar</b></button>
-<button data-go="opts"><b>Options</b></button>
+<button data-go="optm"><b>Options</b></button>
 <button id="devBtn"><b>Dev Corner</b></button>
 </nav></div></div>
 
@@ -205,7 +205,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="yard"><b>Trophy Yard</b></button>
 <button class="back" data-go="start"><b>Back</b></button>
 </nav></div></div>
-<div class="ov scr" id="opts" hidden><div class="title">
+<div class="ov scr" id="optm" hidden><div class="title">
 <h1 class="logo">Options</h1>
 <nav class="menu" aria-label="Options">
 <button id="setBtn"><b>Settings</b></button>
@@ -249,10 +249,8 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <p id="shopIntro"></p><div id="shopL" role="tabpanel"></div></div></div>
 
 <div class="ov scr" id="yard" hidden><div class="card"><div class="hd"><h2>Trophy Yard</h2><button class="back" data-go="hangar">Back</button></div>
-<p><b>Coming soon.</b></p>
-<p>Every boss you bring down leaves a wreck behind. In the Trophy Yard you will spend Total Scrap to rebuild those wrecks into voxel trophies you can spin and admire.</p>
-<p>Finish a set, such as every zone boss or every Void God, to unlock a reward like a paint job or an Enemy Log extra.</p>
-<p>Trophies are for show. They never make your ship stronger. Your power still comes from the run.</p></div></div>
+<p>Every boss you bring down leaves a wreck behind. Spend Total Scrap to rebuild it into a trophy. Trophies are for show; your power still comes from the run.</p>
+<p class="ybank">Total Scrap: <b id="yardB"></b></p><div id="yardL"></div></div></div>
 <div class="ov scr" id="unlocks" hidden><div class="card"><div class="hd"><h2>Unlocks</h2><button class="back" data-go="hangar">Back</button></div>
 <p>Earn these by reaching goals across your runs. Unlocked upgrades join the Campaign pool.</p><div id="unlL"></div></div></div>
 
@@ -293,15 +291,15 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div>
 <h3>Progress</h3><p class="dnote">Wipe all progress on this device: scrap, shop items, unlocks, stats, Log, bests and saved runs. Settings are kept.</p><div class="dgrid"><button id="dvWipe">Reset progress</button></div></div></div>
 <button id="ivBack" hidden style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:10px 26px">Back to the Bay</button>
-<div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="opts">Back</button></div>
+<div class="ov scr" id="credits" hidden><div class="card"><div class="hd"><h2>Credits</h2><button class="back" data-go="optm">Back</button></div>
 <h3>In the Dark of Space</h3><p>A Wut-Lab game. Prototype, October 2026.</p>
 <h3>Game design &amp; direction</h3><ul><li>Wut-Lab</li></ul>
 <h3>Programming, voxel models &amp; interface</h3><ul><li>Claude (Anthropic), built from Wut-Lab's direction</li></ul>
 <h3>Music &amp; sound</h3><ul><li>Opening reel ambience (<i>Signal Static</i>), synthesized in code with the Web Audio API by Claude</li><li>Soundtrack composed and synthesized in code with the Web Audio API by Claude: <i>Starfall Run</i> (sectors), <i>Gold Rush</i> (bonus stages), <i>Iron Titan</i> (bosses), <i>Whiteout Drift</i> and <i>Glacier Heart</i> (frozen sectors and their boss), <i>Scarlet Facets</i> and <i>Heart of the Geode</i> (crystal sectors and their boss), <i>Ferrous Line</i> and <i>Caustic Engine</i> (metal sectors and their boss), <i>Iron Eagles</i> and <i>Siege of Steel</i> (legion sectors and their boss), <i>Into the Dark</i> and <i>The Last Light</i> (dark space and its boss), <i>Driftlight</i> (Scrap Sphere Station), <i>Fading Signal</i> (game over)</li><li>Ending theme <i>Afterglow</i>, a take on Gold Rush that builds from slow and grand into epic metal, and the Scion's dying metallic roar (also Nox's scream), synthesized in code with the Web Audio API by Claude</li></ul>
-<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li><li>Installable web app with offline play (web app manifest and service worker)</li><li>Gamepad support (Gamepad API)</li><li>Hangar menu backdrop and Trophy Yard (coming soon)</li></ul>
+<h3>Built with</h3><ul><li>three.js r128 (MIT License)</li><li>Installable web app with offline play (web app manifest and service worker)</li><li>Gamepad support (Gamepad API)</li><li>Hangar menu backdrop and Trophy Yard</li></ul>
 <h3>Fonts</h3><ul><li>Black Ops One, Saira Condensed and Chakra Petch, from Google Fonts (SIL Open Font License)</li></ul>
 <h3>Inspired by</h3><ul><li><i>Galaga</i> (Namco, 1981)</li><li>Real-robot anime and games: <i>Mobile Suit Gundam</i>, <i>Full Metal Panic!</i>, <i>Armored Core</i></li></ul>
-<div class="ft"><button class="back bot" data-go="opts">Back</button></div></div></div>
+<div class="ft"><button class="back bot" data-go="optm">Back</button></div></div></div>
 <div class="ov" id="settings" hidden style="z-index:60"><div class="card"><div class="hd"><h2>Settings</h2><button class="back" id="setBack">Back</button></div>
 <label class="srow"><span>Sound</span><input type="checkbox" id="sOn"></label>
 <label class="srow"><span>Music</span><span class="sv"><input type="range" id="sMus" min="0" max="100"><small id="sMusV"></small></span></label>
@@ -2791,6 +2789,23 @@ function thumbModel(k){if(!TM[k]){const g=new THREE.Group(),m=MODELS[k](),im=m.c
  if(!im.isInstancedMesh)b.setFromObject(m);else for(let i=0;i<im.count;i++){im.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4))}m.position.sub(b.getCenter(new THREE.Vector3()));g.add(m);TS.add(g);TM[k]={g,d:b.getSize(v).length()*1.9}}return TM[k]}
 function snap(k,yaw,cv,z=1){for(const q in TM)TM[q].g.visible=q===k;const t=thumbModel(k);t.g.visible=true;t.g.rotation.set(.15,yaw,0);TC.position.set(0,0,t.d*z);TC.lookAt(0,0,0);
  TR.render(TS,TC);const x=cv.getContext('2d');x.clearRect(0,0,cv.width,cv.height);x.drawImage(TR.domElement,0,0,cv.width,cv.height)}
+// Trophy Yard: rebuild beaten bosses into trophies with Total Scrap; each spins on a magnetic pedestal and shows its kill count
+const TROPHY=[{k:'boss',n:'Bastion',cost:750,d:'This space faring fortress has been around for longer than anyone can remember. It\'s forceful and unyielding.'}];
+let TRO=[];try{TRO=JSON.parse(localStorage.getItem('darktrophy')||'[]')}catch(e){}
+function vbox(m){const b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();m.updateMatrixWorld(true);m.traverse(o=>{if(o.isInstancedMesh){for(let i=0;i<o.count;i++){o.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4).applyMatrix4(o.matrixWorld))}}else if(o.isMesh)b.expandByObject(o)});return b}
+function trophyModel(k){const key='tr_'+k;if(TM[key])return TM[key];const g=new THREE.Group(),M=(c,e)=>new THREE.MeshStandardMaterial({color:c,roughness:.5,metalness:.7,emissive:e||0}),B=new THREE.BoxGeometry(1,1,1),P=(x,y,z,w,h,d,m)=>{const q=new THREE.Mesh(B,m);q.scale.set(w,h,d);q.position.set(x,y,z);g.add(q);return q};
+ const dk=M(0x24262c),st=M(0x5a5e66),cy=M(0x0a3a44,0x22e4ff);P(0,-2.2,0,2.6,.4,2.6,dk);P(0,-1.9,0,2.2,.25,2.2,st);P(0,-1.76,0,1.5,.04,1.5,cy);
+ for(const[x,z]of[[-.95,-.95],[.95,-.95],[-.95,.95],[.95,.95]]){P(x,-1.65,z,.22,.3,.22,st);P(x,-1.47,z,.16,.06,.16,cy)}
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.85,.04,6,32),new THREE.MeshBasicMaterial({color:0x22e4ff,transparent:true,opacity:.55}));ring.rotation.x=Math.PI/2;ring.position.y=-1.45;g.add(ring);
+ const m=MODELS[k](),sp=new THREE.Group();sp.add(m);const b=vbox(m),sz=b.getSize(new THREE.Vector3()),f=3.4/Math.max(sz.x,sz.z);m.scale.multiplyScalar(f);m.position.copy(b.getCenter(new THREE.Vector3()).multiplyScalar(-f));sp.position.y=sz.y*f/2-.95;g.add(sp);
+ g.position.y=.5;TS.add(g);return TM[key]={g,d:8.5,sp,ring,y:sp.position.y}}
+let trYaw=0,trT=0,trRaf=0;
+function trSpin(t){if($('yard').hidden){trRaf=0;return}const dt=Math.min(.05,(t-(trT||t))/1000);trT=t;trYaw+=dt*.7;
+ document.querySelectorAll('#yardL canvas').forEach(c=>{const o=trophyModel(c.dataset.k);o.sp.rotation.y=trYaw;o.sp.position.y=o.y+Math.sin(trYaw*2.5)*.08;o.ring.scale.setScalar(1+.06*Math.sin(trYaw*5));snap('tr_'+c.dataset.k,.5,c,.75)});trRaf=requestAnimationFrame(trSpin)}
+function yardDraw(){$('yardL').innerHTML=TROPHY.map(o=>{const n=KILLS[o.k]||0,have=TRO.includes(o.k);
+ return `<div class="tro"><canvas width="240" height="240" data-k="${o.k}"${have?'':' class="wreck"'}></canvas><div><b>${have?o.n:n?o.n+' Wreck':'Unknown Wreck'}</b>`+(have?`<p>${o.d}</p><p class="cnt">Defeated ${n} time${n===1?'':'s'}</p>`:n?`<p>Defeated ${n} time${n===1?'':'s'}. Rebuild its wreck into a trophy.</p><button data-tro="${o.k}"${bankT<o.cost?' disabled':''}>Rebuild · ${o.cost} scrap</button>`:'<p>Defeat this boss to recover its wreck.</p>')+'</div></div>'}).join('');
+ $('yardB').textContent=bankT;if(!trRaf)trRaf=requestAnimationFrame(trSpin)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tro]');if(!b)return;const o=TROPHY.find(q=>q.k===b.dataset.tro);if(!o||bankT<o.cost||TRO.includes(o.k))return;bankT-=o.cost;TRO.push(o.k);try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darktrophy',JSON.stringify(TRO))}catch(e){}totT();yardDraw()});
 // Pause > Upgrades: one row per upgrade (stacked copies counted), each with its spinning voxel icon
 const RCOL={c:'#aab1bd',u:'#4fe08a',r:'#5ab0ff',x:'#ff3d6e',p:'#b026ff',k:'#e8742a',w:'#4ad8ff'};let upYaw=0;
 function showUpg(){const n={};st.upgrades.forEach(t=>n[t]=(n[t]||0)+1);const L=$('upgL');
@@ -2945,7 +2960,7 @@ function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.re
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
 // Main-menu Hangar backdrop: the Scrap Sphere bay plus bright tool boxes, behind the Hangar submenu and its screens
 let MH=null,MHv=1;function hangBg(on){if(on&&!MH){MH=hangar(1);if(player){MHv=player.visible;player.visible=false}}else if(!on&&MH){S.remove(MH);MH=null;if(player)player.visible=MHv}}
-let HP=0;function show(id){if(id==='howback'){id=HP?'':'opts';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);hangBg(['hangar','store','unlocks','yard'].includes(id));document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'optm';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='yard')setTimeout(yardDraw,0);if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);hangBg(['hangar','store','unlocks','yard'].includes(id));document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
