@@ -221,6 +221,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="crafts"><b>Campaign</b><span>Clear sector after sector, upgrading as you go.</span></button>
 <button data-go="timed"><b>Timed Attack</b><span>Three minutes, endless waves, score scrap.</span></button>
 <button id="pDaily" hidden><b>Daily Run</b><span id="dailyS"></span></button>
+<button id="pDailyT" hidden><b>Daily Timed Attack</b><span id="dailyTS"></span></button>
 </div></div>
 
 <div class="ov scr" id="crafts" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="modes">Back</button></div>
@@ -268,6 +269,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button data-go="how-timed"><b>Timed Attack</b><span>Racing the clock</span></button>
 <button data-go="how-hard" id="howHard"><b>Hard Mode</b><span>Timed Attack in the dark</span></button>
 <button data-go="how-daily" id="howDaily"><b>Daily Run</b><span>One shared run a day</span></button>
+<button data-go="how-dailyt" id="howDailyT"><b>Daily Timed Attack</b><span>One shared clock a day</span></button>
 </div><div class="ft"><button class="back bot" data-go="howback">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
@@ -277,10 +279,13 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop, found in the Hangar.</li><li>Play well to unlock new crafts, upgrades, paint jobs and events.</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li><li>Every 10th wave, Chrono arrives. Only the part with a white glow takes damage: break the hourglass, then the staff, then the mech itself.</li></ul></div></div>
+<ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li><li>You bank 65% of your scrap, or 75% once you pass wave 20.</li><li>Every 10th wave, Chrono arrives. Only the part with a white glow takes damage: break the hourglass, then the staff, then the mech itself.</li></ul></div></div>
 
 <div class="ov scr" id="how-daily" hidden><div class="card"><div class="hd"><h2>Daily Run</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>A Campaign run that changes each day. Everyone gets the same craft, routes and upgrade offers.</li><li>On <b>Pilot's Choice</b> days, fly any craft you own.</li><li>Start by picking 1 of 3 upgrades, and face the day's enemy twist.</li><li>Try as often as you like. Your best of the day is kept.</li></ul></div></div>
+<ul><li>A Campaign run that changes each day. Everyone gets the same craft, routes and upgrade offers.</li><li>On <b>Pilot's Choice</b> days, fly any craft you own.</li><li>Start by picking 1 of 3 upgrades, and face the day's enemy twist.</li><li>Unlockable events can happen in it, whether you have unlocked them or not.</li><li>Try as often as you like. Your best of the day is kept.</li></ul></div></div>
+
+<div class="ov scr" id="how-dailyt" hidden><div class="card"><div class="hd"><h2>Daily Timed Attack</h2><button class="back" data-go="how">Back</button></div>
+<ul><li>Unlocks when you reach wave 20 in Timed Attack.</li><li>A Timed Attack run that changes each day. Everyone gets the same craft and waves.</li><li>On <b>Pilot's Choice</b> days, fly any craft you own.</li><li>Start by picking 1 of 3 upgrades, and face the day's enemy twist.</li><li>Unlockable events can happen in it, whether you have unlocked them or not.</li><li>Try as often as you like. Your best score of the day is kept.</li></ul></div></div>
 
 <div class="ov scr" id="how-hard" hidden><div class="card"><div class="hd"><h2>Hard Mode</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>Play Timed Attack with the lights out: you only see what's ahead of you.</li><li>Enemies are tougher, your starting loadout is random, and your score is bigger.</li></ul></div></div>
@@ -293,7 +298,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <h3>Zones</h3><p class="dnote">Any zone at any sector, with its enemies, hazards, music and bosses.</p><div class="dgrid"><label>Zone<select id="ztZ"></select></label><label>Sector<select id="ztS"></select></label><button id="ztGo">Play sector</button></div>
 <h3>Bosses</h3><p class="dnote">Fight one capital unit in its home zone.</p><div class="dgrid"><label class="dwide">Boss<select id="dvB"></select></label><button id="dvBGo">Fight</button></div>
 <h3>Events</h3><p class="dnote">Trigger a route event, stop or encounter in the zone picked above, then play on from there.</p><div class="dgrid"><label class="dwide">Event<select id="dvE"></select></label><button id="dvEGo">Run event</button></div>
-<h3>Modes</h3><div class="dgrid"><button id="dvT1">Timed Attack</button><button id="dvT2">Hard Timed</button><button id="dvDaily">Daily Run</button></div>
+<h3>Modes</h3><div class="dgrid"><button id="dvT1">Timed Attack</button><button id="dvT2">Hard Timed</button><button id="dvDaily">Daily Run</button><button id="dvDailyT">Daily Timed</button></div>
 <h3>Story</h3><div class="dgrid"><button id="dvReel">Opening reel</button><button id="ztEnd">View ending</button></div>
 <h3>Progress</h3><p class="dnote">Wipe all progress on this device: scrap, shop items, unlocks, stats, Log, bests and saved runs. Settings are kept.</p><div class="dgrid"><button id="dvWipe">Reset progress</button></div></div></div>
 <button id="ivBack" hidden style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:10px 26px">Back to the Bay</button>
@@ -878,14 +883,15 @@ const FX=11,PZF=10,PZB=2;
 let st,player,ents=[],shots=[],keys={},touch=null,running=false,best=0,sway=0,diveCd=3;
 try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
-// Scrap bank: at the end of every run half the scrap carries over; the other half pays to repair the craft back to 100%
+// Scrap bank: at the end of every run half the scrap carries over (Timed Attack: 65%, 75% past wave 20); the rest pays to repair the craft back to 100%
+const bankP=()=>st&&st.timed?(st.sec>20?75:65):50;
 let bankT=0;try{bankT=+localStorage.getItem('darkbank')||0}catch(e){}
 const totT=()=>{$('totN').textContent=bankT;document.querySelectorAll('.bankN').forEach(e=>e.textContent=bankT)};totT();
 // Longest Chain (main menu, for bragging): best chain ever and the mode it was set in. Dev Corner runs don't count
 let LCH={n:0,m:''};try{Object.assign(LCH,JSON.parse(localStorage.getItem('darkchain')||'{}'))}catch(e){}
 function lchT(){$('lcN').textContent=LCH.n;$('lcM').textContent=LCH.m||'None yet'}lchT();
-function bank(){if(!st||st.banked)return 0;st.banked=1;const k=Math.floor(st.scrap/2);st.bk=k;bankT+=k;try{localStorage.setItem('darkbank',bankT)}catch(e){}totT();return k}
-const bankRows=k=>[['Banked (50%)',`+${k} · Total Scrap ${bankT}`],['Repairs (50%)',`${st.scrap-k} scrap · craft back to 100%`]];
+function bank(){if(!st||st.banked)return 0;st.banked=1;const k=Math.floor(st.scrap*bankP()/100);st.bk=k;bankT+=k;try{localStorage.setItem('darkbank',bankT)}catch(e){}totT();return k}
+const bankRows=k=>[[`Banked (${bankP()}%)`,`+${k} · Total Scrap ${bankT}`],[`Repairs (${100-bankP()}%)`,`${st.scrap-k} scrap · craft back to 100%`]];
 let tbest=0;try{tbest=+localStorage.getItem('darktimedbest')||0}catch(e){}
 const tbestT=()=>$('tbest').textContent=tbest?`Best score: ${tbest} scrap.`:'';tbestT();
 const BASE={mech:{hp:12,spd:7,dmg:2,rate:.35,shot:18,multi:1,pierce:0,name:'Kestrel'},ship:{hp:6,spd:12,dmg:1,rate:.14,shot:26,multi:1,pierce:0,name:'Gale'},falcon:{hp:9,spd:9.5,dmg:1.5,rate:.22,shot:22,multi:1,pierce:0,name:'Falcon'},
@@ -914,7 +920,7 @@ function resume(){const sv=runSave;keepSave(null);PJ[sv.kind]=sv.paint||'';start
 // meshes and removes anything a run added to the scene (SCN0 = the scene before the first run), so nothing carries into the menu
 let SCN0=null;function fieldClear(sweep){if(st&&st.bb){st.bb.list.forEach(l=>S.remove(l.m));st.bb.list.length=0}fx.forEach(f=>{S.remove(f.m);FXP.push(f.m)});fx.length=0;pfx.forEach(q=>{S.remove(q.m);PFP.push(q.m)});pfx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;BU.lobs.forEach(l=>S.remove(l.m));BU.lobs.length=0;BU.mets.forEach(o=>S.remove(o.m));BU.mets.length=0;BU.wells.forEach(w=>S.remove(w.g));BU.wells.length=0;
  if(!sweep)return;mist(0);shimmer(0);for(const o of [muzzle,moth,magpi,owl,ghost,gimbal,apexG,eliteG,plzM,RSH,BU.vd,BU.gs,BU.mon,BU.lz,BU.ice,NZ.fill,...NZ.e])if(o)o.visible=false;if(SCN0)for(const o of [...S.children])if(!SCN0.has(o)&&o!==RSH)S.remove(o)}
-function start(kind,timed){tcClear();if(PD){S.remove(PD);PD=null}const dly=timed?'':DAILY;DAILY='';if(st&&st.nauts)st.nauts.forEach(g=>S.remove(g));secSnap=null;if(!timed)keepSave(null);if(!SCN0)SCN0=new Set(S.children);fieldClear();try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],daily:dly,dmod:dly?dMod(dly):0,kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,hard:timed===2?1:0,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,ch:0,cht:0,hi:HINTD?-1:0,ht:0,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
+function start(kind,timed){tcClear();if(PD){S.remove(PD);PD=null}const dly=timed?DAILYT:DAILY;if(timed&&DAILYT)timed=true;DAILY=DAILYT='';if(st&&st.nauts)st.nauts.forEach(g=>S.remove(g));secSnap=null;if(!timed)keepSave(null);if(!SCN0)SCN0=new Set(S.children);fieldClear();try{AC=AC||new AudioContext();AC.resume()}catch(e){}st={...BASE[kind],daily:dly,dmod:dly?dMod(dly):0,kind,paint:PJ[kind]||'',area:'The Open Zone',ap:0,max:BASE[kind].hp,sec:1,scrap:0,cd:0,inv:0,en:100,bt:0,dir:1,timed:!!timed,hard:timed===2?1:0,time:180,el:0,fast:1,gold:0,fired:0,hits:0,emp:0,bar:0,spr:0,upgrades:[],dealt:0,kills:0,elite:0,boss:0,enr:BASE[kind].enr||1,ch:0,cht:0,hi:HINTD?-1:0,ht:0,vuln:0,sb:0,plate:0,rico:0,venom:0,zh:0,b45:0,boot:0,hitN:0,bchg:0,slow:0,confetti:0,empB:0,beam:0,wide:1,whip:0,track:0,vol:0,moth:0,mb:0,ma:0,owl:0,oa:0,ob:0,os:0};
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);
  player=new THREE.Group();player.add(player.userData.body=MODELS[kind]());if(!player.userData.body.userData.legs){const bb=new THREE.Box3().setFromObject(player.userData.body.userData.hull||player.userData.body),eg=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));eg.position.set(0,(bb.min.y+bb.max.y)/2,bb.min.z);player.userData.body.add(player.userData.eg=eg)}player.add(aura,shield,bhFX,ohFX);player.rotation.y=Math.PI;S.add(player);player.position.set(0,0,0);{const z=new THREE.Box3().setFromObject(player.userData.body.userData.hull||player.userData.body).getSize(new THREE.Vector3());st.pr=st.pr0=Math.max(.6,(z.x+z.z)/4*.9)}
  show(null);drift.forEach(d=>S.remove(d.m));drift=[];['dead','pick','evt'].forEach(i=>$(i).hidden=true);$('hud').hidden=false;$('pilot').textContent=st.name;
@@ -928,7 +934,7 @@ function wave(more){st.tcW=0;cvBuff();if(dmod('dark')&&!st.lout){st.lout=1;light
  if(st.timed&&!more&&st.sec%CHW===0){music(null);chronoWave();return}
  if(more&&st.tawP){chronoWave();return}
  if(!st.timed&&st.sec%5===0){music(st.area==='Dark Space'?'darkboss':null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':st.area==='The Frost Reach'?'frost':st.area==='Red Crystal Asteroid Belt'?'crystal':st.area==='The Alkaline Zone'?'alk':st.area==='Legion Space'?'legion':st.area==='Dark Space'?'dark':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
- if(st.cvF||OWNED.includes('ev:choir')&&Math.random()<.12){st.cvF=0;st.cvW=1}const cols=Math.min((dv('cols')|0)+st.wv,9),rows=Math.min(dv('rows')|0,4)+(el&&etw('swarm')||dmod('swarm')?1:0);let i=0;diveCd=8;const g0=ents.length;
+ if(st.cvF||(st.daily||OWNED.includes('ev:choir'))&&Math.random()<(st.daily?.15:.12)){st.cvF=0;st.cvW=1}const cols=Math.min((dv('cols')|0)+st.wv,9),rows=Math.min(dv('rows')|0,4)+(el&&etw('swarm')||dmod('swarm')?1:0);let i=0;diveCd=8;const g0=ents.length;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(Math.random()<.4?['brute','shooter','shooter','chaser','chaser'][Math.random()*5|0]:r===0?'brute':r<=2?'shooter':'chaser'):r===0&&(st.timed?st.sec*3:st.sec)>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
   ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*hpk()*(el?1.5*(etw('armor')&&r===rows-1?1.5:1):1)*(dmod('armor')&&r===rows-1?1.5:1)*(st.area==='Red Crystal Asteroid Belt'||st.area==='The Alkaline Zone'?1.25:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
@@ -1509,7 +1515,7 @@ function mercuryUp(e,dt,p){const M=e.m.position,W=e.fx.warn,L=e.fx.lash;
 function addVoidBot(j){const m=MODELS.voidbot();S.add(m);m.position.set((j-1)*6,0,-50);
  ents.push({m,type:'voidbot',state:'voidbot',hp:6*(1+st.sec*.08),slot:V3((j-1)*6,-22-(j%2)*3),r:.7,ph:0,t:-.8*j,cd:2+Math.random()*2,cdD:4+j*2.5+Math.random()*2,hit:0})}
 function vbZip(e,x,z){boom(e.m.position,6,0xb060ff);e.m.position.set(x,0,z);boom(e.m.position,6,0xb060ff)}
-// The Full Choir Sings (unlocked by the full Null Choir trophy): 12% of sector waves, 3 s after the first unit flies in one basic unit (Chaser, Sniper, Brute) converts:
+// The Full Choir Sings (unlocked by the full Null Choir trophy): 12% of sector waves (Daily runs: 15%, for everyone, seeded with the wave), 3 s after the first unit flies in one basic unit (Chaser, Sniper, Brute) converts:
 // black and neon purple, +5% HP (min 1), Void Bot movement and purple shots. Kill it within 30 s (20 s in Timed Attack) for +25 scrap and Choir's Echo (+25% damage next wave); else it fires a ring and escapes
 function cvTick(dt,p){if(!st.cvW)return;if(st.cvW===1){if(ents.some(e=>e.m.visible&&(e.state==='enter'||e.state==='form'))){st.cvW=2;st.cvD=3}return}
  if(st.cvW===2){if((st.cvD-=dt)>0)return;st.cvW=3;const L=ents.filter(e=>e.m.visible&&(e.state==='form'||e.state==='enter')&&e.hp>0&&['chaser','shooter','brute'].includes(e.type)&&!e.gold&&!e.add);if(L.length)cvMake(L[Math.random()*L.length|0]);return}
@@ -2008,8 +2014,9 @@ function capTech(){running=false;boop();buzz([60,40,120]);const g=capRocket(),d=
   ['Hook It In',q.length?'Improve a random one of your Uncommon upgrades by one level.':'No Uncommon upgrade of yours can be improved.',done(()=>{const u=q[Math.random()*q.length|0];u[2](st);gotUp(u[0]);popMsg(`${u[0]} ${TN[tierOf(u[0])-1]}`,'#6fd3ff')}),!q.length]]);$('evt').classList.add('see')}
 // Hard Mode start: 6 unlocked upgrades (no Magpie pool), 2 Rare or Contraband, 2 Uncommon, 2 Common, each at a random tier. Pick 3
 // Armor upgrades do nothing without an armor bar, so Hard Mode never offers them
-const HARDNO=['Extra Armor','Black Ice Plating','Ram Plating','Phantom Armor','Scrap Weld','Apex EMP Tech'];
-function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0])&&!HARDNO.includes(u[0])&&!u[8],sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
+// Armor-related upgrades never show in Timed Attack (hits cost time, not armor): Hard Mode loadouts and Daily Timed Attack picks skip them
+const TIMEDNO=['Extra Armor','Black Ice Plating','Ram Plating','Phantom Armor','Scrap Weld','Apex EMP Tech','Glass Auto Cannons'];
+function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0])&&!TIMEDNO.includes(u[0])&&!u[8],sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
  const o=$('opts'),left=()=>{$('pickS').textContent='Choose your starting upgrades.';$('pickT').textContent=`Hard Mode · Lights Out · ${n} pick${n>1?'s':''} left`};o.innerHTML='';
  sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
   b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}b.remove();hud();if(--n>0)left();else{$('pick').hidden=true;running=true}};o.append(b)});
@@ -2397,14 +2404,14 @@ function cubeUp(e,dt,p){const M=e.m.position,f=st.fast||1;if(e.ph===0){e.t+=dt;M
  if((e.cdS-=dt*thf())<=0){e.cdS=6;const n=ents.filter(x=>x.type==='mcube'&&x.hp>0).length;if(n<9){e.pulse=.8;for(let i=0;i<Math.min(2,9-n);i++)mcubeAdd(e)}}}
 function mcubeUp(e,dt,p){const b=e.boss,B=b.hp>0?b.m.position:(e.lp=e.lp||e.m.position.clone());if(b.hp>0)e.lp=null;e.a+=dt*e.sp*(st.fast||1);e.m.position.set(B.x+Math.sin(e.a)*3.5,1,B.z+4+Math.sin(2*e.a)*1.6);e.m.rotation.y+=dt*1.5;e.m.rotation.z+=dt;
  if((e.cd-=dt*thf())<=0){e.cd=2.4+Math.random();const o=e.m.position.clone(),d=V3(p.x-o.x,p.z-o.z).normalize();for(const a of[-.07,.07])fire(o,d.clone().applyAxisAngle(YAX,a),10,1,true,0xd070ff,0)}}
-function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);lightsOut(0)}music(null);overJingle();st.time=0;$('clock').textContent='0:00';const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=!st.dev&&st.scrap>tbest;
+function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);lightsOut(0)}music(null);overJingle();st.time=0;$('clock').textContent='0:00';if(st.daily&&!st.dev)dailyTRec();const acc=st.fired?Math.round(st.hits/st.fired*100):0,nb=!st.dev&&st.scrap>tbest;
  if(nb){tbest=st.scrap;try{localStorage.setItem('darktimedbest',tbest)}catch(e){}tbestT()}
  $('deadH').textContent='Time up';$('deadH').style.color='var(--accent)';
  $('deadT').textContent=`${st.name} scored ${st.scrap} scrap and reached wave ${st.sec}. Accuracy ${acc}%. ${nb?'':`Best score: ${tbest} scrap.`}`;$('nbest').hidden=!nb;
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Victory card: first three upgrades taken, with their level (I-III), then "and more."
 function upShort(){const u=[...new Set(st.upgrades)],l=u.slice(0,3).map(n=>n+' '+['I','II','III'][Math.min(2,st.upgrades.filter(x=>x===n).length-1)]).join(', ');return u.length>3?l+', and more.':l}
-function die(won){if(st.daily&&!st.dev){dailyRec();if(won)prog('dailywin')}if(!won&&!st.timed&&!st.dev&&['mech','ship','falcon'].includes(st.kind)){prog('loss_'+st.kind);if(LIFE.loss_mech&&LIFE.loss_ship&&LIFE.loss_falcon&&!LIFE.lossAll)prog('lossAll')}running=false;if(!won)secSnap=null;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
+function die(won){if(st.daily&&!st.dev&&!st.timed){dailyRec();if(won)prog('dailywin')}if(!won&&!st.timed&&!st.dev&&['mech','ship','falcon'].includes(st.kind)){prog('loss_'+st.kind);if(LIFE.loss_mech&&LIFE.loss_ship&&LIFE.loss_falcon&&!LIFE.lossAll)prog('lossAll')}running=false;if(!won)secSnap=null;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?won?upShort():st.upgrades.join(', '):'None'],
   ...bankRows(bank()),['Final stats',`Armor ${st.max} · Damage ${+st.dmg.toFixed(1)} · ${(1/st.rate).toFixed(1)} shots/s · ${st.multi} per volley · Pierce ${st.pierce} · Strafe ${+st.spd.toFixed(1)}`]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
@@ -2582,19 +2589,23 @@ function bounce(s,p){const n=T.subVectors(s.m.position,p).setY(0).normalize(),sp
 // Shrapnel Shells (Kestrel): a hit splashes part of its damage onto nearby units
 // Daily Run: post-game, appears quietly in Play once the Scion falls. One seed per UTC day, the same for everyone.
 // The seed picks the craft and reseeds route choices, events, waves and upgrade offers per sector (combat stays live)
-let DAILY='',DPK=0;const dKey=()=>new Date().toISOString().slice(0,10),dHash=k=>{let h=2166136261;for(const c of k)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0},
+let DAILY='',DPK=0,DAILYT='',DPKT=0;const dKey=()=>new Date().toISOString().slice(0,10),dHash=k=>{let h=2166136261;for(const c of k)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0},
  mb32=a=>()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},
  dMod=d=>Object.keys(DMODS)[mb32(dHash(d+'mod'))()*6|0],dCraft=d=>['mech','ship','falcon','choice'][dHash(d)%4],dName=k=>k==='choice'?'Pilot\'s Choice':BASE[k].name;
 function seeded(tag,f){return function(...a){if(!st||!st.daily)return f.apply(this,a);const R=Math.random;Math.random=mb32(dHash(st.daily+tag+st.sec+':'+(st.wN||0)));try{return f.apply(this,a)}finally{Math.random=R}}}
 function dailyGet(){try{return JSON.parse(localStorage.getItem('darkdaily'))||{}}catch(e){return {}}}
 function dailyUI(){const b=$('pDaily');b.hidden=!(LIFE.scion>=1);if(b.hidden)return;const d=dKey(),r=dailyGet();$('dailyS').textContent=`${d} · ${dName(dCraft(d))} · Enemies: ${DMODS[dMod(d)][0]} (${DMODS[dMod(d)][1]})`+(r.d===d?` · Today's best: sector ${r.s}, ${r.sc} scrap`:' · One shared run a day.')}
 // Daily start: pick 1 of 3 seeded upgrades from the starting pool (no Shop or unlock-gated ones), each at a random tier
-function dailyPick(){running=false;const ok=u=>!u[5]&&!u[6]&&!u[8]&&(!u[10]||u[10]===st.kind)&&!MAGPOOL.includes(u[0]),sel=[];for(let g=0;sel.length<3&&g<200;g++){let q=Math.random()*100,r='c';for(const k in ODDS_HI)if((q-=ODDS_HI[k])<0){r=k;break}const c=UPG.filter(u=>u[3]===r&&ok(u)&&!sel.includes(u));if(c.length)sel.push(c[Math.random()*c.length|0])}
- const o=$('opts');o.innerHTML='';$('pickT').textContent=`Daily Run · ${DMODS[st.dmod][0]}`;$('pickS').textContent='Choose one upgrade to start with.';
+function dailyPick(){running=false;const ok=u=>!u[5]&&!u[6]&&!u[8]&&(!u[10]||u[10]===st.kind)&&!MAGPOOL.includes(u[0])&&!(st.timed&&TIMEDNO.includes(u[0])),sel=[];for(let g=0;sel.length<3&&g<200;g++){let q=Math.random()*100,r='c';for(const k in ODDS_HI)if((q-=ODDS_HI[k])<0){r=k;break}const c=UPG.filter(u=>u[3]===r&&ok(u)&&!sel.includes(u));if(c.length)sel.push(c[Math.random()*c.length|0])}
+ const o=$('opts');o.innerHTML='';$('pickT').textContent=`${st.timed?'Daily Timed Attack':'Daily Run'} · ${DMODS[st.dmod][0]}`;$('pickS').textContent='Choose one upgrade to start with.';
  sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
   b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}hud();$('pick').hidden=true;running=true};o.append(b)});$('pick').hidden=false}
 // Daily Run Wins (main menu, top right): shown once the Daily Run is unlocked
 function dwT(){$('dwL').hidden=!(LIFE.scion>=1);$('dwN').textContent=LIFE.dailywin||0}
+// Daily Timed Attack: unlocked at best Timed Attack wave 20; its own seed (date + 'T'), so the craft and twist differ from the Daily Run
+const dtKey=()=>dKey()+'T';function dailyTGet(){try{return JSON.parse(localStorage.getItem('darkdailyt'))||{}}catch(e){return {}}}
+function dailyTUI(){const b=$('pDailyT');b.hidden=!((LIFE.tbw||0)>=20);if(b.hidden)return;const d=dtKey(),r=dailyTGet();$('dailyTS').textContent=`${dKey()} · ${dName(dCraft(d))} · Enemies: ${DMODS[dMod(d)][0]} (${DMODS[dMod(d)][1]})`+(r.d===d?` · Today's best: ${r.sc} scrap, wave ${r.s}`:' · One shared clock a day.')}
+function dailyTRec(){const r=dailyTGet();if(r.d!==st.daily||st.scrap>r.sc)try{localStorage.setItem('darkdailyt',JSON.stringify({d:st.daily,s:st.sec,sc:st.scrap}))}catch(e){}}
 function dailyRec(){const r=dailyGet();if(r.d!==st.daily||st.sec>r.s||st.sec===r.s&&st.scrap>r.sc)try{localStorage.setItem('darkdaily',JSON.stringify({d:st.daily,s:st.sec,sc:st.scrap}))}catch(e){}}
 // Picket Drone: rides behind you and zaps the nearest incoming enemy shot within 6 every 3/2/1.5 s; tier III also hits mines
 // Burn Rate III raises max EN by 10%; everything that caps or reads full EN uses enMax()
@@ -2848,6 +2859,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
 let tHard=0;$('tHard').onclick=()=>{tHard^=1;$('tHard').classList.toggle('on',!!tHard);$('tHard').querySelector('b').textContent='Hard Mode: '+(tHard?'On':'Off')};
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>cpOpen(b.dataset.t,()=>start(b.dataset.t,tHard?2:true)));for(const [id,k] of [['pMech','mech'],['pShip','ship'],['pFalcon','falcon'],['pSwift','swift'],['pFlock','flock'],['pEmu','emu']])$(id).onclick=()=>cpOpen(k,()=>reelOpen(()=>start(k)));
 route=seeded('r',route);dailyPick=seeded('p',dailyPick);offer=seeded('o',offer);shop=seeded('y',shop);wave=seeded('w',wave);$('pDaily').onclick=()=>{const d=dKey(),k=dCraft(d);DAILY=d;if(k==='choice'){DPK=1;show('crafts')}else reelOpen(()=>start(k))};
+$('pDailyT').onclick=()=>{const d=dtKey(),k=dCraft(d);DAILYT=d;if(k==='choice'){DPKT=1;show('timed')}else reelOpen(()=>start(k,true))};
 // Dev Corner (title screen, password-gated): playtest any zone sector, boss, event, mode or story screen.
 // Playtest runs are never saved, banked or counted as a best (st.dev)
 // Backdrop: Nox and Umbra float behind the Dev Corner menu (own renderer, runs only while it's open)
@@ -2886,10 +2898,11 @@ const DEVPW='1111';{let ok=0;$('devBtn').onclick=()=>{if(ok)return show('devc');
   ['Phantom Space Station',()=>station(on)],['Scrap Sphere Station',()=>scrapSt(on)],['The Fork in the Dark',()=>fork(on)],['Stranded Nauts',()=>{st.nautF=1;on()}],['Mysterious Altars (post-game)',()=>{st.post=1;altars(on)}],['The Full Choir Sings (next wave)',()=>{st.cvF=1;on()}],['Bonus wave',()=>{bonusWave();running=true}],['Time Attack Wave',tawIntro]];
  $('dvE').innerHTML=EL.map((e,i)=>`<option value="${i}">${e[0]}</option>`).join('');
  $('dvEGo').onclick=()=>{devRun($('ztZ').value,Math.min(9,Math.max(1,+$('ztS').value%5?+$('ztS').value:+$('ztS').value-1)),false);running=false;EL[$('dvE').value][1]()};
- const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);$('dvDaily').onclick=()=>{const c=dCraft(dKey()),k=c==='choice'?$('dvC').value:c,o=PJ[k];PJ[k]=$('dvJ').value;DAILY=dKey();start(k);PJ[k]=o;lo()};
+ const tm=h=>{dStart(h);lo()};$('dvT1').onclick=()=>tm(1);$('dvT2').onclick=()=>tm(2);$('dvDailyT').onclick=()=>{const c=dCraft(dtKey()),k=c==='choice'?$('dvC').value:c,o=PJ[k];PJ[k]=$('dvJ').value;DAILYT=dtKey();start(k,true);PJ[k]=o;lo()};
+$('dvDaily').onclick=()=>{const c=dCraft(dKey()),k=c==='choice'?$('dvC').value:c,o=PJ[k];PJ[k]=$('dvJ').value;DAILY=dKey();start(k);PJ[k]=o;lo()};
  // Reset progress: two taps; clears every saved key except settings, then reloads
  $('dvWipe').onclick=()=>{const b=$('dvWipe');if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again to wipe';setTimeout(()=>{delete b.dataset.arm;b.textContent='Reset progress'},3000);return}
-  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints','darkchain','darktrophy','darkdaily','darkchoir'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
+  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints','darkchain','darktrophy','darkdaily','darkchoir','darkdailyt'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
  $('dvReel').onclick=()=>reelOpen(()=>show('devc'));
  // View ending: drops into Dark Space's final sector and fells the Scion at once
  $('ztEnd').onclick=()=>{devRun(DS,10,false);st.boss=1;scionWave();running=true;setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
@@ -3120,7 +3133,7 @@ function renderViewer(dt){if(!drag)yaw+=dt*.4;VG.rotation.set(pitch,yaw,0);VR.re
 // Menus: one screen visible at a time; a bottom Back appears only when the screen scrolls
 // Main-menu Hangar backdrop: the Scrap Sphere bay plus bright tool boxes, behind the Hangar submenu and its screens
 let MH=null,MHv=1;function hangBg(on){if(on&&!MH){MH=hangar(1);hangPeds(MH);if(player){MHv=player.visible;player.visible=false}}else if(!on&&MH){S.remove(MH);MH=null;if(player)player.visible=MHv}}
-let HP=0;function show(id){if(id==='howback'){id=HP?'':'optm';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1)}if(id==='modes')dailyUI();if(id==='yard')yardMain();if(id==='yardv')setTimeout(yardDraw,0);if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed')$('tHard').hidden=!(LIFE.scion>=1);hangBg(['hangar','store','unlocks','yard','yardv'].includes(id));document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
+let HP=0;function show(id){if(id==='howback'){id=HP?'':'optm';HP=0;document.body.classList.remove('hp')}if(id==='how'){$('howHard').hidden=!(LIFE.scion>=1);$('howDaily').hidden=!(LIFE.scion>=1);$('howDailyT').hidden=!((LIFE.tbw||0)>=20)}if(id==='modes'){dailyUI();dailyTUI()}if(id==='yard')yardMain();if(id==='yardv')setTimeout(yardDraw,0);if(id==='crafts'){if(DPK)DPK=0;else DAILY=''}if(id==='devc')setTimeout(devGods,0);if(id==='timed'){if(DPKT)DPKT=0;else DAILYT='';$('tHard').hidden=!(LIFE.scion>=1)||!!DAILYT}hangBg(['hangar','store','unlocks','yard','yardv'].includes(id));document.querySelectorAll('.scr').forEach(x=>x.hidden=x.id!==id);const sc=id&&$(id);if(!sc)return;sc.scrollTop=0;
  const b=sc.querySelector('.back.bot');if(b){b.parentNode.hidden=true;requestAnimationFrame(()=>{b.parentNode.hidden=!(sc.scrollHeight>sc.clientHeight+4)})}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go)});
 document.querySelectorAll('.scr .card').forEach(c=>{if(c.querySelector('.back.bot'))return;const f=document.createElement('div'),b=c.querySelector('.hd .back').cloneNode(true);
