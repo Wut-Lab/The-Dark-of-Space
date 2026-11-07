@@ -230,7 +230,9 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><label><input type="checkbox" checked><span>Main menu reorganized: Play, Hangar (Log, Shop, Unlocks, Trophy Yard), Options (Settings, How to Play, Credits); Dev Corner stays bottom right</span></label></li>
 <li><label><input type="checkbox" checked><span>Hangar backdrop: the Scrap Sphere bay with extra brightly colored tool boxes</span></label></li>
 <li><label><input type="checkbox" checked><span>Trophy Yard button with a coming-soon explainer</span></label></li>
-<li><label><input type="checkbox"><span>A wreck appears in the Yard for each boss you've beaten; rebuild it with Total Scrap (price rises by boss tier). Built: Bastion, 750</span></label></li>
+<li><label><input type="checkbox"><span>A wreck appears in the Yard for each boss you've beaten; rebuild it with Total Scrap (price rises by boss tier). Built: Bastion, Warden and Minotaur 750, The Magpie 1000. A wreck only appears once you've beaten that boss</span></label></li>
+<li><label><input type="checkbox" checked><span>Hangar corner pedestals: each visit shows two random trophies you own (empty when you own fewer)</span></label></li>
+<li><label><input type="checkbox"><span>A list of built trophies</span></label></li>
 <li><label><input type="checkbox" checked><span>Trophy viewer: spin and admire each rebuilt trophy</span></label></li>
 <li><label><input type="checkbox" checked><span>Flavor text for each trophy</span></label></li>
 <li><label><input type="checkbox" checked><span>Each trophy shows how many times you've beaten that boss</span></label></li>
@@ -412,7 +414,7 @@ document.getElementById('q').addEventListener('input',renderPU);document.getElem
 document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;F[g.dataset.f]=b.dataset.v;renderPU();renderUP()}));
 // Difficulty tab: an editable copy of DIFF in index.html. Edits redraw the chart and save to db doc tuning/difficulty,
 // which Claude reads to apply them to the game. GAME holds the values currently in the game (keep in step with DIFF).
-{const GAME={k:1.1,rows:{hp:[1,3.45,40],fire:[1,1,40],dive:[2.6,.6,40],dspd:[.47,1.25,40],cols:[3,9,40],rows:[2,4,40],waves:[2,3,40]}};
+{const GAME={k:1.2,rows:{hp:[1,3.45,40],fire:[1,1,40],dive:[2.6,.6,40],dspd:[.47,1.25,40],cols:[3,9,40],rows:[2,4,40],waves:[2,3,40]}};
  const META=[['hp','Enemy health',v=>v.toFixed(2)+'×',.05],['fire','Enemy fire rate',v=>v.toFixed(2)+'×',.05],['dive','Dive interval',v=>v.toFixed(2)+' s',.05],['dspd','Dive speed',v=>v.toFixed(2),.01],['cols','Wave columns',v=>Math.floor(v),1],['rows','Wave rows',v=>Math.floor(v),1],['waves','Waves per sector',v=>Math.round(v),1]];
  let T=JSON.parse(JSON.stringify(GAME));
  const Dk=s=>((s-1)/39)**T.k,fullD=f=>Dk(Math.max(2,f)),pr=(key,s)=>Math.min(1,Dk(s)/fullD(T.rows[key][2])),val=(key,s)=>{const [a,b]=T.rows[key];return a+(b-a)*pr(key,s)};
