@@ -885,7 +885,7 @@ function keepSave(v){try{v?localStorage.setItem('darksave',v):localStorage.remov
 function resumeBtn(){const b=$('pResume');b.hidden=!runSave;if(runSave)$('resumeS').textContent=`${BASE[runSave.kind].name} · Sector ${runSave.sec}${runSave.b45===1?'.5':''} · ${runSave.scrap} scrap`}
 // Low Profile: shrink the craft and its hit radius (I 10%, II 15%, III 20%)
 function applySize(){const k=[1,.9,.85,.8][Math.min(3,st.lowp||0)];if(player)player.userData.body.scale.setScalar(k);st.pr=(st.pr0||.6)*k}
-function resume(){const sv=runSave;keepSave(null);PJ[sv.kind]=sv.paint||'';start(sv.kind);ents.forEach(e=>S.remove(e.m));ents=[];Object.assign(st,sv);st.banked=0;applySize();hud();wave()}
+function resume(){const sv=runSave;keepSave(null);PJ[sv.kind]=sv.paint||'';start(sv.kind);ents.forEach(e=>S.remove(e.m));ents=[];Object.assign(st,sv);st.hl=null;st.banked=0;applySize();hud();wave()}
 // Field cleanup: particles, boss FX, drops, goo, snow and screen overlays; with sweep, also hides the upgrade/companion
 // meshes and removes anything a run added to the scene (SCN0 = the scene before the first run), so nothing carries into the menu
 let SCN0=null;function fieldClear(sweep){if(st&&st.bb){st.bb.list.forEach(l=>S.remove(l.m));st.bb.list.length=0}fx.forEach(f=>{S.remove(f.m);FXP.push(f.m)});fx.length=0;pfx.forEach(q=>{S.remove(q.m);PFP.push(q.m)});pfx.length=0;BFX.clear();clearDrops();goo.forEach(g=>{S.remove(g.f);g.f.material.dispose()});goo.length=0;snow.forEach(s=>S.remove(s.m));snow.length=0;shake=0;BU.lobs.forEach(l=>S.remove(l.m));BU.lobs.length=0;BU.mets.forEach(o=>S.remove(o.m));BU.mets.length=0;BU.wells.forEach(w=>S.remove(w.g));BU.wells.length=0;
@@ -1675,7 +1675,7 @@ function hintList(){const t=TOUCH.matches,L=[t?'Drag anywhere to move':'A / D or
 function hintUp(dt){const h=$('hint');if(!st||st.hi==null||st.hi<0||!running||paused||FALL){h.classList.remove('on');return}
  st.ht+=dt;const L=st.hl||(st.hl=hintList()),i=Math.floor((st.ht-3)/5.5),on=st.ht>3&&(st.ht-3)%5.5<4.5;
  if(i>=L.length){st.hi=-1;HINTD=1;try{localStorage.setItem('darkhints',1)}catch(e){}h.classList.remove('on');return}
- if(i>=0&&h.textContent!==L[i])h.textContent=L[i];h.classList.toggle('on',on)}
+ const tx=i>=0&&L[i]||'';if(h.textContent!==tx)h.textContent=tx;h.classList.toggle('on',on&&!!tx)}
 function popMsg(t,c){const pp=$('ppop');pp.classList.remove('go');void pp.offsetWidth;pp.textContent=t;pp.style.color=c;pp.classList.add('go')}
 // Lifetime stats (localStorage 'darkstats') drive the Unlocks screen; reaching a goal adds its item to OWNED
 let LIFE={};try{LIFE=JSON.parse(localStorage.getItem('darkstats')||'{}')}catch(e){}
