@@ -2899,7 +2899,23 @@ const TROPHY=[{k:'boss',n:'Bastion',cost:750,d:'This space faring fortress has b
  {k:'warden',n:'Warden',cost:750,d:'It\'s always guarding something. It\'s always good at it.'},
  {k:'mino',n:'Minotaur',cost:750,d:'It\'s brash. That\'s what makes it dangerous.'},
  {k:'magpie',n:'The Magpie',cost:1000,d:'Its collections are priceless.'},
- {k:'chrono',n:'Chrono',cost:1000,m:'chronoF',tw:1,d:'It never runs late. It never runs out.'}];
+ {k:'chrono',n:'Chrono',cost:1000,m:'chronoF',tw:1,d:'It never runs late. It never runs out.'},
+ {k:'caesar',n:'The Caesar',cost:1250,d:'It conquered every sector it ever entered. Then it entered yours.'},
+ {k:'onager',n:'Onager',cost:1500,d:''},
+ {k:'glacier',n:'The Glacier',cost:1750,d:''},
+ {k:'dryice',n:'Dry Ice',cost:2000,d:''},
+ {k:'geode',n:'Geode',cost:2250,d:''},
+ {k:'refract',n:'Refraction',cost:2500,d:''},
+ {k:'crucible',n:'The Crucible',cost:2750,d:''},
+ {k:'mercury',n:'Mercury',cost:3000,d:'It never held one shape for long. It holds this one now.'},
+ {k:'choir',n:'Null Choir',cost:3500,m:'choir1',dv:3,d:''},
+ {k:'priest',n:'The Void Priest',cost:3500,d:''},
+ {k:'prophet',n:'The Void Prophet',cost:3500,d:''},
+ {k:'scion',n:'Scion of the Void Gods',cost:4000,d:''},
+ {k:'nox',n:'Void God, Nox',cost:5000,d:'Older than the dark it ruled. Now it rules a pedestal.'},
+ {k:'umbra',n:'Void Goddess, Umbra',cost:5000,d:''},
+ {k:'imago',n:'Void God, Imago',cost:5000,d:''},
+ {k:'sprinter',n:'Sprinter',cost:3000,d:''}];
 let TRO=[];try{TRO=JSON.parse(localStorage.getItem('darktrophy')||'[]')}catch(e){}
 function vbox(m){const b=new THREE.Box3(),M4=new THREE.Matrix4(),v=new THREE.Vector3();m.updateMatrixWorld(true);m.traverse(o=>{if(o.isInstancedMesh){for(let i=0;i<o.count;i++){o.getMatrixAt(i,M4);b.expandByPoint(v.setFromMatrixPosition(M4).applyMatrix4(o.matrixWorld))}}else if(o.isMesh)b.expandByObject(o)});return b}
 function trophyModel(k){const key='tr_'+k,tn=(trTier(k)||[])[1];if(TM[key]&&TM[key].tn===tn)return TM[key];if(TM[key])TS.remove(TM[key].g);const o=trBuild(k);o.g.position.y=.5;TS.add(o.g);return TM[key]={...o,d:8.5,tn}}
@@ -2914,7 +2930,7 @@ function trBuild(k){const g=new THREE.Group(),M=(c,e)=>new THREE.MeshStandardMat
  const sp=new THREE.Group();g.add(sp);if(!k)return{g,sp,ring,y:0};const m=MODELS[(TROPHY.find(o=>o.k===k)||{}).m||k](),tt=trTier(k);if(tt)trMetal(m,tt);sp.add(m);const b=vbox(m),sz=b.getSize(new THREE.Vector3()),f=3.4/Math.max(sz.x,sz.z,sz.y*1.15);m.scale.multiplyScalar(f);m.position.copy(b.getCenter(new THREE.Vector3()).multiplyScalar(-f));sp.position.y=sz.y*f/2-.95;
  return{g,sp,ring,y:sp.position.y}}
 // Hangar corner pedestals: each visit shows two different random built trophies (an empty pedestal when there aren't enough)
-function hangPeds(H){const o=[...TRO].filter(k=>MODELS[k]).sort(()=>Math.random()-.5);H.userData.peds=[-1,1].map((sx,i)=>{const p=trBuild(o[i]);p.sx=sx;p.g.rotation.y=-sx*.4;H.add(p.g);return p})}
+function hangPeds(H){const o=[...TRO].filter(k=>MODELS[(TROPHY.find(o=>o.k===k)||{}).m||k]).sort(()=>Math.random()-.5);H.userData.peds=[-1,1].map((sx,i)=>{const p=trBuild(o[i]);p.sx=sx;p.g.rotation.y=-sx*.4;H.add(p.g);return p})}
 // Each frame the pedestals sit where the lower screen corners meet the floor, so they stay in the corners at any aspect
 const PRC=new THREE.Raycaster(),PPL=new THREE.Plane(new THREE.Vector3(0,1,0),.55),PV=new THREE.Vector3();
 function pedSpin(dt){if(!MH||!MH.userData.peds)return;const k=Math.min(1.5,Math.max(.9,C.aspect*.9));for(const p of MH.userData.peds){PRC.setFromCamera({x:p.sx*(C.aspect<1?.62:.72),y:-.62},C);if(PRC.ray.intersectPlane(PPL,PV)){p.g.scale.setScalar(k);p.g.position.set(PV.x/.55,-1+2.4*k,(PV.z-10)/.55)}p.sp.rotation.y+=dt*.7;p.ring.scale.setScalar(1+.06*Math.sin(p.sp.rotation.y*5))}}
@@ -2923,10 +2939,10 @@ let trYaw=0,trT=0,trRaf=0;
 function trSpin(t){if($('yardv').hidden){trRaf=0;return}const dt=Math.min(.05,(t-(trT||t))/1000);trT=t;trYaw+=dt*.7;
  document.querySelectorAll('#yardL canvas').forEach(c=>{const o=trophyModel(c.dataset.k);o.sp.rotation.y=trYaw;o.sp.position.y=o.y+Math.sin(trYaw*2.5)*.08;o.ring.scale.setScalar(1+.06*Math.sin(trYaw*5));snap('tr_'+c.dataset.k,.5,c,.75)});trRaf=requestAnimationFrame(trSpin)}
 // Trophy Yard: the main screen counts wrecks and repaired trophies; Wrecks / Repaired each open the list screen (yardv)
-let YV='w';function yardMain(){$('yvWn').textContent=TROPHY.filter(o=>KILLS[o.k]>0&&!TRO.includes(o.k)).length+' to rebuild';$('yvRn').textContent=TRO.length+' built';totT()}
+const trK=o=>Math.floor((KILLS[o.k]||0)/(o.dv||1));let YV='w';function yardMain(){$('yvWn').textContent=TROPHY.filter(o=>trK(o)>0&&!TRO.includes(o.k)).length+' to rebuild';$('yvRn').textContent=TRO.length+' built';totT()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-yv]');if(b){YV=b.dataset.yv;show('yardv')}});
-function yardDraw(){const L=TROPHY.filter(o=>YV==='r'?TRO.includes(o.k):KILLS[o.k]>0&&!TRO.includes(o.k));$('yvT').textContent=YV==='r'?'Repaired':'Wrecks';$('yardL').innerHTML=L.length?L.map(o=>{const n=KILLS[o.k]||0,have=TRO.includes(o.k);
- return `<div class="tro"><canvas width="240" height="240" data-k="${o.k}"${have?'':' class="wreck"'}></canvas><div><b>${have?o.n:o.n+' Wreck'}</b>`+(have?`<p>${o.d}</p><p class="cnt">Defeated ${n} time${n===1?'':'s'}${o.tw?` · Best Timed Attack wave: ${LIFE.tbw||0}`:''}</p>${o.tw?`<p class="cnt">${trTier(o.k)?trTier(o.k)[1]+' trophy':'Bronze at wave 20'}${trTier(o.k)&&trTier(o.k)[0]<50?' · next at wave '+(trTier(o.k)[0]+10):''}</p>`:''}`:`<p>Rebuild its wreck into a trophy.</p><button data-tro="${o.k}"${bankT<o.cost?' disabled':''}>Rebuild · ${o.cost} scrap</button>`)+'</div></div>'}).join(''):`<p class="cnt">${YV==='r'?'No trophies yet. Rebuild a wreck to make one.':'No wrecks waiting. Defeat a boss to recover one.'}</p>`;
+function yardDraw(){const L=TROPHY.filter(o=>YV==='r'?TRO.includes(o.k):trK(o)>0&&!TRO.includes(o.k));$('yvT').textContent=YV==='r'?'Repaired':'Wrecks';$('yardL').innerHTML=L.length?L.map(o=>{const n=trK(o),have=TRO.includes(o.k);
+ return `<div class="tro"><canvas width="240" height="240" data-k="${o.k}"${have?'':' class="wreck"'}></canvas><div><b>${have?o.n:o.n+' Wreck'}</b>`+(have?`${o.d?`<p>${o.d}</p>`:''}<p class="cnt">Defeated ${n} time${n===1?'':'s'}${o.tw?` · Best Timed Attack wave: ${LIFE.tbw||0}`:''}</p>${o.tw?`<p class="cnt">${trTier(o.k)?trTier(o.k)[1]+' trophy':'Bronze at wave 20'}${trTier(o.k)&&trTier(o.k)[0]<50?' · next at wave '+(trTier(o.k)[0]+10):''}</p>`:''}`:`<p>Rebuild its wreck into a trophy.</p><button data-tro="${o.k}"${bankT<o.cost?' disabled':''}>Rebuild · ${o.cost} scrap</button>`)+'</div></div>'}).join(''):`<p class="cnt">${YV==='r'?'No trophies yet. Rebuild a wreck to make one.':'No wrecks waiting. Defeat a boss to recover one.'}</p>`;
  totT();if(!trRaf)trRaf=requestAnimationFrame(trSpin)}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-tro]');if(!b)return;const o=TROPHY.find(q=>q.k===b.dataset.tro);if(!o||bankT<o.cost||TRO.includes(o.k))return;bankT-=o.cost;TRO.push(o.k);try{localStorage.setItem('darkbank',bankT);localStorage.setItem('darktrophy',JSON.stringify(TRO))}catch(e){}totT();yardDraw()});
 // Debug readout (Settings > Debug readout): per-frame x moves split into pre-input / input / post-input, plus tilt, flip counts over 1 s
