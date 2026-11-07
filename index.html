@@ -2014,8 +2014,9 @@ function capTech(){running=false;boop();buzz([60,40,120]);const g=capRocket(),d=
   ['Hook It In',q.length?'Improve a random one of your Uncommon upgrades by one level.':'No Uncommon upgrade of yours can be improved.',done(()=>{const u=q[Math.random()*q.length|0];u[2](st);gotUp(u[0]);popMsg(`${u[0]} ${TN[tierOf(u[0])-1]}`,'#6fd3ff')}),!q.length]]);$('evt').classList.add('see')}
 // Hard Mode start: 6 unlocked upgrades (no Magpie pool), 2 Rare or Contraband, 2 Uncommon, 2 Common, each at a random tier. Pick 3
 // Armor upgrades do nothing without an armor bar, so Hard Mode never offers them
-const HARDNO=['Extra Armor','Black Ice Plating','Ram Plating','Phantom Armor','Scrap Weld','Apex EMP Tech'];
-function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0])&&!HARDNO.includes(u[0])&&!u[8],sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
+// Armor-related upgrades never show in Timed Attack (hits cost time, not armor): Hard Mode loadouts and Daily Timed Attack picks skip them
+const TIMEDNO=['Extra Armor','Black Ice Plating','Ram Plating','Phantom Armor','Scrap Weld','Apex EMP Tech','Glass Auto Cannons'];
+function hardPick(){running=false;let n=3;const ok=u=>inPool(u)&&!MAGPOOL.includes(u[0])&&!TIMEDNO.includes(u[0])&&!u[8],sel=[],take=rs=>{const q=UPG.filter(u=>rs.includes(u[3])&&ok(u)&&!sel.includes(u));for(let i=0;i<2&&q.length;i++)sel.push(q.splice(Math.random()*q.length|0,1)[0])};take('rx');take('u');take('c');
  const o=$('opts'),left=()=>{$('pickS').textContent='Choose your starting upgrades.';$('pickT').textContent=`Hard Mode · Lights Out · ${n} pick${n>1?'s':''} left`};o.innerHTML='';
  sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
   b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}b.remove();hud();if(--n>0)left();else{$('pick').hidden=true;running=true}};o.append(b)});
@@ -2595,7 +2596,7 @@ function seeded(tag,f){return function(...a){if(!st||!st.daily)return f.apply(th
 function dailyGet(){try{return JSON.parse(localStorage.getItem('darkdaily'))||{}}catch(e){return {}}}
 function dailyUI(){const b=$('pDaily');b.hidden=!(LIFE.scion>=1);if(b.hidden)return;const d=dKey(),r=dailyGet();$('dailyS').textContent=`${d} · ${dName(dCraft(d))} · Enemies: ${DMODS[dMod(d)][0]} (${DMODS[dMod(d)][1]})`+(r.d===d?` · Today's best: sector ${r.s}, ${r.sc} scrap`:' · One shared run a day.')}
 // Daily start: pick 1 of 3 seeded upgrades from the starting pool (no Shop or unlock-gated ones), each at a random tier
-function dailyPick(){running=false;const ok=u=>!u[5]&&!u[6]&&!u[8]&&(!u[10]||u[10]===st.kind)&&!MAGPOOL.includes(u[0]),sel=[];for(let g=0;sel.length<3&&g<200;g++){let q=Math.random()*100,r='c';for(const k in ODDS_HI)if((q-=ODDS_HI[k])<0){r=k;break}const c=UPG.filter(u=>u[3]===r&&ok(u)&&!sel.includes(u));if(c.length)sel.push(c[Math.random()*c.length|0])}
+function dailyPick(){running=false;const ok=u=>!u[5]&&!u[6]&&!u[8]&&(!u[10]||u[10]===st.kind)&&!MAGPOOL.includes(u[0])&&!(st.timed&&TIMEDNO.includes(u[0])),sel=[];for(let g=0;sel.length<3&&g<200;g++){let q=Math.random()*100,r='c';for(const k in ODDS_HI)if((q-=ODDS_HI[k])<0){r=k;break}const c=UPG.filter(u=>u[3]===r&&ok(u)&&!sel.includes(u));if(c.length)sel.push(c[Math.random()*c.length|0])}
  const o=$('opts');o.innerHTML='';$('pickT').textContent=`${st.timed?'Daily Timed Attack':'Daily Run'} · ${DMODS[st.dmod][0]}`;$('pickS').textContent='Choose one upgrade to start with.';
  sel.forEach(([t,d,f,r])=>{const k=1+(Math.random()*3|0),b=document.createElement('button');b.className='r-'+r;b.innerHTML=`${tag(r)}<b>${t} ${TN[k-1]}</b><span>${d}</span>${LORE[t]?`<em class="lo">“${LORE[t]}”</em>`:''}`;
   b.onclick=()=>{for(let i=0;i<k;i++){f(st);gotUp(t)}hud();$('pick').hidden=true;running=true};o.append(b)});$('pick').hidden=false}
