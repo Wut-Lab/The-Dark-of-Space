@@ -130,6 +130,7 @@ text-shadow:0 0 18px #f2c23066,0 0 48px #f2c23038,0 0 100px #f2c23022}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:12px}.ft{display:flex;justify-content:flex-end}
 .back{padding:6px 12px;font:600 12px var(--body);letter-spacing:.14em;text-transform:uppercase;box-shadow:0 3px 0 #000000b0,inset 0 1px 0 #ffffff2a}
 .back:active{transform:translateY(2px)}
+.bankC{position:fixed;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:3;padding:6px 12px;font:600 13px "Chakra Petch",sans-serif;letter-spacing:.08em;color:#c9d2e6;background:#0a0c14cc;border:1px solid #ffc21a66;border-radius:6px}.bankC b{color:#ffc21a;margin-left:6px}
 #devBtn{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:3;padding:5px 10px!important;min-height:0!important;width:auto!important;font-size:11px;letter-spacing:.1em;color:#e6dcff;background:#1c1530e6!important;border:1px solid #b9a2ff88!important;border-radius:6px;box-shadow:0 0 14px #a98bff88,0 0 32px #8a6bff44;animation:devGlow 2.6s ease-in-out infinite}
 #devBtn b{font-size:11px;color:#e6dcff}@keyframes devGlow{50%{box-shadow:0 0 22px #c4adffcc,0 0 48px #9a7bff66}}
 #devc,#devpw{background:radial-gradient(120% 90% at 50% 10%,#3b2a66f0,#140f24f5 70%)}#dvbg{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}@media (max-width:600px){#dvbg{opacity:.5}}
@@ -188,7 +189,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 #blk{position:fixed;inset:0;background:#000;z-index:95}</style>
 <div class="ov" id="outro" hidden><p id="outP"></p><h1 id="outT" class="logo x" style="position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);margin:0;transition:opacity 2s">In the Dark of Space</h1><div id="outS"></div><button id="outEnd" class="x" hidden>End</button><div class="skipH" id="outSk">Hit Any Key, or Tap to Skip</div></div><div id="blk" hidden></div>
 <div class="ov" id="reel"><p id="reelP"></p><div class="skipH">Hit Any Key, or Tap to Skip</div></div>
-<div class="ov scr" id="start" hidden><div class="title">
+<div class="ov scr" id="start" hidden><div class="bankC">Total Scrap<b class="bankN">0</b></div><div class="title">
 <h1 class="logo">In the Dark of Space</h1>
 <nav class="menu" aria-label="Main menu">
 <button data-go="modes"><b>Play</b></button>
@@ -197,7 +198,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <button id="devBtn"><b>Dev Corner</b></button>
 </nav></div></div>
 
-<div class="ov scr" id="hangar" hidden><div class="title">
+<div class="ov scr" id="hangar" hidden><div class="bankC">Total Scrap<b class="bankN">0</b></div><div class="title">
 <h1 class="logo">Hangar</h1>
 <nav class="menu" aria-label="Hangar">
 <button id="logBtn"><b>Log</b></button>
@@ -856,7 +857,7 @@ try{best=+localStorage.getItem('scrapbest')||0}catch(e){}
 $('best').textContent=best?`Best run: sector ${best}.`:'';
 // Scrap bank: at the end of every run half the scrap carries over; the other half pays to repair the craft back to 100%
 let bankT=0;try{bankT=+localStorage.getItem('darkbank')||0}catch(e){}
-const totT=()=>$('totN').textContent=bankT;totT();
+const totT=()=>{$('totN').textContent=bankT;document.querySelectorAll('.bankN').forEach(e=>e.textContent=bankT)};totT();
 // Longest Chain (main menu, for bragging): best chain ever and the mode it was set in. Dev Corner runs don't count
 let LCH={n:0,m:''};try{Object.assign(LCH,JSON.parse(localStorage.getItem('darkchain')||'{}'))}catch(e){}
 function lchT(){$('lcN').textContent=LCH.n;$('lcM').textContent=LCH.m||'None yet'}lchT();
