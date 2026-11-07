@@ -197,8 +197,8 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><label><input type="checkbox"><span><b>Void Goddess, Umbra</b>: joins the post-game boss pool once unlocked (beat the Scion 3 times or Nox once; hidden unlock). Built</span></label></li>
 <li><label><input type="checkbox"><span>Post-game upgrades: a themed set of three (common, uncommon, rare), design to come</span></label></li>
 <li><label><input type="checkbox"><span>Post-game boss upgrade (rare or contraband): design to come</span></label></li>
-<li><label><input type="checkbox"><span>Post-game power-ups (2): design to come</span></label></li>
-<li><label><input type="checkbox"><span>Post-game event: one the player plays (a minigame or skill challenge), design to come</span></label></li>
+<li><label><input type="checkbox" checked><span>Post-game power-ups (2): Echo Shot (Timed Attack only) and Stopwatch (Campaign only), both unlocked by the Scion plus a Chrono win. Built</span></label></li>
+<li><label><input type="checkbox"><span>Post-game event: one the player plays (a minigame or skill challenge). Idea: "The Stopped Clock", a short Campaign challenge where you thread through frozen enemy shots before time restarts; rewards scrap or a power-up</span></label></li>
 <li><label><input type="checkbox"><span><b>Timed Attack Hard Mode</b> (unlocks after the Scion; hidden from Unlocks): <b>Lights Out</b> (dark field, a light cone ahead of you and muzzle flashes), start by picking 3 of 6 upgrades at random tiers (2 Rare/Contraband, 2 Uncommon, 2 Common, no Magpie pool), +1 enemy armor, score ×1.5. Built</span></label></li>
 <li><label><input type="checkbox"><span><b>Void God, Imago</b>: a reflection of your last run (that craft in void colors, haloed in its paint color). Joins the post-game boss pool once Nox and Umbra are each beaten; hidden until unlocked. Built</span></label></li>
 </ul><div class="bar"><i></i></div>
@@ -219,7 +219,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <ul>
 <li><label><input type="checkbox"><span>Add a second shop craft</span></label></li>
 <li><label><input type="checkbox"><span>Add an unlockable craft</span></label></li>
-<li><label><input type="checkbox"><span>Create 2 craft-specific upgrades for each craft</span></label></li>
+<li><label><input type="checkbox"><span>Create 2 craft-specific upgrades for each craft. Idea: one time-themed upgrade per craft, unlocked by beating Chrono with that craft</span></label></li>
 <li><label><input type="checkbox" checked><span>Create an elite-only upgrade pool of at least 5 upgrades (built: 7)</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-touches">Notes for Claude <span class="st"></span></label><textarea id="n-touches" placeholder="Craft ideas, upgrade ideas…"></textarea></div></div></details>
@@ -238,6 +238,7 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><label><input type="checkbox" checked><span>Each trophy shows how many times you've beaten that boss</span></label></li>
 <li><label><input type="checkbox"><span>Set rewards: finish a set (every zone boss, every Void God) to unlock a paint job or an Enemy Log extra</span></label></li>
 <li><label><input type="checkbox"><span>Trophy Yard milestones on the Unlocks screen</span></label></li>
+<li><label><input type="checkbox" checked><span>Chrono trophy milestones: bronze at a best Timed Attack wave of 20, silver at 30, gold at 40, platinum with a faint green glow at 50 (Yard and Hangar pedestals). Built</span></label></li>
 </ul><div class="bar"><i></i></div>
 <div class="notes"><label for="n-trophy">Notes for Claude <span class="st"></span></label><textarea id="n-trophy" placeholder="Trophy prices, flavor text, set rewards…"></textarea></div></div></details>
 <details data-id="chrono"><summary><span class="n">12</span><span class="t">Fleshing out Chrono and Timed Attack</span><span class="why">a boss worth racing the clock for</span></summary>
@@ -349,7 +350,9 @@ const PU=[
  {n:'Scrap Slide',c:'#ffc94a',m:'c',s:'built',k:'timed',d:'Post-game: drops once the Scion has fallen. For 5 s, +10% strafe speed plus 5% per 50 scrap held (up to +30%), and kills pay +1 scrap'},
  {n:'Stasis',c:'#9ff0ff',m:'t',s:'built',k:'timed',d:'Post-game: drops once the Scion has fallen. Stops the clock for 5 s, and every unit and enemy shot moves at half speed'},
  {n:'Red Sight',c:'#ff2a3a',m:'c',s:'built',k:'timed',d:'Unlock: clear 10 elite sectors. Drops only in elite sectors and Bonus Stages. Refills EN, and for 4 s every unit and enemy shot moves 20% slower'},
+ {n:'Echo Shot',c:'#5ff5d0',m:'t',s:'built',k:'timed',d:'Post-game: drops once the Scion has fallen and Chrono has been beaten. Teal capsule with a white band. For 5 s, every shot you fire repeats 0.3 s later (echoes don\'t count toward accuracy)'},
  {n:'Time Dash',c:'#39ff6a',m:'t',s:'built',k:'timed',d:'Unlock: beat Chrono once (silent). Gold capsule with a green and white glow. Lasts 1 s per 45 s on the clock: each dash slows units, enemy shots and the clock to half speed for 0.5 s, and dashes cost 10% less EN. Your craft and its dash are not slowed'},
+ {n:'Stopwatch',c:'#d8dce2',m:'c',s:'built',k:'timed',d:'Post-game: drops once the Scion has fallen and Chrono has been beaten. Silver capsule with a green band and glow. Freezes every enemy shot in place for 2 s, then lets them continue; touching a frozen shot still hurts'},
  {n:'Gravity Charge',c:'#4ad8ff',m:'t',s:'built',k:'instant',d:'Unlock: reach 2:00 in Timed Attack with each of Kestrel, Gale and Falcon. Dark gray capsule with a blue glow. Pulls every shot in the lane (yours too) into one point and stops all firing for 0.5 s'},
  {n:'Reactor Surge',c:'#22e4ff',m:'c',s:'proposed',k:'timed',d:'Full EN, and dashes cost nothing for 6 s'}];
 // Upgrade catalog: mirrors UPG in the game. src: p upgrade pick, s shop, e event
