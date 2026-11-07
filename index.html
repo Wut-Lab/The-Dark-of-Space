@@ -934,7 +934,7 @@ function wave(more){st.tcW=0;cvBuff();if(dmod('dark')&&!st.lout){st.lout=1;light
  if(st.timed&&!more&&st.sec%CHW===0){music(null);chronoWave();return}
  if(more&&st.tawP){chronoWave();return}
  if(!st.timed&&st.sec%5===0){music(st.area==='Dark Space'?'darkboss':null);bossWave();return}st.bonus=!st.timed&&st.b45===1;music(st.bonus?'bonus':st.area==='The Frost Reach'?'frost':st.area==='Red Crystal Asteroid Belt'?'crystal':st.area==='The Alkaline Zone'?'alk':st.area==='Legion Space'?'legion':st.area==='Dark Space'?'dark':'sector');const el=st.elite;if(st.bonus){bonusWave();hud();banner('BONUS STAGE',`Sector ${String(st.sec).padStart(2,'0')}.5 · They won't shoot. Destroy as many as you can`);return}
- if(st.cvF||(st.daily||OWNED.includes('ev:choir'))&&Math.random()<.15){st.cvF=0;st.cvW=1}const cols=Math.min((dv('cols')|0)+st.wv,9),rows=Math.min(dv('rows')|0,4)+(el&&etw('swarm')||dmod('swarm')?1:0);let i=0;diveCd=8;const g0=ents.length;
+ if(st.cvF||(st.daily||OWNED.includes('ev:choir'))&&Math.random()<(st.daily?.15:.12)){st.cvF=0;st.cvW=1}const cols=Math.min((dv('cols')|0)+st.wv,9),rows=Math.min(dv('rows')|0,4)+(el&&etw('swarm')||dmod('swarm')?1:0);let i=0;diveCd=8;const g0=ents.length;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const type=el?(Math.random()<.4?['brute','shooter','shooter','chaser','chaser'][Math.random()*5|0]:r===0?'brute':r<=2?'shooter':'chaser'):r===0&&(st.timed?st.sec*3:st.sec)>=4?'brute':r<=1&&st.sec>1?'shooter':'chaser',side=c<cols/2?-1:1;
   const m=MODELS[type]();m.visible=false;S.add(m);const p0=V3(side*16,-6);m.position.copy(p0);
   ents.push({m,type,hp:{chaser:2,shooter:3,brute:9}[type]*hpk()*(el?1.5*(etw('armor')&&r===rows-1?1.5:1):1)*(dmod('armor')&&r===rows-1?1.5:1)*(st.area==='Red Crystal Asteroid Belt'||st.area==='The Alkaline Zone'?1.25:1),slot:V3((c-(cols-1)/2)*2.3,-28+r*2.6),state:'enter',pat:(i>>3)%3,ps:(i>>1)%2?1:-1,mate:i%2?.6:-.6,t:-1.92-((i++)>>1)*.35,
@@ -1515,7 +1515,7 @@ function mercuryUp(e,dt,p){const M=e.m.position,W=e.fx.warn,L=e.fx.lash;
 function addVoidBot(j){const m=MODELS.voidbot();S.add(m);m.position.set((j-1)*6,0,-50);
  ents.push({m,type:'voidbot',state:'voidbot',hp:6*(1+st.sec*.08),slot:V3((j-1)*6,-22-(j%2)*3),r:.7,ph:0,t:-.8*j,cd:2+Math.random()*2,cdD:4+j*2.5+Math.random()*2,hit:0})}
 function vbZip(e,x,z){boom(e.m.position,6,0xb060ff);e.m.position.set(x,0,z);boom(e.m.position,6,0xb060ff)}
-// The Full Choir Sings (unlocked by the full Null Choir trophy): 15% of sector waves (in Daily runs for everyone, seeded with the wave), 3 s after the first unit flies in one basic unit (Chaser, Sniper, Brute) converts:
+// The Full Choir Sings (unlocked by the full Null Choir trophy): 12% of sector waves (Daily runs: 15%, for everyone, seeded with the wave), 3 s after the first unit flies in one basic unit (Chaser, Sniper, Brute) converts:
 // black and neon purple, +5% HP (min 1), Void Bot movement and purple shots. Kill it within 30 s (20 s in Timed Attack) for +25 scrap and Choir's Echo (+25% damage next wave); else it fires a ring and escapes
 function cvTick(dt,p){if(!st.cvW)return;if(st.cvW===1){if(ents.some(e=>e.m.visible&&(e.state==='enter'||e.state==='form'))){st.cvW=2;st.cvD=3}return}
  if(st.cvW===2){if((st.cvD-=dt)>0)return;st.cvW=3;const L=ents.filter(e=>e.m.visible&&(e.state==='form'||e.state==='enter')&&e.hp>0&&['chaser','shooter','brute'].includes(e.type)&&!e.gold&&!e.add);if(L.length)cvMake(L[Math.random()*L.length|0]);return}
