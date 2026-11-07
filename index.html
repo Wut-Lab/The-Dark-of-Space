@@ -279,7 +279,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop, found in the Hangar.</li><li>Play well to unlock new crafts, upgrades, paint jobs and events.</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li><li>You bank 65% of your scrap, or 75% once you pass wave 20.</li><li>Unlock perks (destroy 10 Skirmishers, or reach waves 30, 40 and 50) and pick one before each run.</li><li>Every 10th wave, Chrono arrives and stops the clock until it falls (hits still cost time). Only the part with a white glow takes damage: break the hourglass, then the staff, then the mech itself.</li></ul></div></div>
+<ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li><li>You bank 65% of your scrap, or 75% once you pass wave 20.</li><li>Unlock perks (collect 10 time capsules, destroy 10 Skirmishers, or reach waves 30, 40 and 50) and pick one before each run.</li><li>Every 10th wave, Chrono arrives and stops the clock until it falls (hits still cost time). Only the part with a white glow takes damage: break the hourglass, then the staff, then the mech itself.</li></ul></div></div>
 
 <div class="ov scr" id="how-daily" hidden><div class="card"><div class="hd"><h2>Daily Run</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>A Campaign run that changes each day. Everyone gets the same craft, routes and upgrade offers.</li><li>On <b>Pilot's Choice</b> days, fly any craft you own.</li><li>Start by picking 1 of 3 upgrades, and face the day's enemy twist.</li><li>Unlockable events can happen in it, whether you have unlocked them or not.</li><li>Try as often as you like. Your best of the day is kept.</li></ul></div></div>
@@ -1783,9 +1783,9 @@ let volN=0;function blaster(){if(++volN%2)return;try{if(!AC)return;const t=AC.cu
 function grab(d){boop();pickIt('p:'+d.kind);(st.pu=st.pu||{})[d.kind]=(st.pu[d.kind]||0)+1;const k=DROP[d.kind];
  if(k.pu){if(st.grav){const g=[0,10,12,15][st.grav];st.scrap+=g;popMsg('+'+g+' SCRAP','#b060ff')}boom(d.m.position,8,k.c);zap();prog('pwr');if(st.timed)prog('tpwr');if(st.surge)st.en=Math.min(enMax(),st.en+[15,20,25][st.surge-1]);if(d.kind==='emp'){st.emp+=(2.5+st.empB+Math.min(2,st.shelp||0))*pssD();shots.forEach(s=>{if(s.enemy)s.life=0});flash('emp')}else if(d.kind==='sta')st.sta=5*pssD();else if(d.kind==='red'){st.rsg=4*pssD();st.en=enMax()}else if(d.kind==='gch')gravCharge();else if(d.kind==='sw')st.swd=5*pssD();else if(d.kind==='echo')st.echo=5*pssD();else if(d.kind==='stopw')st.swT=2*pssD();else if(d.kind==='tdash')st.tdT=st.tdM=Math.max(1,Math.floor(st.time/45))*pssD();else if(d.kind==='slide')st.sld=5*pssD();else if(d.kind==='bar')st.bar=st.shelp>=3?4:3;else if(d.kind==='patch'){if(st.timed)st.time+=3;else st.hp=Math.min(st.max,st.hp+(st.shelp>=3?3:2));hud()}else st.spr+=(5+Math.min(2,st.shelp||0))*pssD();
   popMsg(k.pu,k.css);return}
- st.time+=5;if(k.inv)st.gold=Math.max(st.gold,k.inv);
+ const ts=st.tpk==='deep'?6:5;st.time+=ts;if(k.inv)st.gold=Math.max(st.gold,k.inv);if(!st.dev&&(LIFE.tcap||0)===9)setTimeout(()=>popMsg('UNLOCKED: DEEP POCKETS PERK','#39ff6a'),800);prog('tcap');
  const t=$('timer'),pp=$('tpop');t.classList.remove('gain');pp.classList.remove('go');void t.offsetWidth;t.classList.add('gain');
- pp.textContent=k.inv?'+5 S · SHIELD':'+5 S';pp.style.color=k.css;pp.classList.add('go');boom(d.m.position,8,k.c)}
+ pp.textContent=k.inv?`+${ts} S · SHIELD`:`+${ts} S`;pp.style.color=k.css;pp.classList.add('go');boom(d.m.position,8,k.c)}
 // First-run hints: a few short tips during the player's first run, shown once (localStorage 'darkhints')
 let HINTD=0;try{HINTD=+localStorage.getItem('darkhints')||0}catch(e){}
 function hintList(){const t=TOUCH.matches,L=[t?'Drag anywhere to move':'A / D or \u2190 \u2192 to strafe \u00b7 W / S to move','Your guns fire on their own: line up under enemies',t?'Tap Dash to slip through shots (uses EN)':'Shift to dash through shots (uses EN)','Catch falling power-ups for a boost'];if(!st.timed)L.push('Clear the sector to pick an upgrade');return L}
@@ -2931,7 +2931,8 @@ function snap(k,yaw,cv,z=1){for(const q in TM)TM[q].g.visible=q===k;const t=thum
  TR.render(TS,TC);const x=cv.getContext('2d');x.clearRect(0,0,cv.width,cv.height);x.drawImage(TR.domElement,0,0,cv.width,cv.height)}
 // Trophy Yard: rebuild beaten bosses into trophies with Total Scrap; each spins on a magnetic pedestal and shows its kill count
 // Timed Attack perks: unlocked by a Timed Attack goal (a LIFE stat q.s, default best wave 'tbw', reaching q.w); pick one before a run on the Timed Attack screen. Off in Daily Timed Attack.
-const TPERKS=[{id:'skirm',s:'tskirm',w:10,n:'Skirmish Clock',d:'Each Skirmisher you destroy adds 0.5 s to the clock, up to +15 s a run.',m:'chaser',goal:'destroy 10 Skirmishers in Timed Attack'},
+const TPERKS=[{id:'deep',s:'tcap',w:10,n:'Deep Pockets',d:'Time capsules add 6 s instead of 5.',m:'cap_g',goal:'collect 10 time capsules in Timed Attack'},
+ {id:'skirm',s:'tskirm',w:10,n:'Skirmish Clock',d:'Each Skirmisher you destroy adds 0.5 s to the clock, up to +15 s a run.',m:'chaser',goal:'destroy 10 Skirmishers in Timed Attack'},
  {id:'head',w:30,n:'Head Start',d:'Every run starts with 3:15 on the clock instead of 3:00.',m:'tless'},
  {id:'rewind',w:40,n:'Rewind',d:'Go 15 s without another hit and the 5 s your last hit cost comes back.',m:'chstaff'},
  {id:'glass',w:50,n:'Turned Glass',d:'Once per run, when the clock would hit 0:00, the hourglass flips: +20 s and 2 s of invulnerability.',m:'chglass'}];
