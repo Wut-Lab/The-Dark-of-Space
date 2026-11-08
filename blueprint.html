@@ -324,8 +324,11 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 .dleg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--mute)}.dleg span{display:flex;align-items:center;gap:6px}.dleg i{display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--c)}
 .dtip{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--bg) 88%,transparent);border:1px solid var(--line);padding:4px 6px;font-size:.68rem;line-height:1.5;color:var(--fg);white-space:nowrap}.dtip i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:6px}
 .dtab{width:100%;border-collapse:collapse;font-size:.82rem}.dtab th,.dtab td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}.dtab th{color:var(--mute);font-weight:600}.dtab .dn{text-align:right;font-variant-numeric:tabular-nums}
+.dmode{display:flex;gap:6px;margin-bottom:12px}.dmode button{font:.8rem var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:6px 12px;cursor:pointer;min-height:34px}.dmode button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:color-mix(in srgb,var(--cyan) 12%,var(--bg))}
 </style>
-<p class="sub"><b>One curve drives difficulty.</b> Every sector has a difficulty value <b>D</b> from 0 (sector 1) to 1 (sector 40): <code>D = ((sector − 1) / 39)<sup>k</sup></code>, with k = 1 today (a straight line). Each scaling lever is one row of a table: a start value, an end value, and the D at which it reaches full. Timed Attack uses its wave number in place of the sector.</p>
+<div class="dmode" role="group" aria-label="Mode"><button data-m="c" aria-pressed="true">Campaign</button><button data-m="t" aria-pressed="false">Timed Attack</button></div>
+<div id="dfC">
+<p class="sub"><b>One curve drives difficulty.</b> Every sector has a difficulty value <b>D</b> from 0 (sector 1) to 1 (sector 40): <code>D = ((sector − 1) / 39)<sup>k</sup></code>, with k = 1.2 today (a gentle start). Each scaling lever is one row of a table: a start value, an end value, and the D at which it reaches full. Timed Attack has its own view (switch above).</p>
 <section class="list"><h2>Ramp by sector <small>% of each lever's full range</small></h2>
 <div class="dleg" id="dleg"></div>
 <div class="dfc" style="position:relative"><svg id="dsvg" viewBox="0 0 420 240" role="img" aria-label="Each difficulty lever's progress from sector 1 to 40"></svg><div class="dtip" id="dtip" hidden></div></div>
@@ -342,6 +345,21 @@ details.ideas{border-style:dashed;border-color:color-mix(in srgb,var(--lime) 40%
 <li><b>Bosses:</b> their own health tables, scaled by the health lever and threat; they take 25% less damage.</li>
 <li><b>Waves:</b> boss and Bonus sectors are always a single wave; wave 2 and 3 add a column.</li>
 </ul></section>
+</div>
+<div id="dfT" hidden>
+<p class="sub"><b>Timed Attack runs on waves, not sectors.</b> Enemy health, dive rate and formation size use the Campaign curve at <b>wave × scale</b> (0.7 today, so wave 10 plays like sector 7). New enemy types phase in by chance: each has a start wave, a chance at that wave, a rise per wave and a cap. The clock and the 30-second speed-up sit on top.</p>
+<section class="list"><h2>Ramp by wave <small>chance per unit or per wave</small></h2>
+<div class="dleg" id="tleg"></div>
+<div class="dfc" style="position:relative"><svg id="tsvg" viewBox="0 0 420 240" role="img" aria-label="Timed Attack enemy mix and strength from wave 1 to 30"></svg><div class="dtip" id="ttip" hidden></div></div>
+<p class="sub">Hover or tap the chart to read a wave. Sniper and Heavy lines are the chance for a front-row unit (back rows get less); Lancer and Ooze are the chance a wave brings one. Enemy strength is how far the health, dive and formation levers are through their range.</p></section>
+<section class="list"><h2>Enemy mix <small>edits save to this page</small></h2>
+<table class="dtab"><thead><tr><th>Enemy</th><th class="dn">Start wave</th><th class="dn">Chance %</th><th class="dn">+% / wave</th><th class="dn">Cap %</th></tr></thead><tbody id="ttb"></tbody></table>
+<p class="sub">Mines: 1 at wave 3, 2 from wave 4. From wave 13, 40% of Lancer waves bring two. Ooze is never more than one.</p></section>
+<section class="list"><h2>Clock and pace</h2>
+<table class="dtab"><thead><tr><th>Lever</th><th class="dn">Value</th></tr></thead><tbody id="ttc"></tbody></table>
+<div class="dk"><button class="dbtn" id="tReset">Reset to game values</button><span class="dst" id="tSt"></span></div>
+<p class="sub">Seconds per wave is only an estimate for the chart (clock time spent in a wave); it doesn't change the game. Tell Claude to apply the blueprint's Timed Attack tuning when it feels right.</p></section>
+</div>
 </div>
 </main>
 <script>
@@ -512,6 +530,39 @@ document.querySelectorAll('.fl').forEach(g=>g.addEventListener('click',e=>{const
  fill();draw();
  (async()=>{try{db=await claude.use('db')}catch(e){}if(!db){st.textContent='Saving unavailable here';return}ref=db.doc('tuning/difficulty');
   ref.onSnapshot(x=>{const v=x.data();if(!v||!v.rows)return;if(tb.contains(document.activeElement))return;T={k:v.k||1,rows:{...JSON.parse(JSON.stringify(GAME.rows)),...v.rows}};fill();draw();st.textContent='Saved values loaded'})})()}
+// Timed Attack view of the Difficulty tab: mirrors tmix, the Lancer/Ooze rolls, dD's timed scale and the clock values in index.html.
+// Edits save to db doc tuning/timed. TG holds the values currently in the game (keep in step).
+{const TG={scale:.7,mix:{snp:[2,10,10,60],hvy:[3,15,15,80],lan:[5,20,3,72],ooz:[11,25,0,25]},clk:{start:180,hit:5,clear:4,cap:5,fly:3,fast:8,spw:20}};
+ const MX=[['snp','Sniper (front rows)','var(--s1)'],['hvy','Heavy (front row)','var(--s2)'],['lan','Lancer (per wave)','var(--s3)'],['ooz','Ooze (per wave)','var(--s5)']];
+ const CK=[['scale','Wave scale (× sector)',.05],['start','Starting clock (s)',5],['hit','Hit cost (s)',1],['clear','Wave clear bonus (s)',1],['cap','Time capsule (s)',1],['fly','Clock pause on fly-in (s)',.5],['fast','Speed-up per 30 s (%)',1],['spw','Est. seconds per wave',1]];
+ let T=JSON.parse(JSON.stringify(TG));const N=30;
+ const ch=(k,w)=>{const [s0,c,d,m]=T.mix[k];return w<s0?0:Math.min(m,c+(w-s0)*d)/100},str=w=>Math.min(1,Math.max(0,(w-1)*T.scale/39))**1.2;
+ const W=420,H=240,L=34,R=12,Tp=10,B=28,X=w=>L+(w-1)/(N-1)*(W-L-R),Y=v=>Tp+(1-v)*(H-Tp-B),svg=document.getElementById('tsvg'),ns='http://www.w3.org/2000/svg';
+ const el=(t,a)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e};
+ for(const v of [0,.25,.5,.75,1]){el('line',{x1:L,x2:W-R,y1:Y(v),y2:Y(v),class:v?'gr':'ax'});el('text',{x:L-6,y:Y(v)+4,'text-anchor':'end'}).textContent=v*100+'%'}
+ for(const w of [1,5,10,15,20,25,30]){el('text',{x:X(w),y:H-8,'text-anchor':'middle'}).textContent='W'+w}
+ const LN=[...MX,['str','Enemy strength','var(--s7)']],paths=LN.map(m=>el('path',{class:'ln',stroke:m[2]})),hv=el('line',{y1:Tp,y2:H-B,class:'hv',visibility:'hidden'}),tip=document.getElementById('ttip');
+ document.getElementById('tleg').innerHTML=LN.map(m=>`<span><b style="display:inline-block;width:14px;height:3px;border-radius:2px;background:${m[2]}"></b>${m[1]}</span>`).join('');
+ const fv=(k,w)=>k==='str'?str(w):ch(k,w),draw=()=>LN.forEach(([k],i)=>paths[i].setAttribute('d',[...Array(N)].map((_,j)=>(j?'L':'M')+X(j+1).toFixed(1)+','+Y(fv(k,j+1)).toFixed(1)).join('')));
+ const tb=document.getElementById('ttb'),tc=document.getElementById('ttc');
+ tb.innerHTML=MX.map(([k,n])=>`<tr><td>${n}</td>${[0,1,2,3].map(j=>`<td class="dn"><input type="number" inputmode="decimal" data-k="${k}" data-j="${j}" step="1" min="${j?0:1}" aria-label="${n} ${['start wave','chance at start','rise per wave','cap'][j]}"></td>`).join('')}</tr>`).join('');
+ tc.innerHTML=CK.map(([k,n,st])=>`<tr><td>${n}</td><td class="dn"><input type="number" inputmode="decimal" data-c="${k}" step="${st}" min="0" aria-label="${n}"></td></tr>`).join('');
+ const fill=()=>{tb.querySelectorAll('input').forEach(i=>i.value=T.mix[i.dataset.k][+i.dataset.j]);tc.querySelectorAll('input').forEach(i=>i.value=i.dataset.c==='scale'?T.scale:T.clk[i.dataset.c])};
+ let ref=null,tm;const st=document.getElementById('tSt');
+ const save=()=>{if(!ref){st.textContent='Saving unavailable here';return}clearTimeout(tm);st.textContent='Editing…';tm=setTimeout(async()=>{try{await ref.set({scale:T.scale,mix:T.mix,clk:T.clk,at:Date.now()});st.textContent='Saved'}catch(e){st.textContent='Not saved: '+(e.message||'no write access')}},700)};
+ const inp=e=>{const i=e.target,v=parseFloat(i.value);if(!isFinite(v))return;if(i.dataset.k)T.mix[i.dataset.k][+i.dataset.j]=v;else if(i.dataset.c==='scale')T.scale=v;else if(i.dataset.c)T.clk[i.dataset.c]=v;else return;draw();save()};
+ tb.addEventListener('input',inp);tc.addEventListener('input',inp);
+ document.getElementById('tReset').onclick=()=>{T=JSON.parse(JSON.stringify(TG));fill();draw();save()};
+ const mm=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
+ const show=e=>{const b=svg.getBoundingClientRect(),x=(e.clientX-b.left)/b.width*W,w=Math.max(1,Math.min(N,Math.round((x-L)/(W-L-R)*(N-1)+1)));hv.setAttribute('x1',X(w));hv.setAttribute('x2',X(w));hv.setAttribute('visibility','visible');
+  const el=(w-1)*T.clk.spw,sp=Math.floor(el/30)*T.clk.fast,sc=1+(w-1)*T.scale,mines=w>=4?2:w>=3?1:0;
+  tip.hidden=false;tip.innerHTML=`<b>Wave ${w}</b> · plays like sector ${sc.toFixed(1)}<br>`+MX.map(([k,n,c])=>`<b style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:${c}"></b>${n}: ${Math.round(ch(k,w)*100)}%`).join('<br>')+`<br><b style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--s7)"></b>Enemy strength: ${Math.round(str(w)*100)}%<br>Mines: ${mines}<br>Est. clock time played: ${mm(el)} · speed-up +${sp}%`;
+  const px=X(w)/W*b.width;tip.style.left=Math.min(b.width-tip.offsetWidth,Math.max(0,px+(px>b.width/2?-tip.offsetWidth-10:10)))+'px';tip.style.top='8px'};
+ svg.addEventListener('pointermove',show);svg.addEventListener('pointerdown',show);svg.addEventListener('pointerleave',()=>{tip.hidden=true;hv.setAttribute('visibility','hidden')});
+ fill();draw();
+ document.querySelectorAll('.dmode button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.dmode button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.getElementById('dfC').hidden=b.dataset.m!=='c';document.getElementById('dfT').hidden=b.dataset.m!=='t'});
+ (async()=>{let db=null;try{db=await claude.use('db')}catch(e){}if(!db){st.textContent='Saving unavailable here';return}ref=db.doc('tuning/timed');
+  ref.onSnapshot(x=>{const v=x.data();if(!v||!v.mix)return;if(document.getElementById('dfT').contains(document.activeElement))return;T={scale:v.scale??TG.scale,mix:{...JSON.parse(JSON.stringify(TG.mix)),...v.mix},clk:{...TG.clk,...v.clk}};fill();draw();st.textContent='Saved values loaded'})})()}
 const tabs=[...document.querySelectorAll('[role=tab]')];
 function tab(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on});try{localStorage.setItem('bpTab',id)}catch(e){}}
 tabs.forEach((t,i)=>{t.onclick=()=>tab(t.id);t.onkeydown=e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){const n=tabs[(i+d+tabs.length)%tabs.length];tab(n.id);n.focus()}}});
