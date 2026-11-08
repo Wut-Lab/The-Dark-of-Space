@@ -279,7 +279,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 <ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop, found in the Hangar.</li><li>Play well to unlock new crafts, upgrades, paint jobs and events.</li></ul></div></div>
 
 <div class="ov scr" id="how-timed" hidden><div class="card"><div class="hd"><h2>Timed Attack</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li><li>You bank 65% of your scrap, or 75% once you pass wave 20.</li><li>Some waves bring a twist: Frenzy (fewer, faster enemies, more scrap), Chaos (enemies swap attacks) or Golden (golden enemies worth more).</li><li>Unlock perks (collect 10 time capsules, destroy 10 Skirmishers, or reach waves 30, 40 and 50) and pick one before each run.</li><li>Every 10th wave, Chrono arrives and stops the clock until it falls (hits still cost time). Only the part with a white glow takes damage: break the hourglass, then the staff, then the mech itself.</li></ul></div></div>
+<ul><li>Score as much scrap as you can before the clock runs out.</li><li>Each hit costs time, and time capsules add it back.</li><li>Some power-ups only appear in Timed Attack.</li><li>You bank 65% of your scrap, or 75% once you pass wave 20.</li><li>Some waves bring a twist: Frenzy (fewer, faster enemies, more scrap), Chaos (enemies swap attacks) or Golden (golden enemies worth more) or Blitz (everything at once; clear it in 10 s for +5 s).</li><li>Unlock perks (collect 10 time capsules, destroy 10 Skirmishers, or reach waves 30, 40 and 50) and pick one before each run.</li><li>Every 10th wave, Chrono arrives and stops the clock until it falls (hits still cost time). Only the part with a white glow takes damage: break the hourglass, then the staff, then the mech itself.</li></ul></div></div>
 
 <div class="ov scr" id="how-daily" hidden><div class="card"><div class="hd"><h2>Daily Run</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>A Campaign run that changes each day. Everyone gets the same craft, routes and upgrade offers.</li><li>On <b>Pilot's Choice</b> days, fly any craft you own.</li><li>Start by picking 1 of 3 upgrades, and face the day's enemy twist.</li><li>Unlockable events can happen in it, whether you have unlocked them or not.</li><li>Try as often as you like. Your best of the day is kept.</li></ul></div></div>
@@ -953,7 +953,10 @@ function bossWave(){st.adS=st.adT=0;st.boss=1;st.bhit=0;if(st.post){const pool=[
 // Mine: drifts in and parks at a random depth in the player's movement zone, blocking that lane; touching it hurts
 function addMine(i,n){const m=MODELS.mine();m.visible=false;S.add(m);let x=n===1?(Math.random()-.5)*12:(i-(n-1)/2)*8+(Math.random()-.5)*2;x=THREE.MathUtils.clamp(x,-FX+1,FX-1);
  const p0=V3(x*.5,-42);m.position.copy(p0);ents.push({m,type:'mine',state:'mine',hp:12*hpk(),slot:V3(x,0),t:-3-i*.6,p0,p1:V3(x,-20),p2:V3(x,-PZF+Math.random()*(PZF+PZB-.5)),r:.8})}
-function mineUp(e,dt,p){e.t+=dt/2.5;if(e.t<0)return;e.m.visible=true;
+function mineUp(e,dt,p){e.t+=dt/2.5;
+ // once mines are all that's left of the wave, they leave right away instead of idling (no more dead time waiting on them)
+ if(e.t<7&&!ents.some(x=>x.type!=='mine'&&x.hp>0&&!x.escaped)){if(e.t<=0){e.escaped=1;e.hp=0;return}e.t=7}
+ if(e.t<0)return;e.m.visible=true;
  // after ~15 s parked it lifts off and leaves the field (no scrap)
  if(e.t>7){e.m.position.z-=14*dt;e.m.rotation.y+=dt*3;if(e.m.position.z<-45){e.escaped=1;e.hp=0}return}const u=Math.min(e.t,1);e.m.position.copy(bez(e.p0,e.p1,e.p2,u*u*(3-2*u)));e.m.rotation.y+=dt*.8;
  if(u>=1&&hd(e.m.position,p)<er(e)+(st.pr||.6)&&st.inv<=0)ram(e,2,2)}
@@ -2707,8 +2710,10 @@ function echoTick(dt){for(let i=ECQ.length;i--;){const q=ECQ[i];q.t-=dt;if(q.t<=
 // Frenzy: 1-3 fewer formation units, every enemy moves and acts 30% faster, kills pay 50% more scrap.
 // Chaos: each formation unit gets a random attack (none, aimed, 3-spread, 5-fan or twin), Skirmishers included.
 // Golden: 1-2 formation units turn golden (the usual golden behavior and +5 scrap each).
-const TWEV={frenzy:['FRENZY WAVE','#ff6a3a'],chaos:['CHAOS WAVE','#c060ff'],golden:['GOLDEN WAVE','#ffd23a']};
-function twRoll(F){if(Math.random()>=.3||!F.length)return;const k=['frenzy','chaos','golden'][Math.random()*3|0];st.tw=k;
+// Blitz: the whole formation flies in at once; clear the wave within 10 s for +5 s on the clock.
+const TWEV={blitz:['BLITZ WAVE · CLEAR IT IN 10 S','#ff4a6a'],frenzy:['FRENZY WAVE','#ff6a3a'],chaos:['CHAOS WAVE','#c060ff'],golden:['GOLDEN WAVE','#ffd23a']};
+function twRoll(F){if(Math.random()>=.3||!F.length)return;const k=['frenzy','chaos','golden','blitz'][Math.random()*4|0];st.tw=k;st.bzT=0;
+ if(k==='blitz')for(const e of F)e.t=-.3-Math.random()*.3;
  if(k==='frenzy'){st.twF=1.3;const n=Math.min(F.length-1,1+(Math.random()*3|0));for(const e of shuf([...F]).slice(0,n)){S.remove(e.m);ents.splice(ents.indexOf(e),1)}}
  else if(k==='chaos')for(const e of F)e.cs=['none','aimed','spread','fan','twin'][Math.random()*5|0];
  else for(const e of shuf(F.filter(e=>!e.gold)).slice(0,1+(Math.random()<.5)))goldUp(e);
@@ -2802,7 +2807,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
    // Prism Rounds (every 5th volley, middle shot) and Prism Cone (every 5th volley, offset by 2: a 3-shot rainbow spread)
    if(st.prr&&st.vol%5===0){const f=st.prr>1?1.3:1.1;c.dmg+=1;c.w*=f;c.m.scale.x*=f;c.m.scale.y*=f;if(st.prr>2)c.pierce++;c.m.material=prismMat()}
    if(st.pcone&&st.vol%5===2){const f=st.pcone>1?1.875:1.5;for(const a of[-.2,0,.2]){st.fired++;const q=fire(mo,V3(a,-1).normalize(),st.shot,st.dmg+(st.pcone>1?2:1),false,0xffffff,st.pierce+(st.pcone>2?1:0),st.wide*f);q.ox=mo.x-p.x;q.m.material=prismMat()}}}
-  if(st.timed){if(st.rwT>0&&(st.rwT-=dt)<=0){st.time+=5;popMsg('REWIND +5 S','#39ff6a')}st.sta=Math.max(0,(st.sta||0)-dt);if(!st.sta&&!st.chF){st.time-=dt*(st.tds>0?.5:1);st.el+=dt;if(st.el>=120&&!st.t2m){st.t2m=1;prog('t2m');if(['mech','ship','falcon'].includes(st.kind)&&!st.dev){prog('t2_'+st.kind);if(LIFE.t2_mech&&LIFE.t2_ship&&LIFE.t2_falcon&&!LIFE.t2all)prog('t2all')}}}$('timer').classList.toggle('sta',st.sta>0||st.tds>0);st.fast=1+Math.floor(st.el/30)*.12;st.gold=Math.max(0,st.gold-dt);
+  if(st.timed){if(st.tw==='blitz')st.bzT+=dt;if(st.rwT>0&&(st.rwT-=dt)<=0){st.time+=5;popMsg('REWIND +5 S','#39ff6a')}st.sta=Math.max(0,(st.sta||0)-dt);if(!st.sta&&!st.chF){st.time-=dt*(st.tds>0?.5:1);st.el+=dt;if(st.el>=120&&!st.t2m){st.t2m=1;prog('t2m');if(['mech','ship','falcon'].includes(st.kind)&&!st.dev){prog('t2_'+st.kind);if(LIFE.t2_mech&&LIFE.t2_ship&&LIFE.t2_falcon&&!LIFE.t2all)prog('t2all')}}}$('timer').classList.toggle('sta',st.sta>0||st.tds>0);st.fast=1+Math.floor(st.el/30)*.12;st.gold=Math.max(0,st.gold-dt);
    aura.visible=st.gold>0&&(st.gold>.6||Math.floor(now/80)%2==0);aura.scale.setScalar(3.2+Math.sin(now/120)*.3);
    const ct=mmss(Math.max(0,Math.ceil(st.time)));if($('clock').textContent!==ct)$('clock').textContent=ct;$('timer').classList.toggle('low',st.time<30&&!st.chF);$('timer').classList.toggle('frz',!!st.chF);
 }
@@ -2866,7 +2871,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   if(st.alt)altTick(dt);else if(st.sss)sssTick(dt);else if(st.hp<=0)die();
   else if(st.timed&&st.time<=0){if(st.tpk==='glass'&&!st.tgU){st.tgU=1;st.time=20;st.inv=2;boom(player.position,18,0x39ff6a);popMsg('THE GLASS TURNS · +20 S','#39ff6a')}else timeUp()}
   else if(!ents.length&&!st.clearT&&st.wv<st.wvs){st.clearT=1.4;st.mid=1;banner('WAVE CLEAR',`Wave ${st.wv+1} of ${st.wvs} incoming`)}
-  else if(!ents.length&&!st.clearT){st.clearT=st.timed?1.4:2.2;
+  else if(!ents.length&&!st.clearT){if(st.tw==='blitz'){if(st.bzT<=10){st.time+=5;popMsg('BLITZ CLEAR · +5 S','#ff4a6a')}st.tw=''}st.clearT=st.timed?1.4:2.2;
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else if(st.cubeA){st.cubeA=0;st.cubeW=1;st.scrap+=10;BFX.clear();banner('THE VOID CUBE IS DOWN','+10 scrap · better upgrade rolls')}
    else if(st.magA){const bn=40+st.stole;st.scrap+=bn;banner('THE MAGPIE IS DOWN',`+40 scrap${st.stole?` · ${st.stole} stolen scrap recovered`:''}`)}
