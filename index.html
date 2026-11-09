@@ -2977,7 +2977,7 @@ const DEVPW='1111';{let ok=0;$('devBtn').onclick=()=>{if(ok)return show('devc');
 $('dvDaily').onclick=()=>{const c=dCraft(dKey()),k=c==='choice'?$('dvC').value:c,o=PJ[k];PJ[k]=$('dvJ').value;DAILY=dKey();start(k);PJ[k]=o;lo()};
  // Reset progress: two taps; clears every saved key except settings, then reloads
  $('dvWipe').onclick=()=>{const b=$('dvWipe');if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again to wipe';setTimeout(()=>{delete b.dataset.arm;b.textContent='Reset progress'},3000);return}
-  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints','darkchain','darktrophy','darkdaily','darkchoir','darkdailyt','darktperk','darkfed'].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
+  try{['scrapbest','darkbank','darktimedbest','darksave','darklast','darkwon','darkstats','darkowned','darkseen','darkkills','darkpicks','darkhints','darkchain','darktrophy','darkdaily','darkchoir','darkdailyt','darktperk','darkfed'].forEach(k=>localStorage.removeItem(k));Object.keys(localStorage).filter(k=>k.startsWith('arcW_')).forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
  $('dvReel').onclick=()=>reelOpen(()=>show('devc'));
  // View ending: drops into Dark Space's final sector and fells the Scion at once
  $('ztEnd').onclick=()=>{devRun(DS,10,false);st.boss=1;scionWave();running=true;setTimeout(()=>{for(const e of ents)if(e.type==='scion')e.hp=0},300)}}// Game over → menu: the card fades out, the game-over jingle plays out in full, then the menu fades in (its music follows 1 s later)
