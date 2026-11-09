@@ -8,6 +8,9 @@
 </style>
 </head>
 <body>
+<!-- Boot fade: black cover that fades out once the page has loaded. Never takes input (pointer-events:none), is removed when done, and a 3 s fallback clears it even if load stalls -->
+<div id="bootF" style="position:fixed;inset:0;background:#000;z-index:2147483647;pointer-events:none;transition:opacity .9s ease-out" aria-hidden="true"></div>
+<script>(function(){var f=document.getElementById('bootF'),d=0;function go(){if(d)return;d=1;requestAnimationFrame(function(){requestAnimationFrame(function(){f.style.opacity='0';setTimeout(function(){f.remove()},1000)})})}addEventListener('load',go);setTimeout(go,3000)})()</script>
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>In the Dark of Space</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -2776,7 +2779,9 @@ const NOFIRE={chrono:1,chglass:1,chstaff:1,tless:1,sprinter:1,chaser:1,mine:1,la
 const T=new THREE.Vector3(),hd=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 // Swept hit test: distance from target c to the segment a shot travelled this frame (o -> p), so low frame rates can't skip past a unit
 const segD=(ox,oz,p,c)=>{const dx=p.x-ox,dz=p.z-oz,L=dx*dx+dz*dz,t=L?Math.max(0,Math.min(1,((c.x-ox)*dx+(c.z-oz)*dz)/L)):0;return Math.hypot(ox+dx*t-c.x,oz+dz*t-c.z)};let last=performance.now();
-function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)/1000),dt=rdt*(FALL&&FALL.t<2.4?.3:1);last=now;hintUp(rdt);tawTick(rdt);gpPoll(rdt);if(running&&st&&!st.timed)bossAdds(dt);if(running&&st&&TCA.length)tcTick(dt);if(PD)PD.visible=!!(st&&st.pkd);if(running&&st&&st.pkd)pdTick(dt);if(running&&st&&st.ch&&chainLive()&&(st.cht-=dt)<=0)chainBreak();
+// Final-kill slow motion: the last kill of a Campaign sector plays at 35% speed for half a second (SLO = real seconds left)
+let SLO=0;
+function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)/1000),dt=rdt*(FALL&&FALL.t<2.4?.3:1)*(SLO>0?.35:1);if(SLO>0)SLO-=rdt;last=now;idleTick(rdt);hintUp(rdt);tawTick(rdt);gpPoll(rdt);if(running&&st&&!st.timed)bossAdds(dt);if(running&&st&&TCA.length)tcTick(dt);if(PD)PD.visible=!!(st&&st.pkd);if(running&&st&&st.pkd)pdTick(dt);if(running&&st&&st.ch&&chainLive()&&(st.cht-=dt)<=0)chainBreak();
  // Black Ice Plating: any armor gained since last frame is halved; half points carry over so small repairs still add up
  if(st&&st.bip){if(st.hp>st.hl){st.hb=(st.hb||0)+(st.hp-st.hl)/2;const w=Math.floor(st.hb);st.hb-=w;st.hp=st.hl+w;if(player)hud()}st.hl=st.hp}
  {const pb=$('pauseBtn'),want=!running;if(pb.hidden!==want)pb.hidden=want}if(paused){renderViewer(dt);upgTick(dt);return}
@@ -2917,7 +2922,7 @@ function tick(now){requestAnimationFrame(tick);const rdt=Math.min(.05,(now-last)
   if(st.alt)altTick(dt);else if(st.sss)sssTick(dt);else if(st.hp<=0)die();
   else if(st.timed&&st.time<=0){if(st.tpk==='glass'&&!st.tgU){st.tgU=1;st.time=20;st.inv=2;boom(player.position,18,0x39ff6a);popMsg('THE GLASS TURNS · +20 S','#39ff6a')}else timeUp()}
   else if(!ents.length&&!st.clearT&&st.wv<st.wvs){st.clearT=1.4;st.mid=1;banner('WAVE CLEAR',`Wave ${st.wv+1} of ${st.wvs} incoming`)}
-  else if(!ents.length&&!st.clearT){if(st.tw==='blitz'){if(st.bzT<=10){st.time+=5;popMsg('BLITZ CLEAR · +5 S','#ff4a6a')}st.tw=''}if(st.timed&&!st.chF&&!st.tawP){st.time+=4;popMsg('WAVE CLEAR · +4 S','#39ff6a')}st.clearT=st.timed?1.4:2.2;
+  else if(!ents.length&&!st.clearT){if(!st.timed)SLO=.5;if(st.tw==='blitz'){if(st.bzT<=10){st.time+=5;popMsg('BLITZ CLEAR · +5 S','#ff4a6a')}st.tw=''}if(st.timed&&!st.chF&&!st.tawP){st.time+=4;popMsg('WAVE CLEAR · +4 S','#39ff6a')}st.clearT=st.timed?1.4:2.2;
    if(st.bonus){const pf=st.bHit===st.bTot;if(pf)st.scrap+=20;banner(pf?'PERFECT!':'BONUS CLEAR',`${st.bHit} / ${st.bTot} destroyed · +${st.bHit*3+(pf?20:0)} scrap`)}
    else if(st.cubeA){st.cubeA=0;st.cubeW=1;st.scrap+=10;BFX.clear();banner('THE VOID CUBE IS DOWN','+10 scrap · better upgrade rolls')}
    else if(st.magA){const bn=40+st.stole;st.scrap+=bn;banner('THE MAGPIE IS DOWN',`+40 scrap${st.stole?` · ${st.stole} stolen scrap recovered`:''}`)}
@@ -3170,6 +3175,11 @@ function fsToggle(){try{if(document.fullscreenElement)document.exitFullscreen();
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)try{navigator.keyboard&&navigator.keyboard.unlock&&navigator.keyboard.unlock()}catch(e){}});
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
+// Title idle: the last craft flown (darklast: craft + paint) drifts and sways behind the main menu; built on demand, hidden everywhere else
+const IDLE={g:null,k:'',t:0};
+function idleTick(dt){const on=!running&&!paused&&!$('start').hidden&&$('reel').hidden;if(!on){if(IDLE.g)IDLE.g.visible=false;return}
+ const L=lastRun(),k=L.k+'|'+(L.p||'');if(IDLE.k!==k){if(IDLE.g)S.remove(IDLE.g);IDLE.g=new THREE.Group();IDLE.g.add(MODELS[pvKey(L.k,PAINTS[L.p]?L.p:'')]());IDLE.g.rotation.y=Math.PI;S.add(IDLE.g);IDLE.k=k}
+ const g=IDLE.g,t=IDLE.t+=dt;g.visible=true;g.position.set(Math.sin(t*.23)*.6,.3+Math.sin(t*.9)*.18,-1.5+Math.sin(t*.31)*.3);g.rotation.set(Math.sin(t*.7)*.05,Math.PI+Math.sin(t*.37)*.35,Math.sin(t*.53)*.1)}
 function toMenu(){saveLast();secSnap=null;for(const k of CRAFTS)if(PJ[k])setPaint(k,'');music(null);staticOn(0);FALL=null;menuReady=0;fieldClear(1);lightsOut(0);clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
  ents.forEach(e=>S.remove(e.m));shots.forEach(s=>S.remove(s.m));ents=[];shots=[];if(player)S.remove(player);player=null;
  ['dead','pick','evt','hud','timer','pwrap','banner'].forEach(i=>$(i).hidden=true);clearDrops();show('start')}
