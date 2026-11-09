@@ -273,7 +273,7 @@ background:radial-gradient(#0b0e16 57%,transparent 59%),conic-gradient(var(--c) 
 </div><div class="ft"><button class="back bot" data-go="howback">Back</button></div></div></div>
 
 <div class="ov scr" id="how-controls" hidden><div class="card"><div class="hd"><h2>Controls</h2><button class="back" data-go="how">Back</button></div>
-<ul><li>Move with <kbd>WASD</kbd> or the arrow keys. On touch, drag anywhere (play in landscape).</li><li>Your guns fire on their own.</li><li>Dash with <kbd>Shift</kbd> or the <b>Dash</b> button. Each dash uses EN.</li><li>Pause with <kbd>Esc</kbd>, <kbd>P</kbd> or the <b>Pause</b> button.</li><li>On a gamepad, move with the left stick or D-pad, dash with A or the right bumper or trigger, and pause with Start. In menus, A selects and B goes back.</li></ul></div></div>
+<ul><li>Move with <kbd>WASD</kbd> or the arrow keys. On touch, drag anywhere (play in landscape).</li><li>Your guns fire on their own.</li><li>Dash with <kbd>Shift</kbd> or the <b>Dash</b> button. Each dash uses EN.</li><li>Pause with <kbd>Esc</kbd>, <kbd>P</kbd> or the <b>Pause</b> button. Press <kbd>F</kbd> to enter or leave fullscreen.</li><li>On a gamepad, move with the left stick or D-pad, dash with A or the right bumper or trigger, and pause with Start. In menus, A selects and B goes back.</li></ul></div></div>
 
 <div class="ov scr" id="how-run" hidden><div class="card"><div class="hd"><h2>Campaign</h2><button class="back" data-go="how">Back</button></div>
 <ul><li>After each sector, pick an upgrade and choose where to go next.</li><li>Every 5th sector is a boss.</li><li>Enemies drop scrap and sometimes power-ups.</li><li>Spend banked scrap in the Shop, found in the Hangar.</li><li>Play well to unlock new crafts, upgrades, paint jobs and events.</li></ul></div></div>
@@ -3109,7 +3109,11 @@ function showPause(on){if(!st||(on&&!running)||(!on&&!paused))return;paused=on;r
 // Touch devices play in landscape: try fullscreen + orientation lock (Android); otherwise pause behind a "turn your device" screen
 const TOUCH=matchMedia('(pointer:coarse)');
 // Every run goes fullscreen when it starts; touch devices also lock to landscape where supported (Android)
-function landscape(){const d=document.documentElement;if(document.fullscreenElement)return;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>TOUCH.matches&&screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}}
+function landscape(){const d=document.documentElement;if(document.fullscreenElement)return;try{(d.requestFullscreen?d.requestFullscreen():Promise.reject()).then(()=>{escLock();return TOUCH.matches&&screen.orientation.lock('landscape')}).catch(()=>{})}catch(e){}}
+// Keyboard Lock (Chromium): in fullscreen, Esc reaches the game as pause instead of leaving fullscreen (hold Esc still exits). F toggles fullscreen
+function escLock(){try{navigator.keyboard&&navigator.keyboard.lock&&navigator.keyboard.lock(['Escape']).catch(()=>{})}catch(e){}}
+function fsToggle(){try{if(document.fullscreenElement)document.exitFullscreen();else landscape()}catch(e){}}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)try{navigator.keyboard&&navigator.keyboard.unlock&&navigator.keyboard.unlock()}catch(e){}});
 function orient(){const need=TOUCH.matches&&innerHeight>innerWidth&&st&&!$('hud').hidden;$('rotate').hidden=!need;if(need&&running)showPause(true)}
 addEventListener('resize',orient);addEventListener('orientationchange',orient);
 function toMenu(){saveLast();secSnap=null;for(const k of CRAFTS)if(PJ[k])setPaint(k,'');music(null);staticOn(0);FALL=null;menuReady=0;fieldClear(1);lightsOut(0);clearTimeout(toMenu.t);toMenu.t=setTimeout(()=>{menuReady=1;menuMusic()},1000);BFX.clear();$('rotate').hidden=true;try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}if(st&&st.scrap&&(running||paused))bank();paused=false;running=false;$('pause').classList.remove('on');$('pause').hidden=true;
@@ -3162,7 +3166,7 @@ document.querySelectorAll('[data-el]').forEach(b=>b.onclick=()=>{elTab=b.dataset
 $('logBtn').onclick=$('pzLog').onclick=elOpen;$('elBack').onclick=()=>$('elog').hidden=true;
 $('setBtn').onclick=$('pzSet').onclick=()=>$('settings').hidden=false;$('setBack').onclick=()=>$('settings').hidden=true;
 $('pzHow').onclick=()=>{HP=1;document.body.classList.add('hp');show('how')};
-addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused)});
+addEventListener('keydown',e=>{if(e.key==='Escape'||e.key.toLowerCase()==='p')showPause(!paused);else if(e.key.toLowerCase()==='f'&&!e.repeat&&!/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||''))fsToggle()});
 // Phones can kill a backgrounded tab: auto-save the campaign run (from the start of the current sector) while hidden, and drop
 // that save again on return so a live run never leaves a stale Resume behind
 let autoS=0;const bgSave=()=>{if(st&&!st.timed&&!st.dev&&secSnap&&st.hp>0){keepSave(secSnap);autoS=1}};
