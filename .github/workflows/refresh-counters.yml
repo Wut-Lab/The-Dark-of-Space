@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [README.md]
 permissions: {}
 jobs:
   purge:
@@ -15,3 +18,9 @@ jobs:
           curl -fsSL "https://github.com/${{ github.repository }}" \
             | grep -o 'https://camo.githubusercontent.com/[^"]*' | sort -u \
             | while read -r u; do echo "PURGE $u"; curl -fsS -X PURGE "$u" || true; done
+      - name: Show current counts
+        run: |
+          for n in TOTAL launch home lost; do
+            echo "$n: $(curl -s https://darkofspace.goatcounter.com/counter/$n.json)"
+          done
+          curl -sI "https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" | grep -i 'cache-control\|^HTTP' || true
