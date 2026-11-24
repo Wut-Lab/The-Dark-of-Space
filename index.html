@@ -2472,7 +2472,7 @@ function timeUp(){running=false;if(st.hard){st.scrap=Math.round(st.scrap*1.5);li
  $('sum').innerHTML=bankRows(bank()).map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');$('dead').hidden=false}
 // Victory card: first three upgrades taken, with their level (I-III), then "and more."
 function upShort(){const u=[...new Set(st.upgrades)],l=u.slice(0,3).map(n=>n+' '+['I','II','III'][Math.min(2,st.upgrades.filter(x=>x===n).length-1)]).join(', ');return u.length>3?l+', and more.':l}
-function gcEv(p,t){try{window.goatcounter&&goatcounter.count&&goatcounter.count({path:p,title:t,event:true})}catch(e){}}
+function gcEv(p,t,pv){if(!/\.github\.io$/.test(location.hostname))return;try{new Image().src='https://darkofspace.goatcounter.com/count?p='+encodeURIComponent(p)+'&t='+encodeURIComponent(t)+(pv?'':'&e=true')+'&s='+screen.width+','+screen.height+'&rnd='+Math.random().toString(36).slice(2)}catch(e){}}
 function die(won){runLog(won);if(!st.dev)gcEv(won?'home':'lost',won?'Made it home':'Lost to the Dark');if(st.daily&&!st.dev&&!st.timed){dailyRec();if(won)prog('dailywin')}if(!won&&!st.timed&&!st.dev&&['mech','ship','falcon'].includes(st.kind)){prog('loss_'+st.kind);if(LIFE.loss_mech&&LIFE.loss_ship&&LIFE.loss_falcon&&!LIFE.lossAll)prog('lossAll')}running=false;if(!won)secSnap=null;if(!won&&st.boss&&!st.timed)prog('bossloss');$('nbest').hidden=true;$('again').hidden=!!won;$('vCont').hidden=!won;$('vExp').hidden=true;$('dead').classList.remove('vin','vout');music(null);if(!won)overJingle();$('deadH').textContent='Destroyed';$('deadH').style.color='';if(st.sec>best&&!st.dev){best=st.sec;try{localStorage.setItem('scrapbest',best)}catch(e){}}
  $('deadT').textContent=`${st.name} went down in sector ${st.sec}. Best run: sector ${best}.`;
  $('sum').innerHTML=[['Sectors cleared',st.sec-1],['Units destroyed',st.kills],['Damage dealt',Math.round(st.dealt)],['Scrap',st.scrap],['Upgrades',st.upgrades.length?won?upShort():st.upgrades.join(', '):'None'],
@@ -3303,5 +3303,5 @@ function reelTick(dt){if($('reel').hidden)return;
  if(p.classList.contains('on')){p.classList.remove('on');reelT=1.3}else{reelI++;if(reelI>=REEL.length){reelEnd();return}p.textContent=REEL[reelI];p.classList.add('on');reelT=1.2+2.6}}
 buildWorld();requestAnimationFrame(tick);
 </script>
-<script>if(/\.github\.io$/.test(location.hostname)){const g=document.createElement('script');g.async=true;g.dataset.goatcounter='https://darkofspace.goatcounter.com/count';g.src='https://gc.zgo.at/count.js';document.head.appendChild(g)}</script>
+<script>gcEv(location.pathname,document.title,1)</script>
 </body></html>
