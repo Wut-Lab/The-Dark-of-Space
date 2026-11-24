@@ -24,3 +24,11 @@ jobs:
             echo "$n: $(curl -s https://darkofspace.goatcounter.com/counter/$n.json)"
           done
           curl -sI "https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" | grep -i 'cache-control\|^HTTP' || true
+      - name: Diagnose
+        run: |
+          for n in TOTAL launch; do
+            echo "== $n svg"; curl -s "https://darkofspace.goatcounter.com/counter/$n.svg?no_branding=1" | head -c 600; echo
+          done
+          curl -fsSL "https://github.com/${{ github.repository }}" | grep -o 'https://camo.githubusercontent.com/[^"]*' | sort -u | while read -r u; do
+            echo "== $u"; curl -s -D - -o /tmp/b "$u" | grep -i '^HTTP\|content-type\|cache-control\|age:'; head -c 300 /tmp/b; echo
+          done
