@@ -30,4 +30,4 @@ Each sector is one wave. Destroy every unit (the **Units left** counter shows ho
 - `index.html`: the game.
 - `blueprint.html`: the build roadmap. Its saved notes and checkboxes only work when it's opened as a Claude artifact.
 
-<p align="right"><sub>Visits <img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" alt="Visits" height="14"> · Runs launched <img src="https://darkofspace.goatcounter.com/counter/launch.svg?no_branding=1" alt="Runs launched" height="14"></sub></p>
+<p align="right">Visits <img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" alt="Visits" height="18"> · Runs launched <img src="https://darkofspace.goatcounter.com/counter/launch.svg?no_branding=1" alt="Runs launched" height="18"></p>
