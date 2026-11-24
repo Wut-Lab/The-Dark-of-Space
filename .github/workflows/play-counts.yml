@@ -1,0 +1,29 @@
+name: Play counts
+# Writes the GoatCounter totals into the README's Stats table as plain text.
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: play-counts
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update README
+        run: |
+          get(){ c=$(curl -fsS "https://darkofspace.goatcounter.com/counter/$1.json" | jq -r '.count' 2>/dev/null); echo "${c:-0}"; }
+          python3 - "$(get TOTAL)" "$(get launch)" "$(get home)" "$(get lost)" <<'PY'
+          import re,sys
+          s=open('README.md').read()
+          for k,v in zip(['TOTAL','launch','home','lost'],sys.argv[1:]):
+              s=re.sub(r'(<!--%s-->).*?(<!--/-->)'%k,r'\g<1>%s\g<2>'%v,s)
+          open('README.md','w').write(s)
+          PY
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+            git commit -qam "README: update play counts" && git push
+          fi
