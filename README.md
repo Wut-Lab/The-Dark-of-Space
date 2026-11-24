@@ -30,9 +30,12 @@ Each sector is one wave. Destroy every unit (the **Units left** counter shows ho
 - `index.html`: the game.
 - `blueprint.html`: the build roadmap. Its saved notes and checkboxes only work when it's opened as a Claude artifact.
 
-<p align="right">
-Visits <img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" alt="Visits" height="18"><br>
-Runs launched <img src="https://darkofspace.goatcounter.com/counter/launch.svg?no_branding=1" alt="Runs launched" height="18"><br>
-Pilots who made it home <img src="https://darkofspace.goatcounter.com/counter/home.svg?no_branding=1" alt="Made it home" height="18"><br>
-Pilots lost to the Dark <img src="https://darkofspace.goatcounter.com/counter/lost.svg?no_branding=1" alt="Lost to the Dark" height="18">
-</p>
+## Stats
+<div align="center">
+<table>
+<tr><td>Visits</td><td><img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" alt="Visits" height="18"></td></tr>
+<tr><td>Runs launched</td><td><img src="https://darkofspace.goatcounter.com/counter/launch.svg?no_branding=1" alt="Runs launched" height="18"></td></tr>
+<tr><td>Pilots who made it home</td><td><img src="https://darkofspace.goatcounter.com/counter/home.svg?no_branding=1" alt="Made it home" height="18"></td></tr>
+<tr><td>Pilots lost to the Dark</td><td><img src="https://darkofspace.goatcounter.com/counter/lost.svg?no_branding=1" alt="Lost to the Dark" height="18"></td></tr>
+</table>
+</div>
