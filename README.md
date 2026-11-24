@@ -33,9 +33,9 @@ Each sector is one wave. Destroy every unit (the **Units left** counter shows ho
 ## Stats
 <div align="center">
 <table>
-<tr><td>Visits</td><td><img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" alt="Visits" height="18"></td></tr>
-<tr><td>Runs launched</td><td><img src="https://darkofspace.goatcounter.com/counter/launch.svg?no_branding=1" alt="Runs launched" height="18"></td></tr>
-<tr><td>Pilots who made it home</td><td><img src="https://darkofspace.goatcounter.com/counter/home.svg?no_branding=1" alt="Made it home" height="18"></td></tr>
-<tr><td>Pilots lost to the Dark</td><td><img src="https://darkofspace.goatcounter.com/counter/lost.svg?no_branding=1" alt="Lost to the Dark" height="18"></td></tr>
+<tr><td>Visits</td><td><b><!--TOTAL-->3<!--/--></b></td></tr>
+<tr><td>Runs launched</td><td><b><!--launch-->1<!--/--></b></td></tr>
+<tr><td>Pilots who made it home</td><td><b><!--home-->1<!--/--></b></td></tr>
+<tr><td>Pilots lost to the Dark</td><td><b><!--lost-->1<!--/--></b></td></tr>
 </table>
 </div>
