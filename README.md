@@ -1,7 +1,7 @@
 # In the Dark of Space
 
 <p align="center">
-  <img src="https://github.com/Wut-Lab/The-Dark-of-Space/blob/main/banner.png" alt="Gameplay Screenshot" width="600">
+  <img src="banner.png" alt="In the Dark of Space banner" width="600">
 </p>
 
 A Galaga-style voxel shooter with roguelike runs. You pilot the **Kestrel** (a tough mobile frame), the **Gale** (a fast interceptor) or the **Falcon** (a balanced strike fighter) and hold the line against mass-production units that fly in, form up and dive at you.
@@ -11,6 +11,11 @@ A Galaga-style voxel shooter with roguelike runs. You pilot the **Kestrel** (a t
 ## Play
 <h3 align="center">*Link to play*</h3>
 <p align="center"> https://wut-lab.github.io/The-Dark-of-Space/</p>
+<p align="center">
+  <img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg" alt="Visits">
+  <img src="https://darkofspace.goatcounter.com/counter/launch.svg" alt="Runs launched">
+</p>
+<p align="center"><sub>Visits and runs launched (<a href="https://darkofspace.goatcounter.com">stats</a>)</sub></p>
 <br>
 <br>
 
