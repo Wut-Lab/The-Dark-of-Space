@@ -11,11 +11,6 @@ A Galaga-style voxel shooter with roguelike runs. You pilot the **Kestrel** (a t
 ## Play
 <h3 align="center">*Link to play*</h3>
 <p align="center"> https://wut-lab.github.io/The-Dark-of-Space/</p>
-<p align="center">
-  <img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg" alt="Visits">
-  <img src="https://darkofspace.goatcounter.com/counter/launch.svg" alt="Runs launched">
-</p>
-<p align="center"><sub>Visits and runs launched (<a href="https://darkofspace.goatcounter.com">stats</a>)</sub></p>
 <br>
 <br>
 
@@ -34,3 +29,5 @@ Each sector is one wave. Destroy every unit (the **Units left** counter shows ho
 ## Files
 - `index.html`: the game.
 - `blueprint.html`: the build roadmap. Its saved notes and checkboxes only work when it's opened as a Claude artifact.
+
+<p align="right"><sub>Visits <img src="https://darkofspace.goatcounter.com/counter/TOTAL.svg?no_branding=1" alt="Visits" height="14"> · Runs launched <img src="https://darkofspace.goatcounter.com/counter/launch.svg?no_branding=1" alt="Runs launched" height="14"></sub></p>
