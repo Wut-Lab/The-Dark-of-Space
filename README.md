@@ -12,6 +12,7 @@ A Galaga-style voxel shooter with roguelike runs. You pilot the **Kestrel** (a t
 <h3 align="center">*Link to play*</h3>
 <p align="center"> https://wut-lab.github.io/The-Dark-of-Space/</p>
 <p align="center"><img src="gameplay.gif" alt="Gameplay: the Falcon fighting its first sector" width="320"></p>
+<p align="center"><sub>Enjoying it? A ⭐ on this repo helps other pilots find it.</sub></p>
 <br>
 <br>
 
