@@ -35,7 +35,7 @@ Each sector is one wave. Destroy every unit (the **Units left** counter shows ho
 ## Stats
 <div align="center">
 <table>
-<tr><td>Visits</td><td><b><!--TOTAL-->5<!--/--></b></td></tr>
+<tr><td>Visits</td><td><b><!--TOTAL-->6<!--/--></b></td></tr>
 <tr><td>Runs launched</td><td><b><!--launch-->1<!--/--></b></td></tr>
 <tr><td>Pilots who made it home</td><td><b><!--home-->1<!--/--></b></td></tr>
 <tr><td>Pilots lost to the Dark</td><td><b><!--lost-->1<!--/--></b></td></tr>
