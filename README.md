@@ -24,7 +24,7 @@ Open `index.html` in a browser. It is a single file and loads Three.js from cdnj
 - **Pause:** `Esc`, `P` or the Pause button.
 - Your guns fire on their own.
 
-Each sector is one wave. Destroy every unit (the **Units left** counter shows how many remain) to clear it, then pick a refit. Every 4th sector is a Bonus Stage. The run ends when your armor reaches zero.
+Fight your way through sectors made up of waves, defeating bosses along the way. 
 <br>
 <br>
 
